@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}{{ L('Cenník vizitiek | Vizitkomat', 'Ceník vizitek | Vizitkomat') }}{% endblock %}
+{% block description %}{{ L('Ceny tlačených vizitiek od', 'Ceny tištěných vizitek od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }} {{ L('za 100 ks vrátane DPH a dopravy. Matný papier 350 g, soft-touch, Triplex 720 g a digitálna vizitka.', 'za 100 ks včetně DPH a dopravy. Matný papír 350 g, soft-touch, Triplex 720 g a digitální vizitka.') }}{% endblock %}
+{% block card_fonts %}{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/cart.css') }}">{% endblock %}
+{% macro m(v) %}{{ '{:,}'.format(v).replace(',', ' ') }} {{ prices.symbol }}{% endmacro %}
+{% block main %}
+<section class="pr wrap">
+  <header class="pr__head">
+    <p class="eyebrow">{{ L('Cenník', 'Ceník') }}</p>
+    <h1 class="h2">{{ L('Čo vidíte,', 'Co vidíte,') }} <em>{{ L('to zaplatíte.', 'to zaplatíte.') }}</em></h1>
+    <p class="sechead__lead">{{ L('Všetky ceny sú vrátane DPH, obojstrannej tlače, návrhu, kontroly dát človekom a dopravy na Slovensko aj do Česka.', 'Všechny ceny jsou včetně DPH, oboustranného tisku, návrhu, kontroly dat člověkem a dopravy po Česku i na Slovensko.') }}</p>
+  </header>
+
+  <div class="pr__table" role="region" aria-label="{{ L('Ceny tlačených vizitiek', 'Ceny tištěných vizitek') }}" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">{{ L('Papier', 'Papír') }}</th>{% for q in prices.qty %}<th scope="col">{{ q }} {{ L('ks', 'ks') }}</th>{% endfor %}</tr></thead>
+      <tbody>
+        <tr><th scope="row"><b>{{ L('Matný 350 g', 'Matný 350 g') }}</b><small>{{ L('bez povrchovej úpravy', 'bez povrchové úpravy') }}</small></th>{% for q in prices.qty %}<td>{{ m(prices.papers.matny[q|string]) }}</td>{% endfor %}</tr>
+        <tr><th scope="row"><b>{{ L('Matný 350 g + laminácia', 'Matný 350 g + laminace') }}</b><small>{{ L('matná alebo lesklá', 'matná nebo lesklá') }}</small></th>{% for q in prices.qty %}<td>{{ m(prices.papers.matny[q|string] + prices.finishes.matna[q|string]) }}</td>{% endfor %}</tr>
+        <tr class="hi"><th scope="row"><b>{{ L('Matný 350 g + soft-touch', 'Matný 350 g + soft-touch') }}</b><small>{{ L('zamatový povrch', 'sametový povrch') }}</small></th>{% for q in prices.qty %}<td>{{ m(prices.papers.matny[q|string] + prices.finishes.soft[q|string]) }}</td>{% endfor %}</tr>
+        <tr><th scope="row"><b>Triplex 720 g</b><small>{{ L('tri vrstvy, farebné jadro', 'tři vrstvy, barevné jádro') }}</small></th>{% for q in prices.qty %}<td>{{ m(prices.papers.triplex[q|string]) }}</td>{% endfor %}</tr>
+      </tbody>
+      <tfoot>
+        <tr><th scope="row">{{ L('Zaoblené rohy', 'Zaoblené rohy') }}</th>{% for q in prices.qty %}<td>+ {{ m(prices.round[q|string]) }}</td>{% endfor %}</tr>
+        <tr><th scope="row">{{ L('Za kus (matný)', 'Za kus (matný)') }}</th>{% for q in prices.qty %}<td class="per">{{ ('%.2f' % (prices.papers.matny[q|string] / q)) | replace('.', ',') }} {{ prices.symbol }}</td>{% endfor %}</tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="pr__extras">
+    <article><h3>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</h3><p class="pr__p">{{ prices.digital_year }} {{ prices.symbol }} <small>/ {{ L('rok', 'rok') }}</small></p><p>{{ L('K tlačeným vizitkám prvý rok zadarmo. Neobnovuje sa automaticky.', 'K tištěným vizitkám první rok zdarma. Neobnovuje se automaticky.') }}</p></article>
+    <article><h3>{{ L('Expresná výroba', 'Expresní výroba') }}</h3><p class="pr__p">+ {{ prices.express }} {{ prices.symbol }}</p><p>{{ L('Vizitky máte o dva pracovné dni skôr.', 'Vizitky máte o dva pracovní dny dříve.') }}</p></article>
+    <article><h3>{{ L('Formáty', 'Formáty') }}</h3><p class="pr__p">{{ L('bez príplatku', 'bez příplatku') }}</p><p>90 × 50 mm, 85 × 55 mm {{ L('a štvorec', 'a čtverec') }} 55 × 55 mm.</p></article>
+    <article><h3>{{ L('Doprava', 'Doprava') }}</h3><p class="pr__p">{{ L('zadarmo', 'zdarma') }}</p><p>{{ L('Kuriér alebo výdajné miesto, Slovensko aj Česko.', 'Kurýr nebo výdejní místo, Česko i Slovensko.') }}</p></article>
+  </div>
+
+  <div class="pr__cta">
+    <h2 class="h2">{{ L('Najprv navrhnite,', 'Nejdřív navrhněte,') }} <em>{{ L('platíte až na konci.', 'platíte až na konci.') }}</em></h2>
+    <a class="btn btn--accent" href="{{ link('tvorba') }}">{{ L('Otvoriť generátor', 'Otevřít generátor') }} <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+{% endblock %}

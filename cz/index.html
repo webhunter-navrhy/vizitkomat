@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vizitkomat – vizitky na papíře i v telefonu</title>
+<meta name="description" content="Navrhněte vizitku za dvě minuty: generátor, AI grafik 24/7 nebo vizitka z vašeho loga. Prémiový tisk, doprava zdarma a digitální vizitka do telefonu.">
+<link rel="canonical" href="https://vizitkomat.eu/cz/">
+<link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/">
+<link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F2EEE6">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vizitkomat – vizitky na papíře i v telefonu">
+<meta property="og:description" content="Navrhněte vizitku za dvě minuty: generátor, AI grafik 24/7 nebo vizitka z vašeho loga. Prémiový tisk, doprava zdarma a digitální vizitka do telefonu.">
+<meta property="og:image" content="https://vizitkomat.eu/assets/img/og.png">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Space+Grotesk:wght@400..700&family=Syne:wght@500..800&family=Manrope:wght@400..700&family=Unbounded:wght@400..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@500;700&family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Gloock&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/site.css?v=a10280de">
+<link rel="stylesheet" href="../assets/css/dcard.css?v=7a472409"><script type="importmap">{"imports": {"../assets/js/util.js": "../assets/js/util.js?v=ceb0b934", "../assets/js/card-engine.js": "../assets/js/card-engine.js?v=cdc4f98a", "../assets/js/cart.js": "../assets/js/cart.js?v=7fdbf79b", "../assets/js/kosik.js": "../assets/js/kosik.js?v=6a239b12", "../assets/js/ai-engine.js": "../assets/js/ai-engine.js?v=80c9504b", "../assets/js/home.js": "../assets/js/home.js?v=d4856b3e", "../assets/js/studio.js": "../assets/js/studio.js?v=2a1cec1c", "../assets/js/digital.js": "../assets/js/digital.js?v=ff3ef5ab", "../assets/js/digital-card.js": "../assets/js/digital-card.js?v=922cd8e2", "../assets/js/site.js": "../assets/js/site.js?v=1b90607b", "../assets/js/logo.js": "../assets/js/logo.js?v=14fdfc37"}}</script>
+<script>
+window.VK = {
+  lang: 'cz', root: '../',
+  links: { tvorba: '../cz/tvorba/', kosik: '../cz/kosik/', digital: '../cz/digitalni-vizitka/', cennik: '../cz/cenik/', demo: '../v/demo/' },
+  prices: {"currency": "CZK", "symbol": "Kč", "locale": "cs-CZ", "vat": 21, "qty": [100, 250, 500, 1000], "papers": {"matny": {"100": 590, "250": 790, "500": 1050, "1000": 1450}, "triplex": {"100": 1690, "250": 2190, "500": 2890, "1000": 4090}}, "finishes": {"none": {"100": 0, "250": 0, "500": 0, "1000": 0}, "matna": {"100": 80, "250": 100, "500": 130, "1000": 180}, "leskla": {"100": 80, "250": 100, "500": 130, "1000": 180}, "soft": {"100": 150, "250": 200, "500": 250, "1000": 350}}, "round": {"100": 220, "250": 290, "500": 390, "1000": 540}, "digital_year": 450, "express": 220},
+  aiEndpoint: '',
+  orderEndpoint: ''
+};
+</script>
+</head>
+<body class="page-index">
+<a class="skip" href="#main">Přeskočit na obsah</a>
+
+<header class="nav" id="nav">
+  <div class="nav__in">
+    <a class="brand" href="../cz/" aria-label="Vizitkomat">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="2" y="3" width="28" height="17" rx="4.5" fill="currentColor"/>
+        <rect x="7" y="15" width="18" height="1.8" rx=".9" fill="var(--paper)"/>
+        <rect x="9" y="16.6" width="14" height="12.4" rx="1.4" fill="var(--accent)"/>
+        <rect x="11.2" y="21" width="6" height="1.3" rx=".6" fill="var(--paper)"/>
+        <rect x="11.2" y="23.6" width="9" height="1" rx=".5" fill="var(--paper)" opacity=".7"/>
+      </svg>
+      <span class="brand__word">Vizitko<i>mat</i></span>
+    </a>
+    <nav class="nav__links" aria-label="Hlavní navigace">
+      <a href="../cz/tvorba/">Tvorba</a>
+      <a href="../cz/digitalni-vizitka/">Digitální vizitka</a>
+      <a href="../cz/cenik/">Ceník</a>
+    </nav>
+    <div class="nav__end">
+      <a class="nav__lang" href="../" hreflang="sk" title="Slovenská verze"><span>SK</span><span class="on">CZ</span></a>
+      <a class="nav__cart" href="../cz/kosik/" aria-label="Košík">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14l-1.3 10.2a2 2 0 0 1-2 1.8H8.3a2 2 0 0 1-2-1.8L5 7Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 9.5V6a3 3 0 0 1 6 0v3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span class="nav__count" data-cart-count hidden>0</span>
+      </a>
+      <a class="btn btn--ink btn--sm nav__cta" href="../cz/tvorba/">Navrhnout vizitku</a>
+      <button class="nav__burger" aria-label="Menu" aria-expanded="false" data-burger><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="nav__sheet" data-sheet>
+    <a href="../cz/tvorba/">Tvorba</a>
+    <a href="../cz/digitalni-vizitka/">Digitální vizitka</a>
+    <a href="../cz/cenik/">Ceník</a>
+    <a href="../cz/kosik/">Košík</a>
+    <a href="../">Slovensky</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero__grid wrap">
+    <div class="hero__copy">
+      <p class="eyebrow"><span class="dot"></span>Vizitky · tisk i digitál · Česko a Slovensko</p>
+      <h1 class="hero__title">
+        <span class="line"><span>Vizitky, na</span></span>
+        <span class="line"><span>které se <em>nezapomíná.</em></span></span>
+      </h1>
+      <p class="hero__lead">Navrhnete je za dvě minuty: sami, s AI grafikem, který nikdy nespí, nebo přímo z vašeho loga. Vytiskneme je na poctivý papír a do telefonu dostanete i digitální verzi.</p>
+
+      <form class="namebox" data-namebox action="../cz/tvorba/">
+        <label for="hero-name" class="namebox__label">Zkuste to. Jak se jmenujete?</label>
+        <div class="namebox__row">
+          <input id="hero-name" name="meno" autocomplete="name" maxlength="40" placeholder="Vaše jméno a příjmení">
+          <button class="btn btn--accent" type="submit">Navrhnout <span aria-hidden="true">→</span></button>
+        </div>
+      </form>
+
+      <ul class="hero__facts">
+        <li><b>Doprava zdarma</b> po Česku i na Slovensko</li>
+        <li><b>Kontrolu dat dělá člověk</b> před každým tiskem</li>
+        <li><b>Digitální vizitka</b> na první rok zdarma</li>
+      </ul>
+    </div>
+
+    <!-- automat -->
+    <div class="hero__machine">
+      <div class="machine" data-machine>
+        <div class="machine__top">
+          <span class="machine__brand">VIZITKOMAT</span>
+          <span class="machine__model">MODEL 01 · <span data-m-size>90×50</span></span>
+          <span class="machine__led" data-led></span>
+        </div>
+        <div class="machine__screen">
+          <div class="machine__glass">
+            <canvas class="machine__card" data-m-card width="900" height="500" aria-label="Náhled vizitky"></canvas>
+          </div>
+          <div class="machine__readout" aria-live="polite"><span data-m-read>PŘIPRAVEN · NAPIŠTE SVÉ JMÉNO</span><i class="caret"></i></div>
+        </div>
+        <div class="machine__panel">
+          <div class="machine__keys" role="group" aria-label="Způsob tvorby">
+            <button class="key is-on" data-key="tpl"><span>01</span>Šablona</button>
+            <button class="key" data-key="ai"><span>02</span>AI grafik</button>
+            <button class="key" data-key="logo"><span>03</span>Logo</button>
+            <button class="key" data-key="side"><span>04</span>Otočit</button>
+          </div>
+          <button class="machine__print" data-print aria-label="Vytisknout ukázku"><span>TISK</span></button>
+        </div>
+        <div class="machine__slot"><i></i></div>
+        <div class="machine__tray" data-tray aria-hidden="true">
+          <div class="machine__out" data-out><img alt="" data-out-img></div>
+        </div>
+        <input type="file" accept="image/*" hidden data-logo-input>
+      </div>
+      <a class="machine__next" href="../cz/tvorba/" data-m-next hidden>Dotvořit tuto vizitku <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+  <div class="hero__scroll" aria-hidden="true"><span>Čtyři cesty k vizitce</span><i></i></div>
+</section>
+
+<!-- ============ COLOR BAR ============ -->
+<div class="colorbar" aria-hidden="true">
+  <div class="colorbar__chips"><i style="--c:var(--cyan)"></i><i style="--c:var(--magenta)"></i><i style="--c:var(--yellow)"></i><i style="--c:var(--ink)"></i></div>
+  <div class="colorbar__track">
+    <div class="colorbar__run">
+      <span>90 × 50 mm</span><span>350 g/m²</span><span>Soft-touch</span><span>Triplex 720 g</span><span>Zaoblené rohy</span><span>QR → digitální vizitka</span><span>Spadávka 2 mm</span><span>CMYK</span><span>Doprava zdarma</span><span>Kontrola dat člověkem</span>
+    </div>
+    <div class="colorbar__run">
+      <span>90 × 50 mm</span><span>350 g/m²</span><span>Soft-touch</span><span>Triplex 720 g</span><span>Zaoblené rohy</span><span>QR → digitální vizitka</span><span>Spadávka 2 mm</span><span>CMYK</span><span>Doprava zdarma</span><span>Kontrola dat člověkem</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ŠTYRI CESTY ============ -->
+<section class="ways" id="cesty">
+  <div class="wrap">
+    <header class="sechead">
+      <p class="eyebrow">Tvorba</p>
+      <h2 class="h2">Čtyři cesty k vizitce. <em>Vyberte si tu svou.</em></h2>
+      <p class="sechead__lead">Grafické studio za vás nikdo platit nechce a šablony z tiskárny vypadají všechny stejně. Vyřešili jsme to jinak: každý návrh skládáme z vašich údajů, barev a stylu.</p>
+    </header>
+
+    <div class="ways__grid">
+      <div class="ways__stage" data-stage>
+        <div class="stage__desk">
+          <!-- 01 generátor -->
+          <div class="stage__panel is-on" data-panel="0">
+            <div class="gen">
+              <canvas class="gen__card" data-gen-card width="900" height="500"></canvas>
+              <div class="gen__thumbs" data-gen-thumbs></div>
+            </div>
+          </div>
+          <!-- 02 AI -->
+          <div class="stage__panel" data-panel="1">
+            <div class="ai">
+              <div class="ai__chat">
+                <div class="ai__msg ai__msg--me" data-ai-typed></div>
+                <div class="ai__msg ai__msg--bot" data-ai-reply hidden></div>
+              </div>
+              <div class="ai__fan" data-ai-fan></div>
+              <form class="ai__try" data-ai-form>
+                <input data-ai-input maxlength="160" placeholder="Popište se: čím se živíte, jaký styl chcete…" aria-label="Popis pro AI grafika">
+                <button class="btn btn--ink btn--sm" type="submit">Navrhni</button>
+              </form>
+            </div>
+          </div>
+          <!-- 03 logo -->
+          <div class="stage__panel" data-panel="2">
+            <div class="lg">
+              <label class="lg__drop" data-lg-drop>
+                <input type="file" accept="image/*" hidden data-lg-input>
+                <img alt="" data-lg-img>
+                <span class="lg__hint">Pusťte sem své logo<small>nebo klikněte · PNG, JPG, SVG</small></span>
+              </label>
+              <div class="lg__swatches" data-lg-sw></div>
+              <div class="lg__cards" data-lg-cards></div>
+            </div>
+          </div>
+          <!-- 04 súbor -->
+          <div class="stage__panel" data-panel="3">
+            <div class="fl">
+              <div class="fl__sheet">
+                <canvas data-fl-card width="1000" height="640"></canvas>
+                <span class="fl__tag fl__tag--bleed">spadávka 2 mm</span>
+                <span class="fl__tag fl__tag--safe">bezpečná zóna</span>
+              </div>
+              <ul class="fl__checks" data-fl-checks>
+                <li><i></i>Rozlišení aspoň 300 dpi</li>
+                <li><i></i>Spadávka 2 mm na každé straně</li>
+                <li><i></i>Texty v bezpečné zóně</li>
+                <li><i></i>Barvy převedené do CMYK</li>
+                <li><i></i>Zkontroloval člověk, ne jen skript</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="stage__meta"><span data-stage-num>01</span> / 04 <span class="stage__bar"><i data-stage-bar></i></span></div>
+      </div>
+
+      <div class="ways__steps">
+        <article class="way" data-way="0">
+          <span class="way__num">01</span>
+          <h3>Generátor <em>s vkusem</em></h3>
+          <p>Čtrnáct šablon, které navrhl grafik, ne algoritmus. Vepíšete údaje a vizitka se sama poskládá: písmo se zmenší, když máte dlouhé jméno, barvy si hlídají kontrast a nic neuteče do ořezu.</p>
+          <ul class="way__list">
+            <li>Živý náhled přední i zadní strany</li>
+            <li>12 barevných palet a 12 písem</li>
+            <li>Tiskové PDF se spadávkou na jedno kliknutí</li>
+          </ul>
+          <a class="link" href="../cz/tvorba/?rezim=sablony">Otevřít generátor <span>→</span></a>
+        </article>
+        <article class="way" data-way="1">
+          <span class="way__num">02</span>
+          <h3>AI grafik <em>24/7</em></h3>
+          <p>Napište mu jako kamarádovi: „mám květinářství v Brně, chci něco jemného“. Za pár sekund vám ukáže několik hotových návrhů s vhodnými barvami, písmem i sloganem. V neděli o půlnoci stejně jako v pondělí ráno.</p>
+          <ul class="way__list">
+            <li>Rozumí češtině i slovenštině</li>
+            <li>Navrhne barvy, písmo, rozložení i slogan</li>
+            <li>Každý návrh můžete dál upravovat</li>
+          </ul>
+          <a class="link" href="../cz/tvorba/?rezim=ai">Popovídat si s AI grafikem <span>→</span></a>
+        </article>
+        <article class="way" data-way="2">
+          <span class="way__num">03</span>
+          <h3>Vizitka <em>z vašeho loga</em></h3>
+          <p>Nahrajte logo a Vizitkomat si z něj přečte barvy vaší značky. Odstraní bílé pozadí a postaví vizitky, které k logu opravdu patří. Žádné hledání barevných kódů.</p>
+          <ul class="way__list">
+            <li>Automatické barvy značky</li>
+            <li>Odstranění bílého pozadí</li>
+            <li>Vyzkoušejte to hned tady vlevo</li>
+          </ul>
+          <a class="link" href="../cz/tvorba/?rezim=logo">Nahrát logo <span>→</span></a>
+        </article>
+        <article class="way" data-way="3">
+          <span class="way__num">04</span>
+          <h3>Máte vlastní <em>návrh?</em></h3>
+          <p>Pošlete PDF nebo obrázek od svého grafika. Před tiskem ho projde člověk: zkontroluje rozlišení, spadávku, bezpečnou zónu i barvy. Pokud něco nesedí, ozveme se dřív, než se cokoli vytiskne.</p>
+          <ul class="way__list">
+            <li>PDF, PNG, JPG i TIFF</li>
+            <li>Kontrola tiskových dat v ceně</li>
+            <li>Odpověď do 24 hodin</li>
+          </ul>
+          <a class="link" href="../cz/tvorba/?rezim=subor">Nahrát vlastní návrh <span>→</span></a>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAPIER + TELEFÓN ============ -->
+<section class="twin" id="digital" data-dark>
+  <div class="twin__glow" aria-hidden="true"></div>
+  <div class="wrap twin__grid">
+    <div class="twin__copy">
+      <p class="eyebrow eyebrow--light">Digitální vizitka</p>
+      <h2 class="h2">Na papíře <em>i v telefonu.</em></h2>
+      <p class="twin__lead">Ke každé tištěné vizitce dostanete digitální dvojče. QR kód na zadní straně otevře vaši vizitku v telefonu a jedním ťuknutím se uloží do kontaktů. Když se vám změní číslo, přepíšete ho a nemusíte nic dotiskovat.</p>
+      <ul class="twin__feats">
+        <li><b>Uložit do kontaktů</b><span>Jméno, číslo, e-mail i fotka v telefonu za vteřinu</span></li>
+        <li><b>Sdílení bez papíru</b><span>QR kód, odkaz do SMS, WhatsAppu či e-mailu</span></li>
+        <li><b>Změny kdykoli</b><span>Nová pozice nebo číslo bez nového tisku</span></li>
+        <li><b>Ve vašem designu</b><span>Stejné barvy a písmo jako na papíře</span></li>
+      </ul>
+      <div class="twin__cta">
+        <a class="btn btn--accent" href="../cz/digitalni-vizitka/">Více o digitální vizitce</a>
+        <a class="link link--light" href="../v/demo/">Otevřít ukázku <span>→</span></a>
+      </div>
+    </div>
+    <div class="twin__visual">
+      <div class="twin__paper" data-twin-paper>
+        <canvas data-twin-card width="900" height="500"></canvas>
+      </div>
+      <div class="phone" data-tilt>
+        <div class="phone__screen"><div class="phone__island"></div><div class="dcard-host" data-twin-phone></div></div>
+      </div>
+      <div class="twin__scan">
+        <div class="twin__qr" data-twin-qr></div>
+        <p>Naskenujte si to telefonem.<br><span>Tohle je skutečná digitální vizitka.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAPIERE ============ -->
+<section class="paper" id="papiere">
+  <div class="wrap paper__grid">
+    <div class="paper__copy">
+      <p class="eyebrow">Materiály</p>
+      <h2 class="h2">Papír, který <em>cítíte v ruce.</em></h2>
+      <p class="sechead__lead">Vizitku si člověk nejdřív ohmatá a až potom přečte. Proto netiskneme na tenký kancelářský papír.</p>
+      <div class="mats" role="tablist" data-mats>
+        <button class="mat is-on" role="tab" data-mat="matny" data-thick="0.42" data-sheen="0" aria-selected="true">
+          <span class="mat__sw" style="--sw:#F4EFE6"></span>
+          <span class="mat__t"><b>Matný 350 g</b><small>Klasika s přirozeným povrchem. Dá se na něj psát perem.</small></span>
+          <span class="mat__mm">0,42 mm</span>
+        </button>
+        <button class="mat" role="tab" data-mat="soft" data-thick="0.46" data-sheen="soft" aria-selected="false">
+          <span class="mat__sw" style="--sw:#2B2A27"></span>
+          <span class="mat__t"><b>Soft-touch</b><small>Sametový povrch jako broskev. Vizitka, kterou chce člověk držet.</small></span>
+          <span class="mat__mm">0,46 mm</span>
+        </button>
+        <button class="mat" role="tab" data-mat="leskla" data-thick="0.45" data-sheen="gloss" aria-selected="false">
+          <span class="mat__sw" style="--sw:#2C3FD6"></span>
+          <span class="mat__t"><b>Lesklá laminace</b><small>Sytější barvy a lesk. Sedí k fotkám a výrazným značkám.</small></span>
+          <span class="mat__mm">0,45 mm</span>
+        </button>
+        <button class="mat" role="tab" data-mat="triplex" data-thick="0.92" data-sheen="0" data-core="#E8462B" aria-selected="false">
+          <span class="mat__sw mat__sw--tri" style="--sw:#F4EFE6"></span>
+          <span class="mat__t"><b>Triplex 720 g</b><small>Tři vrstvy, barevné jádro na hraně. Vizitka, kterou nikdo nevyhodí.</small></span>
+          <span class="mat__mm">0,92 mm</span>
+        </button>
+      </div>
+    </div>
+    <div class="paper__visual">
+      <div class="slab" data-slab>
+        <div class="slab__card" data-slab-card>
+          <div class="slab__face slab__face--front"><img alt="" data-slab-front></div>
+          <div class="slab__face slab__face--back"><img alt="" data-slab-back></div>
+          <div class="slab__edge slab__edge--b"></div>
+          <div class="slab__edge slab__edge--r"></div>
+          <div class="slab__sheen"></div>
+        </div>
+        <div class="slab__shadow"></div>
+      </div>
+      <p class="paper__caption" data-slab-caption>Tloušťka 0,42 mm · tahem otočíte</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRE KOHO ============ -->
+<section class="who" id="pre-koho">
+  <div class="wrap">
+    <header class="sechead sechead--row">
+      <div>
+        <p class="eyebrow">Pro koho</p>
+        <h2 class="h2">Každé řemeslo <em>má svůj rukopis.</em></h2>
+      </div>
+      <p class="sechead__lead">Přejeďte myší po seznamu. AI grafik vám ukáže, jak by navrhl vizitku pro daný obor. Kliknutím ji otevřete v generátoru.</p>
+    </header>
+    <ul class="who__list" data-who>
+      <li><a class="who__row" href="../cz/tvorba/?rezim=ai&obor=kadernik" data-who-key="kadernik"><span class="who__n">01</span><span class="who__t">Kadeřnice a barbeři</span><span class="who__m">jemné · elegantní</span><span class="who__a" aria-hidden="true">→</span></a></li>
+      <li><a class="who__row" href="../cz/tvorba/?rezim=ai&obor=reality" data-who-key="reality"><span class="who__n">02</span><span class="who__t">Realitní makléři</span><span class="who__m">důvěryhodné · prémiové</span><span class="who__a" aria-hidden="true">→</span></a></li>
+      <li><a class="who__row" href="../cz/tvorba/?rezim=ai&obor=stavba" data-who-key="stavba"><span class="who__n">03</span><span class="who__t">Stavbaři a řemeslníci</span><span class="who__m">pevné · čitelné</span><span class="who__a" aria-hidden="true">→</span></a></li>
+      <li><a class="who__row" href="../cz/tvorba/?rezim=ai&obor=it" data-who-key="it"><span class="who__n">04</span><span class="who__t">Programátoři a IT</span><span class="who__m">technické · hravé</span><span class="who__a" aria-hidden="true">→</span></a></li>
+      <li><a class="who__row" href="../cz/tvorba/?rezim=ai&obor=pravnik" data-who-key="pravnik"><span class="who__n">05</span><span class="who__t">Advokáti a notáři</span><span class="who__m">seriózní · klasické</span><span class="who__a" aria-hidden="true">→</span></a></li>
+      <li><a class="who__row" href="../cz/tvorba/?rezim=ai&obor=wellness" data-who-key="wellness"><span class="who__n">06</span><span class="who__t">Masáže, jóga, terapie</span><span class="who__m">klidné · přírodní</span><span class="who__a" aria-hidden="true">→</span></a></li>
+      <li><a class="who__row" href="../cz/tvorba/?rezim=ai&obor=foto" data-who-key="foto"><span class="who__n">07</span><span class="who__t">Fotografové a umělci</span><span class="who__m">osobní · výrazné</span><span class="who__a" aria-hidden="true">→</span></a></li>
+      <li><a class="who__row" href="../cz/tvorba/?rezim=ai&obor=gastro" data-who-key="gastro"><span class="who__n">08</span><span class="who__t">Kavárny a vinařství</span><span class="who__m">poctivé · rodinné</span><span class="who__a" aria-hidden="true">→</span></a></li>
+    </ul>
+    <div class="who__float" data-who-float aria-hidden="true"><canvas width="720" height="400"></canvas></div>
+  </div>
+</section>
+
+<!-- ============ KALKULAČKA ============ -->
+<section class="calc" id="cena">
+  <div class="wrap calc__grid">
+    <div class="calc__copy">
+      <p class="eyebrow">Cena</p>
+      <h2 class="h2">Férová cena, <em>bez hvězdiček.</em></h2>
+      <p class="sechead__lead">V ceně je oboustranný tisk, návrh v generátoru nebo s AI grafikem, kontrola dat člověkem, doprava a digitální vizitka na první rok.</p>
+      <ul class="calc__incl">
+        <li>Oboustranný plnobarevný tisk</li>
+        <li>Návrh a úpravy bez příplatku</li>
+        <li>Kontrola tiskových dat člověkem</li>
+        <li>Doprava zdarma po CZ i SK</li>
+        <li>Digitální vizitka na 12 měsíců</li>
+      </ul>
+    </div>
+    <div class="calc__box" data-calc>
+      <div class="calc__row">
+        <span class="calc__lab">Papír</span>
+        <div class="seg" data-c="paper">
+          <button class="is-on" data-v="matny">Matný 350 g</button>
+          <button data-v="triplex">Triplex 720 g</button>
+        </div>
+      </div>
+      <div class="calc__row" data-c-finish-row>
+        <span class="calc__lab">Povrch</span>
+        <div class="seg" data-c="finish">
+          <button class="is-on" data-v="none">Bez úpravy</button>
+          <button data-v="matna">Matná lam.</button>
+          <button data-v="leskla">Lesklá lam.</button>
+          <button data-v="soft">Soft-touch</button>
+        </div>
+      </div>
+      <div class="calc__row">
+        <span class="calc__lab">Rohy</span>
+        <div class="seg" data-c="corners">
+          <button class="is-on" data-v="straight">Rovné</button>
+          <button data-v="round">Zaoblené</button>
+        </div>
+      </div>
+      <div class="calc__row">
+        <span class="calc__lab">Počet kusů</span>
+        <div class="seg seg--qty" data-c="qty">
+<button data-v="100">100</button><button class="is-on" data-v="250">250</button><button data-v="500">500</button><button data-v="1000">1000</button>        </div>
+      </div>
+      <div class="calc__total">
+        <div>
+          <span class="calc__price" data-c-price>—</span>
+          <span class="calc__per" data-c-per></span>
+        </div>
+        <a class="btn btn--accent" href="../cz/tvorba/" data-c-go>Navrhnout a objednat <span aria-hidden="true">→</span></a>
+      </div>
+      <p class="calc__note">Včetně DPH a dopravy. Digitální vizitka samostatně 450 Kč / rok.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRIEBEH ============ -->
+<section class="flow" id="priebeh">
+  <div class="wrap">
+    <header class="sechead">
+      <p class="eyebrow">Od návrhu ke schránce</p>
+      <h2 class="h2">Objednáte dnes, <em data-flow-arrive>máte je do týdne.</em></h2>
+    </header>
+    <ol class="flow__line">
+      <li><span class="flow__d" data-flow="0">Dnes</span><h3>Navrhnete a objednáte</h3><p>V generátoru, s AI grafikem nebo z loga. Zaplatíte kartou nebo převodem.</p></li>
+      <li><span class="flow__d" data-flow="1"></span><h3>Zkontrolujeme data</h3><p>Člověk projde každý návrh. Když něco nesedí, napíšeme vám ještě před tiskem.</p></li>
+      <li><span class="flow__d" data-flow="2"></span><h3>Tiskneme</h3><p>Ofsetová kvalita na papíře, který jste si vybrali. Digitální vizitku zapneme hned.</p></li>
+      <li><span class="flow__d" data-flow="3"></span><h3>Doručení</h3><p>Kurýr je přiveze až k vám. Číslo zásilky pošleme e-mailem.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq" id="otazky">
+  <div class="wrap faq__grid">
+    <header class="sechead">
+      <p class="eyebrow">Otázky</p>
+      <h2 class="h2">Na co se <em>lidé ptají.</em></h2>
+    </header>
+    <div class="faq__list">
+      <details><summary>Jak dlouho trvá, než mi vizitky přijdou?</summary><p>Obvykle do 5 pracovních dnů od schválení tiskových dat. U expresního tisku dříve. Přesné datum vidíte při objednávce.</p></details>
+      <details><summary>Co přesně dělá AI grafik?</summary><p>Z vašeho popisu vybere vhodné rozložení, barevnou paletu, písmo a navrhne slogan. Výsledek není obrázek, který nejde upravit. Je to plnohodnotný návrh v generátoru, ve kterém změníte cokoli.</p></details>
+      <details><summary>Uvidím vizitku před tiskem?</summary><p>Ano. V generátoru vidíte přesný náhled včetně ořezových značek a můžete si stáhnout tiskové PDF. Pokud při kontrole něco upravíme, pošleme vám náhled ke schválení.</p></details>
+      <details><summary>Jak funguje digitální vizitka?</summary><p>Dostanete vlastní adresu, například vizitkomat.eu/v/vase-jmeno. Kdo ji otevře, uloží si váš kontakt jedním ťuknutím. QR kód na ni můžete mít na zadní straně tištěné vizitky. První rok je k tisku zdarma.</p></details>
+      <details><summary>Mohu objednat na firmu s IČO a DIČ?</summary><p>Samozřejmě. V objednávce vyplníte IČO a DIČ a fakturu dostanete e-mailem.</p></details>
+      <details><summary>Co když se mi vizitky nebudou líbit?</summary><p>Pokud je chyba na naší straně, ať už v tisku, barvě nebo ořezu, vytiskneme je znovu zdarma. Proto každý návrh kontroluje člověk ještě před tiskem.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="final" data-dark>
+  <div class="wrap final__in">
+    <h2 class="final__title">Vaše nová vizitka je <em>dvě minuty</em> odsud.</h2>
+    <form class="namebox namebox--dark" data-namebox action="../cz/tvorba/">
+      <label for="final-name" class="namebox__label">Začněte jménem</label>
+      <div class="namebox__row">
+        <input id="final-name" name="meno" autocomplete="name" maxlength="40" placeholder="Vaše jméno a příjmení">
+        <button class="btn btn--accent" type="submit">Navrhnout vizitku <span aria-hidden="true">→</span></button>
+      </div>
+    </form>
+  </div>
+  <div class="final__cards" aria-hidden="true" data-final-cards></div>
+</section>
+</main>
+
+<footer class="foot" data-dark>
+  <div class="foot__in">
+    <div class="foot__brand">
+      <a class="brand brand--light" href="../cz/">
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="2" y="3" width="28" height="17" rx="4.5" fill="currentColor"/>
+          <rect x="7" y="15" width="18" height="1.8" rx=".9" fill="var(--night)"/>
+          <rect x="9" y="16.6" width="14" height="12.4" rx="1.4" fill="var(--accent)"/>
+        </svg>
+        <span class="brand__word">Vizitko<i>mat</i></span>
+      </a>
+      <p>Vizitky na papíře i v telefonu. Navrhnete sami, s AI grafikem nebo z vlastního loga.</p>
+    </div>
+    <div class="foot__col">
+      <h3>Tvorba</h3>
+      <a href="../cz/tvorba/?rezim=sablony">Generátor vizitek</a>
+      <a href="../cz/tvorba/?rezim=ai">AI grafik 24/7</a>
+      <a href="../cz/tvorba/?rezim=logo">Vizitka z loga</a>
+      <a href="../cz/tvorba/?rezim=subor">Vlastní návrh</a>
+    </div>
+    <div class="foot__col">
+      <h3>Produkty</h3>
+      <a href="../cz/cenik/">Tištěné vizitky</a>
+      <a href="../cz/digitalni-vizitka/">Digitální vizitka</a>
+      <a href="../v/demo/">Ukázka digitální vizitky</a>
+      <a href="../cz/cenik/#papiere">Papíry a úpravy</a>
+    </div>
+    <div class="foot__col">
+      <h3>Kontakt</h3>
+      <a href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a>
+      <span>Odpovídáme do 24 hodin</span>
+      <span>Slovensko a Česko</span>
+    </div>
+  </div>
+  <div class="foot__base">
+    <span>© 2026 Vizitkomat.eu</span>
+    <span class="foot__cmyk" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span>Ceny jsou uvedeny včetně DPH</span>
+  </div>
+</footer>
+
+<script type="module" src="../assets/js/site.js?v=1b90607b"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script type="module" src="../assets/js/home.js?v=d4856b3e"></script>
+</body>
+</html>

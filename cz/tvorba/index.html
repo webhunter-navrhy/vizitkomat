@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tvorba vizitky – generátor, AI grafik a vizitka z loga | Vizitkomat</title>
+<meta name="description" content="Navrhněte si vizitku online: 14 šablon, AI grafik 24/7, barvy z vašeho loga nebo vlastní soubor. Živý náhled, tiskové PDF a digitální vizitka.">
+<link rel="canonical" href="https://vizitkomat.eu/cz/tvorba/">
+<link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/tvorba/">
+<link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/tvorba/">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#F2EEE6">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tvorba vizitky – generátor, AI grafik a vizitka z loga | Vizitkomat">
+<meta property="og:description" content="Navrhněte si vizitku online: 14 šablon, AI grafik 24/7, barvy z vašeho loga nebo vlastní soubor. Živý náhled, tiskové PDF a digitální vizitka.">
+<meta property="og:image" content="https://vizitkomat.eu/assets/img/og.png">
+<link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Space+Grotesk:wght@400..700&family=Syne:wght@500..800&family=Manrope:wght@400..700&family=Unbounded:wght@400..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@500;700&family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Gloock&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/site.css?v=a10280de">
+<link rel="stylesheet" href="../../assets/css/dcard.css?v=7a472409">
+<link rel="stylesheet" href="../../assets/css/studio.css?v=dbe24f9a">
+<script type="importmap">{"imports": {"../../assets/js/util.js": "../../assets/js/util.js?v=ceb0b934", "../../assets/js/card-engine.js": "../../assets/js/card-engine.js?v=cdc4f98a", "../../assets/js/cart.js": "../../assets/js/cart.js?v=7fdbf79b", "../../assets/js/kosik.js": "../../assets/js/kosik.js?v=6a239b12", "../../assets/js/ai-engine.js": "../../assets/js/ai-engine.js?v=80c9504b", "../../assets/js/home.js": "../../assets/js/home.js?v=d4856b3e", "../../assets/js/studio.js": "../../assets/js/studio.js?v=2a1cec1c", "../../assets/js/digital.js": "../../assets/js/digital.js?v=ff3ef5ab", "../../assets/js/digital-card.js": "../../assets/js/digital-card.js?v=922cd8e2", "../../assets/js/site.js": "../../assets/js/site.js?v=1b90607b", "../../assets/js/logo.js": "../../assets/js/logo.js?v=14fdfc37"}}</script>
+<script>
+window.VK = {
+  lang: 'cz', root: '../../',
+  links: { tvorba: '../../cz/tvorba/', kosik: '../../cz/kosik/', digital: '../../cz/digitalni-vizitka/', cennik: '../../cz/cenik/', demo: '../../v/demo/' },
+  prices: {"currency": "CZK", "symbol": "Kč", "locale": "cs-CZ", "vat": 21, "qty": [100, 250, 500, 1000], "papers": {"matny": {"100": 590, "250": 790, "500": 1050, "1000": 1450}, "triplex": {"100": 1690, "250": 2190, "500": 2890, "1000": 4090}}, "finishes": {"none": {"100": 0, "250": 0, "500": 0, "1000": 0}, "matna": {"100": 80, "250": 100, "500": 130, "1000": 180}, "leskla": {"100": 80, "250": 100, "500": 130, "1000": 180}, "soft": {"100": 150, "250": 200, "500": 250, "1000": 350}}, "round": {"100": 220, "250": 290, "500": 390, "1000": 540}, "digital_year": 450, "express": 220},
+  aiEndpoint: '',
+  orderEndpoint: ''
+};
+</script>
+</head>
+<body class="page-tvorba">
+<a class="skip" href="#main">Přeskočit na obsah</a>
+
+<header class="nav" id="nav">
+  <div class="nav__in">
+    <a class="brand" href="../../cz/" aria-label="Vizitkomat">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="2" y="3" width="28" height="17" rx="4.5" fill="currentColor"/>
+        <rect x="7" y="15" width="18" height="1.8" rx=".9" fill="var(--paper)"/>
+        <rect x="9" y="16.6" width="14" height="12.4" rx="1.4" fill="var(--accent)"/>
+        <rect x="11.2" y="21" width="6" height="1.3" rx=".6" fill="var(--paper)"/>
+        <rect x="11.2" y="23.6" width="9" height="1" rx=".5" fill="var(--paper)" opacity=".7"/>
+      </svg>
+      <span class="brand__word">Vizitko<i>mat</i></span>
+    </a>
+    <nav class="nav__links" aria-label="Hlavní navigace">
+      <a href="../../cz/tvorba/" aria-current="page">Tvorba</a>
+      <a href="../../cz/digitalni-vizitka/">Digitální vizitka</a>
+      <a href="../../cz/cenik/">Ceník</a>
+    </nav>
+    <div class="nav__end">
+      <a class="nav__lang" href="../../tvorba/" hreflang="sk" title="Slovenská verze"><span>SK</span><span class="on">CZ</span></a>
+      <a class="nav__cart" href="../../cz/kosik/" aria-label="Košík">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14l-1.3 10.2a2 2 0 0 1-2 1.8H8.3a2 2 0 0 1-2-1.8L5 7Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 9.5V6a3 3 0 0 1 6 0v3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span class="nav__count" data-cart-count hidden>0</span>
+      </a>
+      <a class="btn btn--ink btn--sm nav__cta" href="../../cz/tvorba/">Navrhnout vizitku</a>
+      <button class="nav__burger" aria-label="Menu" aria-expanded="false" data-burger><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="nav__sheet" data-sheet>
+    <a href="../../cz/tvorba/">Tvorba</a>
+    <a href="../../cz/digitalni-vizitka/">Digitální vizitka</a>
+    <a href="../../cz/cenik/">Ceník</a>
+    <a href="../../cz/kosik/">Košík</a>
+    <a href="../../tvorba/">Slovensky</a>
+  </div>
+</header>
+
+<main id="main">
+<div class="studio" data-studio>
+
+  <!-- ===== ĽAVÝ PANEL ===== -->
+  <aside class="st-side">
+    <nav class="st-rail" role="tablist" aria-label="Nástroje">
+      <button role="tab" data-tab="udaje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5h16M6 15.5l9.5-9.5 3 3L9 18.5H6v-3Z"/></svg><span>Údaje</span></button>
+      <button role="tab" data-tab="sablony"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="10" height="6.5" rx="1"/><rect x="10.5" y="12.5" width="10" height="6.5" rx="1"/><path d="M16 8.5h4.5M3.5 15.5H7"/></svg><span>Šablony</span></button>
+      <button role="tab" data-tab="ai"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l1.8 4.7 4.7 1.8-4.7 1.8L12 16.5l-1.8-4.7L5.5 10l4.7-1.8L12 3.5Z"/><path d="M18.5 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2Z"/></svg><span>AI grafik</span></button>
+      <button role="tab" data-tab="logo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="10" r="5.5"/><path d="M13.5 13.5 20 20M14 4.5h6v6"/></svg><span>Z loga</span></button>
+      <button role="tab" data-tab="farby"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.4 0 2-1 2-2 0-1.6-1.5-1.8-1.5-3.2 0-1 .8-1.8 1.8-1.8H17a3.5 3.5 0 0 0 3.5-3.5C20.5 6.6 16.7 3.5 12 3.5Z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10" cy="7.3" r="1.2"/><circle cx="14.5" cy="7.3" r="1.2"/></svg><span>Styl</span></button>
+      <button role="tab" data-tab="zadna"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5h11.5a4.5 4.5 0 0 1 0 9H8"/><path d="M7.5 5 4 8.5 7.5 12"/></svg><span>Zadní</span></button>
+      <button role="tab" data-tab="subor"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4.5 14v4a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-4"/></svg><span>Soubor</span></button>
+    </nav>
+
+    <div class="st-panels">
+      <!-- ÚDAJE -->
+      <section class="st-panel" data-pane="udaje">
+        <header class="st-ph"><h2>Texty na vizitce</h2><p>Prázdná pole se na vizitce nezobrazí.</p></header>
+        <div class="st-fields" data-fields>
+          <label class="fld"><span>Jméno a příjmení</span><input type="text" data-f="name" autocomplete="name" maxlength="48"></label>
+          <label class="fld"><span>Pozice / profese</span><input type="text" data-f="role" autocomplete="organization-title" maxlength="48"></label>
+          <label class="fld"><span>Firma</span><input type="text" data-f="company" autocomplete="organization" maxlength="48"></label>
+          <label class="fld"><span>Telefon</span><input type="tel" data-f="phone" autocomplete="tel" maxlength="48"></label>
+          <label class="fld"><span>E-mail</span><input type="email" data-f="email" autocomplete="email" maxlength="48"></label>
+          <label class="fld"><span>Web</span><input type="text" data-f="web" autocomplete="url" maxlength="48"></label>
+          <label class="fld"><span>Adresa</span><input type="text" data-f="address" autocomplete="street-address" maxlength="60"></label>
+          <label class="fld"><span>Slogan</span><input type="text" data-f="tagline" autocomplete="off" maxlength="60"></label>
+        </div>
+        <div class="st-block">
+          <h3>Logo</h3>
+          <div class="up" data-up-logo>
+            <input type="file" accept="image/*" hidden data-logo-file>
+            <img alt="" data-logo-prev>
+            <button class="btn btn--ghost btn--sm" data-logo-pick>Nahrát logo</button>
+            <button class="st-x" data-logo-del hidden aria-label="Odstranit logo">×</button>
+          </div>
+        </div>
+        <div class="st-block st-block--digital" data-digital-fields>
+          <h3>Pro digitální vizitku</h3>
+          <label class="fld"><span>Vaše adresa</span><div class="fld__slug"><em>vizitkomat.eu/v/</em><input data-slug maxlength="40" autocomplete="off"></div></label>
+          <div class="up up--photo" data-up-photo>
+            <input type="file" accept="image/*" hidden data-photo-file>
+            <img alt="" data-photo-prev>
+            <button class="btn btn--ghost btn--sm" data-photo-pick>Přidat fotku</button>
+            <button class="st-x" data-photo-del hidden aria-label="Odstranit fotku">×</button>
+          </div>
+          <label class="fld"><span>Instagram</span><input data-soc="instagram" placeholder="https://instagram.com/…"></label>
+          <label class="fld"><span>Facebook</span><input data-soc="facebook" placeholder="https://facebook.com/…"></label>
+          <label class="fld"><span>LinkedIn</span><input data-soc="linkedin" placeholder="https://linkedin.com/in/…"></label>
+        </div>
+      </section>
+
+      <!-- ŠABLÓNY -->
+      <section class="st-panel" data-pane="sablony">
+        <header class="st-ph"><h2>Šablony</h2><p>14 rozložení. Vaše texty a barvy zůstanou.</p></header>
+        <label class="st-keep"><input type="checkbox" data-keep-style> Ponechat moje barvy a písmo</label>
+        <div class="st-grid" data-tpls></div>
+      </section>
+
+      <!-- AI -->
+      <section class="st-panel st-panel--ai" data-pane="ai">
+        <header class="st-ph"><h2>AI grafik <i class="st-live">24/7</i></h2><p>Napište, čím se živíte a jaký styl chcete. Můžete přidat jméno i město.</p></header>
+        <div class="chat" data-chat>
+          <div class="chat__msg chat__msg--bot">Ahoj! Jsem AI grafik Vizitkomatu. Popište mi svou práci a představu, například: „Jsem Jana, kadeřnice v Brně, chci něco jemného.“</div>
+        </div>
+        <div class="chips" data-ai-chips>
+          <button data-p="Realitní makléřka v Praze, prémiově a důvěryhodně">Realitní makléřka</button>
+          <button data-p="Stavební firma, výrazně a čitelně, modrá">Stavební firma</button>
+          <button data-p="Programátor, tmavé a hravé">Programátor</button>
+          <button data-p="Masáže a jóga, přírodně a klidně">Masáže a jóga</button>
+          <button data-p="Rodinné vinařství, tradičně a poctivě">Vinařství</button>
+        </div>
+        <form class="chat__form" data-ai-form>
+          <textarea data-ai-in rows="2" maxlength="300" placeholder="Napište AI grafikovi…"></textarea>
+          <button class="btn btn--accent btn--sm" type="submit" aria-label="Odeslat">Navrhni</button>
+        </form>
+      </section>
+
+      <!-- LOGO -->
+      <section class="st-panel" data-pane="logo">
+        <header class="st-ph"><h2>Vizitka z loga</h2><p>Přečteme barvy značky, odstraníme bílé pozadí a navrhneme vizitky, které k logu sedí.</p></header>
+        <label class="drop" data-drop>
+          <input type="file" accept="image/*" hidden data-drop-file>
+          <img alt="" data-drop-img>
+          <span class="drop__t">Pusťte sem logo<small>nebo klikněte · PNG, JPG, SVG</small></span>
+        </label>
+        <div class="st-colors" data-logo-colors hidden></div>
+        <div class="st-grid" data-logo-designs></div>
+      </section>
+
+      <!-- ŠTÝL -->
+      <section class="st-panel" data-pane="farby">
+        <header class="st-ph"><h2>Barvy a písmo</h2></header>
+        <div class="st-block">
+          <h3>Palety</h3>
+          <div class="pals" data-pals></div>
+        </div>
+        <div class="st-block">
+          <h3>Vlastní barvy</h3>
+          <div class="cpick">
+            <label><input type="color" data-c="bg"><span>Pozadí</span></label>
+            <label><input type="color" data-c="ink"><span>Text</span></label>
+            <label><input type="color" data-c="accent"><span>Akcent</span></label>
+            <label><input type="color" data-c="soft"><span>Doplňková</span></label>
+          </div>
+          <p class="st-warn" data-contrast hidden>Pozor, text a pozadí mají slabý kontrast. Na papíře bude text hůř čitelný.</p>
+        </div>
+        <div class="st-block">
+          <h3>Písmo</h3>
+          <div class="fonts" data-fonts></div>
+        </div>
+      </section>
+
+      <!-- ZADNÁ -->
+      <section class="st-panel" data-pane="zadna">
+        <header class="st-ph"><h2>Zadní strana</h2><p>Oboustranný tisk je v ceně.</p></header>
+        <div class="st-grid st-grid--backs" data-backs></div>
+      </section>
+
+      <!-- SÚBOR -->
+      <section class="st-panel" data-pane="subor">
+        <header class="st-ph"><h2>Vlastní návrh</h2><p>Nahrajte hotové strany od grafika. Ideálně <b data-file-spec>94 × 54 mm</b> včetně spadávky 2 mm, aspoň 300 dpi.</p></header>
+        <div class="fileside">
+          <label class="drop drop--sm" data-fdrop="front">
+            <input type="file" accept="image/*,application/pdf" hidden>
+            <img alt="">
+            <span class="drop__t">Přední strana<small>PDF, PNG, JPG</small></span>
+          </label>
+          <label class="drop drop--sm" data-fdrop="back">
+            <input type="file" accept="image/*,application/pdf" hidden>
+            <img alt="">
+            <span class="drop__t">Zadní strana<small>nepovinné</small></span>
+          </label>
+        </div>
+        <ul class="checks" data-fchecks></ul>
+        <button class="btn btn--ghost btn--sm" data-file-clear hidden>Zpět na generátor</button>
+      </section>
+    </div>
+  </aside>
+
+  <!-- ===== PLÁTNO ===== -->
+  <section class="st-stage" data-stage>
+    <div class="st-view" role="tablist" aria-label="Zobrazení">
+      <button class="is-on" data-view="paper">Papír</button>
+      <button data-view="phone">Telefon</button>
+      <button data-view="both">Obojí</button>
+    </div>
+    <div class="st-canvas" data-canvas>
+      <div class="st-card" data-card-wrap>
+        <div class="st-card__in" data-card-in>
+          <canvas class="st-card__face st-card__face--front" data-face="front"></canvas>
+          <canvas class="st-card__face st-card__face--back" data-face="back"></canvas>
+        </div>
+      </div>
+      <div class="st-phone phone" data-phone hidden>
+        <div class="phone__screen"><div class="phone__island"></div><div class="dcard-host" data-dhost></div></div>
+      </div>
+      <div class="st-ai-results" data-ai-results hidden>
+        <p data-ai-intro></p>
+        <div class="st-ai-grid" data-ai-grid></div>
+      </div>
+    </div>
+    <div class="st-tools">
+      <div class="seg seg--sides" data-sides>
+        <button class="is-on" data-side="front">Přední</button>
+        <button data-side="back">Zadní</button>
+      </div>
+      <button class="tool" data-flip title="Otočit vizitku"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18.5 3v4h-4M5.5 21v-4h4"/></svg></button>
+      <button class="tool" data-marks aria-pressed="false" title="Tiskové značky a spadávka"><svg viewBox="0 0 24 24"><path d="M6 2.5v4M2.5 6h4M18 2.5v4M21.5 6h-4M6 21.5v-4M2.5 18h4M18 21.5v-4M21.5 18h-4"/><rect x="7.5" y="7.5" width="9" height="9" rx=".5" stroke-dasharray="2 1.5"/></svg></button>
+      <button class="tool" data-undo title="Zpět (Ctrl+Z)" disabled><svg viewBox="0 0 24 24"><path d="M9 7 4.5 11.5 9 16"/><path d="M5 11.5h9.5a5 5 0 0 1 0 10H11"/></svg></button>
+      <span class="st-dim" data-dim>90 × 50 mm</span>
+    </div>
+    <p class="st-hint" data-hint></p>
+  </section>
+
+  <!-- ===== OBJEDNÁVKA ===== -->
+  <aside class="st-order" data-order>
+    <div class="st-order__in">
+      <h2 class="st-oh">Objednávka</h2>
+      <div class="kinds" role="radiogroup" data-kind>
+        <button role="radio" class="kind is-on" data-v="bundle" aria-checked="true"><b>Tištěné + digitální</b><small>Digitální na první rok zdarma</small><i class="kind__tag">Doporučujeme</i></button>
+        <button role="radio" class="kind" data-v="print" aria-checked="false"><b>Jen tištěné</b><small>Klasické vizitky na papíře</small></button>
+        <button role="radio" class="kind" data-v="digital" aria-checked="false"><b>Jen digitální</b><small>450 Kč / rok</small></button>
+      </div>
+
+      <div class="opts" data-print-opts>
+        <div class="opt"><span>Formát</span>
+          <div class="seg" data-o="size"><button class="is-on" data-v="90x50">90×50</button><button data-v="85x55">85×55</button><button data-v="55x55">55×55</button></div></div>
+        <div class="opt"><span>Papír</span>
+          <div class="seg" data-o="paper"><button class="is-on" data-v="matny">Matný 350 g</button><button data-v="triplex">Triplex 720 g</button></div></div>
+        <div class="opt"><span>Povrch</span>
+          <div class="seg" data-o="finish"><button class="is-on" data-v="none">Bez úpravy</button><button data-v="matna">Matná</button><button data-v="leskla">Lesklá</button><button data-v="soft">Soft-touch</button></div></div>
+        <div class="opt"><span>Rohy</span>
+          <div class="seg" data-o="corners"><button class="is-on" data-v="straight">Rovné</button><button data-v="round">Zaoblené</button></div></div>
+        <div class="opt"><span>Počet kusů</span>
+          <div class="qty" data-o="qty">
+<button data-v="100"><b>100</b><small data-qp="100"></small></button><button class="is-on" data-v="250"><b>250</b><small data-qp="250"></small></button><button data-v="500"><b>500</b><small data-qp="500"></small></button><button data-v="1000"><b>1000</b><small data-qp="1000"></small></button>          </div></div>
+        <label class="opt opt--check"><input type="checkbox" data-o-express> <span>Expresní výroba <small>+220 Kč · o 2 dny dříve</small></span></label>
+      </div>
+
+      <div class="sum">
+        <div class="sum__row"><span data-sum-label>Celkem s DPH</span><b class="sum__price" data-sum>—</b></div>
+        <p class="sum__meta" data-sum-meta></p>
+        <p class="sum__date" data-sum-date></p>
+        <button class="btn btn--accent sum__cta" data-add>Přidat do košíku <span aria-hidden="true">→</span></button>
+        <button class="sum__pdf" data-pdf>Stáhnout tiskové PDF</button>
+        <ul class="sum__trust">
+          <li>Před tiskem návrh zkontroluje člověk</li>
+          <li>Doprava zdarma po CZ i SK</li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+  <!-- mobil: spodná lišta -->
+  <div class="st-bar" data-bar>
+    <div><b data-bar-price>—</b><small data-bar-meta></small></div>
+    <button class="btn btn--ink btn--sm" data-bar-open>Objednat</button>
+  </div>
+</div>
+</main>
+
+
+<script type="module" src="../../assets/js/site.js?v=1b90607b"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script type="module" src="../../assets/js/studio.js?v=2a1cec1c"></script>
+</body>
+</html>

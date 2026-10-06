@@ -1,0 +1,21 @@
+<!doctype html><meta charset=utf-8>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300..700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Space+Grotesk:wght@400..700&family=Syne:wght@500..800&family=Manrope:wght@400..700&family=Unbounded:wght@400..700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@500;700&family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Gloock&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>body{background:#cfc9bd;margin:0;padding:20px;font:12px monospace}.row{display:flex;gap:16px;margin-bottom:14px;align-items:center}canvas{box-shadow:0 2px 8px rgba(0,0,0,.25)}b{width:90px}</style>
+<div id=o></div>
+<script type=module>
+import * as E from '../assets/js/card-engine.js';
+const size = new URLSearchParams(location.search).get('size')||'90x50';
+const back = new URLSearchParams(location.search).get('back')||'auto';
+const logo = new URLSearchParams(location.search).get('logo');
+const o=document.getElementById('o');
+for (const id of Object.keys(E.TEMPLATES)) {
+  const d=E.newDesign({tpl:id,size,back,...E.templateDefaults(id)});
+  if (logo) d.logo=logo;
+  await E.prepare(d);
+  const r=document.createElement('div');r.className='row';r.innerHTML=`<b>${id}</b>`;
+  for (const s of ['front','back']) { const c=document.createElement('canvas'); E.render(c,d,s,{width:450}); c.style.width='450px'; r.append(c); }
+  o.append(r);
+}
+document.body.dataset.done=1;
+</script>

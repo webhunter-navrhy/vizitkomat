@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Stránka sa nenašla | Vizitkomat{% endblock %}
+{% block description %}Táto stránka neexistuje.{% endblock %}
+{% block card_fonts %}{% endblock %}
+{% block main %}
+<section class="wrap" style="min-height:90svh;display:grid;align-content:center;gap:1.6rem;padding-top:var(--nav-h)">
+  <p class="eyebrow">404</p>
+  <h1 class="h2">Táto vizitka <em>sa zasekla v automate.</em></h1>
+  <p class="sechead__lead" style="margin:0">Stránka, ktorú hľadáte, neexistuje alebo sa presunula. / Stránka, kterou hledáte, neexistuje.</p>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap"><a class="btn btn--accent" href="/">Späť na úvod</a><a class="btn btn--ghost" href="/cz/">Česká verze</a></div>
+</section>
+{% endblock %}
