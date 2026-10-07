@@ -80,7 +80,9 @@ def main():
                 p = _U.get(name, '')
                 return R + p if p else R
 
+            pre = {f.stem: f"{R}assets/pre/{lang}/{f.name}?v={asset_hash(f.relative_to(ROOT))}" for f in sorted((ROOT / 'assets' / 'pre' / lang).glob('*.jpg'))}
             ctx = dict(
+                pre=pre, pre_json=json.dumps(pre),
                 lang=lang, L=L, A=A, R=R, link=link, page=key,
                 prices=PRICES[lang], prices_json=json.dumps(PRICES[lang], ensure_ascii=False),
                 alt_url=R + UO.get(key, UO['index']),

@@ -35,9 +35,9 @@
     </div>
     <div class="hero__vis" data-hero-vis>
       <div class="stack" data-stack>
-        <img class="stk stk--1" alt="" data-stk="0">
-        <img class="stk stk--2" alt="" data-stk="1">
-        <img class="stk stk--3" alt="" data-stk="2">
+        <img class="stk stk--1 ready" alt="" src="{{ pre['hero-0'] }}" width="980" height="563" fetchpriority="high">
+        <img class="stk stk--2 ready" alt="" src="{{ pre['hero-1'] }}" width="980" height="563" fetchpriority="high">
+        <img class="stk stk--3 ready" alt="" src="{{ pre['hero-2'] }}" width="980" height="563" fetchpriority="high">
       </div>
       <div class="ai-run" data-ai-run hidden>
         <div class="ai-run__load" data-ai-load><span class="dots"><i></i><i></i><i></i></span><b data-ai-step>{{ L('Čítam zadanie…', 'Čtu zadání…') }}</b></div>
@@ -71,7 +71,7 @@
         <span class="step__n">2</span>
         <h3>{{ L('Doladíte ako v Canve', 'Doladíte jako v Canvě') }}</h3>
         <p>{{ L('Kliknete do vizitky, posuniete text, zmeníte písmo, farby či ikonky.', 'Kliknete do vizitky, posunete text, změníte písmo, barvy nebo ikony.') }}</p>
-        <div class="step__vis step__vis--ed"><img alt="" data-step-card><span class="sel"></span><span class="cur"></span></div>
+        <div class="step__vis step__vis--ed"><img alt="" src="{{ pre['step'] }}" loading="lazy"><span class="sel"></span><span class="cur"></span></div>
       </article>
       <article class="step step--3 rv">
         <span class="step__n">3</span>
@@ -110,8 +110,8 @@
 <!-- ===== ŠABLÓNY ===== -->
 <section class="tpls" data-nav="coral">
   <div class="wrap tpls__head">
-    <h2 class="h-l rv">{{ L('19 šablón.', '19 šablon.') }} <span class="tpls__y">{{ L('Tisíce kombinácií.', 'Tisíce kombinací.') }}</span></h2>
-    <p class="lead rv">{{ L('Každú vidíte rovno s vaším menom, farbami a písmom. Prejdite myšou a karta sa otočí.', 'Každou vidíte rovnou se svým jménem, barvami a písmem. Přejeďte myší a karta se otočí.') }}</p>
+    <h2 class="h-l rv">{{ L('23 šablón.', '23 šablon.') }} <span class="tpls__y">{{ L('Tisíce kombinácií.', 'Tisíce kombinací.') }}</span></h2>
+    <p class="lead rv">{{ L('Tu s ukážkovými firmami, v editore hneď s vaším menom, farbami a písmom. Prejdite myšou a karta sa otočí.', 'Tady s ukázkovými firmami, v editoru hned s vaším jménem, barvami a písmem. Přejeďte myší a karta se otočí.') }}</p>
   </div>
   <div class="tpls__rows" data-tpl-rows>
     <div class="tpls__row"><div class="tpls__track" data-row="0"></div></div>
@@ -146,11 +146,16 @@
     <h2 class="h-l rv">{{ L('Jasná cena.', 'Jasná cena.') }} <span class="hl-c">{{ L('Doprava zdarma.', 'Doprava zdarma.') }}</span></h2>
     <p class="lead rv price__lead">{{ L('V cene je návrh s AI grafikom, obojstranná tlač, kontrola dát človekom, doprava a digitálna vizitka na rok.', 'V ceně je návrh s AI grafikem, oboustranný tisk, kontrola dat člověkem, doprava a digitální vizitka na rok.') }}</p>
     <div class="price__grid">
-      {% for q, col in [(100, 'w'), (250, 'y'), (500, 'b')] %}
+      {% for q, col, tag, who in [
+        (100, 'w', L('Na vyskúšanie', 'Na vyzkoušení'), L('Ideálne na začiatok alebo na test nového dizajnu.', 'Ideální na začátek nebo na test nového designu.')),
+        (250, 'y', L('Odporúčame', 'Doporučujeme'), L('Bežná zásoba pre živnostníka či malú firmu.', 'Běžná zásoba pro živnostníka či malou firmu.')),
+        (500, 'b', L('Najnižšia cena za kus', 'Nejnižší cena za kus'), L('Pre tímy, eventy a veľtrhy.', 'Pro týmy, eventy a veletrhy.'))] %}
       <a class="pcard pcard--{{ col }} rv" href="{{ link('tvorba') }}?ks={{ q }}">
+        <span class="pcard__tag">{{ tag }}</span>
         <span class="pcard__q">{{ q }} {{ L('ks', 'ks') }}</span>
         <b class="pcard__p">{{ '{:,}'.format(prices.papers.matny[q|string]).replace(',', ' ') }} {{ prices.symbol }}</b>
         <span class="pcard__per">{{ ('%.2f' % (prices.papers.matny[q|string] / q)) | replace('.', ',') }} {{ prices.symbol }} / {{ L('kus', 'kus') }}</span>
+        <p class="pcard__who">{{ who }}</p>
         <ul><li>{{ L('Matný papier 350 g', 'Matný papír 350 g') }}</li><li>{{ L('Obojstranná tlač', 'Oboustranný tisk') }}</li><li>{{ L('Digitálna vizitka zadarmo', 'Digitální vizitka zdarma') }}</li></ul>
         <span class="pcard__go">{{ L('Navrhnúť', 'Navrhnout') }} →</span>
       </a>

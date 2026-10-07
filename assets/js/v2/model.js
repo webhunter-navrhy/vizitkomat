@@ -74,7 +74,7 @@ export const ART = {
 };
 export function artURL(key, root) {
   const r = root ?? ((typeof window !== 'undefined' && window.VK && window.VK.root) || './');
-  return key && key.startsWith('data:') ? key : `${r}assets/art/${key}.jpg`;
+  return key && /^(data:|https?:|\/)/.test(key) ? key : `${r}assets/art/${key}.jpg`;
 }
 
 export const DEFAULT_FIELDS = CZ ? {

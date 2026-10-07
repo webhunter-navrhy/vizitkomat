@@ -670,7 +670,7 @@ export function layout(d, side = 'front', opts = {}) {
   const fp = FONTS[d.fonts || T0.fonts] || FONTS.instrument;
   let root = opts.root ?? ((typeof window !== 'undefined' && window.VK && window.VK.root) || './');
   if (typeof location !== 'undefined' && !/^https?:/.test(root)) root = new URL(root, location.href).href;
-  const artOf = (k) => (k && k.startsWith('data:') ? k : `${root}assets/art/${k}.jpg`);
+  const artOf = (k) => (k && /^(data:|https?:|\/)/.test(k) ? k : `${root}assets/art/${k}.jpg`);
   const c = {
     W: S.w, H: S.h, sq: S.w === S.h, m: SAFE + 1, f: d.f, pal, fp, logo: d.logo,
     art: d.art || null, artOf: (k) => artOf(d.art || k), artUrl: d.art ? artOf(d.art) : null, mark: d.mark || null,

@@ -12,17 +12,6 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const DEMO = absUrl(VK.links.demo);
 const lazy = (el, fn, margin = '400px') => { if (!el) return; const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { io.disconnect(); fn(); } }, { rootMargin: margin }); io.observe(el); };
 
-/* ---------- hero: nálepky ---------- */
-(async function stickers() {
-  await document.fonts.ready;
-  const ids = ['prechod', 'mramor', 'retro'];
-  for (const [i, id] of ids.entries()) {
-    const img = $(`[data-stk="${i}"]`);
-    img.src = await snapshot(newDesign({ tpl: id, ...templateDefaults(id) }), 'front', 900, 'image/jpeg', 0.9);
-    img.classList.add('ready');
-  }
-})();
-
 /* ---------- hero: AI naživo ---------- */
 const vis = $('[data-hero-vis]');
 const STEPS = [tr('Čítam zadanie…', 'Čtu zadání…'), tr('Vyberám rozloženie…', 'Vybírám rozložení…'), tr('Ladím farby a písmo…', 'Ladím barvy a písmo…'), tr('Píšem slogan…', 'Píšu slogan…'), tr('Kreslím grafiku…', 'Kreslím grafiku…')];
@@ -55,8 +44,7 @@ $$('[data-ai-chips] button').forEach((b) => b.addEventListener('click', () => { 
 $('[data-aibox-final]').addEventListener('submit', (e) => { e.preventDefault(); const v = $('[data-final-in]').value.trim(); location.href = VK.links.tvorba + '?rezim=ai' + (v ? '&prompt=' + encodeURIComponent(v) : ''); });
 
 /* ---------- kroky ---------- */
-lazy($('.how'), async () => {
-  $('[data-step-card]').src = await snapshot(newDesign({ tpl: 'atelier', ...templateDefaults('atelier') }), 'front', 700, 'image/jpeg');
+lazy($('.how'), () => {
   const now = new Date();
   $('[data-arrive]').textContent = new Intl.DateTimeFormat(CZ ? 'cs-CZ' : 'sk-SK', { weekday: 'long', day: 'numeric', month: 'numeric' }).format(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + 4));
 });
@@ -68,38 +56,31 @@ lazy($('.real'), async () => {
   const labels = { kvety: tr('Kvetinárstvo', 'Květinářství'), vino: tr('Vinárstvo', 'Vinařství'), it: tr('Programátor', 'Programátor') };
   const prompts = { kvety: tr('Mám kvetinárstvo v Nitre, chcem niečo jemné a prírodné.', 'Mám květinářství v Nitře, chci něco jemného a přírodního.'), vino: tr('Rodinné vinárstvo pri Pezinku, tradične a s nádychom luxusu.', 'Rodinné vinařství u Pezinku, tradičně a s nádechem luxusu.'), it: tr('Programátor z Košíc, moderne, tmavo a hravo.', 'Programátor z Košic, moderně, tmavě a hravě.') };
   tabs.innerHTML = data.map((s, i) => `<button role="tab" data-real="${i}"${i ? '' : ' class="on"'}>${labels[s.key] || s.key}</button>`).join('');
-  async function show(i) {
+  const DIRS = [tr('Klasický', 'Klasický'), tr('Moderný', 'Moderní'), tr('Kreatívny', 'Kreativní')];
+  const SCENES = ['#2A3270', '#34306E', '#2B3A6B'];
+  function show(i) {
     const s = data[i];
     $$('[data-real]').forEach((b) => b.classList.toggle('on', +b.dataset.real === i));
     $('[data-real-prompt]').textContent = prompts[s.key] || s.prompt;
     const box = $('[data-real-cards]'); box.innerHTML = '';
-    for (const c of s.concepts) {
-      const art = c.art.mode === 'file' ? VK.root + 'assets/ai/' + c.art.file : c.art.mode === 'library' ? c.art.key : null;
-      const d = newDesign({ tpl: c.template, fonts: c.fonts || TEMPLATES[c.template].fonts, pal: { label: 'AI', ...c.palette }, art, f: { ...newDesign().f, ...s.fields, phone: CZ ? '+420 605 123 456' : '+421 905 123 456', email: '', web: '' } });
+    s.concepts.forEach((c, j) => {
+      const P = (side) => VK.pre[`show-${s.key}-${j}-${side}`] || '';
       const el = document.createElement('div'); el.className = 'real__card';
-      el.innerHTML = `<div class="cv"><img alt=""><img alt=""></div><p><b>${TEMPLATES[c.template].name}</b> · ${FONTS[d.fonts]?.label || ''}${c.art.mode === 'file' ? ' · ' + tr('grafika od AI', 'grafika od AI') : ''}</p>`;
+      el.innerHTML = `<div class="real__scene" style="--scene:${SCENES[j % 3]}"><img class="real__back" alt="" src="${P('b')}"><img class="real__front" alt="" src="${P('f')}"><span class="real__dir">${DIRS[j] || ''}</span></div><p><b>${TEMPLATES[c.template].name}</b> · ${FONTS[c.fonts || TEMPLATES[c.template].fonts]?.label || ''}${c.art.mode === 'file' ? ' · ' + tr('grafika od AI', 'grafika od AI') : ''}</p>`;
       box.append(el);
-      const [f, b] = await Promise.all([snapshot(d, 'front', 760, 'image/jpeg'), snapshot(d, 'back', 760, 'image/jpeg')]);
-      const ims = el.querySelectorAll('img'); ims[0].src = f; ims[1].src = b;
-    }
+    });
   }
   tabs.addEventListener('click', (e) => { const b = e.target.closest('[data-real]'); if (b) show(+b.dataset.real); });
   if (data.length) show(0);
 });
 
 /* ---------- šablóny ---------- */
-lazy($('.tpls'), async () => {
+lazy($('.tpls'), () => {
   const ids = Object.keys(TEMPLATES);
   const rows = [ids.filter((_, i) => i % 2 === 0), ids.filter((_, i) => i % 2 === 1)];
   for (const [ri, list] of rows.entries()) {
-    const track = $(`[data-row="${ri}"]`);
     const items = [...list, ...list];
-    track.innerHTML = items.map((id) => `<a class="tc" href="${VK.links.tvorba}?rezim=sablony" data-t="${id}"><span>${TEMPLATES[id].name}</span><img alt="" loading="lazy"><img alt="" loading="lazy"></a>`).join('');
-    for (const id of list) {
-      const d = newDesign({ tpl: id, ...templateDefaults(id) });
-      const [f, b] = await Promise.all([snapshot(d, 'front', 640, 'image/jpeg', 0.85), snapshot(d, 'back', 640, 'image/jpeg', 0.85)]);
-      $$(`[data-t="${id}"]`, track).forEach((a) => { const ims = a.querySelectorAll('img'); ims[0].src = f; ims[1].src = b; });
-    }
+    $(`[data-row="${ri}"]`).innerHTML = items.map((id, k) => `<a class="tc" href="${VK.links.tvorba}?rezim=sablony" data-t="${id}"${k >= list.length ? ' aria-hidden="true" tabindex="-1"' : ''}><span>${TEMPLATES[id].name}</span><img alt="${TEMPLATES[id].name}" src="${VK.pre['tpl-' + id + '-f'] || ''}" loading="lazy"><img alt="" src="${VK.pre['tpl-' + id + '-b'] || ''}" loading="lazy"></a>`).join('');
   }
 }, '600px');
 $('[data-tpl-rows]')?.addEventListener('click', (e) => {

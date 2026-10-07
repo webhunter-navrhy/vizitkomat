@@ -17,11 +17,11 @@
 .hero__trust li::before { content: '✓'; display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: .45rem; border-radius: 50%; background: var(--yellow); color: var(--ink); font-size: .7rem; font-weight: 800; }
 .hero__vis { position: relative; min-height: clamp(420px, 44vw, 600px); }
 .stack { position: absolute; inset: 0; }
-.stk { position: absolute; width: min(78%, 440px); aspect-ratio: 90/50; border-radius: 10px; box-shadow: 0 34px 60px -20px rgba(5, 10, 60, .65), 0 2px 0 rgba(0, 0, 0, .1); transition: transform .6s var(--pop), opacity .4s; opacity: 0; background: rgba(255, 255, 255, .1); }
+.stk { position: absolute; width: min(78%, 440px); height: auto; aspect-ratio: 90/50; border-radius: 10px; box-shadow: 0 34px 60px -20px rgba(5, 10, 60, .65), 0 2px 0 rgba(0, 0, 0, .1); transition: transform .6s var(--pop), opacity .4s; opacity: 0; background: rgba(255, 255, 255, .1); }
 .stk.ready { opacity: 1; }
 .stk--1 { right: 0; top: 2%; transform: rotate(7deg); }
-.stk--2 { left: 2%; top: 32%; transform: rotate(-6deg); z-index: 2; }
-.stk--3 { right: 4%; top: 60%; transform: rotate(4deg); }
+.stk--2 { left: 2%; top: 39%; transform: rotate(-6deg); z-index: 2; }
+.stk--3 { right: 4%; top: 66%; transform: rotate(4deg); }
 .stk:hover { transform: rotate(0deg) scale(1.04); z-index: 5; }
 .hero__sticker { position: absolute; left: 6%; top: 4%; z-index: 6; animation: spinIn 1s var(--pop) .5s both; }
 @keyframes spinIn { from { transform: rotate(-60deg) scale(.3); opacity: 0; } }
@@ -95,11 +95,13 @@
 .real__cards { margin-top: 1.6rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 2.6rem; min-height: 200px; }
 .real__card { animation: aiPop .7s var(--pop) both; }
 .real__card:nth-child(2) { animation-delay: .1s; } .real__card:nth-child(3) { animation-delay: .2s; }
-.real__card .cv { position: relative; perspective: 1200px; aspect-ratio: 90/50; }
-.real__card .cv img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; backface-visibility: hidden; box-shadow: 0 30px 50px -20px rgba(0, 0, 0, .7); transition: transform .8s var(--pop); }
-.real__card .cv img + img { transform: rotateY(180deg); }
-.real__card:hover .cv img:first-child { transform: rotateY(-180deg); }
-.real__card:hover .cv img + img { transform: rotateY(0); }
+.real__scene { position: relative; aspect-ratio: 4/3; border-radius: 22px; background: radial-gradient(120% 90% at 30% 20%, color-mix(in srgb, var(--scene) 70%, #fff 12%), var(--scene)); overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
+.real__scene img { position: absolute; width: 74%; aspect-ratio: 90/50; object-fit: cover; border-radius: 6px; transition: transform .7s var(--pop); }
+.real__back { right: 6%; top: 10%; transform: rotate(8deg); box-shadow: 0 24px 40px -18px rgba(0, 0, 0, .7); filter: brightness(.94); }
+.real__front { left: 6%; bottom: 12%; transform: rotate(-5deg); box-shadow: 0 34px 50px -18px rgba(0, 0, 0, .75); z-index: 2; }
+.real__card:hover .real__front { transform: rotate(-2deg) translateY(-6px) scale(1.03); }
+.real__card:hover .real__back { transform: rotate(11deg) translateX(6px); }
+.real__dir { position: absolute; right: 12px; bottom: 12px; z-index: 3; padding: .3rem .7rem; border-radius: 99px; background: var(--yellow); color: var(--ink); font-size: .74rem; font-weight: 800; }
 .real__card p { margin-top: .9rem; font-size: .92rem; opacity: .75; }
 .real__card p b { color: var(--yellow); opacity: 1; }
 
@@ -180,10 +182,13 @@
 .pcard--w { background: #fff; }
 .pcard--y { background: var(--yellow); }
 .pcard--b { background: var(--cobalt); color: #fff; }
+.pcard__tag { position: absolute; top: -14px; right: 22px; padding: .35rem .8rem; border-radius: 99px; background: var(--ink); color: #fff; font-size: .76rem; font-weight: 800; transform: rotate(3deg); }
+.pcard--y .pcard__tag { background: var(--coral); }
+.pcard__who { margin-top: 1rem; font-weight: 600; line-height: 1.45; opacity: .85; }
 .pcard__q { font-family: var(--mono); font-size: .82rem; letter-spacing: .06em; text-transform: uppercase; }
 .pcard__p { margin-top: .6rem; font-size: clamp(3rem, 5vw, 4.6rem); letter-spacing: -.06em; line-height: .9; }
 .pcard__per { font-weight: 600; opacity: .7; margin-top: .4rem; }
-.pcard ul { margin: 1.6rem 0; display: grid; gap: .45rem; font-weight: 600; }
+.pcard ul { margin: 1.1rem 0 1.6rem; display: grid; gap: .45rem; font-weight: 600; }
 .pcard li::before { content: '✓ '; color: var(--coral); font-weight: 800; }
 .pcard--b li::before { color: var(--yellow); }
 .pcard__go { margin-top: auto; font-weight: 800; font-size: 1.1rem; }
@@ -240,7 +245,7 @@
 .hero__alt { margin-top: 1rem; font-weight: 600; opacity: .9; }
 .hero__alt a { border-bottom: 2px solid rgba(255, 255, 255, .5); }
 .hero__alt a:hover { border-color: var(--yellow); color: var(--yellow); }
-.own-strip { padding: 0 0 var(--sec); }
+.own-strip { padding: 0 0 clamp(3rem, 6vw, 5rem); }
 .own-strip__in { display: grid; grid-template-columns: auto 1fr auto; gap: 2rem; align-items: center; padding: 1.8rem 2rem; border-radius: 30px; background: var(--yellow); box-shadow: 0 0 0 3px var(--ink), 8px 9px 0 var(--ink); }
 .own-strip__in p { margin-top: .5rem; font-weight: 500; max-width: 56ch; }
 .own-strip__files { display: flex; gap: 6px; }
