@@ -5,6 +5,7 @@ import { TEMPLATES } from './templates.js';
 import { analyze, INDUSTRIES } from '../ai-engine.js';
 import { processMark } from './mark.js';
 import { iconSVG } from '../icons.js';
+import { emblemFor } from './emblems.js';
 
 export const API = 'https://vizitkomat-api.webhunter.workers.dev';
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
@@ -121,7 +122,8 @@ export async function askAI(prompt, base = {}, { previous, onArt } = {}) {
       return d;
     });
     // žiadne automatické ikonky ako logo: šablóny majú typografický monogram / wordmark
-    designs.forEach((d) => { d.markPending = false; d.ai.icon = res.concepts.find((c) => c.icon)?.icon || ''; });
+    const em = emblemFor(res.concepts.find((c) => c.icon)?.icon || '', prompt + ' ' + (fields.role || '')) || emblemFor('', prompt);
+    designs.forEach((d) => { d.markPending = false; d.ai.icon = res.concepts.find((c) => c.icon)?.icon || ''; if (em) d.emblem = em; });
     let budget = 2;
     designs.forEach((d, i) => {
       if (d.ai.art.mode === 'generate' && d.ai.art.prompt && budget-- > 0) {
@@ -153,10 +155,10 @@ function deriveContacts(f, base) {
 
 // ---------- záloha bez servera ----------
 const IND_TPL = {
-  kadernik: ['maison', 'lina', 'editorial'], reality: ['topo', 'luxury', 'monogram'], stavba: ['morton', 'cb', 'swiss'],
-  it: ['kontrast', 'bodka', 'swiss'], pravnik: ['luxury', 'ar', 'monogram'], wellness: ['velora', 'oblouk', 'ticha'],
-  foto: ['foto', 'galeria', 'vlny'], gastro: ['figlia', 'bistro', 'egon'], auto: ['alder', 'loud', 'split'],
-  lekar: ['muse', 'maitland', 'split'], sport: ['loud', 'crop', 'tvary'],
+  kadernik: ['saloon', 'glow', 'maison'], reality: ['samet', 'builders', 'venec'], stavba: ['builders', 'odznak', 'morton'],
+  it: ['kontrast', 'swiss', 'bodka'], pravnik: ['venec', 'deco', 'luxury'], wellness: ['vetvicka', 'boho', 'akvarelsalvia'],
+  foto: ['foto', 'ruzovezlato', 'galeria'], gastro: ['cafe', 'odznak', 'figlia'], auto: ['odznak', 'builders', 'loud'],
+  lekar: ['medic', 'vlnyluxe', 'maitland'], sport: ['odznak', 'loud', 'crop'],
 };
 const IND_PAL = {
   kadernik: ['ruza', 'krieda', 'levandula'], reality: ['noir', 'navy', 'smaragd'], stavba: ['kobalt', 'navy', 'piesok'],
@@ -190,7 +192,7 @@ function nameRole(raw) {
   return { name: m[1], role };
 }
 function local(prompt, base, A, onArt) {
-  const ids = IND_TPL[A.industry] || ['olivia', 'maitland', 'loud'];
+  const ids = IND_TPL[A.industry] || ['glow', 'saloon', 'odznak'];
   const pals = IND_PAL[A.industry] || ['krieda', 'more', 'ruza'];
   const L = CZ ? 'cz' : 'sk';
   const I = INDUSTRIES[A.industry];
@@ -213,6 +215,7 @@ function local(prompt, base, A, onArt) {
   });
   const p = plain(prompt);
   const hit = PROMPT_ICONS.find(([w]) => p.includes(plain(w)));
-  designs.forEach((d) => { d.markPending = false; d.ai = { icon: hit ? hit[1] : (ICON_BY[A.industry] || '') }; d.why = describe(d); });
+  const em = emblemFor(hit ? hit[1] : (ICON_BY[A.industry] || ''), prompt + ' ' + (f.role || ''));
+  designs.forEach((d) => { d.markPending = false; d.ai = { icon: hit ? hit[1] : (ICON_BY[A.industry] || '') }; if (em) d.emblem = em; d.why = describe(d); });
   return { intro: introFrom(f, A), fields: f, designs, remote: false };
 }

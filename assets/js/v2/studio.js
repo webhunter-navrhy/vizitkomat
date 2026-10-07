@@ -68,7 +68,7 @@ async function loadDesign(d, sides, custom) {
    1. ZAČIATOK
    ========================================================= */
 function paintStart() {
-  const ids = ['podpis', 'tvary', 'wordmark'];
+  const ids = ['glow', 'saloon', 'cafe'];
   const imgs = $$('[data-way-thumbs] img');
   ids.forEach(async (id, i) => { if (!imgs[i].getAttribute('src')) imgs[i].src = await thumb(newDesign({ tpl: id, ...templateDefaults(id) }), 'front', 420); });
   if (st.saved?.d) {

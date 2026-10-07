@@ -15,6 +15,7 @@ async () => {
   const { snapshot, photo, mockup } = await import('/assets/js/v2/render.js');
   const { pickMark } = await import('/assets/js/v2/ai.js');
   const { PERSONAS, personaFields, TPL_PERSONA } = await import('/assets/js/v2/personas.js');
+  const { emblemFor } = await import('/assets/js/v2/emblems.js');
   await document.fonts.ready;
   const marks = {};
   const markOf = async (icon) => (marks[icon] ??= (await pickMark(icon, icon, null))?.src || null);
@@ -28,13 +29,13 @@ async () => {
   // šablóny
   for (const id of Object.keys(TEMPLATES)) {
     const pk = TPL_PERSONA[id] || 'arch';
-    const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: null });
+    const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: null, emblem: emblemFor(PERSONAS[pk].icon, PERSONAS[pk].role) });
     await shot('tpl-' + id, d, 720, 760);
   }
   // hero
   // hero: živá ukážka (6 odborov, predná aj zadná strana)
-  for (const [i, [id, pk]] of [['podpis', 'nechty'], ['wordmark', 'kava'], ['monogram', 'advokat'], ['oblouk', 'joga'], ['pecat', 'pekar'], ['tvary', 'barber']].entries()) {
-    const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: null });
+  for (const [i, [id, pk]] of [['glow', 'nechty'], ['cafe', 'kava'], ['saloon', 'kader'], ['venec', 'vino'], ['odznak', 'barber'], ['medic', 'zubar']].entries()) {
+    const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: null, emblem: emblemFor(PERSONAS[pk].icon, PERSONAS[pk].role) });
     out[`hero-${i}-f`] = await photo(await snapshot(d, 'front', 1100, 'image/png'));
     out[`hero-${i}-b`] = await photo(await snapshot(d, 'back', 1100, 'image/png'));
   }

@@ -61,6 +61,18 @@ function foilGrad(c) {
   const stops = FOILS[String(c).slice(5)] || FOILS.gold;
   return new (F().Gradient)({ type: 'linear', gradientUnits: 'percentage', coords: { x1: 0, y1: 0, x2: 1, y2: 0.6 }, colorStops: stops.map((color, i) => ({ offset: i / (stops.length - 1), color })) });
 }
+// fotografická textúra fólie (zlato/meď/striebro)
+const TEX = { gold: 'gold', rose: 'rose', copper: 'rose', silver: 'silver' };
+const texRoot = () => { let r = (typeof window !== 'undefined' && window.VK && window.VK.root) || './'; if (typeof location !== 'undefined' && !/^https?:/.test(r)) r = new URL(r, location.href).href; return r; };
+const texCache = {};
+async function foilTex(c) { const k = TEX[String(c).slice(5)] || 'gold'; return (texCache[k] ??= await loadImg(texRoot() + 'assets/tex/' + k + '.jpg')); }
+async function fillOf(c, fallback, scaleMm = 55) {
+  if (!isFoil(c)) return paint(c, fallback);
+  const im = await foilTex(c);
+  if (!im) return paint(c, fallback);
+  const s = (scaleMm * K) / im.width;
+  return new (F().Pattern)({ source: im, repeat: 'repeat', patternTransform: [s, 0, 0, s, 0, 0] });
+}
 export const paint = (c, fallback) => (isFoil(c) ? foilGrad(c) : (c || fallback));
 
 // ---------- prevody ----------
@@ -90,7 +102,9 @@ function tinted(el, src, color) {
   if (tintCache.has(key)) return tintCache.get(key);
   const c = document.createElement('canvas'); c.width = el.naturalWidth || el.width; c.height = el.naturalHeight || el.height;
   const x = c.getContext('2d'); x.drawImage(el, 0, 0); x.globalCompositeOperation = 'source-in';
-  if (isFoil(color)) { const st = FOILS[color.slice(5)] || FOILS.gold; const g = x.createLinearGradient(0, 0, c.width, c.height * 0.6); st.forEach((col, i) => g.addColorStop(i / (st.length - 1), col)); x.fillStyle = g; } else x.fillStyle = color;
+  const tx = isFoil(color) ? texCache[TEX[color.slice(5)] || 'gold'] : null;
+  if (tx) { x.fillStyle = x.createPattern(tx, 'repeat'); }
+  else if (isFoil(color)) { const st = FOILS[color.slice(5)] || FOILS.gold; const g = x.createLinearGradient(0, 0, c.width, c.height * 0.6); st.forEach((col, i) => g.addColorStop(i / (st.length - 1), col)); x.fillStyle = g; } else x.fillStyle = color;
   x.fillRect(0, 0, c.width, c.height);
   tintCache.set(key, c); if (tintCache.size > 120) tintCache.delete(tintCache.keys().next().value);
   return c;
@@ -98,7 +112,7 @@ function tinted(el, src, color) {
 async function imageObj(src, x, y, w, h, o = {}) {
   let el = await loadImg(src);
   if (!el) return null;
-  if (o.tint) el = tinted(el, src, o.tint);
+  if (o.tint) { if (isFoil(o.tint)) await foilTex(o.tint); el = tinted(el, src, o.tint); }
   const fab = F();
   const iw = el.naturalWidth || el.width, ih = el.naturalHeight || el.height;
   const W = len(w), H = len(h);
@@ -137,7 +151,7 @@ export async function toFabric(o, lay, ctx = {}) {
       obj = new fab.IText(textValue(o), {
         left: px(o.x), top: px(o.y), originX: o.ox || 'left', originY: o.oy || 'top',
         fontFamily: ft.family, fontWeight: ft.weight, fontStyle: o.it ? 'italic' : 'normal',
-        fontSize: len(o.size || 2.2), fill: String(textValue(o)).trim() ? paint(o.color, lay.pal.ink) : (isFoil(o.color) ? (FOILS[o.color.slice(5)] || FOILS.gold)[1] : (o.color || lay.pal.ink)), charSpacing: (o.ls || 0) * 1000,
+        fontSize: len(o.size || 2.2), fill: String(textValue(o)).trim() ? await fillOf(o.color, lay.pal.ink, Math.max(20, (o.size || 2.2) * 8)) : (isFoil(o.color) ? (FOILS[o.color.slice(5)] || FOILS.gold)[1] : (o.color || lay.pal.ink)), charSpacing: (o.ls || 0) * 1000,
         textAlign: o.ox === 'right' ? 'right' : o.ox === 'center' ? 'center' : 'left',
         lineHeight: o.lh || 1.12, opacity: o.opacity ?? 1, objectCaching: false,
       });
@@ -149,18 +163,18 @@ export async function toFabric(o, lay, ctx = {}) {
         obj = await imageObj(o.fill.src, o.x, o.y, o.w, o.h, { fit: 'cover' });
         if (obj && o.rx) obj.set('clipPath', new fab.Rect({ width: obj.width, height: obj.height, rx: len(o.rx) / obj.scaleX, ry: len(o.rx) / obj.scaleX, originX: 'center', originY: 'center' }));
       } else {
-        obj = new fab.Rect({ left: px(o.x), top: px(o.y), width: len(o.w), height: len(o.h), fill: paint(o.fill, 'transparent'), rx: len(o.rx || 0), ry: len(o.rx || 0), stroke: o.stroke ? paint(o.stroke) : null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1, strokeUniform: true });
+        obj = new fab.Rect({ left: px(o.x), top: px(o.y), width: len(o.w), height: len(o.h), fill: await fillOf(o.fill, 'transparent'), rx: len(o.rx || 0), ry: len(o.rx || 0), stroke: o.stroke ? await fillOf(o.stroke) : null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1, strokeUniform: true });
       }
       break;
     }
     case 'circle':
-      obj = new fab.Circle({ left: px(o.x), top: px(o.y), radius: len(o.r), originX: 'center', originY: 'center', fill: paint(o.fill, 'transparent'), stroke: o.stroke ? paint(o.stroke) : null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1, strokeUniform: true });
+      obj = new fab.Circle({ left: px(o.x), top: px(o.y), radius: len(o.r), originX: 'center', originY: 'center', fill: await fillOf(o.fill, 'transparent'), stroke: o.stroke ? await fillOf(o.stroke) : null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1, strokeUniform: true });
       break;
     case 'line':
       obj = new fab.Line([px(o.x1), px(o.y1), px(o.x2), px(o.y2)], { stroke: isFoil(o.stroke) ? (FOILS[o.stroke.slice(5)] || FOILS.gold)[1] : o.stroke, strokeWidth: len(o.sw || 0.2), opacity: o.opacity ?? 1 });
       break;
     case 'path':
-      obj = new fab.Path(scalePath(o.d), { fill: paint(o.fill, 'transparent'), stroke: o.stroke ? paint(o.stroke) : null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1 });
+      obj = new fab.Path(scalePath(o.d), { fill: await fillOf(o.fill, 'transparent'), stroke: o.stroke ? await fillOf(o.stroke) : null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1 });
       break;
     case 'icon': {
       const svg = iconSVG(o.name, o.color || lay.pal.accent, o.sw || 1.7);
@@ -188,7 +202,7 @@ export async function toFabric(o, lay, ctx = {}) {
         return new fab.Text(ch, {
           left: px(o.x) + Math.cos(a) * len(o.r), top: px(o.y) + Math.sin(a) * len(o.r),
           originX: 'center', originY: 'center', angle: i * step, fontFamily: ft.family, fontWeight: ft.weight,
-          fontSize: len(o.size || 1.5), fill: paint(o.color, lay.pal.accent),
+          fontSize: len(o.size || 1.5), fill: isFoil(o.color) ? (FOILS[o.color.slice(5)] || FOILS.gold)[1] : (o.color || lay.pal.accent),
         });
       });
       obj = new fab.Group(items, {});

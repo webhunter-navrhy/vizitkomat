@@ -3,6 +3,7 @@
 // jasná hierarchia, odvážna kompozícia, zadná strana ako značka.
 import { SIZES, SAFE, FONTS, PALETTES, initials, splitName, mix, readable, luminance, contrast, tr } from './model.js';
 import { proTemplates } from './tpl-pro.js';
+import { richTemplates } from './tpl-rich.js';
 
 // ---------- pomocníci ----------
 const T = (text, o = {}) => ({ type: 'text', text, ...o });
@@ -684,6 +685,7 @@ export const TEMPLATES = {
   },
 };
 
+Object.assign(TEMPLATES, richTemplates({ T, R, C, Ln, P, QR, IMG, I, MONO, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, seeded, smooth, SCRIPT }));
 Object.assign(TEMPLATES, proTemplates({ T, R, C, Ln, P, QR, IMG, MONO, contacts, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, topoPaths, seeded, smooth, SCRIPT }));
 
 // ---------- zadné strany na výber ----------
@@ -723,7 +725,7 @@ export function layout(d, side = 'front', opts = {}) {
   const c = {
     W: S.w, H: S.h, sq: S.w === S.h, m: SAFE + 1, f: d.f, pal, fp, logo: d.logo,
     art: d.art || null, artOf: (k) => artOf(d.art || k), artUrl: d.art ? artOf(d.art) : null, mark: d.mark || null,
-    qr: d.qrUrl || 'https://vizitkomat.eu', photo: d.photo || null, scene: (n) => `${root}assets/scenes/${n}.jpg`,
+    qr: d.qrUrl || 'https://vizitkomat.eu', photo: d.photo || null, scene: (n) => `${root}assets/scenes/${n}.jpg`, root, emblem: d.emblem || T0.emblem || null,
   };
   let out;
   if (side === 'back' && d.back && d.back !== 'auto' && BACKS[d.back]) out = BACKS[d.back](c);
