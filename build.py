@@ -26,6 +26,7 @@ PAGES = [
 ]
 LANGS = {'sk': '', 'cz': 'cz/'}
 SITE = 'https://vizitkomat.eu/'
+THREE = {'three': 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js', 'three/addons/': 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/'}
 
 
 def asset_hash(rel):
@@ -70,7 +71,7 @@ def main():
             def A(rel):  # asset s verziou
                 return f"{R}{rel}?v={versions.get(rel, '0')}"
 
-            importmap = json.dumps({'imports': {f'{R}{k}': f'{R}{k}?v={v}' for k, v in versions.items() if k.endswith('.js')}})
+            importmap = json.dumps({'imports': {**THREE, **{f'{R}{k}': f'{R}{k}?v={v}' for k, v in versions.items() if k.endswith('.js')}}})
 
             def link(name, _U=U):
                 p = _U.get(name, '')
@@ -93,7 +94,7 @@ def main():
     out = ROOT / 'v' / 'demo' / 'index.html'
     out.parent.mkdir(parents=True, exist_ok=True)
     R = '../../'
-    im = json.dumps({'imports': {f'{R}{k}': f'{R}{k}?v={v}' for k, v in versions.items() if k.endswith('.js')}})
+    im = json.dumps({'imports': {**THREE, **{f'{R}{k}': f'{R}{k}?v={v}' for k, v in versions.items() if k.endswith('.js')}}})
     html = env.get_template('v_demo.html').render(R=R, importmap=im, A=lambda rel: f"{R}{rel}?v={versions.get(rel, '0')}")
     out.write_text(html)
     written.append('v/demo/index.html')

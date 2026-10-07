@@ -1,5 +1,6 @@
 // Digitálna vizitka – vykreslenie do HTML (telefón, ukážka, /v/…)
-import { FONT_PAIRS, TEMPLATES, initials, contrast, mix, luminance } from './card-engine.js';
+import { FONTS, PALETTES, initials, contrast, mix, luminance } from './model.js';
+import { TEMPLATES } from './templates.js';
 
 const L = () => (window.VK && window.VK.lang) || 'sk';
 const t = (sk, cz) => (L() === 'cz' ? cz : sk);
@@ -45,8 +46,8 @@ export function downloadVCard(f, url) {
  * opts.url – verejná adresa vizitky, opts.qr – funkcia (text) => svg
  */
 export function renderDigital(host, d, opts = {}) {
-  const fp = FONT_PAIRS[d.fonts] || FONT_PAIRS[TEMPLATES[d.tpl]?.fonts] || FONT_PAIRS.editorial;
-  const p = d.pal, f = d.f, dg = d.digital || {};
+  const fp = FONTS[d.fonts] || FONTS[TEMPLATES[d.tpl]?.fonts] || FONTS.instrument;
+  const p = d.pal || PALETTES[TEMPLATES[d.tpl]?.pal] || PALETTES.krieda, f = d.f, dg = { photo: d.photo, socials: d.socials, ...(d.digital || {}) };
   const darkBg = luminance(p.bg) < 0.2;
   const coverFg = contrast(p.accent, '#FFFFFF') >= contrast(p.accent, p.ink) ? '#FFFFFF' : p.ink;
   const muted = mix(p.ink, p.bg, 0.42);
@@ -71,7 +72,7 @@ export function renderDigital(host, d, opts = {}) {
     f.address && [t('Adresa', 'Adresa'), f.address, map],
   ].filter(Boolean);
 
-  const avatar = dg.photo ? `<img src="${dg.photo}" alt="">` : (d.logo && !dg.logoInCover ? `<img class="is-logo" src="${d.logo}" alt="">` : `<span>${esc(initials(f.name))}</span>`);
+  const avatar = dg.photo ? `<img src="${dg.photo}" alt="">` : (d.logo ? `<img class="is-logo" src="${d.logo}" alt="">` : `<span>${esc(initials(f.name))}</span>`);
 
   host.innerHTML = `
   <article class="dcard${darkBg ? ' dcard--dark' : ''}" style="--d-bg:${p.bg};--d-ink:${p.ink};--d-accent:${p.accent};--d-soft:${p.soft};--d-cover-fg:${coverFg};--d-muted:${muted};--d-line:${line};--d-fd:'${fp.display}';--d-dw:${fp.dw};--d-ft:'${fp.text}'">

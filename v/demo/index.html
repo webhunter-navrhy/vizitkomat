@@ -6,19 +6,19 @@
 <title>Martin Kováč – Domov Reality · digitálna vizitka</title>
 <meta name="description" content="Digitálna vizitka Martina Kováča. Uložte si kontakt jedným ťuknutím.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#C9A96A">
+<meta name="theme-color" content="#D9B26F">
 <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/dcard.css?v=7a472409">
 <style>
-  html, body { margin: 0; background: #0E0F12; min-height: 100%; }
-  .vpage { max-width: 460px; margin: 0 auto; min-height: 100svh; background: #15171C; box-shadow: 0 0 80px rgba(0,0,0,.5); }
+  html, body { margin: 0; background: #2440E6; min-height: 100%; }
+  .vpage { max-width: 460px; margin: 0 auto; min-height: 100svh; background: #0E0E10; box-shadow: 0 0 80px rgba(0,0,0,.5); }
   @media (min-width: 520px) { body { padding: 32px 0; } .vpage { min-height: auto; border-radius: 28px; overflow: hidden; } }
-  .vnote { max-width: 460px; margin: 18px auto 0; text-align: center; font: 12px/1.5 Geist, system-ui, sans-serif; color: rgba(255,255,255,.45); }
+  .vnote { max-width: 460px; margin: 18px auto 0; text-align: center; font: 12px/1.5 Geist, system-ui, sans-serif; color: rgba(255,255,255,.75); }
   .vnote a { color: rgba(255,255,255,.8); }
 </style>
-<script type="importmap">{"imports": {"../../assets/js/util.js": "../../assets/js/util.js?v=ceb0b934", "../../assets/js/card-engine.js": "../../assets/js/card-engine.js?v=cdc4f98a", "../../assets/js/cart.js": "../../assets/js/cart.js?v=7fdbf79b", "../../assets/js/kosik.js": "../../assets/js/kosik.js?v=6a239b12", "../../assets/js/ai-engine.js": "../../assets/js/ai-engine.js?v=80c9504b", "../../assets/js/home.js": "../../assets/js/home.js?v=d4856b3e", "../../assets/js/studio.js": "../../assets/js/studio.js?v=2a1cec1c", "../../assets/js/digital.js": "../../assets/js/digital.js?v=ff3ef5ab", "../../assets/js/digital-card.js": "../../assets/js/digital-card.js?v=922cd8e2", "../../assets/js/site.js": "../../assets/js/site.js?v=1b90607b", "../../assets/js/logo.js": "../../assets/js/logo.js?v=14fdfc37"}}</script>
+<script type="importmap">{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/", "../../assets/js/icons.js": "../../assets/js/icons.js?v=dfda49cc", "../../assets/js/util.js": "../../assets/js/util.js?v=ceb0b934", "../../assets/js/card-engine.js": "../../assets/js/card-engine.js?v=cdc4f98a", "../../assets/js/ai-engine.js": "../../assets/js/ai-engine.js?v=80c9504b", "../../assets/js/logo.js": "../../assets/js/logo.js?v=14fdfc37", "../../assets/js/v2/ai.js": "../../assets/js/v2/ai.js?v=f5dbecf5", "../../assets/js/v2/kosik.js": "../../assets/js/v2/kosik.js?v=917f2eec", "../../assets/js/v2/three-cards.js": "../../assets/js/v2/three-cards.js?v=3039c6fd", "../../assets/js/v2/digital-page.js": "../../assets/js/v2/digital-page.js?v=58615e58", "../../assets/js/v2/store.js": "../../assets/js/v2/store.js?v=5d55d845", "../../assets/js/v2/render.js": "../../assets/js/v2/render.js?v=d0bb1e13", "../../assets/js/v2/home.js": "../../assets/js/v2/home.js?v=882d615c", "../../assets/js/v2/studio.js": "../../assets/js/v2/studio.js?v=ff54991c", "../../assets/js/v2/editor.js": "../../assets/js/v2/editor.js?v=1d9cdd4d", "../../assets/js/v2/digital.js": "../../assets/js/v2/digital.js?v=5e75623f", "../../assets/js/v2/site.js": "../../assets/js/v2/site.js?v=0c3cfb98", "../../assets/js/v2/templates.js": "../../assets/js/v2/templates.js?v=ceebc9c4", "../../assets/js/v2/model.js": "../../assets/js/v2/model.js?v=d5df1b7b"}}</script>
 <script>window.VK = { lang: 'sk', links: {} };</script>
 </head>
 <body>
@@ -26,12 +26,13 @@
 <p class="vnote">Ukážka digitálnej vizitky · <a href="../../digitalna-vizitka/">Chcem vlastnú</a></p>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script type="module">
-  import { newDesign, templateDefaults } from '../../assets/js/card-engine.js';
-  import { renderDigital } from '../../assets/js/digital-card.js';
+  import { newDesign } from '../../assets/js/v2/model.js';
+  import { templateDefaults } from '../../assets/js/v2/templates.js';
+  import { renderDigital } from '../../assets/js/v2/digital.js';
   import { qrSVG } from '../../assets/js/util.js';
-  const d = newDesign({ tpl: 'linea', ...templateDefaults('linea') });
+  const d = newDesign({ tpl: 'noirgold', ...templateDefaults('noirgold') });
   d.f = { name: 'Martin Kováč', role: 'Realitný maklér', company: 'Domov Reality', phone: '+421 905 123 456', email: 'martin@domovreality.sk', web: 'domovreality.sk', address: 'Panská 14, Bratislava', tagline: 'Kľúče odovzdávam osobne.' };
-  d.digital = { socials: { instagram: 'https://instagram.com/', linkedin: 'https://linkedin.com/' } };
+  d.socials = { instagram: 'https://instagram.com/', linkedin: 'https://linkedin.com/' };
   renderDigital(document.getElementById('card'), d, { url: location.href, qr: (u) => qrSVG(u) });
 </script>
 </body>

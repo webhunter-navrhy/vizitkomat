@@ -1,88 +1,58 @@
 {% extends 'base.html' %}
 {% block title %}{{ L('Digitálna vizitka do telefónu | Vizitkomat', 'Digitální vizitka do telefonu | Vizitkomat') }}{% endblock %}
 {% block description %}{{ L('Digitálna vizitka s vlastnou adresou a QR kódom. Kontakt sa uloží jedným ťuknutím, zmeny robíte kedykoľvek. K tlačeným vizitkám na rok zadarmo.', 'Digitální vizitka s vlastní adresou a QR kódem. Kontakt se uloží jedním ťuknutím, změny děláte kdykoli. K tištěným vizitkám na rok zdarma.') }}{% endblock %}
-{% block head %}
-<link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}">
-<link rel="stylesheet" href="{{ A('assets/css/digital.css') }}">
-{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}"><link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
 {% block main %}
-<section class="dg-hero">
+<section class="dg-hero" data-nav="yellow">
   <div class="wrap dg-hero__grid">
-    <div class="dg-hero__copy">
-      <p class="eyebrow"><span class="dot"></span>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</p>
-      <h1 class="dg-title">{{ L('Vizitka, ktorá sa', 'Vizitka, která se') }} <em>{{ L('nestratí.', 'neztratí.') }}</em></h1>
-      <p class="dg-lead">{{ L('Vlastná adresa, QR kód a tlačidlo „Uložiť do kontaktov“. Pošlete ju cez WhatsApp, ukážete na porade alebo ju má každý, kto naskenuje vašu tlačenú vizitku.', 'Vlastní adresa, QR kód a tlačítko „Uložit do kontaktů“. Pošlete ji přes WhatsApp, ukážete na poradě nebo ji má každý, kdo naskenuje vaši tištěnou vizitku.') }}</p>
-      <form class="namebox" data-dg-form>
-        <label for="dg-name" class="namebox__label">{{ L('Vyskúšajte to na sebe', 'Vyzkoušejte to na sobě') }}</label>
-        <div class="namebox__row">
-          <input id="dg-name" maxlength="40" autocomplete="name" placeholder="{{ L('Vaše meno a priezvisko', 'Vaše jméno a příjmení') }}">
-          <button class="btn btn--accent" type="submit">{{ L('Vytvoriť', 'Vytvořit') }} <span aria-hidden="true">→</span></button>
-        </div>
+    <div>
+      <p class="kicker">{{ L('Digitálna vizitka', 'Digitální vizitka') }}</p>
+      <h1 class="h-xl dg-h">{{ L('Vizitka, ktorá sa', 'Vizitka, která se') }} <span class="hl-c">{{ L('nestratí.', 'neztratí.') }}</span></h1>
+      <p class="lead dg-lead">{{ L('Vlastná adresa, QR kód a tlačidlo „Uložiť do kontaktov“. Pošlete ju cez WhatsApp, ukážete na stretnutí alebo ju má každý, kto naskenuje vašu tlačenú vizitku.', 'Vlastní adresa, QR kód a tlačítko „Uložit do kontaktů“. Pošlete ji přes WhatsApp, ukážete na schůzce nebo ji má každý, kdo naskenuje vaši tištěnou vizitku.') }}</p>
+      <form class="aibox" data-dg-form>
+        <input id="dg-name" maxlength="40" autocomplete="name" placeholder="{{ L('Vaše meno a priezvisko', 'Vaše jméno a příjmení') }}" aria-label="{{ L('Meno', 'Jméno') }}">
+        <button class="btn btn--b" type="submit">{{ L('Vytvoriť', 'Vytvořit') }} <span class="ar">→</span></button>
       </form>
       <p class="dg-url">vizitkomat.eu/v/<b data-dg-slug>martin-kovac</b></p>
     </div>
-    <div class="dg-hero__vis">
-      <div class="dg-orbit" aria-hidden="true"><i></i><i></i></div>
-      <div class="phone dg-phone"><div class="phone__screen"><div class="phone__island"></div><div class="dcard-host" data-dg-phone></div></div></div>
-      <div class="dg-chip dg-chip--a"><b>+</b> {{ L('Uložené do kontaktov', 'Uloženo do kontaktů') }}</div>
-      <div class="dg-chip dg-chip--b"><span class="dg-qr" data-dg-qr></span> {{ L('Naskenujte ma', 'Naskenujte mě') }}</div>
+    <div class="dg-vis">
+      <div class="phone"><div class="phone__screen"><div class="phone__island"></div><div class="dcard-host" data-dg-phone></div></div></div>
+      <span class="sticker dg-st">{{ L('1. rok', '1. rok') }}<br>{{ L('zadarmo', 'zdarma') }}</span>
     </div>
   </div>
 </section>
-
-<section class="dg-how">
+<section class="dg-how" data-nav="cream">
   <div class="wrap">
-    <header class="sechead"><p class="eyebrow">{{ L('Ako to funguje', 'Jak to funguje') }}</p><h2 class="h2">{{ L('Tri kroky,', 'Tři kroky,') }} <em>{{ L('žiadna aplikácia.', 'žádná aplikace.') }}</em></h2></header>
+    <h2 class="h-l">{{ L('Tri kroky,', 'Tři kroky,') }} <span class="hl-b">{{ L('žiadna aplikácia.', 'žádná aplikace.') }}</span></h2>
     <ol class="dg-steps">
-      <li><span>01</span><h3>{{ L('Navrhnete', 'Navrhnete') }}</h3><p>{{ L('V rovnakom generátore ako tlačenú vizitku. Pridáte fotku, sociálne siete a slogan.', 'Ve stejném generátoru jako tištěnou vizitku. Přidáte fotku, sociální sítě a slogan.') }}</p></li>
-      <li><span>02</span><h3>{{ L('Dostanete adresu', 'Dostanete adresu') }}</h3><p>{{ L('vizitkomat.eu/v/vase-meno a QR kód, ktorý môže byť aj na zadnej strane tlačenej vizitky.', 'vizitkomat.eu/v/vase-jmeno a QR kód, který může být i na zadní straně tištěné vizitky.') }}</p></li>
-      <li><span>03</span><h3>{{ L('Zdieľate', 'Sdílíte') }}</h3><p>{{ L('Odkazom, QR kódom alebo podpisom v e-maile. Kto ju otvorí, uloží si vás jedným ťuknutím.', 'Odkazem, QR kódem nebo podpisem v e-mailu. Kdo ji otevře, uloží si vás jedním ťuknutím.') }}</p></li>
+      <li><span>1</span><h3>{{ L('Navrhnete', 'Navrhnete') }}</h3><p>{{ L('V rovnakom editore ako tlačenú vizitku. Pridáte fotku, siete a slogan.', 'Ve stejném editoru jako tištěnou vizitku. Přidáte fotku, sítě a slogan.') }}</p></li>
+      <li><span>2</span><h3>{{ L('Dostanete adresu', 'Dostanete adresu') }}</h3><p>{{ L('vizitkomat.eu/v/vase-meno a QR kód, aj na zadnú stranu tlačenej vizitky.', 'vizitkomat.eu/v/vase-jmeno a QR kód, i na zadní stranu tištěné vizitky.') }}</p></li>
+      <li><span>3</span><h3>{{ L('Zdieľate', 'Sdílíte') }}</h3><p>{{ L('Odkazom, QR kódom alebo v podpise e-mailu. Kto ju otvorí, uloží si vás jedným ťuknutím.', 'Odkazem, QR kódem nebo v podpisu e-mailu. Kdo ji otevře, uloží si vás jedním ťuknutím.') }}</p></li>
     </ol>
   </div>
 </section>
-
-<section class="dg-feats">
+<section class="dg-feats" data-nav="ink">
   <div class="wrap">
     <div class="bento">
-      <article class="bx bx--big">
-        <h3>{{ L('Uložiť do kontaktov', 'Uložit do kontaktů') }}</h3>
-        <p>{{ L('iPhone aj Android. Meno, firma, číslo, e-mail, web aj adresa sa uložia naraz, nikto nič neprepisuje.', 'iPhone i Android. Jméno, firma, číslo, e-mail, web i adresa se uloží najednou, nikdo nic nepřepisuje.') }}</p>
-        <div class="bx__vcf" aria-hidden="true"><span>BEGIN:VCARD</span><span>FN:Martin Kováč</span><span>ORG:Domov Reality</span><span>TEL:+421905123456</span><span>END:VCARD</span></div>
-      </article>
-      <article class="bx bx--dark"><h3>{{ L('Zmeny kedykoľvek', 'Změny kdykoli') }}</h3><p>{{ L('Nové číslo alebo pozícia? Prepíšete a hotovo. QR kód na papieri ostáva rovnaký.', 'Nové číslo nebo pozice? Přepíšete a hotovo. QR kód na papíře zůstává stejný.') }}</p></article>
-      <article class="bx"><h3>{{ L('Vo vašom dizajne', 'Ve vašem designu') }}</h3><p>{{ L('Farby, písmo aj logo z vašej tlačenej vizitky.', 'Barvy, písmo i logo z vaší tištěné vizitky.') }}</p><div class="bx__sw" aria-hidden="true"><i style="--c:#15171C"></i><i style="--c:#C9A96A"></i><i style="--c:#F1EEE6"></i></div></article>
-      <article class="bx"><h3>{{ L('Fotka a siete', 'Fotka a sítě') }}</h3><p>{{ L('Instagram, Facebook, LinkedIn a vaša fotka, aby si vás ľudia spojili s tvárou.', 'Instagram, Facebook, LinkedIn a vaše fotka, aby si vás lidé spojili s tváří.') }}</p></article>
-      <article class="bx bx--accent"><h3>{{ L('Bez aplikácie', 'Bez aplikace') }}</h3><p>{{ L('Otvorí sa v prehliadači. Nikto nič neinštaluje ani sa neregistruje.', 'Otevře se v prohlížeči. Nikdo nic neinstaluje ani se neregistruje.') }}</p></article>
-      <article class="bx bx--soon"><h3>{{ L('Pripravujeme', 'Připravujeme') }}</h3><ul><li>Apple Wallet {{ L('a', 'a') }} Google Wallet</li><li>{{ L('NFC karta: priložíte k telefónu', 'NFC karta: přiložíte k telefonu') }}</li><li>{{ L('Štatistiky zobrazení', 'Statistiky zobrazení') }}</li></ul></article>
+      <article class="bx bx--y"><h3>{{ L('Uložiť do kontaktov', 'Uložit do kontaktů') }}</h3><p>{{ L('iPhone aj Android. Meno, firma, číslo, e-mail, web aj adresa naraz.', 'iPhone i Android. Jméno, firma, číslo, e-mail, web i adresa najednou.') }}</p></article>
+      <article class="bx bx--c"><h3>{{ L('Zmeny kedykoľvek', 'Změny kdykoli') }}</h3><p>{{ L('Nové číslo alebo pozícia bez novej tlače. QR kód na papieri ostáva.', 'Nové číslo nebo pozice bez nového tisku. QR kód na papíře zůstává.') }}</p></article>
+      <article class="bx bx--b"><h3>{{ L('Vo vašom dizajne', 'Ve vašem designu') }}</h3><p>{{ L('Farby, písmo aj logo z tlačenej vizitky.', 'Barvy, písmo i logo z tištěné vizitky.') }}</p></article>
+      <article class="bx bx--w"><h3>{{ L('Bez aplikácie', 'Bez aplikace') }}</h3><p>{{ L('Otvorí sa v prehliadači, nikto nič neinštaluje.', 'Otevře se v prohlížeči, nikdo nic neinstaluje.') }}</p></article>
+      <article class="bx bx--soon"><h3>{{ L('Pripravujeme', 'Připravujeme') }}</h3><p>{{ L('Apple a Google Wallet · NFC karta · štatistiky zobrazení', 'Apple a Google Wallet · NFC karta · statistiky zobrazení') }}</p></article>
     </div>
   </div>
 </section>
-
-<section class="dg-price">
+<section class="dg-price" data-nav="cream">
   <div class="wrap dg-price__grid">
-    <div>
-      <p class="eyebrow">{{ L('Cena', 'Cena') }}</p>
-      <h2 class="h2">{{ prices.digital_year }} {{ prices.symbol }} <em>{{ L('na celý rok.', 'na celý rok.') }}</em></h2>
-      <p class="sechead__lead">{{ L('K tlačeným vizitkám je prvý rok zadarmo. Potom sa môžete rozhodnúť, či ju chcete predĺžiť. Nič sa neobnovuje samo.', 'K tištěným vizitkám je první rok zdarma. Potom se můžete rozhodnout, jestli ji chcete prodloužit. Nic se neobnovuje samo.') }}</p>
-    </div>
-    <div class="dg-price__cards">
-      <a class="pc pc--on" href="{{ link('tvorba') }}?druh=bundle"><span class="pc__tag">{{ L('Najvýhodnejšie', 'Nejvýhodnější') }}</span><b>{{ L('Tlačené + digitálna', 'Tištěné + digitální') }}</b><span class="pc__p">{{ L('od', 'od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }}</span><small>{{ L('100 tlačených vizitiek a digitálna na rok zadarmo', '100 tištěných vizitek a digitální na rok zdarma') }}</small></a>
-      <a class="pc" href="{{ link('tvorba') }}?druh=digital"><b>{{ L('Len digitálna', 'Jen digitální') }}</b><span class="pc__p">{{ prices.digital_year }} {{ prices.symbol }}</span><small>{{ L('Na 12 mesiacov, vrátane DPH', 'Na 12 měsíců, včetně DPH') }}</small></a>
-    </div>
-  </div>
-</section>
-
-<section class="final" data-dark>
-  <div class="wrap final__in">
-    <h2 class="final__title">{{ L('Pozrite sa, ako vyzerá', 'Podívejte se, jak vypadá') }} <em>{{ L('naživo.', 'naživo.') }}</em></h2>
-    <div class="dg-final-cta">
-      <a class="btn btn--accent" href="{{ R }}v/demo/">{{ L('Otvoriť ukážku', 'Otevřít ukázku') }} <span aria-hidden="true">→</span></a>
-      <a class="link link--light" href="{{ link('tvorba') }}?druh=digital">{{ L('Vytvoriť vlastnú', 'Vytvořit vlastní') }} <span>→</span></a>
+    <div><h2 class="h-l">{{ prices.digital_year }} {{ prices.symbol }} <span class="hl-c">{{ L('na rok.', 'na rok.') }}</span></h2><p class="lead">{{ L('K tlačeným vizitkám je prvý rok zadarmo. Neobnovuje sa samo.', 'K tištěným vizitkám je první rok zdarma. Neobnovuje se samo.') }}</p></div>
+    <div class="dg-cards">
+      <a class="pcard pcard--y" href="{{ link('tvorba') }}?druh=bundle"><span class="pcard__q">{{ L('Najvýhodnejšie', 'Nejvýhodnější') }}</span><b class="pcard__p">{{ L('od', 'od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }}</b><span class="pcard__per">{{ L('100 tlačených + digitálna zadarmo', '100 tištěných + digitální zdarma') }}</span><span class="pcard__go">{{ L('Navrhnúť', 'Navrhnout') }} →</span></a>
+      <a class="pcard pcard--w" href="{{ link('tvorba') }}?druh=digital"><span class="pcard__q">{{ L('Len digitálna', 'Jen digitální') }}</span><b class="pcard__p">{{ prices.digital_year }} {{ prices.symbol }}</b><span class="pcard__per">{{ L('na 12 mesiacov', 'na 12 měsíců') }}</span><span class="pcard__go">{{ L('Vytvoriť', 'Vytvořit') }} →</span></a>
     </div>
   </div>
 </section>
 {% endblock %}
 {% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-<script type="module" src="{{ A('assets/js/digital.js') }}"></script>
+<script type="module" src="{{ A('assets/js/v2/digital-page.js') }}"></script>
 {% endblock %}

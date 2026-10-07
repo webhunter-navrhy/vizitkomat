@@ -1,23 +1,23 @@
 <!doctype html><meta charset=utf-8>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500&family=Geist+Mono&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Unbounded:wght@400..700&family=Manrope:wght@400..700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-<style>body{margin:0;width:1200px;height:630px;background:#F2EEE6;font-family:Geist;overflow:hidden;position:relative}
-h1{font:400 96px/0.92 'Instrument Serif';letter-spacing:-.035em;margin:0;position:absolute;left:72px;top:150px;color:#16140F}
-h1 em{color:#E8462B}
-p{position:absolute;left:76px;top:420px;font:400 26px/1.4 Geist;color:#555047;width:520px}
-.b{position:absolute;left:76px;top:64px;font:400 40px 'Instrument Serif';display:flex;gap:12px;align-items:center}.b i{color:#E8462B}
-.m{position:absolute;left:76px;bottom:54px;font:14px 'Geist Mono';letter-spacing:.08em;color:#8D877B}
-canvas{position:absolute;width:420px!important;height:auto!important;border-radius:4px;box-shadow:0 2px 3px rgba(0,0,0,.1),0 30px 60px -20px rgba(30,22,10,.45)}</style>
-<div class=b><svg width=40 height=40 viewBox="0 0 32 32"><rect x="2" y="3" width="28" height="17" rx="4.5" fill="#16140F"/><rect x="7" y="15" width="18" height="1.8" rx=".9" fill="#F2EEE6"/><rect x="9" y="16.6" width="14" height="12.4" rx="1.4" fill="#E8462B"/></svg><span>Vizitko<i>mat</i></span></div>
-<h1>Vizitky, na<br>ktoré sa <em>nezabúda.</em></h1>
-<p>Generátor, AI grafik 24/7 a vizitka z vášho loga. Na papieri aj v telefóne.</p>
-<div class=m>VIZITKOMAT.EU · SK / CZ</div>
-<canvas id=a style="left:740px;top:60px;transform:rotate(8deg)"></canvas>
-<canvas id=b style="left:700px;top:230px;transform:rotate(-5deg)"></canvas>
-<canvas id=c style="left:760px;top:390px;transform:rotate(3deg)"></canvas>
+<script>window.VK={lang:'sk',root:'../'}</script>
+<style>body{margin:0;width:1200px;height:630px;background:#2440E6;font-family:'Bricolage Grotesque';overflow:hidden;position:relative;color:#fff}
+h1{position:absolute;left:64px;top:120px;margin:0;font-size:118px;line-height:.84;letter-spacing:-.06em;font-weight:800;width:640px}h1 span{color:#FFD23F}
+.b{position:absolute;left:64px;top:52px;font-weight:800;font-size:34px;letter-spacing:-.05em;display:flex;align-items:center;gap:10px}.b i{width:30px;height:30px;border-radius:50%;background:#FFD23F;display:block;position:relative}.b i::after{content:'';position:absolute;right:-5px;bottom:-2px;width:14px;height:14px;border-radius:50%;background:#FF6B4A}
+p{position:absolute;left:66px;bottom:58px;margin:0;font-size:28px;font-weight:600;opacity:.92}
+img{position:absolute;width:430px;border-radius:10px;box-shadow:0 30px 50px -18px rgba(5,10,60,.7)}
+.s{position:absolute;right:60px;top:40px;width:120px;height:120px;border-radius:50%;background:#FFD23F;color:#0F1440;display:grid;place-items:center;text-align:center;font-weight:800;font-size:20px;line-height:1;transform:rotate(-12deg);z-index:5}</style>
+<div class=b><i></i>vizitkomat</div>
+<h1>Vizitka za <span>2 minúty.</span> Bez grafika.</h1>
+<p>AI grafik · editor ako Canva · tlač aj digitál</p>
+<img id=a style="left:720px;top:70px;transform:rotate(7deg)"><img id=b style="left:690px;top:240px;transform:rotate(-5deg)"><img id=c style="left:740px;top:400px;transform:rotate(4deg)">
+<div class=s>AI<br>grafik<br>24/7</div>
 <script type=module>
-import * as E from '../assets/js/card-engine.js';
-const s=[['a','bigtype','marhula'],['b','linea','atrament'],['c','editorial','papier']];
-for (const [id,t,p] of s){const d=E.newDesign({tpl:t,fonts:E.TEMPLATES[t].fonts,pal:{...E.PALETTES[p]}});await E.prepare(d);E.render(document.getElementById(id),d,'front',{width:1040});}
-document.body.dataset.done=1;
+import { newDesign } from '../assets/js/v2/model.js';
+import { templateDefaults } from '../assets/js/v2/templates.js';
+import { snapshot } from '../assets/js/v2/render.js';
+for (const [id,t] of [['a','prechod'],['b','mramor'],['c','retro']]) document.getElementById(id).src=await snapshot(newDesign({tpl:t,...templateDefaults(t)}),'front',900,'image/jpeg');
+await new Promise(r=>setTimeout(r,500)); document.body.dataset.done=1;
 </script>

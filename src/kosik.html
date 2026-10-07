@@ -1,31 +1,26 @@
 {% extends 'base.html' %}
 {% block title %}{{ L('Košík | Vizitkomat', 'Košík | Vizitkomat') }}{% endblock %}
-{% block description %}{{ L('Váš košík s vizitkami. Doprava zdarma na Slovensko aj do Česka.', 'Váš košík s vizitkami. Doprava zdarma po Česku i na Slovensko.') }}{% endblock %}
-{% block card_fonts %}{% endblock %}
-{% block head %}<link rel="stylesheet" href="{{ A('assets/css/cart.css') }}">{% endblock %}
+{% block description %}{{ L('Váš košík s vizitkami. Doprava zdarma na Slovensko aj do Česka.', 'Váš košík s vizitkami. Doprava zdarma po Česku i na Slovensku.') }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
+{% block navclass %} solid{% endblock %}
 {% block main %}
 <div class="cart wrap" data-cart>
   <header class="cart__head">
-    <p class="eyebrow">{{ L('Objednávka', 'Objednávka') }}</p>
-    <h1 class="h2">{{ L('Váš', 'Váš') }} <em>{{ L('košík', 'košík') }}</em></h1>
-    <ol class="steps" aria-label="{{ L('Kroky objednávky', 'Kroky objednávky') }}">
-      <li class="done">{{ L('Návrh', 'Návrh') }}</li>
-      <li class="on">{{ L('Košík a údaje', 'Košík a údaje') }}</li>
-      <li>{{ L('Platba', 'Platba') }}</li>
-    </ol>
+    <h1 class="h-l">{{ L('Váš', 'Váš') }} <span class="hl-c">{{ L('košík', 'košík') }}</span></h1>
+    <ol class="steps"><li class="done">{{ L('Návrh', 'Návrh') }}</li><li class="on">{{ L('Košík a údaje', 'Košík a údaje') }}</li><li>{{ L('Platba', 'Platba') }}</li></ol>
   </header>
 
-  <div class="cart__empty" data-empty hidden>
-    <div class="cart__tray"><i></i></div>
-    <h2>{{ L('Košík je zatiaľ prázdny.', 'Košík je zatím prázdný.') }}</h2>
-    <p>{{ L('Vizitkomat čaká na vaše meno. Prvý návrh máte za dve minúty.', 'Vizitkomat čeká na vaše jméno. První návrh máte za dvě minuty.') }}</p>
-    <a class="btn btn--accent" href="{{ link('tvorba') }}">{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }} <span aria-hidden="true">→</span></a>
+  <div class="empty" data-empty hidden>
+    <span class="sticker">{{ L('prázdno', 'prázdno') }}</span>
+    <h2 class="h-m">{{ L('Košík je zatiaľ prázdny.', 'Košík je zatím prázdný.') }}</h2>
+    <p>{{ L('AI grafik čaká na vaše zadanie. Prvé návrhy máte za pár sekúnd.', 'AI grafik čeká na vaše zadání. První návrhy máte za pár sekund.') }}</p>
+    <a class="btn btn--c btn--lg" href="{{ link('tvorba') }}?rezim=ai">{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a>
   </div>
 
   <div class="cart__grid" data-full hidden>
-    <section class="cart__items">
-      <ul data-items></ul>
-      <a class="link" href="{{ link('tvorba') }}">{{ L('Pridať ďalšiu vizitku', 'Přidat další vizitku') }} <span>+</span></a>
+    <section>
+      <ul class="items" data-items></ul>
+      <a class="link" href="{{ link('tvorba') }}">{{ L('Pridať ďalšiu vizitku', 'Přidat další vizitku') }} +</a>
     </section>
 
     <form class="co" data-checkout novalidate>
@@ -36,7 +31,7 @@
           <label class="fl"><span>{{ L('Telefón', 'Telefon') }}</span><input name="phone" type="tel" autocomplete="tel" required></label>
         </div>
         <label class="fl"><span>E-mail</span><input name="email" type="email" autocomplete="email" required></label>
-        <label class="chk"><input type="checkbox" name="company_on" data-company-toggle> {{ L('Nakupujem na firmu', 'Nakupuji na firmu') }}</label>
+        <label class="chk"><input type="checkbox" data-company-toggle> {{ L('Nakupujem na firmu', 'Nakupuji na firmu') }}</label>
         <div class="co__company" data-company hidden>
           <label class="fl"><span>{{ L('Názov firmy', 'Název firmy') }}</span><input name="company" autocomplete="organization"></label>
           <div class="row3">
@@ -46,58 +41,52 @@
           </div>
         </div>
       </fieldset>
-
       <fieldset data-ship-fs>
         <legend>{{ L('Doručenie', 'Doručení') }}</legend>
-        <div class="radios" data-ship>
-          <label class="radio"><input type="radio" name="ship" value="courier" checked><span><b>{{ L('Kuriér na adresu', 'Kurýr na adresu') }}</b><small>{{ L('Zdarma · číslo zásielky pošleme e-mailom', 'Zdarma · číslo zásilky pošleme e-mailem') }}</small></span><em>{{ L('0 €', '0 Kč') }}</em></label>
-          <label class="radio"><input type="radio" name="ship" value="packeta"><span><b>{{ L('Výdajné miesto alebo Z-BOX', 'Výdejní místo nebo Z-BOX') }}</b><small>{{ L('Packeta · výber miesta po objednaní', 'Zásilkovna · výběr místa po objednání') }}</small></span><em>{{ L('0 €', '0 Kč') }}</em></label>
+        <div class="radios">
+          <label class="radio"><input type="radio" name="ship" value="courier" checked><span><b>{{ L('Kuriér na adresu', 'Kurýr na adresu') }}</b><small>{{ L('Číslo zásielky pošleme e-mailom', 'Číslo zásilky pošleme e-mailem') }}</small></span><em>{{ L('zadarmo', 'zdarma') }}</em></label>
+          <label class="radio"><input type="radio" name="ship" value="packeta"><span><b>{{ L('Výdajné miesto alebo Z-BOX', 'Výdejní místo nebo Z-BOX') }}</b><small>{{ L('Packeta, miesto vyberiete po objednaní', 'Zásilkovna, místo vyberete po objednání') }}</small></span><em>{{ L('zadarmo', 'zdarma') }}</em></label>
         </div>
         <label class="fl"><span>{{ L('Ulica a číslo', 'Ulice a číslo') }}</span><input name="street" autocomplete="address-line1" required></label>
-        <div class="row3 row3--addr">
+        <div class="row3 row3--a">
           <label class="fl"><span>{{ L('Mesto', 'Město') }}</span><input name="city" autocomplete="address-level2" required></label>
           <label class="fl"><span>PSČ</span><input name="zip" autocomplete="postal-code" inputmode="numeric" required></label>
-          <label class="fl"><span>{{ L('Krajina', 'Země') }}</span>
-            <select name="country" autocomplete="country">
-              {% if lang == 'sk' %}<option value="SK">Slovensko</option><option value="CZ">Česko</option>{% else %}<option value="CZ">Česko</option><option value="SK">Slovensko</option>{% endif %}
-            </select></label>
+          <label class="fl"><span>{{ L('Krajina', 'Země') }}</span><select name="country" autocomplete="country">{% if lang == 'sk' %}<option value="SK">Slovensko</option><option value="CZ">Česko</option>{% else %}<option value="CZ">Česko</option><option value="SK">Slovensko</option>{% endif %}</select></label>
         </div>
       </fieldset>
-
       <fieldset>
         <legend>{{ L('Platba', 'Platba') }}</legend>
         <div class="radios">
-          <label class="radio"><input type="radio" name="pay" value="card" checked><span><b>{{ L('Kartou online', 'Kartou online') }}</b><small>Visa, Mastercard, Apple Pay, Google Pay</small></span><em class="cards"><i>VISA</i><i>MC</i><i></i></em></label>
-          <label class="radio"><input type="radio" name="pay" value="transfer"><span><b>{{ L('Bankovým prevodom', 'Bankovním převodem') }}</b><small>{{ L('QR platba, tlačíme po pripísaní platby', 'QR platba, tiskneme po připsání platby') }}</small></span></label>
+          <label class="radio"><input type="radio" name="pay" value="card" checked><span><b>{{ L('Kartou online', 'Kartou online') }}</b><small>Visa, Mastercard, Apple Pay, Google Pay</small></span></label>
+          <label class="radio"><input type="radio" name="pay" value="transfer"><span><b>{{ L('Bankovým prevodom', 'Bankovním převodem') }}</b><small>{{ L('QR platba, tlačíme po pripísaní', 'QR platba, tiskneme po připsání') }}</small></span></label>
         </div>
-        <label class="fl"><span>{{ L('Poznámka k objednávke', 'Poznámka k objednávce') }} <i>{{ L('nepovinné', 'nepovinné') }}</i></span><textarea name="note" rows="2"></textarea></label>
+        <label class="fl"><span>{{ L('Poznámka', 'Poznámka') }} <i>{{ L('nepovinné', 'nepovinné') }}</i></span><textarea name="note" rows="2"></textarea></label>
       </fieldset>
-
       <aside class="co__sum">
         <div class="co__lines" data-lines></div>
         <div class="co__total"><span>{{ L('Spolu s DPH', 'Celkem s DPH') }}</span><b data-total>—</b></div>
         <p class="co__date" data-date></p>
         <label class="chk chk--terms"><input type="checkbox" name="terms" required> <span>{{ L('Súhlasím s obchodnými podmienkami a so spracovaním osobných údajov na vybavenie objednávky.', 'Souhlasím s obchodními podmínkami a se zpracováním osobních údajů pro vyřízení objednávky.') }}</span></label>
         <p class="co__err" data-err hidden></p>
-        <button class="btn btn--accent co__go" type="submit">{{ L('Objednať s povinnosťou platby', 'Objednat s povinností platby') }}</button>
-        <p class="co__safe">{{ L('Pred tlačou návrh skontroluje človek. Ak niečo nesedí, ozveme sa vám.', 'Před tiskem návrh zkontroluje člověk. Pokud něco nesedí, ozveme se vám.') }}</p>
+        <button class="btn btn--y btn--lg co__go" type="submit">{{ L('Objednať s povinnosťou platby', 'Objednat s povinností platby') }}</button>
+        <p class="co__safe">{{ L('Pred tlačou návrh skontroluje človek.', 'Před tiskem návrh zkontroluje člověk.') }}</p>
       </aside>
     </form>
   </div>
 
   <section class="done" data-done hidden>
-    <div class="done__card"><img alt="" data-done-img></div>
-    <p class="eyebrow">{{ L('Objednávka', 'Objednávka') }} <span data-done-num></span></p>
-    <h2 class="h2">{{ L('Ďakujeme,', 'Děkujeme,') }} <em>{{ L('máme to.', 'máme to.') }}</em></h2>
-    <p class="done__lead" data-done-lead></p>
+    <img class="done__card" alt="" data-done-img>
+    <p class="kicker hl-b" data-done-num></p>
+    <h2 class="h-l">{{ L('Ďakujeme,', 'Děkujeme,') }} <span class="hl-c">{{ L('máme to!', 'máme to!') }}</span></h2>
+    <p class="lead" data-done-lead></p>
     <ol class="done__next">
-      <li><b>{{ L('Kontrola dát', 'Kontrola dat') }}</b><span>{{ L('Do 24 hodín prejdeme návrh. Ak treba niečo upraviť, napíšeme vám.', 'Do 24 hodin projdeme návrh. Pokud je potřeba něco upravit, napíšeme vám.') }}</span></li>
-      <li><b>{{ L('Tlač a digitálna vizitka', 'Tisk a digitální vizitka') }}</b><span>{{ L('Vizitky ideme tlačiť a digitálnu vizitku vám zapneme hneď.', 'Vizitky jdeme tisknout a digitální vizitku vám zapneme hned.') }}</span></li>
+      <li><b>{{ L('Kontrola dát', 'Kontrola dat') }}</b><span>{{ L('Do 24 hodín prejdeme návrh a ak treba, napíšeme vám.', 'Do 24 hodin projdeme návrh a pokud je potřeba, napíšeme vám.') }}</span></li>
+      <li><b>{{ L('Tlač a digitálna vizitka', 'Tisk a digitální vizitka') }}</b><span>{{ L('Vizitky ideme tlačiť a digitálnu vám zapneme hneď.', 'Vizitky jdeme tisknout a digitální vám zapneme hned.') }}</span></li>
       <li><b>{{ L('Doručenie', 'Doručení') }}</b><span data-done-date></span></li>
     </ol>
     <p class="done__test" data-done-test hidden></p>
-    <a class="btn btn--ink" href="{{ link('index') }}">{{ L('Späť na úvod', 'Zpět na úvod') }}</a>
+    <a class="btn" href="{{ link('index') }}">{{ L('Späť na úvod', 'Zpět na úvod') }}</a>
   </section>
 </div>
 {% endblock %}
-{% block scripts %}<script type="module" src="{{ A('assets/js/kosik.js') }}"></script>{% endblock %}
+{% block scripts %}<script type="module" src="{{ A('assets/js/v2/kosik.js') }}"></script>{% endblock %}

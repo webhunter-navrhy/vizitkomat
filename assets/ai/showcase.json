@@ -1,0 +1,166 @@
+[
+ {
+  "key": "kvety",
+  "prompt": "Mám kvetinárstvo v Nitre, chcem niečo jemné a prírodné.",
+  "fields": {
+   "name": "Mária Horváthová",
+   "role": "Kvetinárka",
+   "company": "Levanduľa",
+   "tagline": "Krásy z prírody",
+   "address": "Nitra"
+  },
+  "concepts": [
+   {
+    "template": "botanika",
+    "fonts": "instrument",
+    "palette": {
+     "bg": "#F7F4E9",
+     "ink": "#452B1F",
+     "accent": "#767e58",
+     "soft": "#C9E4CA"
+    },
+    "art": {
+     "key": "botanika",
+     "mode": "library"
+    }
+   },
+   {
+    "template": "akvarel",
+    "fonts": "playfair",
+    "palette": {
+     "bg": "#FFFFFF",
+     "ink": "#214457",
+     "accent": "#649173",
+     "soft": "#B2E6CE"
+    },
+    "art": {
+     "mode": "file",
+     "file": "kvety-1.jpg",
+     "prompt": "delicate watercolor floral elements"
+    }
+   },
+   {
+    "template": "linia",
+    "fonts": "fraunces",
+    "palette": {
+     "bg": "#E5E5EA",
+     "ink": "#333333",
+     "accent": "#767e58",
+     "soft": "#F7F4E9"
+    },
+    "art": {
+     "key": "liniove-listy",
+     "mode": "library"
+    }
+   }
+  ]
+ },
+ {
+  "key": "vino",
+  "prompt": "Rodinné vinárstvo pri Pezinku, tradične a s nádychom luxusu.",
+  "fields": {
+   "name": "Juraj Mrva",
+   "role": "Vinár",
+   "company": "Vinárstvo Pod Pezinkom",
+   "tagline": "Poctivé víno s nádychom luxusu",
+   "address": "Pezinok"
+  },
+  "concepts": [
+   {
+    "template": "zlato",
+    "fonts": "bodoni",
+    "palette": {
+     "bg": "#2f4f4f",
+     "ink": "#ffffff",
+     "accent": "#ffd700",
+     "soft": "#454545"
+    },
+    "art": {
+     "mode": "none"
+    }
+   },
+   {
+    "template": "mramor",
+    "fonts": "playfair",
+    "palette": {
+     "bg": "#3b3f54",
+     "ink": "#ffffff",
+     "accent": "#8b9467",
+     "soft": "#666666"
+    },
+    "art": {
+     "key": "mramor",
+     "mode": "library"
+    }
+   },
+   {
+    "template": "pecat",
+    "fonts": "instrument",
+    "palette": {
+     "bg": "#432b1a",
+     "ink": "#ffffff",
+     "accent": "#8c8258",
+     "soft": "#964b00"
+    },
+    "art": {
+     "mode": "none",
+     "prompt": "traditional wine barrel with grapes"
+    }
+   }
+  ]
+ },
+ {
+  "key": "it",
+  "prompt": "Programátor z Košíc, moderne, tmavo a hravo.",
+  "fields": {
+   "name": "Tomáš Varga",
+   "role": "Programátor",
+   "company": "Bitlab",
+   "tagline": "Kód, ktorý sa dá čítať",
+   "address": "Košice"
+  },
+  "concepts": [
+   {
+    "template": "terminal",
+    "fonts": "mono",
+    "palette": {
+     "bg": "#2b2b2b",
+     "ink": "#ffffff",
+     "accent": "#4CAF50",
+     "soft": "#666666"
+    },
+    "art": {
+     "mode": "none"
+    }
+   },
+   {
+    "template": "monolit",
+    "fonts": "inter",
+    "palette": {
+     "bg": "#333333",
+     "ink": "#ffffff",
+     "accent": "#03A9F4",
+     "soft": "#555555"
+    },
+    "art": {
+     "mode": "none"
+    }
+   },
+   {
+    "template": "prechod",
+    "fonts": "geist",
+    "palette": {
+     "bg": "#0E1230",
+     "ink": "#FFFFFF",
+     "accent": "#C6F24E",
+     "soft": "#444444"
+    },
+    "art": {
+     "mode": "file",
+     "file": "it-2.jpg",
+     "prompt": "dark circuit lines"
+    }
+   }
+  ]
+ }
+]

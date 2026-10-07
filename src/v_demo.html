@@ -6,16 +6,16 @@
 <title>Martin Kováč – Domov Reality · digitálna vizitka</title>
 <meta name="description" content="Digitálna vizitka Martina Kováča. Uložte si kontakt jedným ťuknutím.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#C9A96A">
+<meta name="theme-color" content="#D9B26F">
 <link rel="icon" href="{{ R }}assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Geist:wght@300..700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}">
 <style>
-  html, body { margin: 0; background: #0E0F12; min-height: 100%; }
-  .vpage { max-width: 460px; margin: 0 auto; min-height: 100svh; background: #15171C; box-shadow: 0 0 80px rgba(0,0,0,.5); }
+  html, body { margin: 0; background: #2440E6; min-height: 100%; }
+  .vpage { max-width: 460px; margin: 0 auto; min-height: 100svh; background: #0E0E10; box-shadow: 0 0 80px rgba(0,0,0,.5); }
   @media (min-width: 520px) { body { padding: 32px 0; } .vpage { min-height: auto; border-radius: 28px; overflow: hidden; } }
-  .vnote { max-width: 460px; margin: 18px auto 0; text-align: center; font: 12px/1.5 Geist, system-ui, sans-serif; color: rgba(255,255,255,.45); }
+  .vnote { max-width: 460px; margin: 18px auto 0; text-align: center; font: 12px/1.5 Geist, system-ui, sans-serif; color: rgba(255,255,255,.75); }
   .vnote a { color: rgba(255,255,255,.8); }
 </style>
 <script type="importmap">{{ importmap }}</script>
@@ -26,12 +26,13 @@
 <p class="vnote">Ukážka digitálnej vizitky · <a href="{{ R }}digitalna-vizitka/">Chcem vlastnú</a></p>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script type="module">
-  import { newDesign, templateDefaults } from '{{ R }}assets/js/card-engine.js';
-  import { renderDigital } from '{{ R }}assets/js/digital-card.js';
+  import { newDesign } from '{{ R }}assets/js/v2/model.js';
+  import { templateDefaults } from '{{ R }}assets/js/v2/templates.js';
+  import { renderDigital } from '{{ R }}assets/js/v2/digital.js';
   import { qrSVG } from '{{ R }}assets/js/util.js';
-  const d = newDesign({ tpl: 'linea', ...templateDefaults('linea') });
+  const d = newDesign({ tpl: 'noirgold', ...templateDefaults('noirgold') });
   d.f = { name: 'Martin Kováč', role: 'Realitný maklér', company: 'Domov Reality', phone: '+421 905 123 456', email: 'martin@domovreality.sk', web: 'domovreality.sk', address: 'Panská 14, Bratislava', tagline: 'Kľúče odovzdávam osobne.' };
-  d.digital = { socials: { instagram: 'https://instagram.com/', linkedin: 'https://linkedin.com/' } };
+  d.socials = { instagram: 'https://instagram.com/', linkedin: 'https://linkedin.com/' };
   renderDigital(document.getElementById('card'), d, { url: location.href, qr: (u) => qrSVG(u) });
 </script>
 </body>

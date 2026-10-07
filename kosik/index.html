@@ -9,7 +9,7 @@
 <link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/kosik/">
 <link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/kosik/">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#F2EEE6">
+<meta name="theme-color" content="#2440E6">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Košík | Vizitkomat">
 <meta property="og:description" content="Váš košík s vizitkami. Doprava zdarma na Slovensko aj do Česka.">
@@ -17,15 +17,14 @@
 <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/site.css?v=a10280de">
-<link rel="stylesheet" href="../assets/css/cart.css?v=5949c2ae"><script type="importmap">{"imports": {"../assets/js/util.js": "../assets/js/util.js?v=ceb0b934", "../assets/js/card-engine.js": "../assets/js/card-engine.js?v=cdc4f98a", "../assets/js/cart.js": "../assets/js/cart.js?v=7fdbf79b", "../assets/js/kosik.js": "../assets/js/kosik.js?v=6a239b12", "../assets/js/ai-engine.js": "../assets/js/ai-engine.js?v=80c9504b", "../assets/js/home.js": "../assets/js/home.js?v=d4856b3e", "../assets/js/studio.js": "../assets/js/studio.js?v=2a1cec1c", "../assets/js/digital.js": "../assets/js/digital.js?v=ff3ef5ab", "../assets/js/digital-card.js": "../assets/js/digital-card.js?v=922cd8e2", "../assets/js/site.js": "../assets/js/site.js?v=1b90607b", "../assets/js/logo.js": "../assets/js/logo.js?v=14fdfc37"}}</script>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/pop.css?v=9db13091">
+<link rel="stylesheet" href="../assets/css/pages2.css?v=9103f666"><script type="importmap">{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/", "../assets/js/icons.js": "../assets/js/icons.js?v=dfda49cc", "../assets/js/util.js": "../assets/js/util.js?v=ceb0b934", "../assets/js/card-engine.js": "../assets/js/card-engine.js?v=cdc4f98a", "../assets/js/ai-engine.js": "../assets/js/ai-engine.js?v=80c9504b", "../assets/js/logo.js": "../assets/js/logo.js?v=14fdfc37", "../assets/js/v2/ai.js": "../assets/js/v2/ai.js?v=f5dbecf5", "../assets/js/v2/kosik.js": "../assets/js/v2/kosik.js?v=917f2eec", "../assets/js/v2/three-cards.js": "../assets/js/v2/three-cards.js?v=3039c6fd", "../assets/js/v2/digital-page.js": "../assets/js/v2/digital-page.js?v=58615e58", "../assets/js/v2/store.js": "../assets/js/v2/store.js?v=5d55d845", "../assets/js/v2/render.js": "../assets/js/v2/render.js?v=d0bb1e13", "../assets/js/v2/home.js": "../assets/js/v2/home.js?v=882d615c", "../assets/js/v2/studio.js": "../assets/js/v2/studio.js?v=ff54991c", "../assets/js/v2/editor.js": "../assets/js/v2/editor.js?v=1d9cdd4d", "../assets/js/v2/digital.js": "../assets/js/v2/digital.js?v=5e75623f", "../assets/js/v2/site.js": "../assets/js/v2/site.js?v=0c3cfb98", "../assets/js/v2/templates.js": "../assets/js/v2/templates.js?v=ceebc9c4", "../assets/js/v2/model.js": "../assets/js/v2/model.js?v=d5df1b7b"}}</script>
 <script>
 window.VK = {
   lang: 'sk', root: '../',
-  links: { tvorba: '../tvorba/', kosik: '../kosik/', digital: '../digitalna-vizitka/', cennik: '../cennik/', demo: '../v/demo/' },
+  links: { home: '../', tvorba: '../tvorba/', kosik: '../kosik/', digital: '../digitalna-vizitka/', cennik: '../cennik/', demo: '../v/demo/' },
   prices: {"currency": "EUR", "symbol": "€", "locale": "sk-SK", "vat": 23, "qty": [100, 250, 500, 1000], "papers": {"matny": {"100": 24, "250": 32, "500": 42, "1000": 59}, "triplex": {"100": 69, "250": 89, "500": 119, "1000": 169}}, "finishes": {"none": {"100": 0, "250": 0, "500": 0, "1000": 0}, "matna": {"100": 3, "250": 4, "500": 5, "1000": 7}, "leskla": {"100": 3, "250": 4, "500": 5, "1000": 7}, "soft": {"100": 6, "250": 8, "500": 10, "1000": 14}}, "round": {"100": 9, "250": 12, "500": 16, "1000": 22}, "digital_year": 19, "express": 9},
-  aiEndpoint: '',
   orderEndpoint: ''
 };
 </script>
@@ -33,35 +32,28 @@ window.VK = {
 <body class="page-kosik">
 <a class="skip" href="#main">Preskočiť na obsah</a>
 
-<header class="nav" id="nav">
+<header class="nav solid" id="nav">
   <div class="nav__in">
-    <a class="brand" href="../" aria-label="Vizitkomat">
-      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
-        <rect x="2" y="3" width="28" height="17" rx="4.5" fill="currentColor"/>
-        <rect x="7" y="15" width="18" height="1.8" rx=".9" fill="var(--paper)"/>
-        <rect x="9" y="16.6" width="14" height="12.4" rx="1.4" fill="var(--accent)"/>
-        <rect x="11.2" y="21" width="6" height="1.3" rx=".6" fill="var(--paper)"/>
-        <rect x="11.2" y="23.6" width="9" height="1" rx=".5" fill="var(--paper)" opacity=".7"/>
-      </svg>
-      <span class="brand__word">Vizitko<i>mat</i></span>
-    </a>
+    <a class="brand" href="../" aria-label="Vizitkomat"><span class="brand__dot"></span>vizitkomat</a>
     <nav class="nav__links" aria-label="Hlavná navigácia">
       <a href="../tvorba/">Tvorba</a>
+      <a href="../tvorba/?rezim=ai">AI grafik</a>
       <a href="../digitalna-vizitka/">Digitálna vizitka</a>
       <a href="../cennik/">Cenník</a>
     </nav>
     <div class="nav__end">
-      <a class="nav__lang" href="../cz/kosik/" hreflang="cs" title="Česká verzia"><span class="on">SK</span><span>CZ</span></a>
+      <a class="nav__lang" href="../cz/kosik/" hreflang="cs" title="Česká verzia"><span class="on"><b>SK</b></span><span><b>CZ</b></span></a>
       <a class="nav__cart" href="../kosik/" aria-label="Košík">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14l-1.3 10.2a2 2 0 0 1-2 1.8H8.3a2 2 0 0 1-2-1.8L5 7Z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 9.5V6a3 3 0 0 1 6 0v3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14l-1.2 10.4a2 2 0 0 1-2 1.6H8.2a2 2 0 0 1-2-1.6L5 7Z"/><path d="M9 9.5V6a3 3 0 0 1 6 0v3.5"/></svg>
         <span class="nav__count" data-cart-count hidden>0</span>
       </a>
-      <a class="btn btn--ink btn--sm nav__cta" href="../tvorba/">Navrhnúť vizitku</a>
+      <a class="btn btn--sm btn--nav" href="../tvorba/">Navrhnúť vizitku</a>
       <button class="nav__burger" aria-label="Menu" aria-expanded="false" data-burger><span></span><span></span></button>
     </div>
   </div>
   <div class="nav__sheet" data-sheet>
     <a href="../tvorba/">Tvorba</a>
+    <a href="../tvorba/?rezim=ai">AI grafik</a>
     <a href="../digitalna-vizitka/">Digitálna vizitka</a>
     <a href="../cennik/">Cenník</a>
     <a href="../kosik/">Košík</a>
@@ -72,26 +64,21 @@ window.VK = {
 <main id="main">
 <div class="cart wrap" data-cart>
   <header class="cart__head">
-    <p class="eyebrow">Objednávka</p>
-    <h1 class="h2">Váš <em>košík</em></h1>
-    <ol class="steps" aria-label="Kroky objednávky">
-      <li class="done">Návrh</li>
-      <li class="on">Košík a údaje</li>
-      <li>Platba</li>
-    </ol>
+    <h1 class="h-l">Váš <span class="hl-c">košík</span></h1>
+    <ol class="steps"><li class="done">Návrh</li><li class="on">Košík a údaje</li><li>Platba</li></ol>
   </header>
 
-  <div class="cart__empty" data-empty hidden>
-    <div class="cart__tray"><i></i></div>
-    <h2>Košík je zatiaľ prázdny.</h2>
-    <p>Vizitkomat čaká na vaše meno. Prvý návrh máte za dve minúty.</p>
-    <a class="btn btn--accent" href="../tvorba/">Navrhnúť vizitku <span aria-hidden="true">→</span></a>
+  <div class="empty" data-empty hidden>
+    <span class="sticker">prázdno</span>
+    <h2 class="h-m">Košík je zatiaľ prázdny.</h2>
+    <p>AI grafik čaká na vaše zadanie. Prvé návrhy máte za pár sekúnd.</p>
+    <a class="btn btn--c btn--lg" href="../tvorba/?rezim=ai">Navrhnúť vizitku <span class="ar" style="background:#fff;color:var(--coral)">→</span></a>
   </div>
 
   <div class="cart__grid" data-full hidden>
-    <section class="cart__items">
-      <ul data-items></ul>
-      <a class="link" href="../tvorba/">Pridať ďalšiu vizitku <span>+</span></a>
+    <section>
+      <ul class="items" data-items></ul>
+      <a class="link" href="../tvorba/">Pridať ďalšiu vizitku +</a>
     </section>
 
     <form class="co" data-checkout novalidate>
@@ -102,7 +89,7 @@ window.VK = {
           <label class="fl"><span>Telefón</span><input name="phone" type="tel" autocomplete="tel" required></label>
         </div>
         <label class="fl"><span>E-mail</span><input name="email" type="email" autocomplete="email" required></label>
-        <label class="chk"><input type="checkbox" name="company_on" data-company-toggle> Nakupujem na firmu</label>
+        <label class="chk"><input type="checkbox" data-company-toggle> Nakupujem na firmu</label>
         <div class="co__company" data-company hidden>
           <label class="fl"><span>Názov firmy</span><input name="company" autocomplete="organization"></label>
           <div class="row3">
@@ -111,101 +98,84 @@ window.VK = {
 <label class="fl"><span>IČ DPH</span><input name="icdph"></label>          </div>
         </div>
       </fieldset>
-
       <fieldset data-ship-fs>
         <legend>Doručenie</legend>
-        <div class="radios" data-ship>
-          <label class="radio"><input type="radio" name="ship" value="courier" checked><span><b>Kuriér na adresu</b><small>Zdarma · číslo zásielky pošleme e-mailom</small></span><em>0 €</em></label>
-          <label class="radio"><input type="radio" name="ship" value="packeta"><span><b>Výdajné miesto alebo Z-BOX</b><small>Packeta · výber miesta po objednaní</small></span><em>0 €</em></label>
+        <div class="radios">
+          <label class="radio"><input type="radio" name="ship" value="courier" checked><span><b>Kuriér na adresu</b><small>Číslo zásielky pošleme e-mailom</small></span><em>zadarmo</em></label>
+          <label class="radio"><input type="radio" name="ship" value="packeta"><span><b>Výdajné miesto alebo Z-BOX</b><small>Packeta, miesto vyberiete po objednaní</small></span><em>zadarmo</em></label>
         </div>
         <label class="fl"><span>Ulica a číslo</span><input name="street" autocomplete="address-line1" required></label>
-        <div class="row3 row3--addr">
+        <div class="row3 row3--a">
           <label class="fl"><span>Mesto</span><input name="city" autocomplete="address-level2" required></label>
           <label class="fl"><span>PSČ</span><input name="zip" autocomplete="postal-code" inputmode="numeric" required></label>
-          <label class="fl"><span>Krajina</span>
-            <select name="country" autocomplete="country">
-<option value="SK">Slovensko</option><option value="CZ">Česko</option>            </select></label>
+          <label class="fl"><span>Krajina</span><select name="country" autocomplete="country"><option value="SK">Slovensko</option><option value="CZ">Česko</option></select></label>
         </div>
       </fieldset>
-
       <fieldset>
         <legend>Platba</legend>
         <div class="radios">
-          <label class="radio"><input type="radio" name="pay" value="card" checked><span><b>Kartou online</b><small>Visa, Mastercard, Apple Pay, Google Pay</small></span><em class="cards"><i>VISA</i><i>MC</i><i></i></em></label>
-          <label class="radio"><input type="radio" name="pay" value="transfer"><span><b>Bankovým prevodom</b><small>QR platba, tlačíme po pripísaní platby</small></span></label>
+          <label class="radio"><input type="radio" name="pay" value="card" checked><span><b>Kartou online</b><small>Visa, Mastercard, Apple Pay, Google Pay</small></span></label>
+          <label class="radio"><input type="radio" name="pay" value="transfer"><span><b>Bankovým prevodom</b><small>QR platba, tlačíme po pripísaní</small></span></label>
         </div>
-        <label class="fl"><span>Poznámka k objednávke <i>nepovinné</i></span><textarea name="note" rows="2"></textarea></label>
+        <label class="fl"><span>Poznámka <i>nepovinné</i></span><textarea name="note" rows="2"></textarea></label>
       </fieldset>
-
       <aside class="co__sum">
         <div class="co__lines" data-lines></div>
         <div class="co__total"><span>Spolu s DPH</span><b data-total>—</b></div>
         <p class="co__date" data-date></p>
         <label class="chk chk--terms"><input type="checkbox" name="terms" required> <span>Súhlasím s obchodnými podmienkami a so spracovaním osobných údajov na vybavenie objednávky.</span></label>
         <p class="co__err" data-err hidden></p>
-        <button class="btn btn--accent co__go" type="submit">Objednať s povinnosťou platby</button>
-        <p class="co__safe">Pred tlačou návrh skontroluje človek. Ak niečo nesedí, ozveme sa vám.</p>
+        <button class="btn btn--y btn--lg co__go" type="submit">Objednať s povinnosťou platby</button>
+        <p class="co__safe">Pred tlačou návrh skontroluje človek.</p>
       </aside>
     </form>
   </div>
 
   <section class="done" data-done hidden>
-    <div class="done__card"><img alt="" data-done-img></div>
-    <p class="eyebrow">Objednávka <span data-done-num></span></p>
-    <h2 class="h2">Ďakujeme, <em>máme to.</em></h2>
-    <p class="done__lead" data-done-lead></p>
+    <img class="done__card" alt="" data-done-img>
+    <p class="kicker hl-b" data-done-num></p>
+    <h2 class="h-l">Ďakujeme, <span class="hl-c">máme to!</span></h2>
+    <p class="lead" data-done-lead></p>
     <ol class="done__next">
-      <li><b>Kontrola dát</b><span>Do 24 hodín prejdeme návrh. Ak treba niečo upraviť, napíšeme vám.</span></li>
-      <li><b>Tlač a digitálna vizitka</b><span>Vizitky ideme tlačiť a digitálnu vizitku vám zapneme hneď.</span></li>
+      <li><b>Kontrola dát</b><span>Do 24 hodín prejdeme návrh a ak treba, napíšeme vám.</span></li>
+      <li><b>Tlač a digitálna vizitka</b><span>Vizitky ideme tlačiť a digitálnu vám zapneme hneď.</span></li>
       <li><b>Doručenie</b><span data-done-date></span></li>
     </ol>
     <p class="done__test" data-done-test hidden></p>
-    <a class="btn btn--ink" href="../">Späť na úvod</a>
+    <a class="btn" href="../">Späť na úvod</a>
   </section>
 </div>
 </main>
 
-<footer class="foot" data-dark>
+<footer class="foot" data-nav="ink">
   <div class="foot__in">
     <div class="foot__brand">
-      <a class="brand brand--light" href="../">
-        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
-          <rect x="2" y="3" width="28" height="17" rx="4.5" fill="currentColor"/>
-          <rect x="7" y="15" width="18" height="1.8" rx=".9" fill="var(--night)"/>
-          <rect x="9" y="16.6" width="14" height="12.4" rx="1.4" fill="var(--accent)"/>
-        </svg>
-        <span class="brand__word">Vizitko<i>mat</i></span>
-      </a>
-      <p>Vizitky na papieri aj v telefóne. Navrhnete sami, s AI grafikom alebo z vlastného loga.</p>
+      <a class="brand" href="../"><span class="brand__dot"></span>vizitkomat</a>
+      <p>Vizitky na papieri aj v telefóne. Navrhne ich AI grafik, upravíte ich ako v Canve, vytlačíme a doručíme.</p>
     </div>
     <div class="foot__col">
       <h3>Tvorba</h3>
-      <a href="../tvorba/?rezim=sablony">Generátor vizitiek</a>
-      <a href="../tvorba/?rezim=ai">AI grafik 24/7</a>
+      <a href="../tvorba/?rezim=ai">AI grafik</a>
+      <a href="../tvorba/?rezim=sablony">Šablóny</a>
       <a href="../tvorba/?rezim=logo">Vizitka z loga</a>
-      <a href="../tvorba/?rezim=subor">Vlastný návrh</a>
+      <a href="../tvorba/?rezim=subor">Vlastný súbor</a>
     </div>
     <div class="foot__col">
       <h3>Produkty</h3>
       <a href="../cennik/">Tlačené vizitky</a>
       <a href="../digitalna-vizitka/">Digitálna vizitka</a>
       <a href="../v/demo/">Ukážka digitálnej vizitky</a>
-      <a href="../cennik/#papiere">Papiere a úpravy</a>
     </div>
     <div class="foot__col">
       <h3>Kontakt</h3>
       <a href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a>
-      <span>Odpovedáme do 24 hodín</span>
       <span>Slovensko a Česko</span>
     </div>
   </div>
-  <div class="foot__base">
-    <span>© 2026 Vizitkomat.eu</span>
-    <span class="foot__cmyk" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-    <span>Ceny sú uvedené vrátane DPH</span>
-  </div>
+  <div class="foot__big" aria-hidden="true">vizitkomat</div>
+  <div class="foot__base"><span>© 2026 Vizitkomat.eu</span><span>Ceny sú vrátane DPH</span></div>
 </footer>
 
-<script type="module" src="../assets/js/site.js?v=1b90607b"></script>
-<script type="module" src="../assets/js/kosik.js?v=6a239b12"></script></body>
+<script type="module" src="../assets/js/v2/site.js?v=0c3cfb98"></script>
+<script type="module" src="../assets/js/v2/kosik.js?v=917f2eec"></script></body>
 </html>

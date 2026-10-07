@@ -1,415 +1,229 @@
 {% extends 'base.html' %}
-{% block title %}{{ L('Vizitkomat – vizitky na papieri aj v telefóne', 'Vizitkomat – vizitky na papíře i v telefonu') }}{% endblock %}
-{% block description %}{{ L('Navrhnite vizitku za dve minúty: generátor, AI grafik 24/7 alebo vizitka z vášho loga. Prémiová tlač, doprava zdarma a digitálna vizitka do telefónu.', 'Navrhněte vizitku za dvě minuty: generátor, AI grafik 24/7 nebo vizitka z vašeho loga. Prémiový tisk, doprava zdarma a digitální vizitka do telefonu.') }}{% endblock %}
-{% block head %}<link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}">{% endblock %}
+{% block title %}{{ L('Vizitkomat – vizitka za 2 minúty, navrhne ju AI grafik', 'Vizitkomat – vizitka za 2 minuty, navrhne ji AI grafik') }}{% endblock %}
+{% block description %}{{ L('Napíšte, čím sa živíte, a AI grafik navrhne originálne vizitky. Upravíte ich ako v Canve, vytlačíme na prémiový papier a pridáme digitálnu vizitku. Doprava zdarma.', 'Napište, čím se živíte, a AI grafik navrhne originální vizitky. Upravíte je jako v Canvě, vytiskneme na prémiový papír a přidáme digitální vizitku. Doprava zdarma.') }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}">
+<link rel="stylesheet" href="{{ A('assets/css/home2.css') }}">
+{% endblock %}
 {% block main %}
 
-<!-- ============ HERO ============ -->
-<section class="hero">
-  <div class="hero__grid wrap">
+<!-- ===== HERO ===== -->
+<section class="hero" data-nav="blue">
+  <div class="wrap hero__grid">
     <div class="hero__copy">
-      <p class="eyebrow"><span class="dot"></span>{{ L('Vizitky · tlač aj digitál · Slovensko a Česko', 'Vizitky · tisk i digitál · Česko a Slovensko') }}</p>
-      <h1 class="hero__title">
-        <span class="line"><span>{{ L('Vizitky, na', 'Vizitky, na') }}</span></span>
-        <span class="line"><span>{{ L('ktoré sa', 'které se') }} <em>{{ L('nezabúda.', 'nezapomíná.') }}</em></span></span>
-      </h1>
-      <p class="hero__lead">{{ L('Navrhnete ich za dve minúty: sami, s AI grafikom, ktorý nikdy nespí, alebo priamo z vášho loga. Vytlačíme ich na poctivý papier a do telefónu dostanete aj digitálnu verziu.', 'Navrhnete je za dvě minuty: sami, s AI grafikem, který nikdy nespí, nebo přímo z vašeho loga. Vytiskneme je na poctivý papír a do telefonu dostanete i digitální verzi.') }}</p>
-
-      <form class="namebox" data-namebox action="{{ link('tvorba') }}">
-        <label for="hero-name" class="namebox__label">{{ L('Skúste to. Ako sa voláte?', 'Zkuste to. Jak se jmenujete?') }}</label>
-        <div class="namebox__row">
-          <input id="hero-name" name="meno" autocomplete="name" maxlength="40" placeholder="{{ L('Vaše meno a priezvisko', 'Vaše jméno a příjmení') }}">
-          <button class="btn btn--accent" type="submit">{{ L('Navrhnúť', 'Navrhnout') }} <span aria-hidden="true">→</span></button>
-        </div>
+      <p class="kicker hl">{{ L('AI grafik · tlač · digitál', 'AI grafik · tisk · digitál') }}</p>
+      <h1 class="h-xl hero__h">{{ L('Vizitka za', 'Vizitka za') }} <span class="hl">{{ L('2 minúty.', '2 minuty.') }}</span> {{ L('Bez grafika.', 'Bez grafika.') }}</h1>
+      <p class="lead hero__lead">{{ L('Napíšte, čím sa živíte. AI grafik navrhne tri originálne vizitky, vy ich doladíte ako v Canve a my ich vytlačíme a pošleme. K tomu digitálna verzia do mobilu.', 'Napište, čím se živíte. AI grafik navrhne tři originální vizitky, vy je doladíte jako v Canvě a my je vytiskneme a pošleme. K tomu digitální verze do mobilu.') }}</p>
+      <form class="aibox" data-aibox>
+        <label for="ai-in" class="sr">{{ L('Popis pre AI grafika', 'Popis pro AI grafika') }}</label>
+        <input id="ai-in" data-ai-in maxlength="300" autocomplete="off" placeholder="{{ L('Napr. kaderníčka v Trnave, jemný štýl', 'Např. kadeřnice v Brně, jemný styl') }}">
+        <button class="btn btn--c" type="submit">{{ L('Navrhni mi vizitky', 'Navrhni mi vizitky') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
       </form>
-
-      <ul class="hero__facts">
-        <li><b>{{ L('Doprava zdarma', 'Doprava zdarma') }}</b> {{ L('na Slovensko aj do Česka', 'po Česku i na Slovensko') }}</li>
-        <li><b>{{ L('Kontrolu dát robí človek', 'Kontrolu dat dělá člověk') }}</b> {{ L('pred každou tlačou', 'před každým tiskem') }}</li>
-        <li><b>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</b> {{ L('na prvý rok zadarmo', 'na první rok zdarma') }}</li>
+      <div class="hero__chips" data-ai-chips>
+        <button data-p="{{ L('Som kaderníčka v Trnave, chcem niečo jemné a elegantné', 'Jsem kadeřnice v Brně, chci něco jemného a elegantního') }}">{{ L('Kaderníčka', 'Kadeřnice') }}</button>
+        <button data-p="{{ L('Realitný maklér v Bratislave, prémiovo a dôveryhodne', 'Realitní makléř v Praze, prémiově a důvěryhodně') }}">{{ L('Maklér', 'Makléř') }}</button>
+        <button data-p="{{ L('Stolár zo Žiliny, nábytok na mieru, prírodne', 'Truhlář z Olomouce, nábytek na míru, přírodně') }}">{{ L('Stolár', 'Truhlář') }}</button>
+        <button data-p="{{ L('Fitness trénerka, energicky a odvážne', 'Fitness trenérka, energicky a odvážně') }}">{{ L('Trénerka', 'Trenérka') }}</button>
+        <button data-p="{{ L('Kaviareň s pražiarňou, retro a hravo', 'Kavárna s pražírnou, retro a hravě') }}">{{ L('Kaviareň', 'Kavárna') }}</button>
+      </div>
+      <ul class="hero__trust">
+        <li>{{ L('Doprava zdarma SK a CZ', 'Doprava zdarma CZ a SK') }}</li>
+        <li>{{ L('Kontrolu dát robí človek', 'Kontrolu dat dělá člověk') }}</li>
+        <li>{{ L('Od', 'Od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }}</li>
       </ul>
     </div>
-
-    <!-- automat -->
-    <div class="hero__machine">
-      <div class="machine" data-machine>
-        <div class="machine__top">
-          <span class="machine__brand">VIZITKOMAT</span>
-          <span class="machine__model">MODEL 01 · <span data-m-size>90×50</span></span>
-          <span class="machine__led" data-led></span>
-        </div>
-        <div class="machine__screen">
-          <div class="machine__glass">
-            <canvas class="machine__card" data-m-card width="900" height="500" aria-label="{{ L('Náhľad vizitky', 'Náhled vizitky') }}"></canvas>
-          </div>
-          <div class="machine__readout" aria-live="polite"><span data-m-read>{{ L('PRIPRAVENÝ · NAPÍŠTE SVOJE MENO', 'PŘIPRAVEN · NAPIŠTE SVÉ JMÉNO') }}</span><i class="caret"></i></div>
-        </div>
-        <div class="machine__panel">
-          <div class="machine__keys" role="group" aria-label="{{ L('Spôsob tvorby', 'Způsob tvorby') }}">
-            <button class="key is-on" data-key="tpl"><span>01</span>{{ L('Šablóna', 'Šablona') }}</button>
-            <button class="key" data-key="ai"><span>02</span>{{ L('AI grafik', 'AI grafik') }}</button>
-            <button class="key" data-key="logo"><span>03</span>{{ L('Logo', 'Logo') }}</button>
-            <button class="key" data-key="side"><span>04</span>{{ L('Otočiť', 'Otočit') }}</button>
-          </div>
-          <button class="machine__print" data-print aria-label="{{ L('Vytlačiť ukážku', 'Vytisknout ukázku') }}"><span>{{ L('TLAČ', 'TISK') }}</span></button>
-        </div>
-        <div class="machine__slot"><i></i></div>
-        <div class="machine__tray" data-tray aria-hidden="true">
-          <div class="machine__out" data-out><img alt="" data-out-img></div>
-        </div>
-        <input type="file" accept="image/*" hidden data-logo-input>
+    <div class="hero__vis" data-hero-vis>
+      <div class="stack" data-stack>
+        <img class="stk stk--1" alt="" data-stk="0">
+        <img class="stk stk--2" alt="" data-stk="1">
+        <img class="stk stk--3" alt="" data-stk="2">
       </div>
-      <a class="machine__next" href="{{ link('tvorba') }}" data-m-next hidden>{{ L('Dotvoriť túto vizitku', 'Dotvořit tuto vizitku') }} <span aria-hidden="true">→</span></a>
+      <div class="ai-run" data-ai-run hidden>
+        <div class="ai-run__load" data-ai-load><span class="dots"><i></i><i></i><i></i></span><b data-ai-step>{{ L('Čítam zadanie…', 'Čtu zadání…') }}</b></div>
+        <div class="ai-run__res" data-ai-res hidden>
+          <p data-ai-intro></p>
+          <div class="ai-run__grid" data-ai-grid></div>
+          <a class="btn btn--y btn--sm" href="{{ link('tvorba') }}" data-ai-open>{{ L('Upraviť v editore', 'Upravit v editoru') }} <span class="ar">→</span></a>
+        </div>
+      </div>
+      <span class="sticker hero__sticker">AI<br>{{ L('grafik', 'grafik') }}<br>24/7</span>
     </div>
   </div>
-  <div class="hero__scroll" aria-hidden="true"><span>{{ L('Štyri cesty k vizitke', 'Čtyři cesty k vizitce') }}</span><i></i></div>
 </section>
 
-<!-- ============ COLOR BAR ============ -->
-<div class="colorbar" aria-hidden="true">
-  <div class="colorbar__chips"><i style="--c:var(--cyan)"></i><i style="--c:var(--magenta)"></i><i style="--c:var(--yellow)"></i><i style="--c:var(--ink)"></i></div>
-  <div class="colorbar__track">
-    {% for _ in range(2) %}
-    <div class="colorbar__run">
-      <span>90 × 50 mm</span><span>350 g/m²</span><span>Soft-touch</span><span>Triplex 720 g</span><span>{{ L('Zaoblené rohy', 'Zaoblené rohy') }}</span><span>{{ L('QR → digitálna vizitka', 'QR → digitální vizitka') }}</span><span>{{ L('Spadávka 2 mm', 'Spadávka 2 mm') }}</span><span>CMYK</span><span>{{ L('Doprava zdarma', 'Doprava zdarma') }}</span><span>{{ L('Kontrola dát človekom', 'Kontrola dat člověkem') }}</span>
-    </div>
-    {% endfor %}
-  </div>
-</div>
+<div class="band-clip" aria-hidden="true"><div class="band"><div class="band__in">
+  {% for _ in range(2) %}<span>350 g {{ L('papier', 'papír') }}</span><span>AI grafik 24/7</span><span>{{ L('Doprava zdarma', 'Doprava zdarma') }}</span><span>Soft-touch</span><span>{{ L('QR do telefónu', 'QR do telefonu') }}</span><span>{{ L('Editor ako Canva', 'Editor jako Canva') }}</span><span>{{ L('Od', 'Od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }}</span>{% endfor %}
+</div></div></div>
 
-<!-- ============ ŠTYRI CESTY ============ -->
-<section class="ways" id="cesty">
+<!-- ===== AKO TO FUNGUJE ===== -->
+<section class="how" data-nav="cream">
   <div class="wrap">
-    <header class="sechead">
-      <p class="eyebrow">{{ L('Tvorba', 'Tvorba') }}</p>
-      <h2 class="h2">{{ L('Štyri cesty k vizitke.', 'Čtyři cesty k vizitce.') }} <em>{{ L('Vyberte si tú svoju.', 'Vyberte si tu svou.') }}</em></h2>
-      <p class="sechead__lead">{{ L('Grafické štúdio za vás nikto nechce platiť, šablóny z tlačiarne vyzerajú všetky rovnako. My sme to vyriešili inak: každý návrh skladáme z vašich údajov, farieb a štýlu.', 'Grafické studio za vás nikdo platit nechce a šablony z tiskárny vypadají všechny stejně. Vyřešili jsme to jinak: každý návrh skládáme z vašich údajů, barev a stylu.') }}</p>
-    </header>
-
-    <div class="ways__grid">
-      <div class="ways__stage" data-stage>
-        <div class="stage__desk">
-          <!-- 01 generátor -->
-          <div class="stage__panel is-on" data-panel="0">
-            <div class="gen">
-              <canvas class="gen__card" data-gen-card width="900" height="500"></canvas>
-              <div class="gen__thumbs" data-gen-thumbs></div>
-            </div>
-          </div>
-          <!-- 02 AI -->
-          <div class="stage__panel" data-panel="1">
-            <div class="ai">
-              <div class="ai__chat">
-                <div class="ai__msg ai__msg--me" data-ai-typed></div>
-                <div class="ai__msg ai__msg--bot" data-ai-reply hidden></div>
-              </div>
-              <div class="ai__fan" data-ai-fan></div>
-              <form class="ai__try" data-ai-form>
-                <input data-ai-input maxlength="160" placeholder="{{ L('Popíšte sa: čím sa živíte, aký štýl chcete…', 'Popište se: čím se živíte, jaký styl chcete…') }}" aria-label="{{ L('Popis pre AI grafika', 'Popis pro AI grafika') }}">
-                <button class="btn btn--ink btn--sm" type="submit">{{ L('Navrhni', 'Navrhni') }}</button>
-              </form>
-            </div>
-          </div>
-          <!-- 03 logo -->
-          <div class="stage__panel" data-panel="2">
-            <div class="lg">
-              <label class="lg__drop" data-lg-drop>
-                <input type="file" accept="image/*" hidden data-lg-input>
-                <img alt="" data-lg-img>
-                <span class="lg__hint">{{ L('Pustite sem svoje logo', 'Pusťte sem své logo') }}<small>{{ L('alebo kliknite · PNG, JPG, SVG', 'nebo klikněte · PNG, JPG, SVG') }}</small></span>
-              </label>
-              <div class="lg__swatches" data-lg-sw></div>
-              <div class="lg__cards" data-lg-cards></div>
-            </div>
-          </div>
-          <!-- 04 súbor -->
-          <div class="stage__panel" data-panel="3">
-            <div class="fl">
-              <div class="fl__sheet">
-                <canvas data-fl-card width="1000" height="640"></canvas>
-                <span class="fl__tag fl__tag--bleed">{{ L('spadávka 2 mm', 'spadávka 2 mm') }}</span>
-                <span class="fl__tag fl__tag--safe">{{ L('bezpečná zóna', 'bezpečná zóna') }}</span>
-              </div>
-              <ul class="fl__checks" data-fl-checks>
-                <li><i></i>{{ L('Rozlíšenie aspoň 300 dpi', 'Rozlišení aspoň 300 dpi') }}</li>
-                <li><i></i>{{ L('Spadávka 2 mm na každej strane', 'Spadávka 2 mm na každé straně') }}</li>
-                <li><i></i>{{ L('Texty v bezpečnej zóne', 'Texty v bezpečné zóně') }}</li>
-                <li><i></i>{{ L('Farby prevedené do CMYK', 'Barvy převedené do CMYK') }}</li>
-                <li><i></i>{{ L('Skontroloval človek, nie len skript', 'Zkontroloval člověk, ne jen skript') }}</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="stage__meta"><span data-stage-num>01</span> / 04 <span class="stage__bar"><i data-stage-bar></i></span></div>
-      </div>
-
-      <div class="ways__steps">
-        <article class="way" data-way="0">
-          <span class="way__num">01</span>
-          <h3>{{ L('Generátor', 'Generátor') }} <em>{{ L('s vkusom', 's vkusem') }}</em></h3>
-          <p>{{ L('Štrnásť šablón, ktoré navrhol grafik, nie algoritmus. Vpíšete údaje a vizitka sa sama poskladá: písmo sa zmenší, keď máte dlhé meno, farby si strážia kontrast a nič neutečie do orezu.', 'Čtrnáct šablon, které navrhl grafik, ne algoritmus. Vepíšete údaje a vizitka se sama poskládá: písmo se zmenší, když máte dlouhé jméno, barvy si hlídají kontrast a nic neuteče do ořezu.') }}</p>
-          <ul class="way__list">
-            <li>{{ L('Živý náhľad prednej aj zadnej strany', 'Živý náhled přední i zadní strany') }}</li>
-            <li>{{ L('12 farebných paliet a 12 písiem', '12 barevných palet a 12 písem') }}</li>
-            <li>{{ L('Tlačové PDF so spadávkou na jedno kliknutie', 'Tiskové PDF se spadávkou na jedno kliknutí') }}</li>
-          </ul>
-          <a class="link" href="{{ link('tvorba') }}?rezim=sablony">{{ L('Otvoriť generátor', 'Otevřít generátor') }} <span>→</span></a>
-        </article>
-        <article class="way" data-way="1">
-          <span class="way__num">02</span>
-          <h3>{{ L('AI grafik', 'AI grafik') }} <em>24/7</em></h3>
-          <p>{{ L('Napíšte mu ako kamarátovi: „mám kvetinárstvo v Žiline, chcem niečo jemné“. Za pár sekúnd vám ukáže niekoľko hotových návrhov s vhodnými farbami, písmom aj sloganom. V nedeľu o polnoci rovnako ako v pondelok ráno.', 'Napište mu jako kamarádovi: „mám květinářství v Brně, chci něco jemného“. Za pár sekund vám ukáže několik hotových návrhů s vhodnými barvami, písmem i sloganem. V neděli o půlnoci stejně jako v pondělí ráno.') }}</p>
-          <ul class="way__list">
-            <li>{{ L('Rozumie slovenčine aj češtine', 'Rozumí češtině i slovenštině') }}</li>
-            <li>{{ L('Navrhne farby, písmo, rozloženie aj slogan', 'Navrhne barvy, písmo, rozložení i slogan') }}</li>
-            <li>{{ L('Každý návrh môžete ďalej upravovať', 'Každý návrh můžete dál upravovat') }}</li>
-          </ul>
-          <a class="link" href="{{ link('tvorba') }}?rezim=ai">{{ L('Porozprávať sa s AI grafikom', 'Popovídat si s AI grafikem') }} <span>→</span></a>
-        </article>
-        <article class="way" data-way="2">
-          <span class="way__num">03</span>
-          <h3>{{ L('Vizitka', 'Vizitka') }} <em>{{ L('z vášho loga', 'z vašeho loga') }}</em></h3>
-          <p>{{ L('Nahrajte logo a Vizitkomat si z neho prečíta farby vašej značky. Odstráni biele pozadie a postaví vizitky, ktoré k logu naozaj patria. Žiadne hľadanie farebných kódov.', 'Nahrajte logo a Vizitkomat si z něj přečte barvy vaší značky. Odstraní bílé pozadí a postaví vizitky, které k logu opravdu patří. Žádné hledání barevných kódů.') }}</p>
-          <ul class="way__list">
-            <li>{{ L('Automatické farby značky', 'Automatické barvy značky') }}</li>
-            <li>{{ L('Odstránenie bieleho pozadia', 'Odstranění bílého pozadí') }}</li>
-            <li>{{ L('Vyskúšajte to hneď tu vľavo', 'Vyzkoušejte to hned tady vlevo') }}</li>
-          </ul>
-          <a class="link" href="{{ link('tvorba') }}?rezim=logo">{{ L('Nahrať logo', 'Nahrát logo') }} <span>→</span></a>
-        </article>
-        <article class="way" data-way="3">
-          <span class="way__num">04</span>
-          <h3>{{ L('Máte vlastný', 'Máte vlastní') }} <em>{{ L('návrh?', 'návrh?') }}</em></h3>
-          <p>{{ L('Pošlite PDF alebo obrázok od svojho grafika. Pred tlačou ho prejde človek: skontroluje rozlíšenie, spadávku, bezpečnú zónu aj farby. Ak niečo nesedí, ozveme sa skôr, než sa čokoľvek vytlačí.', 'Pošlete PDF nebo obrázek od svého grafika. Před tiskem ho projde člověk: zkontroluje rozlišení, spadávku, bezpečnou zónu i barvy. Pokud něco nesedí, ozveme se dřív, než se cokoli vytiskne.') }}</p>
-          <ul class="way__list">
-            <li>{{ L('PDF, PNG, JPG aj TIFF', 'PDF, PNG, JPG i TIFF') }}</li>
-            <li>{{ L('Kontrola tlačových dát v cene', 'Kontrola tiskových dat v ceně') }}</li>
-            <li>{{ L('Odpoveď do 24 hodín', 'Odpověď do 24 hodin') }}</li>
-          </ul>
-          <a class="link" href="{{ link('tvorba') }}?rezim=subor">{{ L('Nahrať vlastný návrh', 'Nahrát vlastní návrh') }} <span>→</span></a>
-        </article>
-      </div>
+    <h2 class="h-l rv">{{ L('Tri kroky.', 'Tři kroky.') }} <span class="hl-c">{{ L('Žiadny grafik.', 'Žádný grafik.') }}</span></h2>
+    <div class="how__grid">
+      <article class="step step--1 rv">
+        <span class="step__n">1</span>
+        <h3>{{ L('Napíšete, čo robíte', 'Napíšete, co děláte') }}</h3>
+        <p>{{ L('Jednou vetou, ako kamarátovi. AI grafik pochopí odbor, štýl aj mesto.', 'Jednou větou, jako kamarádovi. AI grafik pochopí obor, styl i město.') }}</p>
+        <div class="step__vis step__vis--chat"><span class="b b--me">{{ L('Kvetinárstvo v Nitre, niečo jemné', 'Květinářství v Brně, něco jemného') }}</span><span class="b b--ai">{{ L('Mám tri návrhy, aj s akvarelom na mieru', 'Mám tři návrhy, i s akvarelem na míru') }}</span></div>
+      </article>
+      <article class="step step--2 rv">
+        <span class="step__n">2</span>
+        <h3>{{ L('Doladíte ako v Canve', 'Doladíte jako v Canvě') }}</h3>
+        <p>{{ L('Kliknete do vizitky, posuniete text, zmeníte písmo, farby či ikonky.', 'Kliknete do vizitky, posunete text, změníte písmo, barvy nebo ikony.') }}</p>
+        <div class="step__vis step__vis--ed"><img alt="" data-step-card><span class="sel"></span><span class="cur"></span></div>
+      </article>
+      <article class="step step--3 rv">
+        <span class="step__n">3</span>
+        <h3>{{ L('Vytlačíme a pošleme', 'Vytiskneme a pošleme') }}</h3>
+        <p>{{ L('Človek skontroluje tlačové dáta, vytlačíme na prémiový papier a kuriér ich prinesie.', 'Člověk zkontroluje tisková data, vytiskneme na prémiový papír a kurýr je přiveze.') }}</p>
+        <div class="step__vis step__vis--box"><b data-arrive></b><small>{{ L('odhad doručenia', 'odhad doručení') }}</small></div>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- ============ PAPIER + TELEFÓN ============ -->
-<section class="twin" id="digital" data-dark>
-  <div class="twin__glow" aria-hidden="true"></div>
-  <div class="wrap twin__grid">
-    <div class="twin__copy">
-      <p class="eyebrow eyebrow--light">{{ L('Digitálna vizitka', 'Digitální vizitka') }}</p>
-      <h2 class="h2">{{ L('Na papieri', 'Na papíře') }} <em>{{ L('aj v telefóne.', 'i v telefonu.') }}</em></h2>
-      <p class="twin__lead">{{ L('Ku každej tlačenej vizitke dostanete digitálne dvojča. QR kód na zadnej strane otvorí vašu vizitku v telefóne a jedným ťuknutím sa uloží do kontaktov. Keď sa vám zmení číslo, prepíšete ho a nemusíte nič dotláčať.', 'Ke každé tištěné vizitce dostanete digitální dvojče. QR kód na zadní straně otevře vaši vizitku v telefonu a jedním ťuknutím se uloží do kontaktů. Když se vám změní číslo, přepíšete ho a nemusíte nic dotiskovat.') }}</p>
-      <ul class="twin__feats">
-        <li><b>{{ L('Uložiť do kontaktov', 'Uložit do kontaktů') }}</b><span>{{ L('Meno, číslo, e-mail aj fotka v telefóne za sekundu', 'Jméno, číslo, e-mail i fotka v telefonu za vteřinu') }}</span></li>
-        <li><b>{{ L('Zdieľanie bez papiera', 'Sdílení bez papíru') }}</b><span>{{ L('QR kód, odkaz do SMS, WhatsAppu či e-mailu', 'QR kód, odkaz do SMS, WhatsAppu či e-mailu') }}</span></li>
-        <li><b>{{ L('Zmeny kedykoľvek', 'Změny kdykoli') }}</b><span>{{ L('Nová pozícia alebo číslo bez novej tlače', 'Nová pozice nebo číslo bez nového tisku') }}</span></li>
-        <li><b>{{ L('Vo vašom dizajne', 'Ve vašem designu') }}</b><span>{{ L('Rovnaké farby a písmo ako na papieri', 'Stejné barvy a písmo jako na papíře') }}</span></li>
+<!-- ===== AI UKÁŽKY ===== -->
+<section class="real" data-nav="ink">
+  <div class="wrap">
+    <div class="real__head">
+      <h2 class="h-l rv">{{ L('Skutočná AI.', 'Skutečná AI.') }} <span class="hl">{{ L('Nie šablóna s menom.', 'Ne šablona se jménem.') }}</span></h2>
+      <p class="lead rv">{{ L('AI grafik pochopí odbor aj štýl, vyberie rozloženie, farby a písmo, napíše slogan a keď treba, nakreslí vlastnú grafiku. Toto sú návrhy, ktoré pripravil z jednej vety.', 'AI grafik pochopí obor i styl, vybere rozložení, barvy a písmo, napíše slogan a když je potřeba, nakreslí vlastní grafiku. Tohle jsou návrhy, které připravil z jedné věty.') }}</p>
+    </div>
+    <div class="real__tabs" role="tablist" data-real-tabs></div>
+    <div class="real__stage">
+      <p class="real__prompt" data-real-prompt></p>
+      <div class="real__cards" data-real-cards></div>
+    </div>
+    <a class="btn btn--y btn--lg rv" href="{{ link('tvorba') }}?rezim=ai">{{ L('Vyskúšať AI grafika', 'Vyzkoušet AI grafika') }} <span class="ar">→</span></a>
+  </div>
+</section>
+
+<!-- ===== EDITOR ===== -->
+<section class="edit" data-nav="cream">
+  <div class="wrap edit__grid">
+    <div class="edit__copy">
+      <h2 class="h-l rv">{{ L('Upravte čokoľvek.', 'Upravte cokoli.') }} <span class="hl-b">{{ L('Priamo vo vizitke.', 'Přímo ve vizitce.') }}</span></h2>
+      <p class="lead rv">{{ L('Žiadne formuláre a čakanie na grafika. Chytíte text a posuniete ho, dvojklikom ho prepíšete, farbu zmeníte jedným ťuknutím.', 'Žádné formuláře a čekání na grafika. Chytíte text a posunete ho, dvojklikem ho přepíšete, barvu změníte jedním ťuknutím.') }}</p>
+      <ul class="edit__list rv">
+        <li>{{ L('14 písiem so slovenskou a českou diakritikou', '14 písem s českou a slovenskou diakritikou') }}</li>
+        <li>{{ L('Ikony, tvary, QR kód aj vaše logo', 'Ikony, tvary, QR kód i vaše logo') }}</li>
+        <li>{{ L('Vodiace čiary, nič neutečie do orezu', 'Vodicí čáry, nic neuteče do ořezu') }}</li>
+        <li>{{ L('3D náhľad a tlačové PDF so spadávkou', '3D náhled a tiskové PDF se spadávkou') }}</li>
       </ul>
-      <div class="twin__cta">
-        <a class="btn btn--accent" href="{{ link('digitalna') }}">{{ L('Viac o digitálnej vizitke', 'Více o digitální vizitce') }}</a>
-        <a class="link link--light" href="{{ R }}v/demo/">{{ L('Otvoriť ukážku', 'Otevřít ukázku') }} <span>→</span></a>
-      </div>
+      <a class="btn btn--b rv" href="{{ link('tvorba') }}">{{ L('Otvoriť editor', 'Otevřít editor') }} <span class="ar">→</span></a>
     </div>
-    <div class="twin__visual">
-      <div class="twin__paper" data-twin-paper>
-        <canvas data-twin-card width="900" height="500"></canvas>
-      </div>
-      <div class="phone" data-tilt>
-        <div class="phone__screen"><div class="phone__island"></div><div class="dcard-host" data-twin-phone></div></div>
-      </div>
-      <div class="twin__scan">
-        <div class="twin__qr" data-twin-qr></div>
-        <p>{{ L('Naskenujte si to telefónom.', 'Naskenujte si to telefonem.') }}<br><span>{{ L('Toto je skutočná digitálna vizitka.', 'Tohle je skutečná digitální vizitka.') }}</span></p>
+    <div class="edit__try rv">
+      <div class="edit__win">
+        <div class="edit__bar"><i></i><i></i><i></i><span>{{ L('Vyskúšajte: chyťte meno a posuňte ho', 'Vyzkoušejte: chyťte jméno a posuňte ho') }}</span></div>
+        <div class="edit__host" data-mini><canvas data-mini-canvas></canvas></div>
+        <div class="edit__tools" data-mini-tools>
+          <button data-mt="pal"><span class="dot" style="background:linear-gradient(135deg,#2440E6 50%,#FFD23F 50%)"></span>{{ L('Farby', 'Barvy') }}</button>
+          <button data-mt="font"><b>Aa</b>{{ L('Písmo', 'Písmo') }}</button>
+          <button data-mt="tpl"><span class="dot" style="background:#FF6B4A"></span>{{ L('Šablóna', 'Šablona') }}</button>
+          <button data-mt="icon"><span class="dot dot--heart">♥</span>{{ L('Ikona', 'Ikona') }}</button>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ PAPIERE ============ -->
-<section class="paper" id="papiere">
+<!-- ===== ŠABLÓNY ===== -->
+<section class="tpls" data-nav="coral">
+  <div class="wrap tpls__head">
+    <h2 class="h-l rv">{{ L('19 šablón.', '19 šablon.') }} <span class="tpls__y">{{ L('Tisíce kombinácií.', 'Tisíce kombinací.') }}</span></h2>
+    <p class="lead rv">{{ L('Každú vidíte rovno s vaším menom, farbami a písmom. Prejdite myšou a karta sa otočí.', 'Každou vidíte rovnou se svým jménem, barvami a písmem. Přejeďte myší a karta se otočí.') }}</p>
+  </div>
+  <div class="tpls__rows" data-tpl-rows>
+    <div class="tpls__row"><div class="tpls__track" data-row="0"></div></div>
+    <div class="tpls__row tpls__row--rev"><div class="tpls__track" data-row="1"></div></div>
+  </div>
+  <div class="wrap"><a class="btn btn--w btn--lg rv" href="{{ link('tvorba') }}?rezim=sablony">{{ L('Pozrieť všetky šablóny', 'Prohlédnout všechny šablony') }} <span class="ar">→</span></a></div>
+</section>
+
+<!-- ===== PAPIER 3D ===== -->
+<section class="paper" data-nav="blue">
   <div class="wrap paper__grid">
     <div class="paper__copy">
-      <p class="eyebrow">{{ L('Materiály', 'Materiály') }}</p>
-      <h2 class="h2">{{ L('Papier, ktorý', 'Papír, který') }} <em>{{ L('cítiť v ruke.', 'cítíte v ruce.') }}</em></h2>
-      <p class="sechead__lead">{{ L('Vizitku si človek najprv ohmatá a až potom prečíta. Preto netlačíme na tenký kancelársky papier.', 'Vizitku si člověk nejdřív ohmatá a až potom přečte. Proto netiskneme na tenký kancelářský papír.') }}</p>
-      <div class="mats" role="tablist" data-mats>
-        <button class="mat is-on" role="tab" data-mat="matny" data-thick="0.42" data-sheen="0" aria-selected="true">
-          <span class="mat__sw" style="--sw:#F4EFE6"></span>
-          <span class="mat__t"><b>{{ L('Matný 350 g', 'Matný 350 g') }}</b><small>{{ L('Klasika s prirodzeným povrchom. Dá sa naň písať perom.', 'Klasika s přirozeným povrchem. Dá se na něj psát perem.') }}</small></span>
-          <span class="mat__mm">0,42 mm</span>
-        </button>
-        <button class="mat" role="tab" data-mat="soft" data-thick="0.46" data-sheen="soft" aria-selected="false">
-          <span class="mat__sw" style="--sw:#2B2A27"></span>
-          <span class="mat__t"><b>Soft-touch</b><small>{{ L('Zamatový povrch ako broskyňa. Vizitka, ktorú chce človek držať.', 'Sametový povrch jako broskev. Vizitka, kterou chce člověk držet.') }}</small></span>
-          <span class="mat__mm">0,46 mm</span>
-        </button>
-        <button class="mat" role="tab" data-mat="leskla" data-thick="0.45" data-sheen="gloss" aria-selected="false">
-          <span class="mat__sw" style="--sw:#2C3FD6"></span>
-          <span class="mat__t"><b>{{ L('Lesklá laminácia', 'Lesklá laminace') }}</b><small>{{ L('Sýte farby a lesk. Sedí k fotkám a výrazným značkám.', 'Sytější barvy a lesk. Sedí k fotkám a výrazným značkám.') }}</small></span>
-          <span class="mat__mm">0,45 mm</span>
-        </button>
-        <button class="mat" role="tab" data-mat="triplex" data-thick="0.92" data-sheen="0" data-core="#E8462B" aria-selected="false">
-          <span class="mat__sw mat__sw--tri" style="--sw:#F4EFE6"></span>
-          <span class="mat__t"><b>Triplex 720 g</b><small>{{ L('Tri vrstvy, farebné jadro na hrane. Vizitka, ktorú si nikto nevyhodí.', 'Tři vrstvy, barevné jádro na hraně. Vizitka, kterou nikdo nevyhodí.') }}</small></span>
-          <span class="mat__mm">0,92 mm</span>
-        </button>
+      <h2 class="h-l rv">{{ L('Papier, ktorý', 'Papír, který') }} <span class="hl">{{ L('cítiť.', 'cítíte.') }}</span></h2>
+      <p class="lead rv">{{ L('Vizitku si človek najprv ohmatá a až potom prečíta. Vyberte povrch a otočte si ju.', 'Vizitku si člověk nejdřív ohmatá a až potom přečte. Vyberte povrch a otočte si ji.') }}</p>
+      <div class="mats rv" data-mats>
+        <button class="on" data-mat="matte"><b>{{ L('Matný 350 g', 'Matný 350 g') }}</b><small>{{ L('Klasika, dá sa naň písať', 'Klasika, dá se na něj psát') }}</small></button>
+        <button data-mat="soft"><b>Soft-touch</b><small>{{ L('Zamatový, ako broskyňa', 'Sametový, jako broskev') }}</small></button>
+        <button data-mat="gloss"><b>{{ L('Lesk', 'Lesk') }}</b><small>{{ L('Sýte farby a odlesk', 'Sytější barvy a odlesk') }}</small></button>
+        <button data-mat="triplex"><b>Triplex 720 g</b><small>{{ L('Hrubý, s farebným jadrom', 'Silný, s barevným jádrem') }}</small></button>
       </div>
     </div>
-    <div class="paper__visual">
-      <div class="slab" data-slab>
-        <div class="slab__card" data-slab-card>
-          <div class="slab__face slab__face--front"><img alt="" data-slab-front></div>
-          <div class="slab__face slab__face--back"><img alt="" data-slab-back></div>
-          <div class="slab__edge slab__edge--b"></div>
-          <div class="slab__edge slab__edge--r"></div>
-          <div class="slab__sheen"></div>
-        </div>
-        <div class="slab__shadow"></div>
-      </div>
-      <p class="paper__caption" data-slab-caption>{{ L('Hrúbka 0,42 mm · ťahom otočíte', 'Tloušťka 0,42 mm · tahem otočíte') }}</p>
-    </div>
+    <div class="paper__3d" data-paper3d><span class="paper__hint">{{ L('Potiahnite a otočte', 'Potáhněte a otočte') }}</span></div>
   </div>
 </section>
 
-<!-- ============ PRE KOHO ============ -->
-<section class="who" id="pre-koho">
-  <div class="wrap">
-    <header class="sechead sechead--row">
-      <div>
-        <p class="eyebrow">{{ L('Pre koho', 'Pro koho') }}</p>
-        <h2 class="h2">{{ L('Každé remeslo', 'Každé řemeslo') }} <em>{{ L('má svoj rukopis.', 'má svůj rukopis.') }}</em></h2>
-      </div>
-      <p class="sechead__lead">{{ L('Prejdite myšou po zozname. AI grafik vám ukáže, ako by navrhol vizitku pre daný odbor. Kliknutím ju otvoríte v generátore.', 'Přejeďte myší po seznamu. AI grafik vám ukáže, jak by navrhl vizitku pro daný obor. Kliknutím ji otevřete v generátoru.') }}</p>
-    </header>
-    <ul class="who__list" data-who>
-      {% set who = [
-        ('kadernik', L('Kaderníčky a barberi', 'Kadeřnice a barbeři'), L('jemné · elegantné', 'jemné · elegantní')),
-        ('reality', L('Realitní makléri', 'Realitní makléři'), L('dôveryhodné · prémiové', 'důvěryhodné · prémiové')),
-        ('stavba', L('Stavbári a remeselníci', 'Stavbaři a řemeslníci'), L('pevné · čitateľné', 'pevné · čitelné')),
-        ('it', L('Programátori a IT', 'Programátoři a IT'), L('technické · hravé', 'technické · hravé')),
-        ('pravnik', L('Advokáti a notári', 'Advokáti a notáři'), L('serióze · klasické', 'seriózní · klasické')),
-        ('wellness', L('Masáže, jóga, terapia', 'Masáže, jóga, terapie'), L('pokojné · prírodné', 'klidné · přírodní')),
-        ('foto', L('Fotografi a umelci', 'Fotografové a umělci'), L('osobné · výrazné', 'osobní · výrazné')),
-        ('gastro', L('Kaviarne a vinárstva', 'Kavárny a vinařství'), L('poctivé · rodinné', 'poctivé · rodinné')),
-      ] %}
-      {% for key, label, mood in who %}
-      <li><a class="who__row" href="{{ link('tvorba') }}?rezim=ai&obor={{ key }}" data-who-key="{{ key }}"><span class="who__n">{{ '%02d' % loop.index }}</span><span class="who__t">{{ label }}</span><span class="who__m">{{ mood }}</span><span class="who__a" aria-hidden="true">→</span></a></li>
-      {% endfor %}
-    </ul>
-    <div class="who__float" data-who-float aria-hidden="true"><canvas width="720" height="400"></canvas></div>
-  </div>
-</section>
-
-<!-- ============ KALKULAČKA ============ -->
-<section class="calc" id="cena">
-  <div class="wrap calc__grid">
-    <div class="calc__copy">
-      <p class="eyebrow">{{ L('Cena', 'Cena') }}</p>
-      <h2 class="h2">{{ L('Férová cena,', 'Férová cena,') }} <em>{{ L('bez hviezdičiek.', 'bez hvězdiček.') }}</em></h2>
-      <p class="sechead__lead">{{ L('V cene je obojstranná tlač, návrh v generátore alebo s AI grafikom, kontrola dát človekom, doprava a digitálna vizitka na prvý rok.', 'V ceně je oboustranný tisk, návrh v generátoru nebo s AI grafikem, kontrola dat člověkem, doprava a digitální vizitka na první rok.') }}</p>
-      <ul class="calc__incl">
-        <li>{{ L('Obojstranná plnofarebná tlač', 'Oboustranný plnobarevný tisk') }}</li>
-        <li>{{ L('Návrh a úpravy bez príplatku', 'Návrh a úpravy bez příplatku') }}</li>
-        <li>{{ L('Kontrola tlačových dát človekom', 'Kontrola tiskových dat člověkem') }}</li>
-        <li>{{ L('Doprava zdarma na SK aj CZ', 'Doprava zdarma po CZ i SK') }}</li>
-        <li>{{ L('Digitálna vizitka na 12 mesiacov', 'Digitální vizitka na 12 měsíců') }}</li>
+<!-- ===== DIGITÁL ===== -->
+<section class="dig" data-nav="yellow">
+  <div class="wrap dig__grid">
+    <div class="dig__vis">
+      <div class="phone"><div class="phone__screen"><div class="phone__island"></div><div class="dcard-host" data-dig-phone></div></div></div>
+      <div class="dig__qr"><span data-dig-qr></span><p>{{ L('Naskenujte telefónom.', 'Naskenujte telefonem.') }}<br><small>{{ L('Je to skutočná digitálna vizitka.', 'Je to skutečná digitální vizitka.') }}</small></p></div>
+    </div>
+    <div class="dig__copy">
+      <h2 class="h-l rv">{{ L('A k tomu', 'A k tomu') }} <span class="hl-c">{{ L('aj v telefóne.', 'i v telefonu.') }}</span></h2>
+      <p class="lead rv">{{ L('Ku každej tlačenej vizitke dostanete digitálnu na rok zadarmo. Vlastná adresa, QR kód na zadnej strane a tlačidlo, ktoré vás uloží do kontaktov.', 'Ke každé tištěné vizitce dostanete digitální na rok zdarma. Vlastní adresa, QR kód na zadní straně a tlačítko, které vás uloží do kontaktů.') }}</p>
+      <ul class="dig__list rv">
+        <li><b>{{ L('Uložiť do kontaktov', 'Uložit do kontaktů') }}</b>{{ L('jedným ťuknutím na iPhone aj Androide', 'jedním ťuknutím na iPhonu i Androidu') }}</li>
+        <li><b>{{ L('Zmeny kedykoľvek', 'Změny kdykoli') }}</b>{{ L('nové číslo bez novej tlače', 'nové číslo bez nového tisku') }}</li>
+        <li><b>{{ L('Vo vašom dizajne', 'Ve vašem designu') }}</b>{{ L('rovnaké farby a písmo ako na papieri', 'stejné barvy a písmo jako na papíře') }}</li>
       </ul>
-    </div>
-    <div class="calc__box" data-calc>
-      <div class="calc__row">
-        <span class="calc__lab">{{ L('Papier', 'Papír') }}</span>
-        <div class="seg" data-c="paper">
-          <button class="is-on" data-v="matny">{{ L('Matný 350 g', 'Matný 350 g') }}</button>
-          <button data-v="triplex">Triplex 720 g</button>
-        </div>
-      </div>
-      <div class="calc__row" data-c-finish-row>
-        <span class="calc__lab">{{ L('Povrch', 'Povrch') }}</span>
-        <div class="seg" data-c="finish">
-          <button class="is-on" data-v="none">{{ L('Bez úpravy', 'Bez úpravy') }}</button>
-          <button data-v="matna">{{ L('Matný lam.', 'Matná lam.') }}</button>
-          <button data-v="leskla">{{ L('Lesklý lam.', 'Lesklá lam.') }}</button>
-          <button data-v="soft">Soft-touch</button>
-        </div>
-      </div>
-      <div class="calc__row">
-        <span class="calc__lab">{{ L('Rohy', 'Rohy') }}</span>
-        <div class="seg" data-c="corners">
-          <button class="is-on" data-v="straight">{{ L('Rovné', 'Rovné') }}</button>
-          <button data-v="round">{{ L('Zaoblené', 'Zaoblené') }}</button>
-        </div>
-      </div>
-      <div class="calc__row">
-        <span class="calc__lab">{{ L('Počet kusov', 'Počet kusů') }}</span>
-        <div class="seg seg--qty" data-c="qty">
-          {% for q in prices.qty %}<button{% if q == 250 %} class="is-on"{% endif %} data-v="{{ q }}">{{ q }}</button>{% endfor %}
-        </div>
-      </div>
-      <div class="calc__total">
-        <div>
-          <span class="calc__price" data-c-price>—</span>
-          <span class="calc__per" data-c-per></span>
-        </div>
-        <a class="btn btn--accent" href="{{ link('tvorba') }}" data-c-go>{{ L('Navrhnúť a objednať', 'Navrhnout a objednat') }} <span aria-hidden="true">→</span></a>
-      </div>
-      <p class="calc__note">{{ L('Vrátane DPH a dopravy. Digitálna vizitka samostatne', 'Včetně DPH a dopravy. Digitální vizitka samostatně') }} {{ prices.digital_year }} {{ prices.symbol }} / {{ L('rok', 'rok') }}.</p>
+      <a class="btn rv" href="{{ link('digitalna') }}">{{ L('Viac o digitálnej vizitke', 'Více o digitální vizitce') }} <span class="ar">→</span></a>
     </div>
   </div>
 </section>
 
-<!-- ============ PRIEBEH ============ -->
-<section class="flow" id="priebeh">
+<!-- ===== CENA ===== -->
+<section class="price" data-nav="cream">
   <div class="wrap">
-    <header class="sechead">
-      <p class="eyebrow">{{ L('Od návrhu k schránke', 'Od návrhu ke schránce') }}</p>
-      <h2 class="h2">{{ L('Objednáte dnes,', 'Objednáte dnes,') }} <em data-flow-arrive>{{ L('máte ich do týždňa.', 'máte je do týdne.') }}</em></h2>
-    </header>
-    <ol class="flow__line">
-      <li><span class="flow__d" data-flow="0">{{ L('Dnes', 'Dnes') }}</span><h3>{{ L('Navrhnete a objednáte', 'Navrhnete a objednáte') }}</h3><p>{{ L('V generátore, s AI grafikom alebo z loga. Zaplatíte kartou alebo prevodom.', 'V generátoru, s AI grafikem nebo z loga. Zaplatíte kartou nebo převodem.') }}</p></li>
-      <li><span class="flow__d" data-flow="1"></span><h3>{{ L('Skontrolujeme dáta', 'Zkontrolujeme data') }}</h3><p>{{ L('Človek prejde každý návrh. Keď niečo nesedí, napíšeme vám ešte pred tlačou.', 'Člověk projde každý návrh. Když něco nesedí, napíšeme vám ještě před tiskem.') }}</p></li>
-      <li><span class="flow__d" data-flow="2"></span><h3>{{ L('Tlačíme', 'Tiskneme') }}</h3><p>{{ L('Ofsetová kvalita na papieri, ktorý ste si vybrali. Digitálnu vizitku zapneme hneď.', 'Ofsetová kvalita na papíře, který jste si vybrali. Digitální vizitku zapneme hned.') }}</p></li>
-      <li><span class="flow__d" data-flow="3"></span><h3>{{ L('Doručenie', 'Doručení') }}</h3><p>{{ L('Kuriér ich prinesie až k vám. Číslo zásielky pošleme e-mailom.', 'Kurýr je přiveze až k vám. Číslo zásilky pošleme e-mailem.') }}</p></li>
-    </ol>
+    <h2 class="h-l rv">{{ L('Jasná cena.', 'Jasná cena.') }} <span class="hl-c">{{ L('Doprava zdarma.', 'Doprava zdarma.') }}</span></h2>
+    <p class="lead rv price__lead">{{ L('V cene je návrh s AI grafikom, obojstranná tlač, kontrola dát človekom, doprava a digitálna vizitka na rok.', 'V ceně je návrh s AI grafikem, oboustranný tisk, kontrola dat člověkem, doprava a digitální vizitka na rok.') }}</p>
+    <div class="price__grid">
+      {% for q, col in [(100, 'w'), (250, 'y'), (500, 'b')] %}
+      <a class="pcard pcard--{{ col }} rv" href="{{ link('tvorba') }}?ks={{ q }}">
+        <span class="pcard__q">{{ q }} {{ L('ks', 'ks') }}</span>
+        <b class="pcard__p">{{ '{:,}'.format(prices.papers.matny[q|string]).replace(',', ' ') }} {{ prices.symbol }}</b>
+        <span class="pcard__per">{{ ('%.2f' % (prices.papers.matny[q|string] / q)) | replace('.', ',') }} {{ prices.symbol }} / {{ L('kus', 'kus') }}</span>
+        <ul><li>{{ L('Matný papier 350 g', 'Matný papír 350 g') }}</li><li>{{ L('Obojstranná tlač', 'Oboustranný tisk') }}</li><li>{{ L('Digitálna vizitka zadarmo', 'Digitální vizitka zdarma') }}</li></ul>
+        <span class="pcard__go">{{ L('Navrhnúť', 'Navrhnout') }} →</span>
+      </a>
+      {% endfor %}
+    </div>
+    <p class="price__more rv"><a class="link" href="{{ link('cennik') }}">{{ L('Celý cenník: soft-touch, Triplex, zaoblené rohy', 'Celý ceník: soft-touch, Triplex, zaoblené rohy') }} →</a></p>
   </div>
 </section>
 
-<!-- ============ FAQ ============ -->
-<section class="faq" id="otazky">
+<!-- ===== FAQ ===== -->
+<section class="faq" data-nav="cream">
   <div class="wrap faq__grid">
-    <header class="sechead">
-      <p class="eyebrow">{{ L('Otázky', 'Otázky') }}</p>
-      <h2 class="h2">{{ L('Na čo sa', 'Na co se') }} <em>{{ L('ľudia pýtajú.', 'lidé ptají.') }}</em></h2>
-    </header>
+    <h2 class="h-l rv">{{ L('Otázky?', 'Otázky?') }}</h2>
     <div class="faq__list">
-      <details><summary>{{ L('Ako dlho trvá, kým mi vizitky prídu?', 'Jak dlouho trvá, než mi vizitky přijdou?') }}</summary><p>{{ L('Zvyčajne do 5 pracovných dní od schválenia tlačových dát. Pri expresnej tlači skôr. Presný dátum vidíte pri objednávke.', 'Obvykle do 5 pracovních dnů od schválení tiskových dat. U expresního tisku dříve. Přesné datum vidíte při objednávce.') }}</p></details>
-      <details><summary>{{ L('Čo presne robí AI grafik?', 'Co přesně dělá AI grafik?') }}</summary><p>{{ L('Z vášho popisu vyberie vhodné rozloženie, farebnú paletu, písmo a navrhne slogan. Výsledok nie je obrázok, ktorý sa nedá upraviť. Je to plnohodnotný návrh v generátore, v ktorom zmeníte čokoľvek.', 'Z vašeho popisu vybere vhodné rozložení, barevnou paletu, písmo a navrhne slogan. Výsledek není obrázek, který nejde upravit. Je to plnohodnotný návrh v generátoru, ve kterém změníte cokoli.') }}</p></details>
-      <details><summary>{{ L('Uvidím vizitku pred tlačou?', 'Uvidím vizitku před tiskem?') }}</summary><p>{{ L('Áno. V generátore vidíte presný náhľad vrátane orezových značiek a môžete si stiahnuť tlačové PDF. Ak pri kontrole niečo upravíme, pošleme vám náhľad na schválenie.', 'Ano. V generátoru vidíte přesný náhled včetně ořezových značek a můžete si stáhnout tiskové PDF. Pokud při kontrole něco upravíme, pošleme vám náhled ke schválení.') }}</p></details>
-      <details><summary>{{ L('Ako funguje digitálna vizitka?', 'Jak funguje digitální vizitka?') }}</summary><p>{{ L('Dostanete vlastnú adresu, napríklad vizitkomat.eu/v/vase-meno. Kto ju otvorí, uloží si váš kontakt jedným ťuknutím. QR kód na ňu môžete mať na zadnej strane tlačenej vizitky. Prvý rok je k tlači zadarmo.', 'Dostanete vlastní adresu, například vizitkomat.eu/v/vase-jmeno. Kdo ji otevře, uloží si váš kontakt jedním ťuknutím. QR kód na ni můžete mít na zadní straně tištěné vizitky. První rok je k tisku zdarma.') }}</p></details>
-      <details><summary>{{ L('Môžem objednať na firmu s IČO a DIČ?', 'Mohu objednat na firmu s IČO a DIČ?') }}</summary><p>{{ L('Samozrejme. V objednávke vyplníte IČO, DIČ aj IČ DPH a faktúru dostanete e-mailom.', 'Samozřejmě. V objednávce vyplníte IČO a DIČ a fakturu dostanete e-mailem.') }}</p></details>
-      <details><summary>{{ L('Čo ak sa mi vizitky nebudú páčiť?', 'Co když se mi vizitky nebudou líbit?') }}</summary><p>{{ L('Ak je chyba na našej strane, či už v tlači, farbe alebo oreze, vytlačíme ich znova zadarmo. Preto každý návrh kontroluje človek ešte pred tlačou.', 'Pokud je chyba na naší straně, ať už v tisku, barvě nebo ořezu, vytiskneme je znovu zdarma. Proto každý návrh kontroluje člověk ještě před tiskem.') }}</p></details>
+      <details><summary>{{ L('Naozaj to navrhuje AI?', 'Opravdu to navrhuje AI?') }}</summary><p>{{ L('Áno. Váš popis spracuje jazykový model, ktorý vyberie rozloženie, farby, písmo a napíše slogan. Keď sa hodí, druhý model nakreslí grafiku na mieru. Výsledok je normálna upraviteľná vizitka, nie obrázok.', 'Ano. Váš popis zpracuje jazykový model, který vybere rozložení, barvy, písmo a napíše slogan. Když se hodí, druhý model nakreslí grafiku na míru. Výsledek je normální upravitelná vizitka, ne obrázek.') }}</p></details>
+      <details><summary>{{ L('Ako dlho trvá doručenie?', 'Jak dlouho trvá doručení?') }}</summary><p>{{ L('Zvyčajne do 5 pracovných dní od schválenia tlačových dát, s expresom o dva dni skôr. Presný odhad vidíte pri objednávke.', 'Obvykle do 5 pracovních dnů od schválení tiskových dat, s expresem o dva dny dříve. Přesný odhad vidíte při objednávce.') }}</p></details>
+      <details><summary>{{ L('Uvidím vizitku pred tlačou?', 'Uvidím vizitku před tiskem?') }}</summary><p>{{ L('Áno, v editore vidíte presný náhľad aj s orezom a môžete si stiahnuť tlačové PDF. Pred tlačou návrh skontroluje človek a ak treba niečo upraviť, ozve sa vám.', 'Ano, v editoru vidíte přesný náhled i s ořezem a můžete si stáhnout tiskové PDF. Před tiskem návrh zkontroluje člověk a pokud je potřeba něco upravit, ozve se vám.') }}</p></details>
+      <details><summary>{{ L('Môžem nahrať vlastný návrh?', 'Mohu nahrát vlastní návrh?') }}</summary><p>{{ L('Áno, PDF alebo obrázok. Editor skontroluje rozlíšenie a spadávku, človek potom celý súbor.', 'Ano, PDF nebo obrázek. Editor zkontroluje rozlišení a spadávku, člověk pak celý soubor.') }}</p></details>
+      <details><summary>{{ L('Dá sa objednať na firmu?', 'Dá se objednat na firmu?') }}</summary><p>{{ L('Samozrejme, s IČO, DIČ aj IČ DPH. Faktúru pošleme e-mailom.', 'Samozřejmě, s IČO a DIČ. Fakturu pošleme e-mailem.') }}</p></details>
     </div>
   </div>
 </section>
 
-<!-- ============ CTA ============ -->
-<section class="final" data-dark>
-  <div class="wrap final__in">
-    <h2 class="final__title">{{ L('Vaša nová vizitka je', 'Vaše nová vizitka je') }} <em>{{ L('dve minúty', 'dvě minuty') }}</em> {{ L('odtiaľto.', 'odsud.') }}</h2>
-    <form class="namebox namebox--dark" data-namebox action="{{ link('tvorba') }}">
-      <label for="final-name" class="namebox__label">{{ L('Začnite menom', 'Začněte jménem') }}</label>
-      <div class="namebox__row">
-        <input id="final-name" name="meno" autocomplete="name" maxlength="40" placeholder="{{ L('Vaše meno a priezvisko', 'Vaše jméno a příjmení') }}">
-        <button class="btn btn--accent" type="submit">{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }} <span aria-hidden="true">→</span></button>
-      </div>
+<!-- ===== CTA ===== -->
+<section class="final" data-nav="blue">
+  <div class="wrap">
+    <h2 class="h-xl final__h">{{ L('Vaša vizitka je', 'Vaše vizitka je') }} <span class="hl">{{ L('2 minúty', '2 minuty') }}</span> {{ L('odtiaľto.', 'odsud.') }}</h2>
+    <form class="aibox aibox--final" data-aibox-final>
+      <input data-final-in maxlength="300" placeholder="{{ L('Napíšte, čím sa živíte…', 'Napište, čím se živíte…') }}" aria-label="{{ L('Popis pre AI grafika', 'Popis pro AI grafika') }}">
+      <button class="btn btn--y" type="submit">{{ L('Navrhni', 'Navrhni') }} <span class="ar">→</span></button>
     </form>
   </div>
-  <div class="final__cards" aria-hidden="true" data-final-cards></div>
 </section>
 {% endblock %}
-
 {% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-<script type="module" src="{{ A('assets/js/home.js') }}"></script>
+<script type="module" src="{{ A('assets/js/v2/home.js') }}"></script>
 {% endblock %}
