@@ -70,7 +70,7 @@ async function loadDesign(d, sides, custom) {
 function paintStart() {
   const ids = ['znak', 'prechod', 'noirgold'];
   const imgs = $$('[data-way-thumbs] img');
-  ids.forEach(async (id, i) => { imgs[i].src = await thumb(newDesign({ tpl: id, ...templateDefaults(id) }), 'front', 420); });
+  ids.forEach(async (id, i) => { imgs[i].src = VK.pre?.['tpl-' + id + '-f'] || await thumb(newDesign({ tpl: id, ...templateDefaults(id) }), 'front', 420); });
   if (st.saved?.d) {
     $('[data-resume]').hidden = false;
     const s = st.saved;
