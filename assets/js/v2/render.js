@@ -1,5 +1,5 @@
 // Vizitkomat v2 – prevod šablón na objekty Fabric.js, náhľady a tlačové PDF
-import { SIZES, BLEED, SAFE, K, FONTS, FONT_CSS } from './model.js';
+import { SIZES, BLEED, SAFE, K, FONTS, FONT_CSS, FOILS, isFoil } from './model.js';
 import { layout } from './templates.js';
 import { iconSVG } from '../icons.js';
 
@@ -23,7 +23,7 @@ let cssReady;
 function ensureFontCSS() {
   if (cssReady) return cssReady;
   cssReady = new Promise((res) => {
-    let link = [...document.querySelectorAll('link[rel=stylesheet]')].find((l) => l.href.includes('Bodoni+Moda') && l.href.includes('Inter+Tight'));
+    let link = [...document.querySelectorAll('link[rel=stylesheet]')].find((l) => l.href === FONT_CSS);
     if (!link) { link = document.createElement('link'); link.rel = 'stylesheet'; link.href = FONT_CSS; document.head.append(link); }
     if (link.sheet) { try { if (link.sheet.cssRules.length) return res(); } catch (e) { return res(); } }
     link.addEventListener('load', () => res(), { once: true });
@@ -56,6 +56,13 @@ export function fontSpecsFor(lay) {
   return s;
 }
 
+// ---------- metalická fólia ----------
+function foilGrad(c) {
+  const stops = FOILS[String(c).slice(5)] || FOILS.gold;
+  return new (F().Gradient)({ type: 'linear', gradientUnits: 'percentage', coords: { x1: 0, y1: 0, x2: 1, y2: 0.6 }, colorStops: stops.map((color, i) => ({ offset: i / (stops.length - 1), color })) });
+}
+export const paint = (c, fallback) => (isFoil(c) ? foilGrad(c) : (c || fallback));
+
 // ---------- prevody ----------
 const px = (mm) => (mm + BLEED) * K;
 const len = (mm) => mm * K;
@@ -82,7 +89,9 @@ function tinted(el, src, color) {
   const key = src.length + ':' + src.slice(-40) + color;
   if (tintCache.has(key)) return tintCache.get(key);
   const c = document.createElement('canvas'); c.width = el.naturalWidth || el.width; c.height = el.naturalHeight || el.height;
-  const x = c.getContext('2d'); x.drawImage(el, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = color; x.fillRect(0, 0, c.width, c.height);
+  const x = c.getContext('2d'); x.drawImage(el, 0, 0); x.globalCompositeOperation = 'source-in';
+  if (isFoil(color)) { const st = FOILS[color.slice(5)] || FOILS.gold; const g = x.createLinearGradient(0, 0, c.width, c.height * 0.6); st.forEach((col, i) => g.addColorStop(i / (st.length - 1), col)); x.fillStyle = g; } else x.fillStyle = color;
+  x.fillRect(0, 0, c.width, c.height);
   tintCache.set(key, c); if (tintCache.size > 120) tintCache.delete(tintCache.keys().next().value);
   return c;
 }
@@ -128,7 +137,7 @@ export async function toFabric(o, lay, ctx = {}) {
       obj = new fab.IText(textValue(o), {
         left: px(o.x), top: px(o.y), originX: o.ox || 'left', originY: o.oy || 'top',
         fontFamily: ft.family, fontWeight: ft.weight, fontStyle: o.it ? 'italic' : 'normal',
-        fontSize: len(o.size || 2.2), fill: o.color || lay.pal.ink, charSpacing: (o.ls || 0) * 1000,
+        fontSize: len(o.size || 2.2), fill: String(textValue(o)).trim() ? paint(o.color, lay.pal.ink) : (isFoil(o.color) ? (FOILS[o.color.slice(5)] || FOILS.gold)[1] : (o.color || lay.pal.ink)), charSpacing: (o.ls || 0) * 1000,
         textAlign: o.ox === 'right' ? 'right' : o.ox === 'center' ? 'center' : 'left',
         lineHeight: o.lh || 1.12, opacity: o.opacity ?? 1, objectCaching: false,
       });
@@ -140,18 +149,18 @@ export async function toFabric(o, lay, ctx = {}) {
         obj = await imageObj(o.fill.src, o.x, o.y, o.w, o.h, { fit: 'cover' });
         if (obj && o.rx) obj.set('clipPath', new fab.Rect({ width: obj.width, height: obj.height, rx: len(o.rx) / obj.scaleX, ry: len(o.rx) / obj.scaleX, originX: 'center', originY: 'center' }));
       } else {
-        obj = new fab.Rect({ left: px(o.x), top: px(o.y), width: len(o.w), height: len(o.h), fill: o.fill || 'transparent', rx: len(o.rx || 0), ry: len(o.rx || 0), stroke: o.stroke || null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1, strokeUniform: true });
+        obj = new fab.Rect({ left: px(o.x), top: px(o.y), width: len(o.w), height: len(o.h), fill: paint(o.fill, 'transparent'), rx: len(o.rx || 0), ry: len(o.rx || 0), stroke: o.stroke ? paint(o.stroke) : null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1, strokeUniform: true });
       }
       break;
     }
     case 'circle':
-      obj = new fab.Circle({ left: px(o.x), top: px(o.y), radius: len(o.r), originX: 'center', originY: 'center', fill: o.fill || 'transparent', stroke: o.stroke || null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1, strokeUniform: true });
+      obj = new fab.Circle({ left: px(o.x), top: px(o.y), radius: len(o.r), originX: 'center', originY: 'center', fill: paint(o.fill, 'transparent'), stroke: o.stroke ? paint(o.stroke) : null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1, strokeUniform: true });
       break;
     case 'line':
-      obj = new fab.Line([px(o.x1), px(o.y1), px(o.x2), px(o.y2)], { stroke: o.stroke, strokeWidth: len(o.sw || 0.2), opacity: o.opacity ?? 1 });
+      obj = new fab.Line([px(o.x1), px(o.y1), px(o.x2), px(o.y2)], { stroke: isFoil(o.stroke) ? (FOILS[o.stroke.slice(5)] || FOILS.gold)[1] : o.stroke, strokeWidth: len(o.sw || 0.2), opacity: o.opacity ?? 1 });
       break;
     case 'path':
-      obj = new fab.Path(scalePath(o.d), { fill: o.fill || 'transparent', stroke: o.stroke || null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1 });
+      obj = new fab.Path(scalePath(o.d), { fill: paint(o.fill, 'transparent'), stroke: o.stroke ? paint(o.stroke) : null, strokeWidth: o.stroke ? len(o.sw || 0.2) : 0, opacity: o.opacity ?? 1 });
       break;
     case 'icon': {
       const svg = iconSVG(o.name, o.color || lay.pal.accent, o.sw || 1.7);
@@ -165,7 +174,7 @@ export async function toFabric(o, lay, ctx = {}) {
       break;
     case 'qr': {
       const { d, n } = qrPath(ctx.qr || lay.qr);
-      obj = new fab.Path(d, { fill: o.color || '#000', left: px(o.x), top: px(o.y), originX: 'left', originY: 'top' });
+      obj = new fab.Path(d, { fill: paint(o.color, '#000'), left: px(o.x), top: px(o.y), originX: 'left', originY: 'top' });
       const s = len(o.s) / n;
       obj.set({ scaleX: s, scaleY: s });
       break;
@@ -179,7 +188,7 @@ export async function toFabric(o, lay, ctx = {}) {
         return new fab.Text(ch, {
           left: px(o.x) + Math.cos(a) * len(o.r), top: px(o.y) + Math.sin(a) * len(o.r),
           originX: 'center', originY: 'center', angle: i * step, fontFamily: ft.family, fontWeight: ft.weight,
-          fontSize: len(o.size || 1.5), fill: o.color || lay.pal.accent,
+          fontSize: len(o.size || 1.5), fill: paint(o.color, lay.pal.accent),
         });
       });
       obj = new fab.Group(items, {});
@@ -319,4 +328,49 @@ export async function photo(url, opts = {}) {
   g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0.08)');
   x.fillStyle = g; x.fillRect(0, 0, w, h);
   return c.toDataURL('image/jpeg', opts.quality ?? 0.88);
+}
+
+/** Fotografický mockup: skutočná fotka podkladu + vizitky s hrúbkou papiera a realistickým tieňom. */
+const SCENES_LIGHT = ['travertin', 'len', 'mramor', 'svetlo', 'kamen', 'dub'];
+const SCENES_DARK = ['beton', 'len', 'tien', 'saten', 'dub', 'kamen', 'kraft'];
+function cardBright(im) {
+  const c = document.createElement('canvas'); c.width = 8; c.height = 5; const x = c.getContext('2d'); x.drawImage(im, 0, 0, 8, 5);
+  const d = x.getImageData(0, 0, 8, 5).data; let s = 0; for (let i = 0; i < d.length; i += 4) s += 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]; return s / (d.length / 4) / 255;
+}
+function drawCard(x, im, cx, cy, w, h, ang, depth) {
+  x.save(); x.translate(cx, cy); x.rotate(ang);
+  // kontaktný + mäkký tieň
+  x.save(); x.shadowColor = 'rgba(30,22,12,0.55)'; x.shadowBlur = w * 0.012; x.shadowOffsetX = w * 0.004; x.shadowOffsetY = w * 0.008;
+  x.fillStyle = '#000'; x.fillRect(-w / 2, -h / 2, w, h); x.restore();
+  x.save(); x.shadowColor = 'rgba(30,22,12,0.32)'; x.shadowBlur = w * 0.09; x.shadowOffsetX = w * 0.03; x.shadowOffsetY = w * 0.06;
+  x.fillStyle = '#000'; x.fillRect(-w / 2, -h / 2, w, h); x.restore();
+  // hrúbka papiera (hrana)
+  for (let i = depth; i > 0; i--) { x.fillStyle = i === depth ? 'rgba(0,0,0,0.25)' : '#E9E4DA'; x.fillRect(-w / 2 + i * 0.35, -h / 2 + i, w, h); }
+  x.drawImage(im, -w / 2, -h / 2, w, h);
+  // jemný lesk zhora
+  const g = x.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2); g.addColorStop(0, 'rgba(255,255,255,0.10)'); g.addColorStop(0.5, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(0,0,0,0.06)');
+  x.fillStyle = g; x.fillRect(-w / 2, -h / 2, w, h);
+  x.restore();
+}
+export async function mockup(front, back, opts = {}) {
+  const W = opts.width || 1200, H = Math.round(W * (opts.ratio || 0.8));
+  const [fi, bi] = await Promise.all([loadImg(front), back ? loadImg(back) : null]);
+  if (!fi) return front;
+  let root = (typeof window !== 'undefined' && window.VK && window.VK.root) || './';
+  if (typeof location !== 'undefined' && !/^https?:/.test(root)) root = new URL(root, location.href).href;
+  const bright = cardBright(fi);
+  const list = bright < 0.45 ? SCENES_LIGHT : SCENES_DARK;
+  const scene = opts.scene || list[(opts.seed || 0) % list.length];
+  const bg = await loadImg(root + 'assets/scenes/' + scene + '.jpg');
+  const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  if (bg) { const s = Math.max(W / bg.width, H / bg.height); x.drawImage(bg, (W - bg.width * s) / 2, (H - bg.height * s) / 2, bg.width * s, bg.height * s); } else { x.fillStyle = '#E8E2D8'; x.fillRect(0, 0, W, H); }
+  // svetlo okna + vinetácia
+  let g = x.createRadialGradient(W * 0.3, H * 0.2, W * 0.05, W * 0.5, H * 0.5, W * 0.85); g.addColorStop(0, 'rgba(255,255,255,0.14)'); g.addColorStop(1, 'rgba(0,0,0,0.22)');
+  x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const cw = W * (opts.single ? 0.7 : 0.6), ch = cw * (fi.height / fi.width), depth = Math.max(2, Math.round(W / 420));
+  if (bi && !opts.single) {
+    drawCard(x, bi, W * 0.6, H * 0.36, cw, ch, (opts.tiltB ?? 7) * Math.PI / 180, depth);
+    drawCard(x, fi, W * 0.42, H * 0.64, cw, ch, (opts.tiltF ?? -4) * Math.PI / 180, depth);
+  } else drawCard(x, fi, W / 2, H / 2, cw, ch, (opts.tiltF ?? -3) * Math.PI / 180, depth);
+  return c.toDataURL('image/jpeg', opts.quality ?? 0.86);
 }

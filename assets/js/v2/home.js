@@ -107,7 +107,7 @@ lazy($('.real'), async () => {
     s.concepts.forEach((c, j) => {
       const P = (side) => VK.pre[`show-${s.key}-${j}-${side}`] || '';
       const el = document.createElement('div'); el.className = 'real__card';
-      el.innerHTML = `<div class="real__scene" style="--scene:${SCENES[j % 3]}"><img class="real__back" alt="" src="${P('b')}"><img class="real__front" alt="" src="${P('f')}"><span class="real__dir">${DIRS[j] || ''}</span></div><p><b>${TEMPLATES[c.template].name}</b> · ${FONTS[c.fonts || TEMPLATES[c.template].fonts]?.label || ''}${c.art.mode === 'file' ? ' · ' + tr('grafika od AI', 'grafika od AI') : ''}</p>`;
+      el.innerHTML = `<div class="real__scene real__scene--photo"><img alt="" src="${VK.pre[`show-${s.key}-${j}-m`] || P('f')}"><span class="real__dir">${DIRS[j] || ''}</span></div><p><b>${TEMPLATES[c.template]?.name || ''}</b> · ${FONTS[c.fonts || TEMPLATES[c.template]?.fonts]?.label || ''}</p>`;
       box.append(el);
     });
   }
@@ -121,7 +121,7 @@ lazy($('.tpls'), () => {
   const rows = [ids.filter((_, i) => i % 2 === 0), ids.filter((_, i) => i % 2 === 1)];
   for (const [ri, list] of rows.entries()) {
     const items = [...list, ...list];
-    $(`[data-row="${ri}"]`).innerHTML = items.map((id, k) => `<a class="tc" href="${VK.links.tvorba}?rezim=sablony" data-t="${id}"${k >= list.length ? ' aria-hidden="true" tabindex="-1"' : ''}><span>${TEMPLATES[id].name}</span><img alt="${TEMPLATES[id].name}" src="${VK.pre['tpl-' + id + '-f'] || ''}" loading="lazy"><img alt="" src="${VK.pre['tpl-' + id + '-b'] || ''}" loading="lazy"></a>`).join('');
+    $(`[data-row="${ri}"]`).innerHTML = items.map((id, k) => `<a class="tc tc--photo" href="${VK.links.tvorba}?rezim=sablony" data-t="${id}"${k >= list.length ? ' aria-hidden="true" tabindex="-1"' : ''}><span>${TEMPLATES[id].name}</span><img alt="${TEMPLATES[id].name}" src="${VK.pre['tpl-' + id + '-m'] || VK.pre['tpl-' + id + '-f'] || ''}" loading="lazy"></a>`).join('');
   }
 }, '600px');
 $('[data-tpl-rows]')?.addEventListener('click', (e) => {

@@ -12,22 +12,24 @@ JS = r"""
 async () => {
   const { newDesign, CZ } = await import('/assets/js/v2/model.js');
   const { TEMPLATES, templateDefaults } = await import('/assets/js/v2/templates.js');
-  const { snapshot, photo } = await import('/assets/js/v2/render.js');
+  const { snapshot, photo, mockup } = await import('/assets/js/v2/render.js');
   const { pickMark } = await import('/assets/js/v2/ai.js');
   const { PERSONAS, personaFields, TPL_PERSONA } = await import('/assets/js/v2/personas.js');
   await document.fonts.ready;
   const marks = {};
   const markOf = async (icon) => (marks[icon] ??= (await pickMark(icon, icon, null))?.src || null);
   const out = {};
-  const shot = async (name, d, w) => {
+  let seed = 0;
+  const shot = async (name, d, w, mock = 0) => {
     out[name + '-f'] = await photo(await snapshot(d, 'front', w, 'image/png'), { quality: 0.86 });
     out[name + '-b'] = await photo(await snapshot(d, 'back', w, 'image/png'), { quality: 0.86 });
+    if (mock) out[name + '-m'] = await mockup(out[name + '-f'], out[name + '-b'], { width: mock, seed: seed++, quality: 0.82 });
   };
   // šablóny
   for (const id of Object.keys(TEMPLATES)) {
     const pk = TPL_PERSONA[id] || 'arch';
     const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: null });
-    await shot('tpl-' + id, d, 640);
+    await shot('tpl-' + id, d, 720, 760);
   }
   // hero
   // hero: živá ukážka (6 odborov, predná aj zadná strana)
@@ -51,7 +53,7 @@ async () => {
       if (!TEMPLATES[c.template]) continue;
       const art = c.art.mode === 'file' ? location.origin + '/assets/ai/' + c.art.file : c.art.mode === 'library' ? c.art.key : null;
       const d = newDesign({ tpl: c.template, fonts: c.fonts || TEMPLATES[c.template].fonts, pal: { label: 'AI', ...c.palette }, art, f, mark: null });
-      await shot(`show-${s.key}-${i}`, d, 820);
+      await shot(`show-${s.key}-${i}`, d, 900, 1000);
     }
   }
   // krok 2

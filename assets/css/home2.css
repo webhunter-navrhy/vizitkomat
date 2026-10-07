@@ -283,3 +283,10 @@
 .own-strip__files span { width: 52px; height: 66px; border-radius: 8px; background: #fff; box-shadow: 0 0 0 2.5px var(--ink); display: grid; place-items: end center; padding-bottom: 8px; font-weight: 800; font-size: .72rem; }
 .own-strip__files span:nth-child(1) { transform: rotate(-6deg); } .own-strip__files span:nth-child(3) { transform: rotate(6deg); }
 @media (max-width: 800px) { .own-strip__in { grid-template-columns: 1fr; } }
+
+/* fotografické náhľady */
+.tc--photo { width: clamp(280px, 26vw, 400px); aspect-ratio: 5 / 4; perspective: none; }
+.tc--photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 18px; box-shadow: 0 24px 40px -22px rgba(60, 10, 0, .55); transform: none !important; backface-visibility: visible; }
+.tc--photo:hover img { transform: translateY(-4px) !important; }
+.real__scene--photo::after { display: none; }
+.real__scene--photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 0; box-shadow: none; transform: none !important; }

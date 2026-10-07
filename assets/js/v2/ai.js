@@ -153,10 +153,10 @@ function deriveContacts(f, base) {
 
 // ---------- záloha bez servera ----------
 const IND_TPL = {
-  kadernik: ['podpis', 'editorial', 'vzor'], reality: ['monogram', 'pruh', 'vrstevnice'], stavba: ['vrstevnice', 'swiss', 'stuha'],
-  it: ['swiss', 'vlny', 'crop'], pravnik: ['monogram', 'noirgold', 'editorial'], wellness: ['oblouk', 'minimal', 'linka'],
-  foto: ['vlny', 'editorial', 'tvary'], gastro: ['wordmark', 'pecat', 'pruh'], auto: ['swiss', 'crop', 'split'],
-  lekar: ['split', 'pruh', 'minimal'], sport: ['crop', 'tvary', 'swiss'],
+  kadernik: ['maison', 'lina', 'editorial'], reality: ['topo', 'luxury', 'monogram'], stavba: ['morton', 'cb', 'swiss'],
+  it: ['kontrast', 'bodka', 'swiss'], pravnik: ['luxury', 'ar', 'monogram'], wellness: ['velora', 'oblouk', 'ticha'],
+  foto: ['foto', 'galeria', 'vlny'], gastro: ['figlia', 'bistro', 'egon'], auto: ['alder', 'loud', 'split'],
+  lekar: ['muse', 'maitland', 'split'], sport: ['loud', 'crop', 'tvary'],
 };
 const IND_PAL = {
   kadernik: ['ruza', 'krieda', 'levandula'], reality: ['noir', 'navy', 'smaragd'], stavba: ['kobalt', 'navy', 'piesok'],
@@ -190,7 +190,7 @@ function nameRole(raw) {
   return { name: m[1], role };
 }
 function local(prompt, base, A, onArt) {
-  const ids = IND_TPL[A.industry] || ['editorial', 'podpis', 'tvary'];
+  const ids = IND_TPL[A.industry] || ['olivia', 'maitland', 'loud'];
   const pals = IND_PAL[A.industry] || ['krieda', 'more', 'ruza'];
   const L = CZ ? 'cz' : 'sk';
   const I = INDUSTRIES[A.industry];

@@ -27,8 +27,21 @@ export const FONTS = {
   outfit: { label: 'Outfit', display: 'Outfit', dw: 600, text: 'Outfit', tw: 300, tw2: 500 },
   mono: { label: 'Plex Mono', display: 'IBM Plex Mono', dw: 600, text: 'IBM Plex Mono', tw: 400, tw2: 500 },
   caveat: { label: 'Caveat', display: 'Caveat', dw: 600, text: 'Geist', tw: 400, tw2: 500 },
+  dmserif: { label: 'DM Serif', display: 'DM Serif Display', dw: 400, text: 'Montserrat', tw: 400, tw2: 500 },
+  marcellus: { label: 'Marcellus', display: 'Marcellus', dw: 400, text: 'Montserrat', tw: 400, tw2: 500 },
+  tenor: { label: 'Tenor Sans', display: 'Tenor Sans', dw: 400, text: 'Montserrat', tw: 300, tw2: 500 },
+  caslon: { label: 'Libre Caslon', display: 'Libre Caslon Text', dw: 400, text: 'Montserrat', tw: 400, tw2: 500 },
+  italiana: { label: 'Italiana', display: 'Italiana', dw: 400, text: 'Josefin Sans', tw: 400, tw2: 600 },
+  cinzel: { label: 'Cinzel', display: 'Cinzel', dw: 500, text: 'Montserrat', tw: 400, tw2: 500 },
+  abril: { label: 'Abril Fatface', display: 'Abril Fatface', dw: 400, text: 'Poppins', tw: 400, tw2: 500 },
+  archivo: { label: 'Archivo Black', display: 'Archivo Black', dw: 400, text: 'Montserrat', tw: 400, tw2: 600 },
+  bebas: { label: 'Bebas Neue', display: 'Bebas Neue', dw: 400, text: 'Montserrat', tw: 400, tw2: 600 },
+  rubik: { label: 'Rubik', display: 'Rubik', dw: 800, text: 'Rubik', tw: 400, tw2: 500 },
+  poppins: { label: 'Poppins', display: 'Poppins', dw: 600, text: 'Poppins', tw: 300, tw2: 500 },
+  josefin: { label: 'Josefin Sans', display: 'Josefin Sans', dw: 300, text: 'Josefin Sans', tw: 400, tw2: 600 },
+  spacemono: { label: 'Space Mono', display: 'Space Mono', dw: 700, text: 'Space Mono', tw: 400, tw2: 700 },
 };
-export const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300..700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Manrope:wght@300..700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Gloock&family=Inter+Tight:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@300..700&family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Syne:wght@400..800&family=Unbounded:wght@300..800&family=Outfit:wght@200..800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@400..700&family=Pinyon+Script&display=swap';
+export const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300..700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Manrope:wght@300..700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Gloock&family=Inter+Tight:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@300..700&family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Syne:wght@400..800&family=Unbounded:wght@300..800&family=Outfit:wght@200..800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@400..700&family=Pinyon+Script&family=DM+Serif+Display:ital@0;1&family=Marcellus&family=Tenor+Sans&family=Montserrat:ital,wght@0,300..800;1,300..600&family=Archivo+Black&family=Space+Mono:wght@400;700&family=Josefin+Sans:wght@300..700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Italiana&family=Bebas+Neue&family=Rubik:wght@400..900&family=Cinzel:wght@400..700&family=Abril+Fatface&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap';
 
 export const PALETTES = {
   krieda:   { label: tr('Krieda', 'Křída'),     bg: '#F5F2EC', ink: '#1A1A18', accent: '#B4532A', soft: '#E8E2D7' },
@@ -58,6 +71,17 @@ export const PALETTES = {
   taupe:    { label: 'Taupe',                    bg: '#D8CCC0', ink: '#2E2622', accent: '#6E5B4D', soft: '#EFE8E1' },
   cokolada: { label: tr('Čokoláda', 'Čokoláda'), bg: '#3B2A24', ink: '#F2E8DE', accent: '#C9A27A', soft: '#4A362F' },
   pastel:   { label: tr('Pastel', 'Pastel'),     bg: '#F9C9DA', ink: '#1E1B3A', accent: '#FF5A1F', soft: '#FFE3EC' },
+  burgundy: { label: tr('Burgundy', 'Burgundy'), bg: '#5A1420', ink: '#F4E9DC', accent: '#C9A15A', soft: '#F1E6D6', foil: 'gold' },
+  noblesa:  { label: tr('Noblesa', 'Noblesa'),  bg: '#14213D', ink: '#F4EFE6', accent: '#C9A15A', soft: '#1B2A4A', foil: 'gold' },
+  onyx:     { label: 'Onyx',                     bg: '#151515', ink: '#EDEAE4', accent: '#C9A15A', soft: '#F2EFEA', foil: 'gold' },
+  ivory:    { label: tr('Slonovina', 'Slonovina'), bg: '#F4EFE6', ink: '#2A2622', accent: '#B08A4A', soft: '#E7DFD2', foil: 'gold' },
+  rosegold: { label: tr('Ružové zlato', 'Růžové zlato'), bg: '#F6E9E4', ink: '#3A2A2A', accent: '#B87A6A', soft: '#2E2626', foil: 'rose' },
+  olive:    { label: tr('Olivová tmavá', 'Olivová tmavá'), bg: '#4B5340', ink: '#F1ECE1', accent: '#C9A15A', soft: '#EFE9DD', foil: 'gold' },
+  mint:     { label: tr('Mätová', 'Mátová'),    bg: '#A9C9C0', ink: '#14231F', accent: '#14231F', soft: '#EEF3F1' },
+  periwinkle:{ label: tr('Levanduľová modrá', 'Levandulová modrá'), bg: '#A9B6E3', ink: '#FFFFFF', accent: '#2F3A6B', soft: '#F6F4EF' },
+  merlot:   { label: 'Merlot',                   bg: '#5B2333', ink: '#F7EFE6', accent: '#3FC6E8', soft: '#5B2333' },
+  cervena:  { label: tr('Červená', 'Červená'),  bg: '#7A1C1C', ink: '#F9DCD3', accent: '#F06A5A', soft: '#7A1C1C' },
+  stribro:  { label: tr('Grafit strieborná', 'Grafit stříbrná'), bg: '#2A2D31', ink: '#ECECEC', accent: '#BFC3C7', soft: '#F1F1F1', foil: 'silver' },
 };
 
 export const ART = {
@@ -97,6 +121,15 @@ export function luminance(h) {
   const [r, g, b] = rgb(h).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
+/** Metalická fólia (tlačí sa ako metalický prechod) */
+export const FOILS = {
+  gold: ['#8A6A2C', '#D9BB72', '#F5E3A6', '#B48F44', '#E8CD86', '#8C6B2E'],
+  rose: ['#9C5E50', '#E2AE9C', '#F7D3C4', '#C48573', '#EBBAA8', '#98584A'],
+  silver: ['#7D8186', '#D5D8DB', '#F7F8F9', '#A4A8AD', '#E3E5E7', '#7A7E83'],
+  copper: ['#7A3E1F', '#C9784A', '#F0B48A', '#A85A33', '#DC9466', '#753A1C'],
+};
+export const isFoil = (c) => typeof c === 'string' && c.startsWith('foil:');
+export const foilBase = (c) => (FOILS[String(c).slice(5)] || FOILS.gold)[1];
 export function contrast(a, b) { const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); }
 export function mix(a, b, t) { const A = rgb(a), B = rgb(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); }
 export function readable(on, pal) { // najlepšia farba textu na danom pozadí

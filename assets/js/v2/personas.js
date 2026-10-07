@@ -59,6 +59,7 @@ export function personaFields(key) {
 
 // ktorá osoba ukazuje ktorú šablónu
 export const TPL_PERSONA = {
+  lina: 'nechty', alder: 'arch', ticha: 'joga', bodka: 'it', bistro: 'kava', galeria: 'foto', topo: 'makler', stoh: 'barber', organic: 'kvety', ahoj: 'cukrar', luxury: 'advokat', obrys: 'arch', olivia: 'nechty', morton: 'stolar', ar: 'advokat', letterpress: 'foto', egon: 'vino', velora: 'kvety', groom: 'kader', maison: 'kader', muse: 'zubar', casa: 'arch', perla: 'nechty', pruhy: 'cukrar', maitland: 'uct', figlia: 'pekar', ostraka: 'foto', hrastar: 'arch', loud: 'barber', cb: 'stolar', drop: 'kava', foto: 'foto', kontrast: 'it',
   podpis: 'nechty', vlny: 'foto', linka: 'arch', tvary: 'barber', oblouk: 'joga', pismena: 'cukrar', vrstevnice: 'stolar', pruh: 'kava',
   monogram: 'advokat', editorial: 'arch', swiss: 'it', crop: 'barber', wordmark: 'kava', split: 'uct', minimal: 'joga', pecat: 'vino',
   vzor: 'cukrar', noirgold: 'makler', stuha: 'pekar', terminal: 'it', mramor: 'kader', botanika: 'kvety',

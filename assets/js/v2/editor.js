@@ -1,7 +1,7 @@
 // Vizitkomat v2 – editor vizitky (Fabric.js): úpravy priamo vo vizitke
 import { SIZES, BLEED, SAFE, K, FONTS, PALETTES, newDesign, contrast, mix } from './model.js';
 import { layout, templateDefaults, TEMPLATES } from './templates.js';
-import { buildSide, toFabric, loadFonts, snapshot as snap } from './render.js';
+import { buildSide, toFabric, loadFonts, snapshot as snap, paint } from './render.js';
 import { iconSVG } from '../icons.js';
 
 const F = () => window.fabric;
@@ -331,7 +331,7 @@ export function createEditor(el, host, opts = {}) {
       for (const t of targets) {
         const p = { ...props };
         if (p.fontFamily || p.fontWeight || p.fontStyle) await loadFonts([`${p.fontStyle || t.fontStyle === 'italic' ? 'italic ' : ''}${p.fontWeight || t.fontWeight || 400} 40px "${p.fontFamily || t.fontFamily}"`]);
-        if (p.color) { if (t.type === 'group') t.getObjects().forEach((x) => { if (x.stroke && x.stroke !== 'none') x.set('stroke', p.color); if (x.fill && x.fill !== 'none' && x.fill !== 'transparent') x.set('fill', p.color); }); else if (t.type === 'line') t.set('stroke', p.color); else t.set('fill', p.color); delete p.color; }
+        if (p.color) { const pc = paint(p.color); if (t.type === 'group') t.getObjects().forEach((x) => { if (x.stroke && x.stroke !== 'none') x.set('stroke', pc); if (x.fill && x.fill !== 'none' && x.fill !== 'transparent') x.set('fill', pc); }); else if (t.type === 'line') t.set('stroke', pc); else t.set('fill', pc); delete p.color; }
         if (p.upper != null) { t.set('text', p.upper ? t.text.toLocaleUpperCase() : t.text); t.data = { ...t.data, upper: p.upper }; delete p.upper; }
         if (p.textAlign) { const br = t.getBoundingRect(true, true); t.set({ textAlign: p.textAlign }); delete p.textAlign; void br; }
         t.set(p);

@@ -1,7 +1,7 @@
 // Tvorba – sprievodca v 4 krokoch: začiatok → výber návrhu → úpravy → objednávka
 import { SIZES, FONTS, PALETTES, ART, newDesign, contrast, slugify, tr, CZ, DEFAULT_FIELDS } from './model.js';
 import { TEMPLATES, BACK_KEYS, templateDefaults } from './templates.js';
-import { snapshot, exportPDF, loadImg, photo } from './render.js';
+import { snapshot, exportPDF, loadImg, photo, mockup } from './render.js';
 import { createEditor } from './editor.js';
 import { askAI, makeMark, API } from './ai.js';
 import { ICONS, iconSVG } from '../icons.js';
@@ -136,8 +136,10 @@ function paintMocks() {
 async function paintMockImgs(i) {
   const el = $(`.mock[data-i="${i}"]`); if (!el) return;
   const d = st.ai[i];
-  const [f, b] = await Promise.all([thumb(d, 'front', 760).then((u) => photo(u)), thumb(d, 'back', 600).then((u) => photo(u))]);
-  el.querySelector('.mock__front').src = f; el.querySelector('.mock__back').src = b;
+  const [f, b] = await Promise.all([thumb(d, 'front', 900).then((u) => photo(u)), thumb(d, 'back', 900).then((u) => photo(u))]);
+  const m = await mockup(f, b, { width: 1000, seed: i });
+  el.querySelector('.mock__scene').classList.add('is-photo');
+  el.querySelector('.mock__front').src = m; el.querySelector('.mock__back').removeAttribute('src');
 }
 function refreshMock(i, d) {
   const sd = st.ai[i]; if (!sd) return;
@@ -174,7 +176,8 @@ async function showTemplates() {
   box.innerHTML = ids.map((id) => `<button data-tpl="${id}"><img alt=""><span>${TEMPLATES[id].name}</span></button>`).join('');
   for (const id of ids) {
     if (tok !== tplTok) return;
-    const u = await photo(await thumb(newDesign({ tpl: id, ...templateDefaults(id), f, logo: prev?.logo || null, mark: prev?.mark || null }), 'front', 520));
+    const dd = newDesign({ tpl: id, ...templateDefaults(id), f, logo: prev?.logo || null, mark: prev?.mark || null });
+    const u = await mockup(await photo(await thumb(dd, 'front', 720)), await photo(await thumb(dd, 'back', 720)), { width: 640, ratio: 0.72, seed: ids.indexOf(id) });
     const im = $(`[data-tpl="${id}"] img`, box); if (im) im.src = u;
   }
 }
@@ -333,7 +336,8 @@ function paintCtx(o) {
   const pal = curPal();
   const cur = (o.type === 'line' ? o.stroke : o.type === 'group' ? (o.getObjects()[0]?.stroke || o.getObjects()[0]?.fill) : o.fill) || '';
   const cols = [...new Set([pal.ink, pal.accent, pal.bg, pal.soft, '#FFFFFF', '#111111'].map((c) => c.toUpperCase()))];
-  $('[data-ctx-colors]').innerHTML = cols.map((c) => `<button data-col="${c}" style="background:${c}"${String(cur).toUpperCase() === c ? ' class="on"' : ''} aria-label="${c}"></button>`).join('') + `<label title="${tr('Vlastná farba', 'Vlastní barva')}"><input type="color" data-colpick value="${/^#[0-9a-f]{6}$/i.test(cur) ? cur : '#000000'}"></label>`;
+  const foils = [['foil:gold', 'linear-gradient(135deg,#8A6A2C,#F5E3A6 45%,#B48F44)'], ['foil:rose', 'linear-gradient(135deg,#9C5E50,#F7D3C4 45%,#C48573)'], ['foil:silver', 'linear-gradient(135deg,#7D8186,#F7F8F9 45%,#A4A8AD)']];
+  $('[data-ctx-colors]').innerHTML = cols.map((c) => `<button data-col="${c}" style="background:${c}"${String(cur).toUpperCase() === c ? ' class="on"' : ''} aria-label="${c}"></button>`).join('') + foils.map(([k, g]) => `<button data-col="${k}" style="background:${g}" title="${tr('Metalický tlač', 'Metalický tisk')}" aria-label="${k}"></button>`).join('') + `<label title="${tr('Vlastná farba', 'Vlastní barva')}"><input type="color" data-colpick value="${/^#[0-9a-f]{6}$/i.test(cur) ? cur : '#000000'}"></label>`;
   $('[data-opacity]').value = Math.round((o.opacity ?? 1) * 100);
 }
 $('[data-fontsel]').addEventListener('change', (e) => ed.style({ fontFamily: e.target.value }));
