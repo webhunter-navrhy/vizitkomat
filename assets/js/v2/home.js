@@ -12,8 +12,49 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const DEMO = absUrl(VK.links.demo);
 const lazy = (el, fn, margin = '400px') => { if (!el) return; const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { io.disconnect(); fn(); } }, { rootMargin: margin }); io.observe(el); };
 
-/* ---------- hero: AI naživo ---------- */
+/* ---------- hero: živá ukážka (zadanie → vizitka) ---------- */
 const vis = $('[data-hero-vis]');
+(function demo() {
+  const box = $('[data-demo]'); if (!box) return;
+  const cards = $$('.dk', box), N = cards.length;
+  const typeEl = $('[data-demo-type]'), tagEl = $('[data-demo-tag]'), ai = $('[data-demo-ai]'), deck = $('[data-demo-deck]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let cur = 0, visible = true, paused = false;
+  const layout = () => cards.forEach((c, i) => { const pos = (i - cur + N) % N; c.dataset.pos = pos < 3 ? pos : 'x'; c.classList.toggle('on', pos === 0); c.tabIndex = pos === 0 ? 0 : -1; });
+  layout(); ai.classList.add('done');
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  // ostatné vizitky načítame až po prvej (rýchlejšie zobrazenie stránky)
+  const loadRest = () => $$('img[data-src]', box).forEach((im) => { im.src = im.dataset.src; im.removeAttribute('data-src'); });
+  if (document.readyState === 'complete') setTimeout(loadRest, 300); else addEventListener('load', () => setTimeout(loadRest, 300), { once: true });
+  const active = () => visible && !paused && !document.hidden && !vis.classList.contains('running');
+  async function step() {
+    const next = (cur + 1) % N, c = cards[next], txt = c.dataset.p;
+    ai.classList.remove('done');
+    for (let k = 0; k <= txt.length; k++) { typeEl.textContent = txt.slice(0, k); await wait(k ? 26 + Math.random() * 34 : 350); }
+    ai.classList.add('thinking'); await wait(1000); ai.classList.remove('thinking');
+    c.style.transition = 'none'; c.dataset.pos = 'in'; void c.offsetWidth; c.style.transition = '';
+    cur = next; layout(); tagEl.textContent = c.dataset.t; ai.classList.add('done');
+    await wait(3400);
+  }
+  if (!reduce) (async () => { await wait(2600); for (;;) { if (active()) await step(); else await wait(400); } })();
+  new IntersectionObserver((es) => { visible = es[0].isIntersecting; }).observe(box);
+  const inp = $('[data-ai-in]');
+  inp?.addEventListener('focus', () => { paused = true; });
+  inp?.addEventListener('blur', () => { paused = !!inp.value; });
+  // jemné natočenie balíčka podľa myši
+  if (!reduce && matchMedia('(pointer: fine)').matches) {
+    let raf = 0;
+    vis.addEventListener('pointermove', (e) => {
+      const r = vis.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { deck.style.setProperty('--ry', (x * 14).toFixed(2) + 'deg'); deck.style.setProperty('--rx', (-y * 10).toFixed(2) + 'deg'); });
+    });
+    vis.addEventListener('pointerleave', () => { deck.style.setProperty('--ry', '0deg'); deck.style.setProperty('--rx', '0deg'); });
+  }
+  // klik na vizitku = skutočná AI s týmto zadaním
+  deck.addEventListener('click', (e) => { const c = e.target.closest('.dk'); if (!c) return; const p = c.dataset.p; if (inp) inp.value = p; heroAI(p); });
+})();
+
+/* ---------- hero: AI naživo ---------- */
 const STEPS = [tr('Čítam zadanie…', 'Čtu zadání…'), tr('Vyberám rozloženie…', 'Vybírám rozložení…'), tr('Ladím farby a písmo…', 'Ladím barvy a písmo…'), tr('Píšem slogan…', 'Píšu slogan…'), tr('Kreslím grafiku…', 'Kreslím grafiku…')];
 let designs = [];
 async function heroAI(prompt) {

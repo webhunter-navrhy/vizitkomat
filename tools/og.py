@@ -13,9 +13,9 @@ p{position:absolute;left:66px;bottom:56px;margin:0;font-size:27px;font-weight:60
 img{position:absolute;width:440px;border-radius:10px;box-shadow:0 30px 50px -18px rgba(5,10,60,.75)}
 .s{position:absolute;right:58px;top:36px;width:118px;height:118px;border-radius:50%;background:#FFD23F;color:#0F1440;display:grid;place-items:center;text-align:center;font-weight:800;font-size:20px;line-height:1;transform:rotate(-12deg);z-index:5}</style>
 <div class=b><i></i>vizitkomat</div><h1>%H</h1><p>%P</p>
-<img src="/assets/pre/%L/hero-0.jpg" style="right:40px;top:60px;transform:rotate(7deg)">
-<img src="/assets/pre/%L/hero-1.jpg" style="right:200px;top:225px;transform:rotate(-6deg);z-index:2">
-<img src="/assets/pre/%L/hero-2.jpg" style="right:30px;top:385px;transform:rotate(4deg)">
+<img src="/assets/pre/%L/hero-0-f.jpg" style="right:40px;top:60px;transform:rotate(7deg)">
+<img src="/assets/pre/%L/hero-1-f.jpg" style="right:200px;top:225px;transform:rotate(-6deg);z-index:2">
+<img src="/assets/pre/%L/hero-2-f.jpg" style="right:30px;top:385px;transform:rotate(4deg)">
 <div class=s>AI<br>grafik<br>24/7</div>"""
 async def main():
     async with async_playwright() as p:

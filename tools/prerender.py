@@ -30,9 +30,11 @@ async () => {
     await shot('tpl-' + id, d, 640);
   }
   // hero
-  for (const [i, [id, pk]] of [['prechod', 'foto'], ['stuha', 'pekar'], ['noirgold', 'makler']].entries()) {
+  // hero: živá ukážka (6 odborov, predná aj zadná strana)
+  for (const [i, [id, pk]] of [['prechod', 'foto'], ['stuha', 'pekar'], ['noirgold', 'makler'], ['znak', 'kader'], ['kruh', 'kava'], ['pecat', 'vino']].entries()) {
     const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: await markOf(PERSONAS[pk].icon) });
-    out['hero-' + i] = await snapshot(d, 'front', 980, 'image/jpeg', 0.9);
+    out[`hero-${i}-f`] = await snapshot(d, 'front', 1100, 'image/jpeg', 0.88);
+    out[`hero-${i}-b`] = await snapshot(d, 'back', 1100, 'image/jpeg', 0.88);
   }
   // AI ukážky (skutočné výstupy AI zo showcase.json)
   const data = await fetch('/assets/ai/showcase.json').then((r) => r.json());

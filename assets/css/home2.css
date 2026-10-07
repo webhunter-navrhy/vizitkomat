@@ -16,16 +16,45 @@
 .hero__trust { margin-top: 1.8rem; display: flex; flex-wrap: wrap; gap: .5rem 1.6rem; font-size: .92rem; font-weight: 600; opacity: .9; }
 .hero__trust li::before { content: '✓'; display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: .45rem; border-radius: 50%; background: var(--yellow); color: var(--ink); font-size: .7rem; font-weight: 800; }
 .hero__vis { position: relative; min-height: clamp(420px, 44vw, 600px); }
-.stack { position: absolute; inset: 0; }
-.stk { position: absolute; width: min(78%, 440px); height: auto; aspect-ratio: 90/50; border-radius: 10px; box-shadow: 0 34px 60px -20px rgba(5, 10, 60, .65), 0 2px 0 rgba(0, 0, 0, .1); transition: transform .6s var(--pop), opacity .4s; opacity: 0; background: rgba(255, 255, 255, .1); }
-.stk.ready { opacity: 1; }
-.stk--1 { right: 0; top: 2%; transform: rotate(7deg); }
-.stk--2 { left: 2%; top: 39%; transform: rotate(-6deg); z-index: 2; }
-.stk--3 { right: 4%; top: 66%; transform: rotate(4deg); }
-.stk:hover { transform: rotate(0deg) scale(1.04); z-index: 5; }
-.hero__sticker { position: absolute; left: 6%; top: 4%; z-index: 6; animation: spinIn 1s var(--pop) .5s both; }
+/* živá ukážka: zadanie → vizitka */
+.demo { position: absolute; inset: 0; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 14px; }
+.demo__chat { justify-self: end; display: grid; justify-items: end; gap: 6px; width: min(88%, 470px); animation: heroIn .9s var(--pop) .3s both; }
+.demo__me { font-family: var(--mono); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
+.demo__msg { margin: 0; padding: .85rem 1.15rem; border-radius: 20px 20px 6px 20px; background: #fff; color: var(--ink); font-weight: 700; font-size: clamp(.98rem, 1.2vw, 1.12rem); line-height: 1.35; box-shadow: 0 10px 0 rgba(10, 20, 100, .35); min-height: 1.35em; width: 100%; }
+.demo__caret { display: inline-block; width: 2px; height: 1.05em; margin-left: 2px; vertical-align: -.15em; background: var(--coral); animation: caret 1s steps(2) infinite; }
+@keyframes caret { 50% { opacity: 0; } }
+.demo__ai { display: flex; align-items: center; gap: 10px; min-height: 34px; animation: heroIn .9s var(--pop) .4s both; }
+.demo__bot { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--yellow); color: var(--ink); font-weight: 800; font-size: .78rem; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .12); flex: none; }
+.demo__think { display: none; gap: 5px; }
+.demo__think i { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: dot 1s infinite; }
+.demo__think i:nth-child(2) { animation-delay: .15s; } .demo__think i:nth-child(3) { animation-delay: .3s; }
+.demo__ai.thinking .demo__think { display: inline-flex; }
+.demo__ai b { font-size: .92rem; font-weight: 700; opacity: 0; transform: translateX(-6px); transition: opacity .4s, transform .5s var(--pop); }
+.demo__ai.done b { opacity: .95; transform: none; }
+.demo__ai.thinking b { opacity: 0; }
+.demo__deck { position: relative; perspective: 1400px; --rx: 0deg; --ry: 0deg; }
+.demo__deck::before { content: ''; position: absolute; left: 12%; right: 12%; bottom: 4%; height: 30px; border-radius: 50%; background: rgba(5, 10, 60, .45); filter: blur(22px); }
+.dk { position: absolute; left: 4%; top: 50%; width: 80%; aspect-ratio: 90/50; padding: 0; border: 0; background: none; cursor: pointer; transform-style: preserve-3d;
+  transition: transform .95s var(--pop), opacity .6s, filter .6s; transform: translate3d(0, -50%, 0) rotateX(var(--rx)) rotateY(var(--ry)) var(--t, ); }
+.dk img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+.dk img:not([src]) { visibility: hidden; }
+.dk__f { box-shadow: 0 34px 60px -20px rgba(5, 10, 60, .7), 0 2px 0 rgba(0, 0, 0, .12); }
+.dk__b { box-shadow: 0 24px 44px -20px rgba(5, 10, 60, .6); transition: transform 1s var(--pop) .15s, opacity .5s; opacity: 0; }
+.dk.on .dk__b { opacity: 1; transform: translate(16%, 20%) rotate(8deg) scale(.94); }
+.dk[data-pos="0"] { --t: rotate(-4deg); z-index: 4; }
+.dk[data-pos="1"] { --t: translate(9%, -16%) rotate(6deg) scale(.86); z-index: 3; opacity: .6; filter: saturate(.7) brightness(.85); }
+.dk[data-pos="2"] { --t: translate(-4%, -27%) rotate(-9deg) scale(.76); z-index: 2; opacity: .32; filter: saturate(.5) brightness(.75); }
+.dk[data-pos="x"] { --t: translate(0, -34%) scale(.7); z-index: 1; opacity: 0; pointer-events: none; }
+.dk[data-pos="in"] { --t: translate(-8%, 34%) rotate(-16deg) scale(1.08); z-index: 5; opacity: 0; }
+.dk.on:hover { --t: rotate(-1.5deg) scale(1.03); }
+.dk:focus-visible { outline: none; }
+.dk:focus-visible .dk__f { outline: 3px solid var(--yellow); outline-offset: 4px; }
+.demo__hint { margin: 0; font-size: .84rem; font-weight: 600; opacity: .72; text-align: center; }
+.demo__hint::before { content: '↖ '; color: var(--yellow); }
+.hero__vis.running .demo { opacity: .12; filter: blur(2px); transition: opacity .4s, filter .4s; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .dk, .dk__b { transition: none; } .demo__caret { display: none; } }
+.hero__sticker { position: absolute; right: -1%; bottom: 9%; left: auto; top: auto; z-index: 6; animation: spinIn 1s var(--pop) .5s both; }
 @keyframes spinIn { from { transform: rotate(-60deg) scale(.3); opacity: 0; } }
-.hero__vis.running .stack { opacity: .15; filter: blur(2px); transition: opacity .4s, filter .4s; }
 .hero__vis.running .hero__sticker { opacity: 0; transform: scale(.6) rotate(-30deg); transition: opacity .3s, transform .4s var(--pop); }
 .ai-run { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; }
 .ai-run__load { display: grid; justify-items: center; gap: 16px; text-align: center; }
@@ -227,9 +256,10 @@
   .aibox { flex-direction: column; border-radius: 20px; }
   .aibox input { padding: .9rem .6rem .4rem; }
   .aibox .btn { width: 100%; }
-  .hero__vis { min-height: 330px; }
-  .stk { width: 76%; }
-  .hero__sticker { width: 84px; height: 84px; font-size: .78rem; left: 0; }
+  .hero__vis { min-height: 440px; }
+  .dk { width: 84%; left: 2%; }
+  .demo__hint { display: none; }
+  .hero__sticker { width: 78px; height: 78px; font-size: .74rem; left: auto; right: 0; bottom: 4%; }
   .real__cards { grid-template-columns: 1fr; }
   .mats { grid-template-columns: 1fr 1fr; }
   .mats button { padding: .8rem .9rem; }
