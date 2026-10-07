@@ -134,7 +134,8 @@ $('[data-tpl-rows]')?.addEventListener('click', (e) => {
 /* ---------- digitál ---------- */
 lazy($('.dig'), () => {
   const d = newDesign({ tpl: 'noirgold', ...templateDefaults('noirgold') });
-  d.f = { ...d.f, name: 'Martin Kováč', role: tr('Realitný maklér', 'Realitní makléř'), company: 'Domov Reality', tagline: tr('Kľúče odovzdávam osobne.', 'Klíče předávám osobně.'), email: 'martin@domovreality.sk', web: 'domovreality.sk' };
-  renderDigital($('[data-dig-phone]'), d, { url: DEMO, qr: (u) => qrSVG(u) });
+  d.f = { ...d.f, name: tr('Martin Kováč', 'Martin Kovář'), role: tr('Realitný maklér', 'Realitní makléř'), company: 'Domov Reality', tagline: tr('Kľúče odovzdávam osobne.', 'Klíče předávám osobně.'), email: tr('martin@domovreality.sk', 'martin@domovreality.cz'), web: tr('domovreality.sk', 'domovreality.cz'), phone: tr('+421 905 123 456', '+420 605 123 456') };
+  d.digital = { bio: tr('Pomáham rodinám predať byt za férovú cenu a bez stresu.', 'Pomáhám rodinám prodat byt za férovou cenu a bez stresu.'), services: tr('Predaj bytov\nOcenenie\nPrenájom', 'Prodej bytů\nOcenění\nPronájem') };
+  renderDigital($('[data-dig-phone]'), d, { url: DEMO, qr: (u) => qrSVG(u), front: VK.pre['tpl-noirgold-f'], back: VK.pre['tpl-noirgold-b'] });
   $('[data-dig-qr]').innerHTML = qrSVG(DEMO);
 });
