@@ -292,3 +292,31 @@ export async function exportPDF(d, filename = 'vizitka.pdf', opts = {}) {
 }
 
 export { loadImg };
+
+/** Fotografický náhľad: papierová textúra + mäkké svetlo (len pre náhľady, nie pre tlač) */
+let paperImg = null;
+export async function photo(url, opts = {}) {
+  const im = await loadImg(url);
+  if (!im) return url;
+  if (!paperImg) {
+    let root = (typeof window !== 'undefined' && window.VK && window.VK.root) || './';
+    if (typeof location !== 'undefined' && !/^https?:/.test(root)) root = new URL(root, location.href).href;
+    paperImg = await loadImg(root + 'assets/img/paper.png');
+  }
+  const w = im.naturalWidth || im.width, h = im.naturalHeight || im.height;
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d');
+  x.drawImage(im, 0, 0, w, h);
+  if (paperImg) {
+    x.save(); x.globalCompositeOperation = 'multiply'; x.globalAlpha = opts.grain ?? 0.55;
+    const s = w / 1100; x.scale(s, s); x.fillStyle = x.createPattern(paperImg, 'repeat'); x.fillRect(0, 0, w / s, h / s); x.restore();
+  }
+  // svetlo zľava zhora a jemné stmavenie k okrajom
+  let g = x.createLinearGradient(0, 0, w, h);
+  g.addColorStop(0, 'rgba(255,255,255,0.16)'); g.addColorStop(0.45, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(0,0,0,0.07)');
+  x.save(); x.globalCompositeOperation = 'soft-light'; x.fillStyle = g; x.fillRect(0, 0, w, h); x.restore();
+  g = x.createRadialGradient(w * 0.4, h * 0.35, Math.min(w, h) * 0.2, w * 0.5, h * 0.5, Math.max(w, h) * 0.75);
+  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,0.08)');
+  x.fillStyle = g; x.fillRect(0, 0, w, h);
+  return c.toDataURL('image/jpeg', opts.quality ?? 0.88);
+}

@@ -12,7 +12,7 @@ JS = r"""
 async () => {
   const { newDesign, CZ } = await import('/assets/js/v2/model.js');
   const { TEMPLATES, templateDefaults } = await import('/assets/js/v2/templates.js');
-  const { snapshot } = await import('/assets/js/v2/render.js');
+  const { snapshot, photo } = await import('/assets/js/v2/render.js');
   const { pickMark } = await import('/assets/js/v2/ai.js');
   const { PERSONAS, personaFields, TPL_PERSONA } = await import('/assets/js/v2/personas.js');
   await document.fonts.ready;
@@ -20,8 +20,8 @@ async () => {
   const markOf = async (icon) => (marks[icon] ??= (await pickMark(icon, icon, null))?.src || null);
   const out = {};
   const shot = async (name, d, w) => {
-    out[name + '-f'] = await snapshot(d, 'front', w, 'image/jpeg', 0.86);
-    out[name + '-b'] = await snapshot(d, 'back', w, 'image/jpeg', 0.86);
+    out[name + '-f'] = await photo(await snapshot(d, 'front', w, 'image/png'), { quality: 0.86 });
+    out[name + '-b'] = await photo(await snapshot(d, 'back', w, 'image/png'), { quality: 0.86 });
   };
   // šablóny
   for (const id of Object.keys(TEMPLATES)) {
@@ -31,10 +31,10 @@ async () => {
   }
   // hero
   // hero: živá ukážka (6 odborov, predná aj zadná strana)
-  for (const [i, [id, pk]] of [['crop', 'barber'], ['wordmark', 'kava'], ['monogram', 'advokat'], ['editorial', 'kader'], ['pecat', 'pekar'], ['split', 'uct']].entries()) {
+  for (const [i, [id, pk]] of [['podpis', 'nechty'], ['wordmark', 'kava'], ['monogram', 'advokat'], ['oblouk', 'joga'], ['pecat', 'pekar'], ['tvary', 'barber']].entries()) {
     const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: null });
-    out[`hero-${i}-f`] = await snapshot(d, 'front', 1100, 'image/jpeg', 0.88);
-    out[`hero-${i}-b`] = await snapshot(d, 'back', 1100, 'image/jpeg', 0.88);
+    out[`hero-${i}-f`] = await photo(await snapshot(d, 'front', 1100, 'image/png'));
+    out[`hero-${i}-b`] = await photo(await snapshot(d, 'back', 1100, 'image/png'));
   }
   // AI ukážky (skutočné výstupy AI zo showcase.json)
   const data = await fetch('/assets/ai/showcase.json').then((r) => r.json());

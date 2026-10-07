@@ -64,6 +64,8 @@
   --ink: #0F1440;
   --ink-2: #4A4F78;
   --ink-3: #5F6488;
+  /* realistický tieň vizitky (kontaktný + mäkký + ambientný) */
+  --card-sh: 0 .6px .6px rgba(40, 28, 15, .30), 0 3px 5px -2px rgba(40, 28, 15, .22), 0 14px 22px -10px rgba(40, 28, 15, .30), 0 40px 60px -30px rgba(40, 28, 15, .42);
   --coral-t: #EC5331; /* korálová pre text na svetlom pozadí (kontrast ≥ 3:1) */
   --cream: #FFF6E6;
   --cream-2: #FCEBCB;

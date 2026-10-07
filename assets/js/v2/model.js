@@ -28,7 +28,7 @@ export const FONTS = {
   mono: { label: 'Plex Mono', display: 'IBM Plex Mono', dw: 600, text: 'IBM Plex Mono', tw: 400, tw2: 500 },
   caveat: { label: 'Caveat', display: 'Caveat', dw: 600, text: 'Geist', tw: 400, tw2: 500 },
 };
-export const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300..700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Manrope:wght@300..700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Gloock&family=Inter+Tight:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@300..700&family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Syne:wght@400..800&family=Unbounded:wght@300..800&family=Outfit:wght@200..800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@400..700&display=swap';
+export const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300..700&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Manrope:wght@300..700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..800&family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Gloock&family=Inter+Tight:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@300..700&family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Syne:wght@400..800&family=Unbounded:wght@300..800&family=Outfit:wght@200..800&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@400..700&family=Pinyon+Script&display=swap';
 
 export const PALETTES = {
   krieda:   { label: tr('Krieda', 'Křída'),     bg: '#F5F2EC', ink: '#1A1A18', accent: '#B4532A', soft: '#E8E2D7' },
@@ -54,6 +54,10 @@ export const PALETTES = {
   retro:    { label: 'Retro',                    bg: '#F7E9D2', ink: '#3B1F12', accent: '#D9612A', soft: '#F0D9B5' },
   holo:     { label: tr('Perleť', 'Perleť'),    bg: '#F3EEFB', ink: '#22183A', accent: '#6A4FB3', soft: '#22183A' },
   dub:      { label: 'Dub',                      bg: '#F6F0E6', ink: '#2A2119', accent: '#8A6A43', soft: '#C9A877' },
+  vino:     { label: tr('Víno', 'Víno'),        bg: '#F3ECE3', ink: '#3A1C20', accent: '#6B1E2A', soft: '#D9B98A' },
+  taupe:    { label: 'Taupe',                    bg: '#D8CCC0', ink: '#2E2622', accent: '#6E5B4D', soft: '#EFE8E1' },
+  cokolada: { label: tr('Čokoláda', 'Čokoláda'), bg: '#3B2A24', ink: '#F2E8DE', accent: '#C9A27A', soft: '#4A362F' },
+  pastel:   { label: tr('Pastel', 'Pastel'),     bg: '#F9C9DA', ink: '#1E1B3A', accent: '#FF5A1F', soft: '#FFE3EC' },
 };
 
 export const ART = {

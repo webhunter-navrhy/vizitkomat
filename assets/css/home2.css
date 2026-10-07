@@ -36,9 +36,9 @@
 .demo__deck::before { content: ''; position: absolute; left: 12%; right: 12%; bottom: 4%; height: 30px; border-radius: 50%; background: rgba(5, 10, 60, .45); filter: blur(22px); }
 .dk { position: absolute; left: 4%; top: 50%; width: 80%; aspect-ratio: 90/50; padding: 0; border: 0; background: none; cursor: pointer; transform-style: preserve-3d;
   transition: transform .95s var(--pop), opacity .6s, filter .6s; transform: translate3d(0, -50%, 0) rotateX(var(--rx)) rotateY(var(--ry)) var(--t, ); }
-.dk img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+.dk img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
 .dk img:not([src]) { visibility: hidden; }
-.dk__f { box-shadow: 0 34px 60px -20px rgba(5, 10, 60, .7), 0 2px 0 rgba(0, 0, 0, .12); }
+.dk__f { box-shadow: 0 .6px .6px rgba(5, 10, 40, .4), 0 4px 6px -2px rgba(5, 10, 40, .3), 0 20px 30px -12px rgba(5, 10, 40, .45), 0 50px 70px -30px rgba(5, 10, 40, .55); }
 .dk__b { box-shadow: 0 24px 44px -20px rgba(5, 10, 60, .6); transition: transform 1s var(--pop) .15s, opacity .5s; opacity: 0; }
 .dk.on .dk__b { opacity: 1; transform: translate(16%, 20%) rotate(8deg) scale(.94); }
 .dk[data-pos="0"] { --t: rotate(-4deg); z-index: 4; }
@@ -125,7 +125,8 @@
 .real__card { animation: aiPop .7s var(--pop) both; }
 .real__card:nth-child(2) { animation-delay: .1s; } .real__card:nth-child(3) { animation-delay: .2s; }
 .real__scene { position: relative; aspect-ratio: 4/3; border-radius: 22px; background: radial-gradient(120% 90% at 30% 20%, color-mix(in srgb, var(--scene) 70%, #fff 12%), var(--scene)); overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
-.real__scene img { position: absolute; width: 74%; aspect-ratio: 90/50; object-fit: cover; border-radius: 6px; transition: transform .7s var(--pop); }
+.real__scene::after { content: ''; position: absolute; inset: -4%; z-index: 3; pointer-events: none; background: url('../img/shadow-leaf.png') left top / 120% auto no-repeat; mix-blend-mode: multiply; opacity: .55; }
+.real__scene img { position: absolute; width: 74%; aspect-ratio: 90/50; object-fit: cover; border-radius: 3px; transition: transform .7s var(--pop); }
 .real__back { right: 6%; top: 10%; transform: rotate(8deg); box-shadow: 0 24px 40px -18px rgba(0, 0, 0, .7); filter: brightness(.94); }
 .real__front { left: 6%; bottom: 12%; transform: rotate(-5deg); box-shadow: 0 34px 50px -18px rgba(0, 0, 0, .75); z-index: 2; }
 .real__card:hover .real__front { transform: rotate(-2deg) translateY(-6px) scale(1.03); }
@@ -166,7 +167,7 @@
 .tpls__row--rev .tpls__track { animation-direction: reverse; animation-duration: 70s; }
 .tpls__row:hover .tpls__track { animation-play-state: paused; }
 .tc { position: relative; flex: none; width: clamp(240px, 22vw, 330px); aspect-ratio: 90/50; perspective: 1200px; display: block; }
-.tc img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; backface-visibility: hidden; box-shadow: 0 24px 40px -18px rgba(60, 10, 0, .55); transition: transform .8s var(--pop); background: rgba(255, 255, 255, .2); }
+.tc img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 4px; backface-visibility: hidden; box-shadow: 0 .6px .6px rgba(60, 10, 0, .35), 0 4px 6px -2px rgba(60, 10, 0, .25), 0 22px 34px -16px rgba(60, 10, 0, .5); transition: transform .8s var(--pop); background: rgba(255, 255, 255, .2); }
 .tc img + img { transform: rotateY(180deg); }
 .tc:hover img:first-child { transform: rotateY(-180deg); }
 .tc:hover img + img { transform: rotateY(0); }

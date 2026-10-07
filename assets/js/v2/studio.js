@@ -1,7 +1,7 @@
 // Tvorba – sprievodca v 4 krokoch: začiatok → výber návrhu → úpravy → objednávka
 import { SIZES, FONTS, PALETTES, ART, newDesign, contrast, slugify, tr, CZ, DEFAULT_FIELDS } from './model.js';
 import { TEMPLATES, BACK_KEYS, templateDefaults } from './templates.js';
-import { snapshot, exportPDF, loadImg } from './render.js';
+import { snapshot, exportPDF, loadImg, photo } from './render.js';
 import { createEditor } from './editor.js';
 import { askAI, makeMark, API } from './ai.js';
 import { ICONS, iconSVG } from '../icons.js';
@@ -68,7 +68,7 @@ async function loadDesign(d, sides, custom) {
    1. ZAČIATOK
    ========================================================= */
 function paintStart() {
-  const ids = ['monogram', 'crop', 'wordmark'];
+  const ids = ['podpis', 'tvary', 'wordmark'];
   const imgs = $$('[data-way-thumbs] img');
   ids.forEach(async (id, i) => { if (!imgs[i].getAttribute('src')) imgs[i].src = await thumb(newDesign({ tpl: id, ...templateDefaults(id) }), 'front', 420); });
   if (st.saved?.d) {
@@ -136,7 +136,7 @@ function paintMocks() {
 async function paintMockImgs(i) {
   const el = $(`.mock[data-i="${i}"]`); if (!el) return;
   const d = st.ai[i];
-  const [f, b] = await Promise.all([thumb(d, 'front', 760), thumb(d, 'back', 600)]);
+  const [f, b] = await Promise.all([thumb(d, 'front', 760).then((u) => photo(u)), thumb(d, 'back', 600).then((u) => photo(u))]);
   el.querySelector('.mock__front').src = f; el.querySelector('.mock__back').src = b;
 }
 function refreshMock(i, d) {
@@ -174,7 +174,7 @@ async function showTemplates() {
   box.innerHTML = ids.map((id) => `<button data-tpl="${id}"><img alt=""><span>${TEMPLATES[id].name}</span></button>`).join('');
   for (const id of ids) {
     if (tok !== tplTok) return;
-    const u = await thumb(newDesign({ tpl: id, ...templateDefaults(id), f, logo: prev?.logo || null, mark: prev?.mark || null }), 'front', 520);
+    const u = await photo(await thumb(newDesign({ tpl: id, ...templateDefaults(id), f, logo: prev?.logo || null, mark: prev?.mark || null }), 'front', 520));
     const im = $(`[data-tpl="${id}"] img`, box); if (im) im.src = u;
   }
 }
