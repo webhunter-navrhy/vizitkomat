@@ -122,7 +122,10 @@ const CITIES = {
   michalovciach: 'Michalovce', 'novych zamkoch': 'Nové Zámky', komarne: 'Komárno', levicach: 'Levice', prievidzi: 'Prievidza', skalici: 'Skalica',
   brne: 'Brno', praze: 'Praha', ostrave: 'Ostrava', olomouci: 'Olomouc', plzni: 'Plzeň', liberci: 'Liberec', zline: 'Zlín', pardubicich: 'Pardubice',
   'hradci kralove': 'Hradec Králové', 'ceskych budejovicich': 'České Budějovice', jihlave: 'Jihlava', opave: 'Opava', kladne: 'Kladno', karlovych: 'Karlovy Vary',
-  'karlovych varech': 'Karlovy Vary', 'usti nad labem': 'Ústí nad Labem', teplicich: 'Teplice', chomutove: 'Chomutov', prostejove: 'Prostějov', prerove: 'Přerov', pezinku: 'Pezinok', malackach: 'Malacky', ruzomberku: 'Ružomberok', liptovskom: 'Liptovský Mikuláš',
+  'karlovych varech': 'Karlovy Vary', // genitív (zo/z …)
+  bratislavy: 'Bratislava', trnavy: 'Trnava', ziliny: 'Žilina', kosic: 'Košice', nitry: 'Nitra', 'banskej bystrice': 'Banská Bystrica', presova: 'Prešov', trencina: 'Trenčín', popradu: 'Poprad', zvolena: 'Zvolen', martina: 'Martin', piestan: 'Piešťany',
+  brna: 'Brno', prahy: 'Praha', ostravy: 'Ostrava', olomouce: 'Olomouc', plzne: 'Plzeň', liberce: 'Liberec', zlina: 'Zlín', pardubic: 'Pardubice', jihlavy: 'Jihlava', opavy: 'Opava', kladna: 'Kladno',
+  'hradce kralove': 'Hradec Králové', 'ceskych budejovic': 'České Budějovice', 'usti nad labem': 'Ústí nad Labem', teplicich: 'Teplice', chomutove: 'Chomutov', prostejove: 'Prostějov', prerove: 'Přerov', pezinku: 'Pezinok', malackach: 'Malacky', ruzomberku: 'Ružomberok', liptovskom: 'Liptovský Mikuláš',
 };
 
 const FEMININE = /(cka|ka|ova|ná|na|ová|kyňa|kyne|ice|yně|ynie|ánka)$/;

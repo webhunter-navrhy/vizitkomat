@@ -87,26 +87,6 @@ lazy($('.real'), async () => {
   if (data.length) show(0);
 });
 
-/* ---------- mini editor ---------- */
-lazy($('.edit'), async () => {
-  const { createEditor } = await import('./editor.js');
-  const host = $('[data-mini]');
-  const ed = createEditor($('[data-mini-canvas]'), host, { pad: 36, mask: 'rgba(238,240,250,0.92)' });
-  const tpls = ['monolit', 'atelier', 'duo', 'podpis', 'pecat', 'firma'];
-  const pals = ['sneh', 'kobalt', 'koral', 'noir', 'salvia', 'levandula'];
-  const fonts = ['inter', 'instrument', 'bricolage', 'bodoni', 'unbounded', 'caveat'];
-  let ti = 0, pi = 0, fi = 0;
-  await ed.load(newDesign({ tpl: tpls[0], ...templateDefaults(tpls[0]) }));
-  $('[data-mini-tools]').addEventListener('click', async (e) => {
-    const b = e.target.closest('[data-mt]'); if (!b) return;
-    const k = b.dataset.mt;
-    if (k === 'pal') { pi = (pi + 1) % pals.length; await ed.setPalette(PALETTES[pals[pi]]); }
-    if (k === 'font') { fi = (fi + 1) % fonts.length; await ed.setFonts(fonts[fi]); }
-    if (k === 'tpl') { ti = (ti + 1) % tpls.length; await ed.setTemplate(tpls[ti]); }
-    if (k === 'icon') await ed.add('icon', { name: ['heart', 'star', 'sparkles', 'coffee', 'leaf'][Math.floor(Math.random() * 5)] });
-  });
-});
-
 /* ---------- šablóny ---------- */
 lazy($('.tpls'), async () => {
   const ids = Object.keys(TEMPLATES);
@@ -127,22 +107,6 @@ $('[data-tpl-rows]')?.addEventListener('click', (e) => {
   e.preventDefault();
   session('vk2-draft', newDesign({ tpl: a.dataset.t, ...templateDefaults(a.dataset.t) }));
   location.href = VK.links.tvorba + '?rezim=texty';
-});
-
-/* ---------- papier 3D ---------- */
-lazy($('.paper'), async () => {
-  const { cardScene } = await import('./three-cards.js');
-  const d = newDesign({ tpl: 'noirgold', ...templateDefaults('noirgold') });
-  const [front, back] = await Promise.all([snapshot(d, 'front', 1600, 'image/jpeg', 0.92), snapshot(d, 'back', 1600, 'image/jpeg', 0.92)]);
-  const sc = await cardScene($('[data-paper3d]'), [{ front, back, pos: [0, 0, 0], rot: [-0.3, -0.5, 0.06], finish: 'matte', edge: '#EDE8DE', thick: 0.7 }], { camZ: 205, fov: 30, shadow: false, drag: true, parallaxAmt: 0.12, float: false, fit: 150 });
-  $('[data-mats]').addEventListener('click', (e) => {
-    const b = e.target.closest('[data-mat]'); if (!b) return;
-    $$('[data-mat]').forEach((x) => x.classList.toggle('on', x === b));
-    const m = b.dataset.mat;
-    if (m === 'triplex') { sc.setThickness(0, 2.2, '#E8462B'); sc.setFinish(0, 'matte'); }
-    else { sc.setThickness(0, 0.7, '#EDE8DE'); sc.setFinish(0, m); }
-    sc.spinTo(m === 'triplex' ? 0.9 : 0);
-  });
 });
 
 /* ---------- digitál ---------- */

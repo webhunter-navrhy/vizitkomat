@@ -24,7 +24,7 @@
 <script>
 window.VK = {
   lang: '{{ lang }}', root: '{{ R }}',
-  links: { home: '{{ link("index") }}', tvorba: '{{ link("tvorba") }}', kosik: '{{ link("kosik") }}', digital: '{{ link("digitalna") }}', cennik: '{{ link("cennik") }}', demo: '{{ R }}v/demo/' },
+  links: { home: '{{ link("index") }}', vlastny: '{{ link("vlastny") }}', tvorba: '{{ link("tvorba") }}', kosik: '{{ link("kosik") }}', digital: '{{ link("digitalna") }}', cennik: '{{ link("cennik") }}', demo: '{{ R }}v/demo/' },
   prices: {{ prices_json }},
   orderEndpoint: ''
 };
@@ -39,7 +39,7 @@ window.VK = {
     <a class="brand" href="{{ link('index') }}" aria-label="Vizitkomat"><span class="brand__dot"></span>vizitkomat</a>
     <nav class="nav__links" aria-label="{{ L('Hlavná navigácia', 'Hlavní navigace') }}">
       <a href="{{ link('tvorba') }}"{% if page == 'tvorba' %} aria-current="page"{% endif %}>{{ L('Tvorba', 'Tvorba') }}</a>
-      <a href="{{ link('tvorba') }}?rezim=ai">{{ L('AI grafik', 'AI grafik') }}</a>
+      <a href="{{ link('vlastny') }}"{% if page == 'vlastny' %} aria-current="page"{% endif %}>{{ L('Vlastný návrh', 'Vlastní návrh') }}</a>
       <a href="{{ link('digitalna') }}"{% if page == 'digitalna' %} aria-current="page"{% endif %}>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</a>
       <a href="{{ link('cennik') }}"{% if page == 'cennik' %} aria-current="page"{% endif %}>{{ L('Cenník', 'Ceník') }}</a>
     </nav>
@@ -55,7 +55,7 @@ window.VK = {
   </div>
   <div class="nav__sheet" data-sheet>
     <a href="{{ link('tvorba') }}">{{ L('Tvorba', 'Tvorba') }}</a>
-    <a href="{{ link('tvorba') }}?rezim=ai">{{ L('AI grafik', 'AI grafik') }}</a>
+    <a href="{{ link('vlastny') }}">{{ L('Vlastný návrh', 'Vlastní návrh') }}</a>
     <a href="{{ link('digitalna') }}">{{ L('Digitálna vizitka', 'Digitální vizitka') }}</a>
     <a href="{{ link('cennik') }}">{{ L('Cenník', 'Ceník') }}</a>
     <a href="{{ link('kosik') }}">{{ L('Košík', 'Košík') }}</a>
@@ -80,7 +80,7 @@ window.VK = {
       <a href="{{ link('tvorba') }}?rezim=ai">{{ L('AI grafik', 'AI grafik') }}</a>
       <a href="{{ link('tvorba') }}?rezim=sablony">{{ L('Šablóny', 'Šablony') }}</a>
       <a href="{{ link('tvorba') }}?rezim=logo">{{ L('Vizitka z loga', 'Vizitka z loga') }}</a>
-      <a href="{{ link('tvorba') }}?rezim=subor">{{ L('Vlastný súbor', 'Vlastní soubor') }}</a>
+      <a href="{{ link('vlastny') }}">{{ L('Tlač vlastného návrhu', 'Tisk vlastního návrhu') }}</a>
     </div>
     <div class="foot__col">
       <h3>{{ L('Produkty', 'Produkty') }}</h3>
@@ -95,7 +95,7 @@ window.VK = {
     </div>
   </div>
   <div class="foot__big" aria-hidden="true">vizitkomat</div>
-  <div class="foot__base"><span>© 2026 Vizitkomat.eu</span><span>{{ L('Ceny sú vrátane DPH', 'Ceny jsou včetně DPH') }}</span></div>
+  <div class="foot__base"><span>© 2026 Vizitkomat.eu · webhunter s.r.o., IČO 29498511, Na Provaznici 2691/7, 150 00 Praha 5 · {{ L('nie sme platcami DPH', 'nejsme plátci DPH') }}</span><span><a href="{{ link('podmienky') }}">{{ L('Obchodné podmienky', 'Obchodní podmínky') }}</a> · <a href="{{ link('gdpr') }}">{{ L('Ochrana údajov', 'Ochrana údajů') }}</a></span></div>
 </footer>
 {% endblock %}
 

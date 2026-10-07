@@ -10,8 +10,9 @@ const esc = (s = '') => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<'
 const KIND = { bundle: tr('Tlačené + digitálna', 'Tištěné + digitální'), print: tr('Tlačené vizitky', 'Tištěné vizitky'), digital: tr('Digitálna vizitka', 'Digitální vizitka') };
 const PAPER = { matny: tr('matný 350 g', 'matný 350 g'), triplex: 'Triplex 720 g' };
 const FIN = { none: '', matna: tr('matná laminácia', 'matná laminace'), leskla: tr('lesklá laminácia', 'lesklá laminace'), soft: 'soft-touch' };
-function specs(c) {
+function specs(c, it) {
   if (c.kind === 'digital') return [tr('12 mesiacov', '12 měsíců')];
+  if (it?.design?.custom) return [tr('vlastný návrh', 'vlastní návrh'), SIZES[c.size]?.label, PAPER[c.paper], c.paper !== 'triplex' && FIN[c.finish], c.corners === 'round' && tr('zaoblené rohy', 'zaoblené rohy'), c.express && 'expres'].filter(Boolean);
   return [SIZES[c.size]?.label, PAPER[c.paper], c.paper !== 'triplex' && FIN[c.finish], c.corners === 'round' && tr('zaoblené rohy', 'zaoblené rohy'), c.express && 'expres', c.kind === 'bundle' && tr('+ digitálna na rok zadarmo', '+ digitální na rok zdarma')].filter(Boolean);
 }
 function arrival(items) { const now = new Date(); const ex = items.every((i) => i.config.express || i.kind === 'digital'); return addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + (ex ? 2 : 4)); }
@@ -25,8 +26,8 @@ async function paint() {
     const c = it.config;
     const q = c.kind === 'digital' ? '' : `<label class="it__q"><span class="sr">${tr('Počet kusov', 'Počet kusů')}</span><select data-qty="${it.id}">${P.qty.map((n) => `<option value="${n}"${n === c.qty ? ' selected' : ''}>${n} ${tr('ks', 'ks')}</option>`).join('')}</select></label>`;
     return `<li class="it"><div class="it__v">${it.thumb ? `<img src="${it.thumb}" alt="">` : ''}${it.thumbBack ? `<img src="${it.thumbBack}" alt="">` : ''}</div>
-      <div class="it__b"><p class="it__k">${KIND[it.kind] || ''}</p><h3>${esc(it.title)}</h3><p class="it__s">${specs(c).map(esc).join(' · ')}</p>
-      <div class="it__a">${q}<button data-edit="${it.id}">${tr('Upraviť', 'Upravit')}</button><button data-del="${it.id}">${tr('Odstrániť', 'Odstranit')}</button></div></div>
+      <div class="it__b"><p class="it__k">${KIND[it.kind] || ''}</p><h3>${esc(it.title)}</h3><p class="it__s">${specs(c, it).map(esc).join(' · ')}</p>
+      <div class="it__a">${q}${it.design?.custom ? '' : `<button data-edit="${it.id}">${tr('Upraviť', 'Upravit')}</button>`}<button data-del="${it.id}">${tr('Odstrániť', 'Odstranit')}</button></div></div>
       <b class="it__p">${money(itemPrice(c))}</b></li>`;
   }).join('');
   const total = items.reduce((s, it) => s + itemPrice(it.config), 0);

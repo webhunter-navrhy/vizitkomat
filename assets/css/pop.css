@@ -140,6 +140,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .foot__col { display: grid; align-content: start; gap: .55rem; }
 .foot__col a:hover { color: var(--yellow); }
 .foot__big { width: var(--wrap); margin: 4rem auto 0; font-weight: 800; font-size: clamp(3.2rem, 15vw, 15rem); line-height: .8; letter-spacing: -.07em; color: var(--cobalt); user-select: none; }
+.foot__base a:hover { color: var(--yellow); }
 .foot__base { width: var(--wrap); margin: 2rem auto 0; padding-top: 1.4rem; border-top: 1px solid rgba(255, 255, 255, .12); display: flex; justify-content: space-between; gap: 1rem; font-size: .85rem; color: rgba(255, 255, 255, .45); flex-wrap: wrap; }
 
 @media (max-width: 1060px) {

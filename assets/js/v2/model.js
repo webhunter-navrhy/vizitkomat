@@ -45,6 +45,8 @@ export const PALETTES = {
   piesok:   { label: tr('Piesok', 'Písek'),     bg: '#EFE6D8', ink: '#2A2119', accent: '#8A6A43', soft: '#E1D4C0' },
   koral:    { label: tr('Korál', 'Korál'),      bg: '#FFF5EF', ink: '#1D1A19', accent: '#F05A3C', soft: '#FFE0D5' },
   limetka:  { label: tr('Limetka', 'Limetka'),  bg: '#121411', ink: '#F0F2EA', accent: '#C6F24E', soft: '#22261F' },
+  more:     { label: tr('More', 'Moře'),        bg: '#F2F7F7', ink: '#12302F', accent: '#1F8A86', soft: '#D4ECEA' },
+  bordo:    { label: 'Bordó',                    bg: '#F4EFEA', ink: '#2B1418', accent: '#7A1F2B', soft: '#E7DAD5' },
   bauhaus:  { label: 'Bauhaus',                  bg: '#FBF3E2', ink: '#1B2A44', accent: '#C1462A', soft: '#E3A41B' },
   terrazzo: { label: 'Terrazzo',                 bg: '#FBF6EE', ink: '#2B1D16', accent: '#B4532A', soft: '#EADFCF' },
   olivova:  { label: tr('Olivová', 'Olivová'),  bg: '#FFFFFF', ink: '#171717', accent: '#6D7A5E', soft: '#5E6B52' },
@@ -112,7 +114,7 @@ export const slugify = (s) => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
 export function newDesign(over = {}) {
   return {
     v: 2, size: '90x50', tpl: 'atelier', fonts: null, pal: null, art: null,
-    f: { ...DEFAULT_FIELDS }, logo: null, photo: null, back: 'auto',
+    f: { ...DEFAULT_FIELDS }, logo: null, mark: null, photo: null, back: 'auto',
     slug: '', socials: {}, sides: null, custom: false,
     ...over,
   };

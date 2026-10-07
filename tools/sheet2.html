@@ -9,6 +9,8 @@
 import { FONT_CSS, newDesign } from '../assets/js/v2/model.js';
 import { TEMPLATES, templateDefaults } from '../assets/js/v2/templates.js';
 import { snapshot } from '../assets/js/v2/render.js';
+import { processMark } from '../assets/js/v2/mark.js';
+const markSrc = new URLSearchParams(location.search).get('mark'); const MARK = markSrc ? await processMark(markSrc) : null;
 document.getElementById('fcss').href = FONT_CSS;
 const q=new URLSearchParams(location.search); const size=q.get('size')||'90x50'; const only=q.get('t');
 const o=document.getElementById('o');
@@ -16,6 +18,8 @@ for (const id of Object.keys(TEMPLATES)) {
   if (only && !only.split(',').includes(id)) continue;
   const d=newDesign({tpl:id,size,...templateDefaults(id), back:q.get('back')||'auto'});
   if (q.get('logo')) d.logo=q.get('logo');
+  if (MARK) d.mark=MARK;
+  if (q.get('pal')) d.pal={...(await import('../assets/js/v2/model.js')).PALETTES[q.get('pal')]};
   const r=document.createElement('div'); r.className='row'; r.innerHTML=`<b>${id}</b>`;
   for (const s of ['front','back']) { const im=new Image(); im.src=await snapshot(d,s,860); r.append(im); }
   o.append(r);

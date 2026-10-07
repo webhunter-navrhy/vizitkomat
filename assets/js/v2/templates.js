@@ -48,7 +48,15 @@ function contacts2(c, o) {
 }
 function logoOr(c, x, y, w, h, o = {}, fallback = null) {
   if (c.logo) return IMG(c.logo, x, y, w, h, { fit: 'contain', role: 'logo', ax: o.ax || 'center', ay: o.ay || 'center' });
+  // znak od AI nahrádza iniciály (nie názov firmy)
+  if (c.mark && (o.mark || (fallback && fallback.type === 'text' && fallback.text === initials(c.f.name)))) {
+    const s = Math.min(w, h) * (o.markScale || 1);
+    return markImg(c, x, y, s, s, o.tint || (fallback && fallback.color) || c.pal.accent, o);
+  }
   return fallback;
+}
+function markImg(c, x, y, w, h, tint, o = {}) {
+  return IMG(c.mark, x, y, w, h, { fit: 'contain', role: 'mark', tint, ax: o.ax || 'center', ay: o.ay || 'center' });
 }
 function bgArt(c, key, o = {}) { return { color: c.pal.bg, art: c.art || key, artOpacity: o.opacity ?? 1, ...o }; }
 
@@ -318,19 +326,20 @@ export const TEMPLATES = {
       const { W, H, f, pal, m } = c;
       const o = [];
       const band = 3.2;
+      const fg = readable(pal.bg, pal);
       o.push(R(-2, H - band, W + 4, band + 2, pal.accent));
-      o.push(logoOr(c, m, m, W * 0.42, 8.5, { ax: 'left', ay: 'top' }, T(f.company, { field: 'company', x: m, y: m, size: 3, font: 'd', w: 700, color: pal.bg, fit: W * 0.5, ls: -0.02 })));
+      o.push(logoOr(c, m, m, W * 0.42, 8.5, { ax: 'left', ay: 'top' }, T(f.company, { field: 'company', x: m, y: m, size: 3, font: 'd', w: 700, color: fg, fit: W * 0.5, ls: -0.02 })));
       const ny = c.sq ? 24 : H * 0.56;
-      o.push(T(f.name, { field: 'name', x: m, y: ny, oy: 'bottom', size: 4, font: 'd', w: 600, color: '#FFFFFF', fit: c.sq ? W - 2 * m : W * 0.5, ls: -0.01 }));
-      o.push(T(f.role, { field: 'role', x: m, y: ny + 1, size: 2.1, font: 't', color: mix('#FFFFFF', pal.bg, 0.35), fit: c.sq ? W - 2 * m : W * 0.5 }));
-      if (c.sq) o.push(...contacts(c, { x: m, yb: H - band - 3, keys: ['phone', 'email'], size: 1.85, color: '#FFFFFF', fit: W - 2 * m - 4 }));
-      else o.push(...contacts(c, { x: W * 0.58, yb: H - band - 3.2, size: 1.9, lh: 3.1, color: '#FFFFFF', fit: W * 0.42 - m - 3 }));
+      o.push(T(f.name, { field: 'name', x: m, y: ny, oy: 'bottom', size: 4, font: 'd', w: 600, color: fg, fit: c.sq ? W - 2 * m : W * 0.5, ls: -0.01 }));
+      o.push(T(f.role, { field: 'role', x: m, y: ny + 1, size: 2.1, font: 't', color: mix(fg, pal.bg, 0.35), fit: c.sq ? W - 2 * m : W * 0.5 }));
+      if (c.sq) o.push(...contacts(c, { x: m, yb: H - band - 3, keys: ['phone', 'email'], size: 1.85, color: fg, fit: W - 2 * m - 4 }));
+      else o.push(...contacts(c, { x: W * 0.58, yb: H - band - 3.2, size: 1.9, lh: 3.1, color: fg, fit: W * 0.42 - m - 3 }));
       return { bg: { color: pal.bg }, objs: o };
     },
     back(c) {
       const { W, H, f, pal } = c;
       const o = [];
-      o.push(logoOr(c, W / 2, H / 2, W * 0.5, H * 0.38, {}, T(f.company || f.name, { field: 'company', x: W / 2, y: H / 2, ox: 'center', oy: 'center', size: 5.6, font: 'd', w: 700, color: pal.bg, fit: W - 14, ls: -0.02 })));
+      o.push(logoOr(c, W / 2, H / 2, W * 0.5, H * 0.38, {}, T(f.company || f.name, { field: 'company', x: W / 2, y: H / 2, ox: 'center', oy: 'center', size: 5.6, font: 'd', w: 700, color: luminance(pal.bg) < 0.35 ? pal.bg : pal.ink, fit: W - 14, ls: -0.02 })));
       o.push(R(-2, H - 3.2, W + 4, 5.2, pal.accent));
       return { bg: { color: '#FFFFFF' }, objs: o };
     },
@@ -497,6 +506,137 @@ export const TEMPLATES = {
   },
 };
 
+// ---------- šablóny so znakom ----------
+Object.assign(TEMPLATES, {
+  znak: {
+    name: 'Znak', fonts: 'playfair', pal: 'krieda', tags: ['pekaren', 'kaviaren', 'kvety', 'lekar', 'remeslo', 'gastro', 'elegantne', 'klasicke', 'jemne'],
+    front(c) {
+      const { W, H, f, pal, m } = c;
+      const o = [];
+      const ms = c.sq ? 16 : 13;
+      const my = c.sq ? 6 : 4.6;
+      o.push(logoOr(c, W / 2, my + ms / 2, ms * 1.8, ms, { mark: true, tint: pal.accent }, C(W / 2, my + ms / 2, ms / 2.2, { stroke: pal.accent, sw: 0.25 })));
+      if (!c.mark && !c.logo) o.push(T(initials(f.name), { x: W / 2, y: my + ms / 2, ox: 'center', oy: 'center', size: ms / 2.6, font: 'd', it: true, color: pal.accent }));
+      const ny = my + ms + (c.sq ? 9 : 7.6);
+      o.push(T(f.name, { field: 'name', x: W / 2, y: ny, ox: 'center', oy: 'bottom', size: c.sq ? 4.2 : 4.8, font: 'd', color: pal.ink, fit: W - 2 * m }));
+      o.push(T(f.role || f.company, { field: f.role ? 'role' : 'company', x: W / 2, y: ny + 1, ox: 'center', size: 1.75, font: 't', w: c.fp.tw2, upper: true, ls: 0.22, color: pal.accent, fit: W - 2 * m }));
+      const det = ['phone', 'email', 'web'].filter((k) => f[k]);
+      if (c.sq) o.push(...contacts(c, { x: W / 2, yb: H - m, align: 'center', keys: det, size: 1.8, lh: 2.7, fit: W - 2 * m }));
+      else o.push(T(det.map((k) => f[k]).join('   ·   '), { x: W / 2, y: H - m + 0.4, ox: 'center', oy: 'bottom', size: 1.85, font: 't', color: mix(pal.ink, pal.bg, 0.15), fit: W - 2 * m }));
+      return { bg: { color: pal.bg }, objs: o };
+    },
+    back(c) {
+      const { W, H, f, pal } = c;
+      const o = [];
+      const ms = Math.min(W, H) * 0.42;
+      o.push(logoOr(c, W / 2, H / 2 - 3, W * 0.5, ms, { mark: true, tint: pal.bg }, T(f.company || initials(f.name), { field: 'company', x: W / 2, y: H / 2 - 2, ox: 'center', oy: 'center', size: 6, font: 'd', color: pal.bg, fit: W - 14 })));
+      o.push(T(f.tagline || f.company, { field: f.tagline ? 'tagline' : 'company', x: W / 2, y: H - SAFE - 1.2, ox: 'center', oy: 'bottom', size: 2.6, font: 'd', it: true, color: pal.bg, fit: W - 2 * SAFE }));
+      return { bg: { color: pal.accent }, objs: o };
+    },
+  },
+
+  kruh: {
+    name: 'Kruh', fonts: 'geist', pal: 'more', tags: ['lekar', 'zubar', 'fyzio', 'sluzby', 'remeslo', 'poradenstvo', 'moderne', 'ciste', 'doveryhodne'],
+    front(c) {
+      const { W, H, f, pal, m } = c;
+      const o = [];
+      const on = readable(pal.accent, pal);
+      if (c.sq) {
+        const r = 9.5;
+        o.push(C(W / 2, m + r, r, { fill: pal.accent }));
+        o.push(logoOr(c, W / 2, m + r, r * 1.25, r * 1.25, { mark: true, tint: on }, T(initials(f.name), { x: W / 2, y: m + r, ox: 'center', oy: 'center', size: 6.4, font: 'd', w: 700, color: on })));
+        o.push(T(f.name, { field: 'name', x: W / 2, y: m + 2 * r + 6.4, ox: 'center', oy: 'bottom', size: 4, font: 'd', w: c.fp.dw, color: pal.ink, fit: W - 2 * m }));
+        o.push(T(f.role, { field: 'role', x: W / 2, y: m + 2 * r + 7.4, ox: 'center', size: 2, font: 't', color: pal.accent, fit: W - 2 * m, w: 500 }));
+        o.push(...contacts(c, { x: W / 2, yb: H - m, align: 'center', keys: ['phone', 'email'], size: 1.8, fit: W - 2 * m }));
+        return { bg: { color: pal.bg }, objs: o };
+      }
+      const r = H * 0.27, cx = m + r - 0.5, cy = H / 2;
+      o.push(C(cx, cy, r, { fill: pal.accent }));
+      o.push(logoOr(c, cx, cy, r * 1.25, r * 1.25, { mark: true, tint: on }, T(initials(f.name), { x: cx, y: cy, ox: 'center', oy: 'center', size: r * 0.85, font: 'd', w: 700, color: on, ls: -0.04 })));
+      const x = cx + r + 6, mw = W - x - m;
+      o.push(T(f.name, { field: 'name', x, y: m + 6.2, oy: 'bottom', size: 4.5, font: 'd', w: c.fp.dw, color: pal.ink, fit: mw, ls: -0.02 }));
+      o.push(T(f.role, { field: 'role', x, y: m + 7.3, size: 2.15, font: 't', w: 500, color: pal.accent, fit: mw }));
+      o.push(...contacts(c, { x, yb: H - m, keys: ['phone', 'email', 'web'], size: 1.95, color: pal.ink, icolor: pal.accent, fit: mw - 4 }));
+      return { bg: { color: pal.bg }, objs: o };
+    },
+    back(c) {
+      const { W, H, f, pal } = c;
+      const on = readable(pal.accent, pal);
+      const o = [];
+      o.push(C(W * 0.86, H * 0.12, H * 0.5, { fill: mix(pal.accent, '#FFFFFF', 0.12) }));
+      o.push(C(W * 0.1, H * 0.95, H * 0.36, { fill: mix(pal.accent, '#000000', 0.08) }));
+      o.push(logoOr(c, W / 2, H / 2 - 3.5, W * 0.4, H * 0.36, { mark: true, tint: on }, T(initials(f.name), { x: W / 2, y: H / 2 - 3, ox: 'center', oy: 'center', size: 10, font: 'd', w: 700, color: on })));
+      o.push(T(f.company || f.name, { field: f.company ? 'company' : 'name', x: W / 2, y: H / 2 + 9.5, ox: 'center', oy: 'bottom', size: 2.6, font: 'd', w: c.fp.dw, color: on, fit: W - 2 * SAFE }));
+      return { bg: { color: pal.accent }, objs: o };
+    },
+  },
+
+  stuha: {
+    name: tr('Stuha', 'Stuha'), fonts: 'bricolage', pal: 'piesok', tags: ['obchod', 'gastro', 'pekaren', 'remeslo', 'farma', 'rodinne', 'pevne', 'citatelne', 'hrave'],
+    front(c) {
+      const { W, H, f, pal, m } = c;
+      const o = [];
+      const bh = c.sq ? H * 0.34 : H * 0.4;
+      const on = readable(pal.accent, pal);
+      o.push(R(-2, -2, W + 4, bh + 2, pal.accent));
+      const ms = bh * 0.56;
+      const mark = logoOr(c, m, bh / 2, ms * 1.4, ms, { mark: true, tint: on, ax: 'left' }, null);
+      if (mark) { mark.ax = 'left'; o.push(mark); }
+      const tx = mark ? m + ms + 3 : m;
+      o.push(T(f.company || f.name, { field: f.company ? 'company' : 'name', x: tx, y: bh / 2, oy: 'center', size: c.sq ? 3.6 : 4.4, font: 'd', w: c.fp.dw, color: on, fit: W - tx - m, ls: -0.02 }));
+      const y0 = bh + (c.sq ? 7 : 7.6);
+      if (f.company) {
+        o.push(T(f.name, { field: 'name', x: m, y: y0, oy: 'bottom', size: 3.4, font: 'd', w: c.fp.dw, color: pal.ink, fit: W * 0.55, ls: -0.01 }));
+        o.push(T(f.role, { field: 'role', x: m, y: y0 + 0.9, size: 1.9, font: 't', w: 600, color: pal.accent, fit: W * 0.55 }));
+      } else { // bez firmy: meno je na stuhe, dole profesia a slogan
+        o.push(T(f.role, { field: 'role', x: m, y: y0, oy: 'bottom', size: 3, font: 'd', w: c.fp.dw, color: pal.ink, fit: W * 0.55, ls: -0.01 }));
+        o.push(T(f.tagline, { field: 'tagline', x: m, y: y0 + 0.9, size: 1.9, font: 't', w: 600, color: pal.accent, fit: W * 0.55 }));
+      }
+      if (c.sq) o.push(...contacts(c, { x: m, yb: H - m, keys: ['phone', 'email'], size: 1.85, fit: W - 2 * m - 4 }));
+      else o.push(...contacts(c, { x: W - m, yb: H - m, align: 'right', keys: ['phone', 'email', 'web'], size: 1.85, lh: 3, color: pal.ink, icolor: pal.accent, fit: W * 0.42 }));
+      return { bg: { color: pal.bg }, objs: o };
+    },
+    back(c) {
+      const { W, H, f, pal } = c;
+      const o = [];
+      o.push(logoOr(c, W / 2, H / 2 - 3, W * 0.4, H * 0.42, { mark: true, tint: pal.accent }, T(f.company || f.name, { field: 'company', x: W / 2, y: H / 2 - 2, ox: 'center', oy: 'center', size: 5.4, font: 'd', w: c.fp.dw, color: pal.accent, fit: W - 14, ls: -0.02 })));
+      o.push(T(f.tagline || f.web, { field: f.tagline ? 'tagline' : 'web', x: W / 2, y: H - SAFE - 1, ox: 'center', oy: 'bottom', size: 2.2, font: 't', w: 600, color: pal.ink, fit: W - 2 * SAFE }));
+      return { bg: { color: pal.soft }, objs: o };
+    },
+  },
+
+  vzor: {
+    name: tr('Vzor', 'Vzor'), fonts: 'fraunces', pal: 'ruza', tags: ['butik', 'beauty', 'kaviaren', 'kvety', 'cukraren', 'kreativ', 'hrave', 'jemne', 'farebne'],
+    front(c) {
+      const { W, H, f, pal, m } = c;
+      const o = [];
+      o.push(logoOr(c, m, m, 9, 9, { mark: true, tint: pal.accent, ax: 'left', ay: 'top' }, C(m + 1.2, m + 1.2, 1.2, { fill: pal.accent })));
+      const mw = W - 2 * m;
+      o.push(T(f.name, { field: 'name', x: m - 0.3, y: c.sq ? H * 0.56 : H * 0.6, oy: 'bottom', size: c.sq ? 5.4 : 6.4, font: 'd', color: pal.ink, fit: mw }));
+      o.push(T(f.role, { field: 'role', x: m, y: (c.sq ? H * 0.56 : H * 0.6) + 1, size: 2.7, font: 'd', it: true, color: pal.accent, fit: mw }));
+      if (c.sq) o.push(...contacts(c, { x: m, yb: H - m, keys: ['phone', 'email'], icons: false, size: 1.85, fit: mw }));
+      else o.push(...contacts(c, { x: W - m, yb: H - m, align: 'right', keys: ['phone', 'email', 'web'], icons: false, size: 1.85, lh: 2.9, color: pal.ink, fit: W * 0.45 }));
+      return { bg: { color: pal.bg }, objs: o };
+    },
+    back(c) {
+      const { W, H, f, pal } = c;
+      const o = [];
+      const tint = mix(pal.accent, pal.soft, 0.35);
+      const step = 9, s = 5.2;
+      for (let row = 0, y = -1; y < H + 3; row++, y += step * 0.8) {
+        for (let x = (row % 2) * step / 2 - 2; x < W + 3; x += step) {
+          if (c.mark) o.push({ ...markImg(c, x, y, s, s, tint), rot: row % 2 ? -12 : 12 });
+          else o.push(C(x, y, 0.9, { fill: tint }));
+        }
+      }
+      const pw = Math.min(W * 0.66, 50);
+      o.push(R(W / 2 - pw / 2, H / 2 - 7, pw, 14, pal.bg, { rx: 7 }));
+      o.push(logoOr(c, W / 2, H / 2, pw - 10, 9, {}, T(f.company || f.name, { field: f.company ? 'company' : 'name', x: W / 2, y: H / 2, ox: 'center', oy: 'center', size: 4.2, font: 'd', it: true, color: pal.ink, fit: pw - 8 })));
+      return { bg: { color: pal.soft }, objs: o };
+    },
+  },
+});
+
 // ---------- zadné strany na výber ----------
 export const BACKS = {
   qr(c) {
@@ -533,7 +673,7 @@ export function layout(d, side = 'front', opts = {}) {
   const artOf = (k) => (k && k.startsWith('data:') ? k : `${root}assets/art/${k}.jpg`);
   const c = {
     W: S.w, H: S.h, sq: S.w === S.h, m: SAFE + 1, f: d.f, pal, fp, logo: d.logo,
-    art: d.art || null, artOf: (k) => artOf(d.art || k), artUrl: d.art ? artOf(d.art) : null,
+    art: d.art || null, artOf: (k) => artOf(d.art || k), artUrl: d.art ? artOf(d.art) : null, mark: d.mark || null,
     qr: d.qrUrl || 'https://vizitkomat.eu',
   };
   let out;

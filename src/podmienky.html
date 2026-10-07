@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ L('Obchodné podmienky | Vizitkomat', 'Obchodní podmínky | Vizitkomat') }}{% endblock %}
+{% block description %}{{ L('Obchodné podmienky e-shopu Vizitkomat.eu prevádzkovaného spoločnosťou webhunter s.r.o.', 'Obchodní podmínky e-shopu Vizitkomat.eu provozovaného společností webhunter s.r.o.') }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
+{% block navclass %} solid{% endblock %}
+{% block main %}
+{% set FIRMA = 'webhunter s.r.o.' %}{% set ICO = '29498511' %}{% set SIDLO = 'Na Provaznici 2691/7, Smíchov, 150 00 Praha 5' %}
+<article class="legal wrap">
+  <h1 class="h-l">{{ L('Obchodné podmienky', 'Obchodní podmínky') }}</h1>
+  <p class="legal__meta">{{ L('Platné od 8. 10. 2026', 'Platné od 8. 10. 2026') }}</p>
+
+  <h2>1. {{ L('Predávajúci', 'Prodávající') }}</h2>
+  <p>{{ L('Prevádzkovateľom e-shopu Vizitkomat.eu je spoločnosť', 'Provozovatelem e-shopu Vizitkomat.eu je společnost') }} <b>{{ FIRMA }}</b>, IČO {{ ICO }}, {{ L('so sídlom', 'se sídlem') }} {{ SIDLO }}, {{ L('Česká republika', 'Česká republika') }}, {{ L('zapísaná v obchodnom registri vedenom Mestským súdom v Prahe, oddiel C, vložka 447548', 'zapsaná v obchodním rejstříku vedeném Městským soudem v Praze, oddíl C, vložka 447548') }} ({{ L('ďalej „predávajúci“', 'dále „prodávající“') }}). {{ L('Predávajúci nie je platiteľom DPH.', 'Prodávající není plátcem DPH.') }} {{ L('Kontakt:', 'Kontakt:') }} <a href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a>.</p>
+
+  <h2>2. {{ L('Predmet a uzavretie zmluvy', 'Předmět a uzavření smlouvy') }}</h2>
+  <p>{{ L('Predmetom predaja sú tlačené vizitky vyrobené podľa návrhu kupujúceho a služba digitálnej vizitky. Návrh si kupujúci vytvára sám v editore, s pomocou AI grafika alebo nahraním vlastného súboru. Odoslaním objednávky s povinnosťou platby kupujúci potvrdzuje, že návrh a údaje na vizitke skontroloval. Zmluva vzniká potvrdením objednávky e-mailom.', 'Předmětem prodeje jsou tištěné vizitky vyrobené podle návrhu kupujícího a služba digitální vizitky. Návrh si kupující vytváří sám v editoru, s pomocí AI grafika nebo nahráním vlastního souboru. Odesláním objednávky s povinností platby kupující potvrzuje, že návrh a údaje na vizitce zkontroloval. Smlouva vzniká potvrzením objednávky e-mailem.') }}</p>
+  <p>{{ L('Pred tlačou návrh kontroluje človek. Ak zistíme technický problém (nízke rozlíšenie, chýbajúca spadávka, text príliš pri okraji), kontaktujeme kupujúceho a tlač spustíme až po jeho súhlase. Obsahovú správnosť údajov (meno, telefón, e-mail) za kupujúceho nekontrolujeme.', 'Před tiskem návrh kontroluje člověk. Pokud zjistíme technický problém (nízké rozlišení, chybějící spadávka, text příliš u okraje), kontaktujeme kupujícího a tisk spustíme až po jeho souhlasu. Obsahovou správnost údajů (jméno, telefon, e-mail) za kupujícího nekontrolujeme.') }}</p>
+
+  <h2>3. {{ L('Cena a platba', 'Cena a platba') }}</h2>
+  <p>{{ L('Ceny sú uvedené v eurách (slovenská verzia) alebo v korunách (česká verzia) a sú konečné, predávajúci nie je platiteľom DPH. Doprava na Slovensko a do Česka je zadarmo. Platiť je možné platobnou kartou cez platobnú bránu Stripe alebo bankovým prevodom. Pri prevode spúšťame výrobu po pripísaní platby.', 'Ceny jsou uvedeny v eurech (slovenská verze) nebo v korunách (česká verze) a jsou konečné, prodávající není plátcem DPH. Doprava po Česku a na Slovensko je zdarma. Platit je možné platební kartou přes platební bránu Stripe nebo bankovním převodem. Při převodu spouštíme výrobu po připsání platby.') }}</p>
+
+  <h2>4. {{ L('Výroba a dodanie', 'Výroba a dodání') }}</h2>
+  <p>{{ L('Vizitky vyrábame u overeného tlačového partnera a doručujeme kuriérom alebo na výdajné miesto. Obvyklá lehota je do 5 pracovných dní od schválenia tlačových dát, pri expresnej výrobe o 2 pracovné dni kratšia. Odhad doručenia na webe je orientačný.', 'Vizitky vyrábíme u ověřeného tiskového partnera a doručujeme kurýrem nebo na výdejní místo. Obvyklá lhůta je do 5 pracovních dnů od schválení tiskových dat, u expresní výroby o 2 pracovní dny kratší. Odhad doručení na webu je orientační.') }}</p>
+
+  <h2>5. {{ L('Odstúpenie od zmluvy', 'Odstoupení od smlouvy') }}</h2>
+  <p>{{ L('Tlačené vizitky sú tovar vyrobený podľa požiadaviek kupujúceho. Spotrebiteľ preto nemôže od zmluvy odstúpiť po začatí výroby (§ 1837 písm. d) občianskeho zákonníka ČR, § 7 ods. 6 písm. c) zákona č. 102/2014 Z. z.). Pred schválením tlačových dát je možné objednávku zrušiť e-mailom a zaplatenú sumu vrátime.', 'Tištěné vizitky jsou zboží vyrobené podle požadavků kupujícího. Spotřebitel proto nemůže od smlouvy odstoupit po zahájení výroby (§ 1837 písm. d) občanského zákoníku, u slovenských spotřebitelů § 7 odst. 6 písm. c) zákona č. 102/2014 Z. z.). Před schválením tiskových dat je možné objednávku zrušit e-mailem a zaplacenou částku vrátíme.') }}</p>
+
+  <h2>6. {{ L('Digitálna vizitka', 'Digitální vizitka') }}</h2>
+  <p>{{ L('Digitálna vizitka je webová stránka s adresou vizitkomat.eu/v/… dostupná 12 mesiacov od aktivácie. K tlačeným vizitkám je prvý rok zadarmo. Služba sa automaticky neobnovuje, pred koncom vás upozorníme e-mailom. Údaje na digitálnej vizitke môžete počas platnosti meniť.', 'Digitální vizitka je webová stránka s adresou vizitkomat.eu/v/… dostupná 12 měsíců od aktivace. K tištěným vizitkám je první rok zdarma. Služba se automaticky neobnovuje, před koncem vás upozorníme e-mailem. Údaje na digitální vizitce můžete během platnosti měnit.') }}</p>
+
+  <h2>7. {{ L('Reklamácie', 'Reklamace') }}</h2>
+  <p>{{ L('Ak má tovar vadu (napr. chyba tlače, poškodenie pri preprave, odchýlka od schváleného náhľadu), napíšte nám do 14 dní od doručenia na info@vizitkomat.eu a priložte fotografiu. Oprávnenú reklamáciu vybavíme novou tlačou alebo vrátením peňazí do 30 dní. Odchýlky farieb medzi obrazovkou a tlačou (RGB a CMYK) a drobné posuny pri oreze v rámci spadávky nie sú vadou.', 'Pokud má zboží vadu (např. chyba tisku, poškození při přepravě, odchylka od schváleného náhledu), napište nám do 14 dnů od doručení na info@vizitkomat.eu a přiložte fotografii. Oprávněnou reklamaci vyřídíme novým tiskem nebo vrácením peněz do 30 dnů. Odchylky barev mezi obrazovkou a tiskem (RGB a CMYK) a drobné posuny při ořezu v rámci spadávky nejsou vadou.') }}</p>
+
+  <h2>8. {{ L('Obsah návrhu', 'Obsah návrhu') }}</h2>
+  <p>{{ L('Kupujúci zodpovedá za to, že má právo použiť logá, texty a obrázky, ktoré na vizitku nahrá. Návrhy vytvorené AI grafikom a šablóny Vizitkomatu môže kupujúci voľne používať na svoje vizitky. Tlač obsahu, ktorý porušuje zákon alebo práva tretích osôb, môžeme odmietnuť.', 'Kupující odpovídá za to, že má právo použít loga, texty a obrázky, které na vizitku nahraje. Návrhy vytvořené AI grafikem a šablony Vizitkomatu může kupující volně používat na své vizitky. Tisk obsahu, který porušuje zákon nebo práva třetích osob, můžeme odmítnout.') }}</p>
+
+  <h2>9. {{ L('Riešenie sporov', 'Řešení sporů') }}</h2>
+  <p>{{ L('Spotrebiteľ sa môže obrátiť na Českú obchodnú inšpekciu (www.coi.cz) alebo na platformu riešenia sporov online (ec.europa.eu/consumers/odr). Slovenskí spotrebitelia sa môžu obrátiť aj na Slovenskú obchodnú inšpekciu (www.soi.sk). Zmluva sa riadi právom Českej republiky, čím nie sú dotknuté práva spotrebiteľa podľa práva krajiny jeho bydliska.', 'Spotřebitel se může obrátit na Českou obchodní inspekci (www.coi.cz) nebo na platformu pro řešení sporů online (ec.europa.eu/consumers/odr). Slovenští spotřebitelé se mohou obrátit i na Slovenskou obchodní inspekci (www.soi.sk). Smlouva se řídí právem České republiky, čímž nejsou dotčena práva spotřebitele podle práva země jeho bydliště.') }}</p>
+</article>
+{% endblock %}

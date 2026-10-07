@@ -22,6 +22,9 @@ PAGES = [
     ('digitalna.html', 'digitalna-vizitka/', 'digitalni-vizitka/'),
     ('cennik.html', 'cennik/', 'cenik/'),
     ('kosik.html', 'kosik/', 'kosik/'),
+    ('vlastny.html', 'vlastny-navrh/', 'vlastni-navrh/'),
+    ('podmienky.html', 'obchodne-podmienky/', 'obchodni-podminky/'),
+    ('gdpr.html', 'ochrana-osobnych-udajov/', 'ochrana-osobnich-udaju/'),
     ('404.html', '404.html', None),
 ]
 LANGS = {'sk': '', 'cz': 'cz/'}

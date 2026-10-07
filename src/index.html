@@ -26,6 +26,7 @@
         <button data-p="{{ L('Fitness trénerka, energicky a odvážne', 'Fitness trenérka, energicky a odvážně') }}">{{ L('Trénerka', 'Trenérka') }}</button>
         <button data-p="{{ L('Kaviareň s pražiarňou, retro a hravo', 'Kavárna s pražírnou, retro a hravě') }}">{{ L('Kaviareň', 'Kavárna') }}</button>
       </div>
+      <p class="hero__alt">{{ L('Alebo', 'Nebo') }} <a href="{{ link('tvorba') }}?rezim=sablony">{{ L('si vyberte šablónu', 'si vyberte šablonu') }}</a> · <a href="{{ link('vlastny') }}">{{ L('nahrajte vlastný návrh', 'nahrajte vlastní návrh') }}</a></p>
       <ul class="hero__trust">
         <li>{{ L('Doprava zdarma SK a CZ', 'Doprava zdarma CZ a SK') }}</li>
         <li>{{ L('Kontrolu dát robí človek', 'Kontrolu dat dělá člověk') }}</li>
@@ -82,6 +83,14 @@
   </div>
 </section>
 
+<section class="own-strip" data-nav="cream">
+  <div class="wrap own-strip__in rv">
+    <div class="own-strip__files" aria-hidden="true"><span>PDF</span><span>PNG</span><span>JPG</span></div>
+    <div><h2 class="h-m">{{ L('Máte hotový návrh od grafika?', 'Máte hotový návrh od grafika?') }}</h2><p>{{ L('Nahrajte ho, automaticky skontrolujeme rozlíšenie a spadávku a vytlačíme ho na rovnako prémiový papier.', 'Nahrajte ho, automaticky zkontrolujeme rozlišení a spadávku a vytiskneme ho na stejně prémiový papír.') }}</p></div>
+    <a class="btn btn--b" href="{{ link('vlastny') }}">{{ L('Nahrať návrh', 'Nahrát návrh') }} <span class="ar">→</span></a>
+  </div>
+</section>
+
 <!-- ===== AI UKÁŽKY ===== -->
 <section class="real" data-nav="ink">
   <div class="wrap">
@@ -98,35 +107,6 @@
   </div>
 </section>
 
-<!-- ===== EDITOR ===== -->
-<section class="edit" data-nav="cream">
-  <div class="wrap edit__grid">
-    <div class="edit__copy">
-      <h2 class="h-l rv">{{ L('Upravte čokoľvek.', 'Upravte cokoli.') }} <span class="hl-b">{{ L('Priamo vo vizitke.', 'Přímo ve vizitce.') }}</span></h2>
-      <p class="lead rv">{{ L('Žiadne formuláre a čakanie na grafika. Chytíte text a posuniete ho, dvojklikom ho prepíšete, farbu zmeníte jedným ťuknutím.', 'Žádné formuláře a čekání na grafika. Chytíte text a posunete ho, dvojklikem ho přepíšete, barvu změníte jedním ťuknutím.') }}</p>
-      <ul class="edit__list rv">
-        <li>{{ L('14 písiem so slovenskou a českou diakritikou', '14 písem s českou a slovenskou diakritikou') }}</li>
-        <li>{{ L('Ikony, tvary, QR kód aj vaše logo', 'Ikony, tvary, QR kód i vaše logo') }}</li>
-        <li>{{ L('Vodiace čiary, nič neutečie do orezu', 'Vodicí čáry, nic neuteče do ořezu') }}</li>
-        <li>{{ L('3D náhľad a tlačové PDF so spadávkou', '3D náhled a tiskové PDF se spadávkou') }}</li>
-      </ul>
-      <a class="btn btn--b rv" href="{{ link('tvorba') }}">{{ L('Otvoriť editor', 'Otevřít editor') }} <span class="ar">→</span></a>
-    </div>
-    <div class="edit__try rv">
-      <div class="edit__win">
-        <div class="edit__bar"><i></i><i></i><i></i><span>{{ L('Vyskúšajte: chyťte meno a posuňte ho', 'Vyzkoušejte: chyťte jméno a posuňte ho') }}</span></div>
-        <div class="edit__host" data-mini><canvas data-mini-canvas></canvas></div>
-        <div class="edit__tools" data-mini-tools>
-          <button data-mt="pal"><span class="dot" style="background:linear-gradient(135deg,#2440E6 50%,#FFD23F 50%)"></span>{{ L('Farby', 'Barvy') }}</button>
-          <button data-mt="font"><b>Aa</b>{{ L('Písmo', 'Písmo') }}</button>
-          <button data-mt="tpl"><span class="dot" style="background:#FF6B4A"></span>{{ L('Šablóna', 'Šablona') }}</button>
-          <button data-mt="icon"><span class="dot dot--heart">♥</span>{{ L('Ikona', 'Ikona') }}</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ===== ŠABLÓNY ===== -->
 <section class="tpls" data-nav="coral">
   <div class="wrap tpls__head">
@@ -138,23 +118,6 @@
     <div class="tpls__row tpls__row--rev"><div class="tpls__track" data-row="1"></div></div>
   </div>
   <div class="wrap"><a class="btn btn--w btn--lg rv" href="{{ link('tvorba') }}?rezim=sablony">{{ L('Pozrieť všetky šablóny', 'Prohlédnout všechny šablony') }} <span class="ar">→</span></a></div>
-</section>
-
-<!-- ===== PAPIER 3D ===== -->
-<section class="paper" data-nav="blue">
-  <div class="wrap paper__grid">
-    <div class="paper__copy">
-      <h2 class="h-l rv">{{ L('Papier, ktorý', 'Papír, který') }} <span class="hl">{{ L('cítiť.', 'cítíte.') }}</span></h2>
-      <p class="lead rv">{{ L('Vizitku si človek najprv ohmatá a až potom prečíta. Vyberte povrch a otočte si ju.', 'Vizitku si člověk nejdřív ohmatá a až potom přečte. Vyberte povrch a otočte si ji.') }}</p>
-      <div class="mats rv" data-mats>
-        <button class="on" data-mat="matte"><b>{{ L('Matný 350 g', 'Matný 350 g') }}</b><small>{{ L('Klasika, dá sa naň písať', 'Klasika, dá se na něj psát') }}</small></button>
-        <button data-mat="soft"><b>Soft-touch</b><small>{{ L('Zamatový, ako broskyňa', 'Sametový, jako broskev') }}</small></button>
-        <button data-mat="gloss"><b>{{ L('Lesk', 'Lesk') }}</b><small>{{ L('Sýte farby a odlesk', 'Sytější barvy a odlesk') }}</small></button>
-        <button data-mat="triplex"><b>Triplex 720 g</b><small>{{ L('Hrubý, s farebným jadrom', 'Silný, s barevným jádrem') }}</small></button>
-      </div>
-    </div>
-    <div class="paper__3d" data-paper3d><span class="paper__hint">{{ L('Potiahnite a otočte', 'Potáhněte a otočte') }}</span></div>
-  </div>
 </section>
 
 <!-- ===== DIGITÁL ===== -->
@@ -206,7 +169,7 @@
       <details><summary>{{ L('Ako dlho trvá doručenie?', 'Jak dlouho trvá doručení?') }}</summary><p>{{ L('Zvyčajne do 5 pracovných dní od schválenia tlačových dát, s expresom o dva dni skôr. Presný odhad vidíte pri objednávke.', 'Obvykle do 5 pracovních dnů od schválení tiskových dat, s expresem o dva dny dříve. Přesný odhad vidíte při objednávce.') }}</p></details>
       <details><summary>{{ L('Uvidím vizitku pred tlačou?', 'Uvidím vizitku před tiskem?') }}</summary><p>{{ L('Áno, v editore vidíte presný náhľad aj s orezom a môžete si stiahnuť tlačové PDF. Pred tlačou návrh skontroluje človek a ak treba niečo upraviť, ozve sa vám.', 'Ano, v editoru vidíte přesný náhled i s ořezem a můžete si stáhnout tiskové PDF. Před tiskem návrh zkontroluje člověk a pokud je potřeba něco upravit, ozve se vám.') }}</p></details>
       <details><summary>{{ L('Môžem nahrať vlastný návrh?', 'Mohu nahrát vlastní návrh?') }}</summary><p>{{ L('Áno, PDF alebo obrázok. Editor skontroluje rozlíšenie a spadávku, človek potom celý súbor.', 'Ano, PDF nebo obrázek. Editor zkontroluje rozlišení a spadávku, člověk pak celý soubor.') }}</p></details>
-      <details><summary>{{ L('Dá sa objednať na firmu?', 'Dá se objednat na firmu?') }}</summary><p>{{ L('Samozrejme, s IČO, DIČ aj IČ DPH. Faktúru pošleme e-mailom.', 'Samozřejmě, s IČO a DIČ. Fakturu pošleme e-mailem.') }}</p></details>
+      <details><summary>{{ L('Dá sa objednať na firmu?', 'Dá se objednat na firmu?') }}</summary><p>{{ L('Samozrejme, s IČO aj DIČ. Faktúru pošleme e-mailom. Nie sme platcami DPH, takže cena je konečná aj pre firmy.', 'Samozřejmě, s IČO i DIČ. Fakturu pošleme e-mailem. Nejsme plátci DPH, takže cena je konečná i pro firmy.') }}</p></details>
     </div>
   </div>
 </section>

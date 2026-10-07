@@ -77,9 +77,19 @@ function qrPath(text) {
   return { d, n };
 }
 
+const tintCache = new Map();
+function tinted(el, src, color) {
+  const key = src.length + ':' + src.slice(-40) + color;
+  if (tintCache.has(key)) return tintCache.get(key);
+  const c = document.createElement('canvas'); c.width = el.naturalWidth || el.width; c.height = el.naturalHeight || el.height;
+  const x = c.getContext('2d'); x.drawImage(el, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = color; x.fillRect(0, 0, c.width, c.height);
+  tintCache.set(key, c); if (tintCache.size > 120) tintCache.delete(tintCache.keys().next().value);
+  return c;
+}
 async function imageObj(src, x, y, w, h, o = {}) {
-  const el = await loadImg(src);
+  let el = await loadImg(src);
   if (!el) return null;
+  if (o.tint) el = tinted(el, src, o.tint);
   const fab = F();
   const iw = el.naturalWidth || el.width, ih = el.naturalHeight || el.height;
   const W = len(w), H = len(h);
@@ -179,6 +189,7 @@ export async function toFabric(o, lay, ctx = {}) {
       return null;
   }
   if (!obj) return null;
+  if (o.rot) { const ctr = obj.getCenterPoint(); obj.set({ originX: 'center', originY: 'center', left: ctr.x, top: ctr.y, angle: o.rot }); }
   obj.data = { kind: o.type, field: o.field || null, prefix: o.prefix || '', part: o.part ?? null, upper: !!o.upper, role: o.role || null, fit: o.fit || null };
   return obj;
 }

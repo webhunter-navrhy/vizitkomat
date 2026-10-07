@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}{{ L('Cenník vizitiek | Vizitkomat', 'Ceník vizitek | Vizitkomat') }}{% endblock %}
-{% block description %}{{ L('Tlačené vizitky od', 'Tištěné vizitky od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }} {{ L('za 100 ks vrátane DPH a dopravy. Soft-touch, Triplex 720 g a digitálna vizitka.', 'za 100 ks včetně DPH a dopravy. Soft-touch, Triplex 720 g a digitální vizitka.') }}{% endblock %}
+{% block description %}{{ L('Tlačené vizitky od', 'Tištěné vizitky od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }} {{ L('za 100 ks vrátane dopravy. Soft-touch, Triplex 720 g a digitálna vizitka.', 'za 100 ks včetně dopravy. Soft-touch, Triplex 720 g a digitální vizitka.') }}{% endblock %}
 {% block head %}<link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
 {% macro m(v) %}{{ '{:,}'.format(v).replace(',', ' ') }} {{ prices.symbol }}{% endmacro %}
 {% block main %}
 <section class="pr" data-nav="cream">
   <div class="wrap">
     <h1 class="h-l">{{ L('Čo vidíte,', 'Co vidíte,') }} <span class="hl-c">{{ L('to zaplatíte.', 'to zaplatíte.') }}</span></h1>
-    <p class="lead pr__lead">{{ L('Všetky ceny sú vrátane DPH, návrhu s AI grafikom, obojstrannej tlače, kontroly dát človekom a dopravy na Slovensko aj do Česka.', 'Všechny ceny jsou včetně DPH, návrhu s AI grafikem, oboustranného tisku, kontroly dat člověkem a dopravy po Česku i na Slovensku.') }}</p>
+    <p class="lead pr__lead">{{ L('Ceny sú konečné, nie sme platcami DPH. Zahŕňajú návrh s AI grafikom, obojstrannú tlač, kontrolu dát človekom a dopravu na Slovensko aj do Česka.', 'Ceny jsou konečné, nejsme plátci DPH. Zahrnují návrh s AI grafikem, oboustranný tisk, kontrolu dat člověkem a dopravu po Česku i na Slovensku.') }}</p>
     <div class="pr__t" tabindex="0" role="region" aria-label="{{ L('Ceny', 'Ceny') }}">
       <table>
         <thead><tr><th>{{ L('Papier', 'Papír') }}</th>{% for q in prices.qty %}<th>{{ q }} {{ L('ks', 'ks') }}</th>{% endfor %}</tr></thead>

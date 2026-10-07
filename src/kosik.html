@@ -64,9 +64,9 @@
       </fieldset>
       <aside class="co__sum">
         <div class="co__lines" data-lines></div>
-        <div class="co__total"><span>{{ L('Spolu s DPH', 'Celkem s DPH') }}</span><b data-total>—</b></div>
+        <div class="co__total"><span>{{ L('Spolu', 'Celkem') }}</span><b data-total>—</b></div>
         <p class="co__date" data-date></p>
-        <label class="chk chk--terms"><input type="checkbox" name="terms" required> <span>{{ L('Súhlasím s obchodnými podmienkami a so spracovaním osobných údajov na vybavenie objednávky.', 'Souhlasím s obchodními podmínkami a se zpracováním osobních údajů pro vyřízení objednávky.') }}</span></label>
+        <label class="chk chk--terms"><input type="checkbox" name="terms" required> <span>{{ L('Súhlasím s', 'Souhlasím s') }} <a href="{{ link('podmienky') }}" target="_blank">{{ L('obchodnými podmienkami', 'obchodními podmínkami') }}</a> {{ L('a beriem na vedomie', 'a beru na vědomí') }} <a href="{{ link('gdpr') }}" target="_blank">{{ L('spracovanie osobných údajov', 'zpracování osobních údajů') }}</a>. {{ L('Vizitky sa vyrábajú na mieru, po spustení výroby od zmluvy nie je možné odstúpiť.', 'Vizitky se vyrábějí na míru, po zahájení výroby nelze od smlouvy odstoupit.') }}</span></label>
         <p class="co__err" data-err hidden></p>
         <button class="btn btn--y btn--lg co__go" type="submit">{{ L('Objednať s povinnosťou platby', 'Objednat s povinností platby') }}</button>
         <p class="co__safe">{{ L('Pred tlačou návrh skontroluje človek.', 'Před tiskem návrh zkontroluje člověk.') }}</p>

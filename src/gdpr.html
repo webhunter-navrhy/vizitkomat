@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}{{ L('Ochrana osobných údajov | Vizitkomat', 'Ochrana osobních údajů | Vizitkomat') }}{% endblock %}
+{% block description %}{{ L('Ako Vizitkomat.eu spracúva osobné údaje zákazníkov.', 'Jak Vizitkomat.eu zpracovává osobní údaje zákazníků.') }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
+{% block navclass %} solid{% endblock %}
+{% block main %}
+<article class="legal wrap">
+  <h1 class="h-l">{{ L('Ochrana osobných údajov', 'Ochrana osobních údajů') }}</h1>
+  <p class="legal__meta">{{ L('Platné od 8. 10. 2026', 'Platné od 8. 10. 2026') }}</p>
+  <h2>{{ L('Kto údaje spracúva', 'Kdo údaje zpracovává') }}</h2>
+  <p>{{ L('Prevádzkovateľom je', 'Správcem je') }} <b>webhunter s.r.o.</b>, IČO 29498511, Na Provaznici 2691/7, Smíchov, 150 00 Praha 5. {{ L('Kontakt pre otázky k údajom:', 'Kontakt pro dotazy k údajům:') }} <a href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a>.</p>
+  <h2>{{ L('Aké údaje a prečo', 'Jaké údaje a proč') }}</h2>
+  <ul>
+    <li><b>{{ L('Objednávka:', 'Objednávka:') }}</b> {{ L('meno, e-mail, telefón, adresa doručenia, prípadne firemné údaje. Potrebujeme ich na výrobu, doručenie a fakturáciu (plnenie zmluvy, zákonné povinnosti).', 'jméno, e-mail, telefon, adresa doručení, případně firemní údaje. Potřebujeme je pro výrobu, doručení a fakturaci (plnění smlouvy, zákonné povinnosti).') }}</li>
+    <li><b>{{ L('Návrh vizitky:', 'Návrh vizitky:') }}</b> {{ L('údaje, ktoré na vizitku napíšete, logo a fotka. Používame ich len na tlač a na vašu digitálnu vizitku.', 'údaje, které na vizitku napíšete, logo a fotka. Používáme je jen pro tisk a pro vaši digitální vizitku.') }}</li>
+    <li><b>{{ L('AI grafik:', 'AI grafik:') }}</b> {{ L('text, ktorý mu napíšete, sa odošle na spracovanie modelu umelej inteligencie (Cloudflare Workers AI). Neukladáme ho a nepoužívame na iný účel.', 'text, který mu napíšete, se odešle ke zpracování modelu umělé inteligence (Cloudflare Workers AI). Neukládáme ho a nepoužíváme k jinému účelu.') }}</li>
+    <li><b>{{ L('Platba:', 'Platba:') }}</b> {{ L('platbu kartou spracúva Stripe. Údaje o karte k nám nikdy neprídu.', 'platbu kartou zpracovává Stripe. Údaje o kartě k nám nikdy nepřijdou.') }}</li>
+  </ul>
+  <h2>{{ L('Komu údaje odovzdávame', 'Komu údaje předáváme') }}</h2>
+  <p>{{ L('Tlačovému partnerovi (návrh a adresa doručenia), dopravcovi (meno, adresa, telefón), platobnej bráne Stripe a poskytovateľom hostingu a infraštruktúry (Cloudflare, GitHub). Údaje nepredávame a nepoužívame na reklamu.', 'Tiskovému partnerovi (návrh a adresa doručení), dopravci (jméno, adresa, telefon), platební bráně Stripe a poskytovatelům hostingu a infrastruktury (Cloudflare, GitHub). Údaje neprodáváme a nepoužíváme k reklamě.') }}</p>
+  <h2>{{ L('Ako dlho', 'Jak dlouho') }}</h2>
+  <p>{{ L('Údaje k objednávke uchovávame po dobu potrebnú na vybavenie a reklamácie a doklady 10 rokov podľa účtovných predpisov. Digitálnu vizitku zmažeme do 30 dní po skončení jej platnosti.', 'Údaje k objednávce uchováváme po dobu potřebnou k vyřízení a reklamacím a doklady 10 let podle účetních předpisů. Digitální vizitku smažeme do 30 dnů po skončení její platnosti.') }}</p>
+  <h2>{{ L('Vaše práva', 'Vaše práva') }}</h2>
+  <p>{{ L('Máte právo na prístup k údajom, ich opravu, vymazanie, obmedzenie spracúvania, prenos a právo namietať. Stačí napísať na info@vizitkomat.eu. Sťažnosť môžete podať na Úrad pre ochranu osobných údajov (ČR: www.uoou.cz, SR: dataprotection.gov.sk).', 'Máte právo na přístup k údajům, jejich opravu, výmaz, omezení zpracování, přenositelnost a právo vznést námitku. Stačí napsat na info@vizitkomat.eu. Stížnost můžete podat u Úřadu pro ochranu osobních údajů (www.uoou.cz).') }}</p>
+  <h2>{{ L('Cookies a úložisko prehliadača', 'Cookies a úložiště prohlížeče') }}</h2>
+  <p>{{ L('Nepoužívame reklamné ani analytické cookies. Rozpracovaný návrh a košík ukladáme len vo vašom prehliadači (IndexedDB), aby ste o ne neprišli.', 'Nepoužíváme reklamní ani analytické cookies. Rozpracovaný návrh a košík ukládáme jen ve vašem prohlížeči (IndexedDB), abyste o ně nepřišli.') }}</p>
+</article>
+{% endblock %}

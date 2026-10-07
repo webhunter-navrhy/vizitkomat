@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}{{ L('Tlač vlastného návrhu vizitiek | Vizitkomat', 'Tisk vlastního návrhu vizitek | Vizitkomat') }}{% endblock %}
+{% block description %}{{ L('Máte hotový návrh vizitky? Nahrajte PDF alebo obrázok, automaticky skontrolujeme rozlíšenie a spadávku, vytlačíme na prémiový papier. Doprava zdarma.', 'Máte hotový návrh vizitky? Nahrajte PDF nebo obrázek, automaticky zkontrolujeme rozlišení a spadávku, vytiskneme na prémiový papír. Doprava zdarma.') }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/studio2.css') }}"><link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
+{% block navclass %} solid{% endblock %}
+{% block main %}
+<div class="own wrap" data-own>
+  <header class="own__head">
+    <p class="kicker hl-b">{{ L('Klasická tlač', 'Klasický tisk') }}</p>
+    <h1 class="h-l">{{ L('Máte vlastný návrh?', 'Máte vlastní návrh?') }} <span class="hl-c">{{ L('Vytlačíme ho.', 'Vytiskneme ho.') }}</span></h1>
+    <p class="lead">{{ L('Nahrajte PDF alebo obrázok od vášho grafika. Rozlíšenie a spadávku skontrolujeme hneď, pred tlačou ešte človek.', 'Nahrajte PDF nebo obrázek od vašeho grafika. Rozlišení a spadávku zkontrolujeme hned, před tiskem ještě člověk.') }}</p>
+  </header>
+
+  <div class="own__grid">
+    <div class="own__main">
+      <section class="own__step">
+        <h2><b>1</b>{{ L('Formát', 'Formát') }}</h2>
+        <div class="seg seg--s own__sizes" data-size><button class="on" data-v="90x50">90 × 50 mm</button><button data-v="85x55">85 × 55 mm</button><button data-v="55x55">55 × 55 mm</button></div>
+        <p class="own__spec">{{ L('Ideálny súbor:', 'Ideální soubor:') }} <b data-spec>94 × 54 mm</b> {{ L('(so spadávkou 2 mm), aspoň 300 dpi, PDF alebo PNG/JPG.', '(se spadávkou 2 mm), aspoň 300 dpi, PDF nebo PNG/JPG.') }}</p>
+      </section>
+      <section class="own__step">
+        <h2><b>2</b>{{ L('Nahrajte súbory', 'Nahrajte soubory') }}</h2>
+        <div class="own__drops">
+          <label class="drop own__drop" data-od="front"><input type="file" accept="image/*,application/pdf" hidden><img alt=""><span>{{ L('Predná strana', 'Přední strana') }}<small>{{ L('kliknite alebo pustite súbor', 'klikněte nebo pusťte soubor') }}</small></span></label>
+          <label class="drop own__drop" data-od="back"><input type="file" accept="image/*,application/pdf" hidden><img alt=""><span>{{ L('Zadná strana', 'Zadní strana') }}<small>{{ L('nepovinné', 'nepovinné') }}</small></span></label>
+        </div>
+        <div class="own__backopt" data-backopt>
+          <span>{{ L('Bez zadného súboru:', 'Bez zadního souboru:') }}</span>
+          <div class="seg seg--s"><button class="on" data-v="blank">{{ L('zadná strana biela', 'zadní strana bílá') }}</button><button data-v="same">{{ L('rovnaká ako predná', 'stejná jako přední') }}</button></div>
+        </div>
+      </section>
+      <section class="own__step" data-checks-box hidden>
+        <h2><b>3</b>{{ L('Kontrola', 'Kontrola') }}</h2>
+        <div class="own__prev">
+          <figure><img alt="" data-prev-front><figcaption>{{ L('Predná', 'Přední') }}</figcaption></figure>
+          <figure><img alt="" data-prev-back><figcaption>{{ L('Zadná', 'Zadní') }}</figcaption></figure>
+        </div>
+        <ul class="checks" data-checks></ul>
+      </section>
+    </div>
+
+    <aside class="own__side">
+      <h2 class="h-m">{{ L('Papier a počet', 'Papír a počet') }}</h2>
+      <div class="papers own__papers" data-paper>
+        <button class="paper on" data-v="std"><i class="paper__sw"></i><b>{{ L('Štandard', 'Standard') }}</b><small>{{ L('matný 350 g', 'matný 350 g') }}</small><em data-pp-price="std"></em></button>
+        <button class="paper" data-v="soft"><i class="paper__sw paper__sw--soft"></i><b>{{ L('Prémium', 'Prémium') }}</b><small>soft-touch</small><em data-pp-price="soft"></em></button>
+        <button class="paper" data-v="triplex"><i class="paper__sw paper__sw--tri"></i><b>{{ L('Luxus', 'Luxus') }}</b><small>Triplex 720 g</small><em data-pp-price="triplex"></em></button>
+      </div>
+      <h3>{{ L('Počet kusov', 'Počet kusů') }}</h3>
+      <div class="qty" data-qty>{% for q in prices.qty %}<button{% if q == 250 %} class="on"{% endif %} data-v="{{ q }}"><b>{{ q }}</b><small data-qp="{{ q }}"></small></button>{% endfor %}</div>
+      <label class="tog own__tog"><input type="checkbox" data-round> <span>{{ L('Zaoblené rohy', 'Zaoblené rohy') }} <small data-round-p></small></span></label>
+      <label class="tog own__tog"><input type="checkbox" data-express> <span>{{ L('Expres', 'Expres') }} <small>+{{ prices.express }} {{ prices.symbol }} · {{ L('o 2 dni skôr', 'o 2 dny dříve') }}</small></span></label>
+      <div class="sum">
+        <div class="sum__p"><span>{{ L('Spolu', 'Celkem') }}</span><b data-sum>—</b></div>
+        <p class="sum__m" data-sum-m></p>
+        <p class="sum__d" data-sum-d></p>
+        <button class="btn btn--lg sum__cta" data-add disabled>{{ L('Najprv nahrajte prednú stranu', 'Nejdřív nahrajte přední stranu') }}</button>
+        <p class="sum__vat">{{ L('Nie sme platcami DPH, cena je konečná. Doprava zadarmo.', 'Nejsme plátci DPH, cena je konečná. Doprava zdarma.') }}</p>
+      </div>
+      <p class="own__alt">{{ L('Nemáte návrh?', 'Nemáte návrh?') }} <a class="link" href="{{ link('tvorba') }}?rezim=ai">{{ L('Nechajte ho navrhnúť AI', 'Nechte ho navrhnout AI') }} →</a></p>
+    </aside>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script type="module" src="{{ A('assets/js/v2/vlastny.js') }}"></script>{% endblock %}

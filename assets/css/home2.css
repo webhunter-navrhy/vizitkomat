@@ -236,3 +236,14 @@
   .edit__host { height: 230px; }
   .band span { font-size: 1.3rem; }
 }
+
+.hero__alt { margin-top: 1rem; font-weight: 600; opacity: .9; }
+.hero__alt a { border-bottom: 2px solid rgba(255, 255, 255, .5); }
+.hero__alt a:hover { border-color: var(--yellow); color: var(--yellow); }
+.own-strip { padding: 0 0 var(--sec); }
+.own-strip__in { display: grid; grid-template-columns: auto 1fr auto; gap: 2rem; align-items: center; padding: 1.8rem 2rem; border-radius: 30px; background: var(--yellow); box-shadow: 0 0 0 3px var(--ink), 8px 9px 0 var(--ink); }
+.own-strip__in p { margin-top: .5rem; font-weight: 500; max-width: 56ch; }
+.own-strip__files { display: flex; gap: 6px; }
+.own-strip__files span { width: 52px; height: 66px; border-radius: 8px; background: #fff; box-shadow: 0 0 0 2.5px var(--ink); display: grid; place-items: end center; padding-bottom: 8px; font-weight: 800; font-size: .72rem; }
+.own-strip__files span:nth-child(1) { transform: rotate(-6deg); } .own-strip__files span:nth-child(3) { transform: rotate(6deg); }
+@media (max-width: 800px) { .own-strip__in { grid-template-columns: 1fr; } }

@@ -1,51 +1,30 @@
-// AI grafik – klient. Skutočný jazykový model (Cloudflare Workers AI) + vygenerovaná grafika.
-// Pri výpadku servera beží záložný lokálny výber šablón.
+// AI grafik 2.0 – klient. Jazykový model (bezplatné free tiery cez náš Worker) navrhne tri smery,
+// znak je ikona z Lucide (1500+ ikon, zadarmo a bez limitu). Pri výpadku beží lokálny návrhár.
 import { newDesign, PALETTES, FONTS, DEFAULT_FIELDS, tr, CZ } from './model.js';
 import { TEMPLATES } from './templates.js';
-import { analyze } from '../ai-engine.js';
+import { analyze, INDUSTRIES } from '../ai-engine.js';
+import { processMark } from './mark.js';
+import { iconSVG } from '../icons.js';
 
 export const API = 'https://vizitkomat-api.webhunter.workers.dev';
-
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+const plain = (t) => (t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
-const TPL_DESC = {
-  atelier: tr('redakčná kompozícia s veľkým menom', 'redakční kompozice s velkým jménem'),
-  noirgold: tr('luxusná tmavá karta so zlatým rámom', 'luxusní tmavá karta se zlatým rámem'),
-  monolit: tr('odvážne veľké iniciály cez okraj', 'odvážné velké iniciály přes okraj'),
-  mramor: tr('mramor s bielym panelom', 'mramor s bílým panelem'),
-  botanika: tr('ilustrácia po boku a jemný serif', 'ilustrace po boku a jemný serif'),
-  prechod: tr('výrazný farebný prechod', 'výrazný barevný přechod'),
-  bauhaus: tr('geometria v štýle Bauhaus', 'geometrie ve stylu Bauhaus'),
-  terrazzo: tr('pás terrazza a pokojná typografia', 'pás terrazza a klidná typografie'),
-  linia: tr('minimalizmus s líniovou kresbou', 'minimalismus s liniovou kresbou'),
-  akvarel: tr('akvarelová škvrna po boku', 'akvarelová skvrna po boku'),
-  terminal: tr('terminál pre ľudí z IT', 'terminál pro lidi z IT'),
-  firma: tr('prehľadná firemná karta', 'přehledná firemní karta'),
-  holo: tr('perleťový hologram', 'perleťový hologram'),
-  drevo: tr('prírodné drevo', 'přírodní dřevo'),
-  retro: tr('retro sedemdesiatky', 'retro sedmdesátky'),
-  pecat: tr('pečať ako od remeselníka', 'pečeť jako od řemeslníka'),
-  podpis: tr('meno ako podpis', 'jméno jako podpis'),
-  duo: tr('dvojfarebný šikmý rez', 'dvoubarevný šikmý řez'),
-  zlato: tr('zlatá línia na tmavom', 'zlatá linie na tmavém'),
-};
-
-function describe(d, generated) {
-  const t = TPL_DESC[d.tpl] || '';
-  const f = FONTS[d.fonts]?.label || '';
-  return `${cap(t)}${f ? `, ${tr('písmo', 'písmo')} ${f}` : ''}${generated ? tr(', grafika na mieru od AI', ', grafika na míru od AI') : ''}.`;
+const DIR = { classic: tr('Klasický', 'Klasický'), modern: tr('Moderný', 'Moderní'), creative: tr('Kreatívny', 'Kreativní') };
+function describe(d) {
+  const dir = DIR[d.direction] ? `${DIR[d.direction]} ${tr('smer', 'směr')} · ` : '';
+  return `${dir}${TEMPLATES[d.tpl]?.name || ''} · ${FONTS[d.fonts]?.label || ''}${d.mark ? tr(' · znak na mieru', ' · znak na míru') : ''}${d.art && String(d.art).startsWith('data:') ? tr(' · grafika od AI', ' · grafika od AI') : ''}`;
 }
-
 function introFrom(fields, A) {
   const bits = [];
   if (fields.role) bits.push(fields.role.toLowerCase());
   if (fields.company) bits.push(fields.company);
   if (fields.address) bits.push(fields.address);
   const mood = (A?.moods || []).map((m) => ({ jemne: tr('jemne', 'jemně'), luxus: tr('luxusne', 'luxusně'), moderne: tr('moderne', 'moderně'), hrave: tr('hravo', 'hravě'), tmave: tr('tmavo', 'tmavě'), prirodne: tr('prírodne', 'přírodně'), tradic: tr('tradične', 'tradičně'), seriozne: tr('seriózne', 'seriózně') }[m])).filter(Boolean);
-  if (mood.length) bits.push(mood.join(tr(' a ', ' a ')));
+  if (mood.length) bits.push(mood.join(' a '));
   return bits.length
-    ? tr(`Rozumiem: ${bits.join(' · ')}. Tu sú tri návrhy, každý iný. Kliknite na ten, ktorý sa vám páči, a ďalej ho upravte.`, `Rozumím: ${bits.join(' · ')}. Tady jsou tři návrhy, každý jiný. Klikněte na ten, který se vám líbí, a dál ho upravte.`)
-    : tr('Tu sú tri rôzne smery. Napíšte mi viac o tom, čo robíte, a trafím sa presnejšie.', 'Tady jsou tři různé směry. Napište mi víc o tom, co děláte, a trefím se přesněji.');
+    ? tr(`Rozumiem: ${bits.join(' · ')}. Pripravil som tri smery: klasický, moderný a kreatívny. Kliknite na ten, ktorý sa vám páči.`, `Rozumím: ${bits.join(' · ')}. Připravil jsem tři směry: klasický, moderní a kreativní. Klikněte na ten, který se vám líbí.`)
+    : tr('Pripravil som tri smery: klasický, moderný a kreatívny. Napíšte mi viac o tom, čo robíte, a trafím sa presnejšie.', 'Připravil jsem tři směry: klasický, moderní a kreativní. Napište mi víc o tom, co děláte, a trefím se přesněji.');
 }
 
 async function postJSON(path, body, ms = 25000) {
@@ -58,55 +37,114 @@ async function postJSON(path, body, ms = 25000) {
   } finally { clearTimeout(to); }
 }
 
-/**
- * Navrhne vizitky. onArt(index, design) sa zavolá, keď dobehne vygenerovaná grafika.
- * base = aktuálne údaje vizitky, previous = súhrn aktuálneho návrhu (na úpravy typu „tmavšie“).
- */
+// ikona Lucide ako náhradný znak (keď generovanie zlyhá)
+const ICON_BY = {
+  kadernik: 'scissors', reality: 'key', stavba: 'hammer', it: 'code', pravnik: 'scale', wellness: 'flower-2', foto: 'camera',
+  gastro: 'chef-hat', auto: 'car', lekar: 'stethoscope', sport: 'dumbbell',
+};
+const ICON_WORDS = [['scissor', 'scissors'], ['comb', 'scissors'], ['hair', 'scissors'], ['house', 'house'], ['key', 'key'], ['roof', 'house'], ['hammer', 'hammer'], ['plane', 'hammer'], ['saw', 'hammer'], ['wrench', 'wrench'], ['bolt', 'zap'], ['lightning', 'zap'], ['code', 'code'], ['bracket', 'code'], ['scale', 'scale'], ['justice', 'scale'], ['lotus', 'flower-2'], ['flower', 'flower-2'], ['leaf', 'leaf'], ['camera', 'camera'], ['coffee', 'coffee'], ['cup', 'coffee'], ['wine', 'wine'], ['grape', 'wine'], ['car', 'car'], ['tooth', 'shield-check'], ['heart', 'heart'], ['tree', 'leaf'], ['brush', 'paintbrush'], ['music', 'music'], ['dog', 'dog'], ['truck', 'truck'], ['book', 'graduation-cap'], ['stethoscope', 'stethoscope'], ['dumbbell', 'dumbbell'], ['fork', 'utensils'], ['spoon', 'utensils'], ['bread', 'wheat'], ['croissant', 'croissant'], ['wheat', 'wheat'], ['cake', 'cake-slice'], ['pizza', 'pizza'], ['cookie', 'cookie'], ['beer', 'beer'], ['chef', 'chef-hat'], ['gem', 'gem'], ['diamond', 'gem'], ['ring', 'gem'], ['paw', 'paw-print'], ['plug', 'plug'], ['bike', 'bike'], ['gift', 'gift'], ['glasses', 'glasses'], ['shirt', 'shirt'], ['pine', 'tree-pine'], ['flame', 'flame'], ['drill', 'drill'], ['roller', 'paint-roller'], ['sprout', 'sprout'], ['pill', 'pill']];
+export async function iconMark(name) {
+  const svg = iconSVG(name, '#000000', 1.3).replace('width="24" height="24"', 'width="480" height="480"');
+  const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  const im = await new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = url; });
+  if (!im) return null;
+  const c = document.createElement('canvas'); c.width = 480; c.height = 480; c.getContext('2d').drawImage(im, 0, 0, 480, 480);
+  return c.toDataURL('image/png');
+}
+function iconFor(subject, A) {
+  const s = plain(subject);
+  const hit = ICON_WORDS.find(([w]) => s.includes(w));
+  return hit ? hit[1] : (ICON_BY[A?.industry] || 'sparkles');
+}
+
+// celá knižnica Lucide z CDN (zadarmo, bez limitu); overenie, že ikona existuje
+const LUCIDE = 'https://cdn.jsdelivr.net/npm/lucide-static@1.52.0/icons/';
+async function lucideMark(name) {
+  if (!name) return null;
+  try {
+    const r = await fetch(LUCIDE + name + '.svg');
+    if (!r.ok) return null;
+    let svg = await r.text();
+    if (!svg.includes('<svg')) return null;
+    svg = svg.replace(/<!--[\s\S]*?-->/g, '').replace(/width="24"/, 'width="480"').replace(/height="24"/, 'height="480"').replace(/stroke="currentColor"/, 'stroke="#000000"').replace(/stroke-width="2"/, 'stroke-width="1.3"');
+    const im = await new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); });
+    if (!im) return null;
+    const c = document.createElement('canvas'); c.width = 480; c.height = 480; c.getContext('2d').drawImage(im, 0, 0, 480, 480);
+    return c.toDataURL('image/png');
+  } catch (e) { return null; }
+}
+/** Znak k návrhu: ikona, ktorú vybrala AI, inak podľa slov v zadaní. */
+export async function pickMark(icon, subject, A) {
+  const m = await lucideMark(icon);
+  if (m) return { src: m, ai: false };
+  const s = await iconMark(iconFor(subject, A));
+  return s ? { src: s, ai: false } : null;
+}
+
+/** Znak na mieru: vygeneruje, spracuje a vráti masku (PNG). */
+export async function makeMark(subject, A) {
+  if (subject) {
+    try {
+      const r = await postJSON('/artwork', { prompt: subject, kind: 'mark' }, 30000);
+      if (r.src) { const m = await processMark(r.src); if (m) return { src: m, ai: true }; }
+    } catch (e) { /* záloha nižšie */ }
+  }
+  const icon = await iconMark(iconFor(subject, A));
+  return icon ? { src: icon, ai: false } : null;
+}
+
+/** Navrhne vizitky. onArt(i, design) sa volá, keď dorazí znak alebo grafika. */
 export async function askAI(prompt, base = {}, { previous, onArt } = {}) {
   const A = analyze(prompt);
   const known = {};
   for (const k of ['name', 'role', 'company', 'tagline', 'address']) if (base[k] && base[k] !== DEFAULT_FIELDS[k]) known[k] = base[k];
   try {
-    const res = await postJSON('/design', { prompt, lang: CZ ? 'cz' : 'sk', fields: known, previous, art: false });
+    const res = await postJSON('/design', { prompt, lang: CZ ? 'cz' : 'sk', fields: known, previous, art: false, nonce: previous ? Date.now() : 0 });
     if (!res.concepts || !res.concepts.length) throw new Error('empty');
     const fields = { ...DEFAULT_FIELDS, ...base, ...res.fields };
     if (!res.fields.company && !known.company) fields.company = base.company && base.company !== DEFAULT_FIELDS.company ? base.company : '';
     if (fields.tagline) fields.tagline = cap(fields.tagline);
-    if (!res.fields.name && !known.name) fields.name = placeholderName(fields.role);
-    deriveContacts(fields, base);
     if (fields.role) fields.role = cap(fields.role);
-    // kontakty, ktoré klient nenapísal, nevymýšľame – nechávame ukážkové, kým ich nezmení
+    // ukážkové údaje, ktoré AI nepotvrdila, vymažeme, aby nepôsobili ako chyba
+    for (const k of ['role', 'tagline', 'address']) if (!res.fields[k] && !known[k] && fields[k] === DEFAULT_FIELDS[k]) fields[k] = '';
+    if (fields.company && fields.name && plain(fields.name) === plain(fields.company)) fields.name = '';
+    if (!fields.name || (!res.fields.name && !known.name)) fields.name = placeholderName(fields.role);
+    deriveContacts(fields, base);
     const designs = res.concepts.map((c) => {
-      const d = newDesign({ tpl: c.template, fonts: c.fonts || TEMPLATES[c.template].fonts, pal: { label: 'AI', ...c.palette }, art: c.art.mode === 'library' ? c.art.key : null, f: { ...fields } });
-      d.ai = { mode: c.art.mode, prompt: c.art.prompt, kind: c.art.kind };
-      d.why = describe(d, false);
+      const pal = { label: 'AI', ...c.palette };
+      delete pal.name;
+      const d = newDesign({ tpl: c.template, fonts: c.fonts || TEMPLATES[c.template].fonts, pal, art: c.art.mode === 'library' ? c.art.key : null, f: { ...fields } });
+      d.direction = c.direction; d.ai = { art: c.art, mark: c.mark };
+      d.markPending = true; d.why = describe(d);
       return d;
     });
-    // grafika na mieru – paralelne, dorazí neskôr
+    const subject = res.concepts.find((c) => c.mark)?.mark || prompt;
+    const icon = res.concepts.find((c) => c.icon)?.icon || '';
+    pickMark(icon, subject, A).then((m) => {
+      designs.forEach((d, i) => { d.markPending = false; if (m) { d.mark = m.src; d.markAI = m.ai; } d.why = describe(d); onArt && onArt(i, d); });
+    });
+    let budget = 2;
     designs.forEach((d, i) => {
-      if (d.ai.mode === 'generate' && d.ai.prompt) {
+      if (d.ai.art.mode === 'generate' && d.ai.art.prompt && budget-- > 0) {
         d.artPending = true;
-        postJSON('/artwork', { prompt: d.ai.prompt, kind: d.ai.kind }, 30000)
-          .then((r) => { if (r.src) { d.art = r.src; d.why = describe(d, true); } })
+        postJSON('/artwork', { prompt: d.ai.art.prompt, kind: d.ai.art.kind }, 30000)
+          .then((r) => { if (r.src) d.art = r.src; })
           .catch(() => {})
-          .finally(() => { d.artPending = false; onArt && onArt(i, d); });
+          .finally(() => { d.artPending = false; d.why = describe(d); onArt && onArt(i, d); });
       }
     });
     return { intro: introFrom(fields, A), fields, designs, remote: true };
   } catch (e) {
-    return local(prompt, base, A);
+    return local(prompt, base, A, onArt);
   }
 }
 
-// ukážkové meno v správnom rode podľa profesie
 function placeholderName(role = '') {
-  const fem = /(ka|ice|ová|yně|ná|na)$/i.test(plain(role).split(/\s+/).pop() || '');
+  const fem = /(ka|ice|ova|yne|na)$/i.test(plain(role).split(/\s+/).pop() || '');
   return fem ? (CZ ? 'Lucie Hrušková' : 'Lucia Hrušková') : (CZ ? 'Petr Novák' : 'Peter Novák');
 }
-// ukážkové kontakty podľa nového mena / firmy (kým ich klient nezadá)
-const plain = (t) => (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 function deriveContacts(f, base) {
-  const dom = plain(f.company).replace(/^(salon|studio|ateliér|atelier|firma)\s+/, '').replace(/[^a-z0-9]+/g, '') || plain(f.name).split(/\s+/).pop()?.replace(/[^a-z]/g, '');
+  const dom = plain(f.company).replace(/^(salon|studio|atelier|firma)\s+/, '').replace(/[^a-z0-9]+/g, '') || plain(f.name).split(/\s+/).pop()?.replace(/[^a-z]/g, '');
   const tld = CZ ? 'cz' : 'sk';
   const first = plain(f.name).split(/\s+/)[0]?.replace(/[^a-z]/g, '') || 'info';
   if (!base.email && dom) f.email = `${first}@${dom}.${tld}`;
@@ -116,30 +154,66 @@ function deriveContacts(f, base) {
 
 // ---------- záloha bez servera ----------
 const IND_TPL = {
-  kadernik: ['podpis', 'mramor', 'botanika'], reality: ['noirgold', 'firma', 'zlato'], stavba: ['duo', 'firma', 'drevo'],
-  it: ['terminal', 'monolit', 'prechod'], pravnik: ['noirgold', 'zlato', 'atelier'], wellness: ['linia', 'botanika', 'akvarel'],
-  foto: ['podpis', 'prechod', 'akvarel'], gastro: ['pecat', 'terrazzo', 'retro'], auto: ['duo', 'monolit', 'firma'],
-  lekar: ['firma', 'linia', 'atelier'], sport: ['duo', 'holo', 'monolit'],
+  kadernik: ['znak', 'mramor', 'vzor'], reality: ['noirgold', 'kruh', 'zlato'], stavba: ['stuha', 'duo', 'firma'],
+  it: ['terminal', 'kruh', 'monolit'], pravnik: ['noirgold', 'znak', 'zlato'], wellness: ['znak', 'linia', 'vzor'],
+  foto: ['podpis', 'kruh', 'akvarel'], gastro: ['stuha', 'pecat', 'vzor'], auto: ['duo', 'kruh', 'stuha'],
+  lekar: ['kruh', 'znak', 'firma'], sport: ['duo', 'kruh', 'holo'],
 };
 const IND_PAL = {
-  kadernik: ['ruza', 'krieda', 'sneh'], reality: ['noir', 'navy', 'smaragd'], stavba: ['kobalt', 'navy', 'dub'],
-  it: ['limetka', 'sneh', 'koral'], pravnik: ['noir', 'smaragd', 'krieda'], wellness: ['olivova', 'krieda', 'indigo'],
-  foto: ['krieda', 'koral', 'indigo'], gastro: ['smaragd', 'terrazzo', 'retro'], auto: ['kobalt', 'sneh', 'navy'],
-  lekar: ['navy', 'olivova', 'krieda'], sport: ['kobalt', 'holo', 'koral'],
+  kadernik: ['ruza', 'krieda', 'levandula'], reality: ['noir', 'navy', 'smaragd'], stavba: ['kobalt', 'navy', 'piesok'],
+  it: ['limetka', 'grafit', 'sneh'], pravnik: ['noir', 'bordo', 'smaragd'], wellness: ['salvia', 'krieda', 'levandula'],
+  foto: ['krieda', 'koral', 'indigo'], gastro: ['piesok', 'smaragd', 'koral'], auto: ['kobalt', 'grafit', 'sneh'],
+  lekar: ['more', 'salvia', 'navy'], sport: ['kobalt', 'koral', 'grafit'],
 };
-function local(prompt, base, A) {
-  const ids = IND_TPL[A.industry] || ['atelier', 'monolit', 'botanika'];
-  const pals = IND_PAL[A.industry] || [null, null, null];
+// ikona podľa slov v zadaní (záložný znak)
+const PROMPT_ICONS = [['pek', 'wheat'], ['chlieb', 'wheat'], ['chleb', 'wheat'], ['cukr', 'cake-slice'], ['tort', 'cake-slice'], ['kvet', 'flower'], ['květ', 'flower'], ['kav', 'coffee'], ['káv', 'coffee'], ['pizz', 'pizza'], ['piv', 'beer'], ['vin', 'wine'], ['vín', 'wine'], ['kader', 'scissors'], ['kadeř', 'scissors'], ['barber', 'scissors'], ['zub', 'smile'], ['lekár', 'stethoscope'], ['lékař', 'stethoscope'], ['veter', 'paw-print'], ['psí', 'paw-print'], ['elektr', 'plug'], ['stav', 'hammer'], ['stol', 'tree-pine'], ['truhl', 'tree-pine'], ['tesár', 'tree-pine'], ['auto', 'car'], ['realit', 'key'], ['makl', 'key'], ['advok', 'scale'], ['práv', 'scale'], ['foto', 'camera'], ['program', 'code'], ['jóg', 'flower-2'], ['jog', 'flower-2'], ['masá', 'flower-2'], ['šperk', 'gem'], ['zlat', 'gem'], ['záhrad', 'sprout'], ['zahrad', 'sprout'], ['malí', 'paint-roller'], ['maliar', 'paint-roller'], ['fitn', 'dumbbell'], ['tréner', 'dumbbell'], ['trenér', 'dumbbell'], ['kuchár', 'chef-hat'], ['reštaur', 'chef-hat'], ['restaur', 'chef-hat'], ['optik', 'glasses'], ['móda', 'shirt'], ['butik', 'shirt']];
+const CAPS = /^[A-ZÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽĚŘŮ]/;
+const PREP = new Set(['v', 'vo', 've', 'z', 'zo', 'u', 'pri', 'na', 'do', 'od', 'z']);
+function companyFrom(raw, name) {
+  const words = raw.replace(/[,.;:!?()]/g, ' ').split(/\s+/).filter(Boolean);
+  let run = [];
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    if (CAPS.test(w) && !(i > 0 && PREP.has(words[i - 1].toLowerCase()))) { run.push(w); }
+    else if (run.length) break;
+  }
+  const c = run.join(' ');
+  if (!c || run.length < 2 || (name && c.includes(name.split(' ')[0]))) return '';
+  return c;
+}
+const BIZ = /^(pek[aá]re[nň]|pek[aá]rna|sal[oó]n|studio|štúdio|kaviare[nň]|kav[aá]rna|reštaur[aá]cia|restaurace|firma|ateli[eé]r|cukr[aá]re[nň]|kvetin[aá]rstvo|květinářství|penzi[oó]n|hotel|bistro|obchod|autoservis|klinika|ambulancia|ordinace)$/i;
+// „Jana Malá, kaderníčka v Trnave“ → meno + profesia
+function nameRole(raw) {
+  const U = 'A-ZÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽĚŘŮ', l = 'a-záäčďéíľĺňóôŕšťúýžěřů';
+  const m = raw.match(new RegExp(`^\\s*([${U}][${l}]+\\s+[${U}][${l}]+)\\s*[,–-]\\s*([${l} ]{3,40}?)(?=\\s+(?:v|vo|ve|z|zo|ze|u|pri|na|pre|pro|z)\\s|[,.;]|$)`, 'u'));
+  if (!m || BIZ.test(m[1].split(/\s+/)[0])) return {};
+  const role = m[2].trim().split(/\s+/).length <= 3 ? cap(m[2].trim()) : '';
+  return { name: m[1], role };
+}
+function local(prompt, base, A, onArt) {
+  const ids = IND_TPL[A.industry] || ['znak', 'kruh', 'vzor'];
+  const pals = IND_PAL[A.industry] || ['krieda', 'more', 'ruza'];
+  const L = CZ ? 'cz' : 'sk';
+  const I = INDUSTRIES[A.industry];
   const f = { ...DEFAULT_FIELDS, ...base };
-  if (A.name) f.name = A.name;
+  for (const k of ['role', 'tagline', 'address', 'company']) if (!base[k]) f[k] = '';
+  const NR = nameRole(prompt);
+  if (I) { f.role = I.role[L][A.fem ? 1 : 0]; f.tagline = I.tagline[L][0]; }
+  if (NR.role) f.role = NR.role;
   if (A.city) f.address = A.city;
-  if (A.company) f.company = A.company;
+  const nm = A.name || NR.name || '';
+  f.company = A.company || companyFrom(prompt, nm) || '';
+  if (nm && plain(f.company) === plain(nm)) f.company = '';
+  f.name = nm || base.name || placeholderName(f.role);
   deriveContacts(f, base);
+  const dirs = ['classic', 'modern', 'creative'];
   const designs = ids.map((id, i) => {
-    const T0 = TEMPLATES[id];
-    const d = newDesign({ tpl: id, fonts: T0.fonts, pal: { ...(PALETTES[pals[i]] || PALETTES[T0.pal]) }, f: { ...f } });
-    d.why = describe(d, false);
+    const d = newDesign({ tpl: id, fonts: TEMPLATES[id].fonts, pal: { ...(PALETTES[pals[i]] || PALETTES[TEMPLATES[id].pal]) }, f: { ...f } });
+    d.direction = dirs[i]; d.markPending = true; d.why = describe(d);
     return d;
   });
+  const p = plain(prompt);
+  const hit = PROMPT_ICONS.find(([w]) => p.includes(plain(w)));
+  pickMark(hit ? hit[1] : (ICON_BY[A.industry] || 'sparkles'), prompt, A).then((m) => designs.forEach((d, i) => { d.markPending = false; if (m) d.mark = m.src; d.why = describe(d); onArt && onArt(i, d); }));
   return { intro: introFrom(f, A), fields: f, designs, remote: false };
 }

@@ -1,266 +1,271 @@
 {% extends 'base.html' %}
-{% block title %}{{ L('Tvorba vizitky – AI grafik a editor | Vizitkomat', 'Tvorba vizitky – AI grafik a editor | Vizitkomat') }}{% endblock %}
-{% block description %}{{ L('Navrhnite vizitku online: AI grafik vytvorí originálny návrh, v editore ho upravíte ako v Canve. Tlač, digitálna vizitka a 3D náhľad.', 'Navrhněte vizitku online: AI grafik vytvoří originální návrh, v editoru ho upravíte jako v Canvě. Tisk, digitální vizitka a 3D náhled.') }}{% endblock %}
+{% block title %}{{ L('Navrhnúť vizitku – AI grafik a šablóny | Vizitkomat', 'Navrhnout vizitku – AI grafik a šablony | Vizitkomat') }}{% endblock %}
+{% block description %}{{ L('Navrhnite vizitku v štyroch krokoch: AI grafik alebo šablóna, výber návrhu, úpravy a objednávka. Tlač aj digitálna vizitka.', 'Navrhněte vizitku ve čtyřech krocích: AI grafik nebo šablona, výběr návrhu, úpravy a objednávka. Tisk i digitální vizitka.') }}{% endblock %}
 {% block head %}
 <link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}">
 <link rel="stylesheet" href="{{ A('assets/css/studio2.css') }}">
 {% endblock %}
-{% set ic = {
-  'ai': '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/>',
-  'tpl': '<rect x="3" y="4" width="11" height="7" rx="1.5"/><rect x="10" y="13" width="11" height="7" rx="1.5"/>',
-  'text': '<path d="M5 6V4h14v2M12 4v16M9 20h6"/>',
-  'add': '<rect x="3" y="3" width="8" height="8" rx="2"/><circle cx="17" cy="7" r="4"/><path d="M3 21l4-7 4 7zM17 14v7M13.5 17.5h7"/>',
-  'logo': '<circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>',
-  'style': '<path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2 0-1.7-1.6-1.9-1.6-3.3 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4c0-3.9-4-7-9-7Z"/><circle cx="7.5" cy="11.5" r="1.3"/><circle cx="10" cy="7.5" r="1.3"/><circle cx="15" cy="7.5" r="1.3"/>',
-  'file': '<path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/>',
-} %}
-{% macro i(k) %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{{ ic[k] }}</svg>{% endmacro %}
 {% block navclass %} solid{% endblock %}
 {% block main %}
-<div class="st" data-st>
+<div class="wz" data-wz data-step="start">
 
-  <!-- ===== LIŠTA ===== -->
-  <nav class="st-rail" role="tablist" aria-label="{{ L('Nástroje', 'Nástroje') }}">
-    <button role="tab" data-tab="ai" class="st-rail__ai">{{ i('ai') }}<span>{{ L('AI grafik', 'AI grafik') }}</span></button>
-    <button role="tab" data-tab="sablony">{{ i('tpl') }}<span>{{ L('Šablóny', 'Šablony') }}</span></button>
-    <button role="tab" data-tab="texty">{{ i('text') }}<span>{{ L('Texty', 'Texty') }}</span></button>
-    <button role="tab" data-tab="prvky">{{ i('add') }}<span>{{ L('Prvky', 'Prvky') }}</span></button>
-    <button role="tab" data-tab="logo">{{ i('logo') }}<span>Logo</span></button>
-    <button role="tab" data-tab="styl">{{ i('style') }}<span>{{ L('Štýl', 'Styl') }}</span></button>
-    <button role="tab" data-tab="subor">{{ i('file') }}<span>{{ L('Súbor', 'Soubor') }}</span></button>
-  </nav>
+  <div class="wz__bar">
+    <ol class="wz__steps" data-steps>
+      <li data-go="start"><b>1</b><span>{{ L('Začiatok', 'Začátek') }}</span></li>
+      <li data-go="choose"><b>2</b><span>{{ L('Výber návrhu', 'Výběr návrhu') }}</span></li>
+      <li data-go="edit"><b>3</b><span>{{ L('Úpravy', 'Úpravy') }}</span></li>
+      <li data-go="order"><b>4</b><span>{{ L('Objednávka', 'Objednávka') }}</span></li>
+    </ol>
+  </div>
 
-  <!-- ===== PANELY ===== -->
-  <aside class="st-panels">
-    <!-- AI -->
-    <section class="pn pn--ai" data-pane="ai">
-      <header class="pn__h"><h2>{{ L('AI grafik', 'AI grafik') }} <i class="live">24/7</i></h2><p>{{ L('Opíšte, čím sa živíte a aký štýl chcete. AI navrhne tri originálne vizitky, často aj s grafikou na mieru.', 'Popište, čím se živíte a jaký styl chcete. AI navrhne tři originální vizitky, často i s grafikou na míru.') }}</p></header>
-      <div class="chat" data-chat></div>
-      <div class="chips" data-chips>
-        <button data-p="{{ L('Som kaderníčka v Trnave, chcem niečo jemné a elegantné', 'Jsem kadeřnice v Brně, chci něco jemného a elegantního') }}">{{ L('Kaderníčka', 'Kadeřnice') }}</button>
-        <button data-p="{{ L('Realitný maklér v Bratislave, prémiovo a dôveryhodne', 'Realitní makléř v Praze, prémiově a důvěryhodně') }}">{{ L('Maklér', 'Makléř') }}</button>
-        <button data-p="{{ L('Stavebná firma, výrazne a čitateľne', 'Stavební firma, výrazně a čitelně') }}">{{ L('Stavebná firma', 'Stavební firma') }}</button>
-        <button data-p="{{ L('Programátor, tmavé a hravé', 'Programátor, tmavé a hravé') }}">{{ L('Programátor', 'Programátor') }}</button>
-        <button data-p="{{ L('Masáže a jóga, prírodne a pokojne', 'Masáže a jóga, přírodně a klidně') }}">{{ L('Masáže a jóga', 'Masáže a jóga') }}</button>
-        <button data-p="{{ L('Rodinné vinárstvo, tradične a poctivo', 'Rodinné vinařství, tradičně a poctivě') }}">{{ L('Vinárstvo', 'Vinařství') }}</button>
+  <!-- ===== 1. ZAČIATOK ===== -->
+  <section class="st1" data-pane="start">
+    <div class="wrap">
+      <h1 class="h-l st1__h">{{ L('Ako chcete', 'Jak chcete') }} <span class="hl-c">{{ L('začať?', 'začít?') }}</span></h1>
+      <div class="resume" data-resume hidden>
+        <img alt="" data-resume-img>
+        <div><b>{{ L('Máte rozpracovanú vizitku', 'Máte rozpracovanou vizitku') }}</b><span>{{ L('Pokračujte tam, kde ste skončili.', 'Pokračujte tam, kde jste skončili.') }}</span></div>
+        <button class="btn btn--sm" data-resume-go>{{ L('Pokračovať', 'Pokračovat') }} <span class="ar">→</span></button>
       </div>
-      <div class="refine" data-refine hidden>
-        <span>{{ L('Doladiť:', 'Doladit:') }}</span>
-        <button data-r="{{ L('tmavšie', 'tmavší') }}">{{ L('Tmavšie', 'Tmavší') }}</button>
-        <button data-r="{{ L('výraznejšie a odvážnejšie', 'výraznější a odvážnější') }}">{{ L('Výraznejšie', 'Výraznější') }}</button>
-        <button data-r="{{ L('jemnejšie a minimalistickejšie', 'jemnější a minimalističtější') }}">{{ L('Jemnejšie', 'Jemnější') }}</button>
-        <button data-r="{{ L('iné farby', 'jiné barvy') }}">{{ L('Iné farby', 'Jiné barvy') }}</button>
+      <div class="ways">
+        <article class="way way--ai">
+          <span class="way__tag">{{ L('Odporúčame', 'Doporučujeme') }}</span>
+          <h2>{{ L('Navrhne mi', 'Navrhne mi') }} <span class="hl">{{ L('AI grafik', 'AI grafik') }}</span></h2>
+          <p>{{ L('Napíšte jednou vetou, čím sa živíte. Do pár sekúnd dostanete tri hotové návrhy aj so znakom na mieru.', 'Napište jednou větou, čím se živíte. Do pár sekund dostanete tři hotové návrhy i se znakem na míru.') }}</p>
+          <form class="ask" data-ask-start>
+            <textarea data-ask-start-in rows="2" maxlength="400" placeholder="{{ L('Napr. Som Jana, kaderníčka v Trnave, chcem niečo jemné', 'Např. Jsem Jana, kadeřnice v Brně, chci něco jemného') }}"></textarea>
+            <button class="btn btn--y" type="submit">{{ L('Navrhni', 'Navrhni') }} <span class="ar">→</span></button>
+          </form>
+          <div class="chips" data-chips>
+            <button data-p="{{ L('Som kaderníčka v Trnave, chcem niečo jemné a elegantné', 'Jsem kadeřnice v Brně, chci něco jemného a elegantního') }}">{{ L('Kaderníčka', 'Kadeřnice') }}</button>
+            <button data-p="{{ L('Pekáreň v Banskej Bystrici, poctivo a tradične', 'Pekárna v Olomouci, poctivě a tradičně') }}">{{ L('Pekáreň', 'Pekárna') }}</button>
+            <button data-p="{{ L('Realitný maklér v Bratislave, prémiovo', 'Realitní makléř v Praze, prémiově') }}">{{ L('Maklér', 'Makléř') }}</button>
+            <button data-p="{{ L('Elektrikár z Prešova, výrazne a čitateľne', 'Elektrikář z Ostravy, výrazně a čitelně') }}">{{ L('Elektrikár', 'Elektrikář') }}</button>
+            <button data-p="{{ L('Zubná ambulancia v Žiline, sviežo a dôveryhodne', 'Zubní ordinace v Brně, svěže a důvěryhodně') }}">{{ L('Zubár', 'Zubař') }}</button>
+          </div>
+        </article>
+        <button class="way way--tpl" data-start-tpl>
+          <div class="way__thumbs" data-way-thumbs><img alt=""><img alt=""><img alt=""></div>
+          <h2>{{ L('Vyberiem si šablónu', 'Vyberu si šablonu') }}</h2>
+          <p>{{ L('23 šablón, každú hneď uvidíte s vaším menom.', '23 šablon, každou hned uvidíte se svým jménem.') }}</p>
+          <span class="link">{{ L('Prezrieť šablóny', 'Prohlédnout šablony') }} →</span>
+        </button>
+        <a class="way way--file" href="{{ link('vlastny') }}">
+          <div class="way__file"><span>PDF</span><span>PNG</span><span>JPG</span></div>
+          <h2>{{ L('Mám vlastný návrh', 'Mám vlastní návrh') }}</h2>
+          <p>{{ L('Nahráte hotový súbor, my ho skontrolujeme a vytlačíme.', 'Nahrajete hotový soubor, my ho zkontrolujeme a vytiskneme.') }}</p>
+          <span class="link">{{ L('Nahrať súbor', 'Nahrát soubor') }} →</span>
+        </a>
       </div>
-      <form class="ask" data-ask>
-        <textarea data-ask-in rows="2" maxlength="400" placeholder="{{ L('Napr. Som Peter, stolár zo Žiliny, robím nábytok na mieru…', 'Např. Jsem Petr, truhlář z Brna, dělám nábytek na míru…') }}"></textarea>
-        <button class="btn btn--c btn--sm" type="submit">{{ L('Navrhni', 'Navrhni') }}</button>
-      </form>
-    </section>
-
-    <!-- ŠABLÓNY -->
-    <section class="pn" data-pane="sablony">
-      <header class="pn__h"><h2>{{ L('Šablóny', 'Šablony') }}</h2><p>{{ L('Vaše texty a logo zostanú. Farby môžete ponechať.', 'Vaše texty a logo zůstanou. Barvy můžete ponechat.') }}</p></header>
-      <div class="filt" data-filt>
-        <button class="on" data-f="">{{ L('Všetky', 'Všechny') }}</button>
-        <button data-f="elegantne">{{ L('Elegantné', 'Elegantní') }}</button>
-        <button data-f="moderne">{{ L('Moderné', 'Moderní') }}</button>
-        <button data-f="hrave">{{ L('Hravé', 'Hravé') }}</button>
-        <button data-f="prirodne">{{ L('Prírodné', 'Přírodní') }}</button>
-        <button data-f="tmave">{{ L('Tmavé', 'Tmavé') }}</button>
-      </div>
-      <label class="tog"><input type="checkbox" data-keep> <span>{{ L('Ponechať moje farby a písmo', 'Ponechat moje barvy a písmo') }}</span></label>
-      <div class="grid2" data-tpls></div>
-    </section>
-
-    <!-- TEXTY -->
-    <section class="pn" data-pane="texty">
-      <header class="pn__h"><h2>{{ L('Texty', 'Texty') }}</h2><p>{{ L('Text môžete upraviť aj dvojklikom priamo vo vizitke.', 'Text můžete upravit i dvojklikem přímo ve vizitce.') }}</p></header>
-      <div class="fields">
-        {% for key, label, ac, type in [
-          ('name', L('Meno a priezvisko', 'Jméno a příjmení'), 'name', 'text'),
-          ('role', L('Pozícia / profesia', 'Pozice / profese'), 'organization-title', 'text'),
-          ('company', L('Firma', 'Firma'), 'organization', 'text'),
-          ('phone', L('Telefón', 'Telefon'), 'tel', 'tel'),
-          ('email', 'E-mail', 'email', 'email'),
-          ('web', 'Web', 'url', 'text'),
-          ('address', L('Adresa', 'Adresa'), 'street-address', 'text'),
-          ('tagline', L('Slogan', 'Slogan'), 'off', 'text'),
-        ] %}
-        <label class="fld"><span>{{ label }}</span><input type="{{ type }}" data-f="{{ key }}" autocomplete="{{ ac }}" maxlength="70"></label>
-        {% endfor %}
-      </div>
-      <div class="blk" data-digital-fields>
-        <h3>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</h3>
-        <label class="fld"><span>{{ L('Vaša adresa', 'Vaše adresa') }}</span><div class="slug"><em>vizitkomat.eu/v/</em><input data-slug maxlength="40" autocomplete="off"></div></label>
-        <div class="up" data-photo>
-          <img alt="" data-photo-img>
-          <button class="btn btn--w btn--sm" data-photo-pick>{{ L('Pridať fotku', 'Přidat fotku') }}</button>
-          <button class="x" data-photo-del hidden aria-label="{{ L('Odstrániť fotku', 'Odstranit fotku') }}">×</button>
-          <input type="file" accept="image/*" hidden data-photo-file>
-        </div>
-        <label class="fld"><span>Instagram</span><input data-soc="instagram" placeholder="https://instagram.com/…"></label>
-        <label class="fld"><span>Facebook</span><input data-soc="facebook" placeholder="https://facebook.com/…"></label>
-        <label class="fld"><span>LinkedIn</span><input data-soc="linkedin" placeholder="https://linkedin.com/in/…"></label>
-      </div>
-    </section>
-
-    <!-- PRVKY -->
-    <section class="pn" data-pane="prvky">
-      <header class="pn__h"><h2>{{ L('Prvky', 'Prvky') }}</h2><p>{{ L('Kliknutím pridáte do vizitky. Potom ho chytíte a posuniete.', 'Kliknutím přidáte do vizitky. Pak ho chytíte a posunete.') }}</p></header>
-      <div class="adds">
-        <button data-add="heading"><b class="a-h">Aa</b>{{ L('Nadpis', 'Nadpis') }}</button>
-        <button data-add="text"><b class="a-t">Aa</b>{{ L('Text', 'Text') }}</button>
-        <button data-add="rect"><b class="a-r"></b>{{ L('Obdĺžnik', 'Obdélník') }}</button>
-        <button data-add="circle"><b class="a-c"></b>{{ L('Kruh', 'Kruh') }}</button>
-        <button data-add="line"><b class="a-l"></b>{{ L('Čiara', 'Čára') }}</button>
-        <button data-add="qr"><b class="a-q"></b>{{ L('QR kód', 'QR kód') }}</button>
-        <button data-add-img><b class="a-i"></b>{{ L('Obrázok', 'Obrázek') }}</button>
-        <input type="file" accept="image/*" hidden data-img-file>
-      </div>
-      <div class="blk"><h3>{{ L('Ikony', 'Ikony') }}</h3><div class="icons" data-icons></div></div>
-    </section>
-
-    <!-- LOGO -->
-    <section class="pn" data-pane="logo">
-      <header class="pn__h"><h2>{{ L('Vizitka z loga', 'Vizitka z loga') }}</h2><p>{{ L('Nahrajte logo. Odstránime biele pozadie, prečítame farby značky a navrhneme vizitky, ktoré k nemu sedia.', 'Nahrajte logo. Odstraníme bílé pozadí, přečteme barvy značky a navrhneme vizitky, které k němu sedí.') }}</p></header>
-      <label class="drop" data-drop>
-        <input type="file" accept="image/*" hidden data-drop-file>
-        <img alt="" data-drop-img>
-        <span>{{ L('Pustite sem logo', 'Pusťte sem logo') }}<small>{{ L('alebo kliknite · PNG, JPG, SVG', 'nebo klikněte · PNG, JPG, SVG') }}</small></span>
-      </label>
-      <div class="sw" data-logo-sw hidden></div>
-      <button class="btn btn--w btn--sm" data-logo-del hidden>{{ L('Odstrániť logo z vizitky', 'Odstranit logo z vizitky') }}</button>
-      <div class="grid2" data-logo-designs></div>
-    </section>
-
-    <!-- ŠTÝL -->
-    <section class="pn" data-pane="styl">
-      <header class="pn__h"><h2>{{ L('Štýl', 'Styl') }}</h2></header>
-      <div class="blk blk--first"><h3>{{ L('Farby', 'Barvy') }}</h3><div class="pals" data-pals></div>
-        <div class="cpick">
-          <label><input type="color" data-c="bg"><span>{{ L('Pozadie', 'Pozadí') }}</span></label>
-          <label><input type="color" data-c="ink"><span>{{ L('Text', 'Text') }}</span></label>
-          <label><input type="color" data-c="accent"><span>{{ L('Akcent', 'Akcent') }}</span></label>
-          <label><input type="color" data-c="soft"><span>{{ L('Doplnková', 'Doplňková') }}</span></label>
-        </div>
-        <p class="warn" data-contrast hidden>{{ L('Text a pozadie majú slabý kontrast, na papieri bude horšie čitateľný.', 'Text a pozadí mají slabý kontrast, na papíře bude hůř čitelný.') }}</p>
-      </div>
-      <div class="blk"><h3>{{ L('Písmo', 'Písmo') }}</h3><div class="fonts" data-fonts></div></div>
-      <div class="blk"><h3>{{ L('Grafika na pozadí', 'Grafika na pozadí') }}</h3>
-        <div class="arts" data-arts></div>
-        <form class="ask ask--art" data-art-form>
-          <input data-art-in maxlength="160" placeholder="{{ L('AI nakreslí: napr. levanduľa akvarelom', 'AI nakreslí: např. levandule akvarelem') }}">
-          <button class="btn btn--c btn--sm" type="submit">{{ L('Nakresli', 'Nakresli') }}</button>
-        </form>
-        <p class="note">{{ L('Grafiku použijú šablóny s obrázkom (Mramor, Botanika, Akvarel, Prechod, Hologram, Terrazzo, Retro, Drevo…).', 'Grafiku použijí šablony s obrázkem (Mramor, Botanika, Akvarel, Přechod, Hologram, Terrazzo, Retro, Dřevo…).') }}</p>
-      </div>
-      <div class="blk"><h3>{{ L('Zadná strana', 'Zadní strana') }}</h3><div class="grid2" data-backs></div></div>
-    </section>
-
-    <!-- SÚBOR -->
-    <section class="pn" data-pane="subor">
-      <header class="pn__h"><h2>{{ L('Vlastný súbor', 'Vlastní soubor') }}</h2><p>{{ L('Máte hotový návrh od grafika? Nahrajte ho. Ideálne', 'Máte hotový návrh od grafika? Nahrajte ho. Ideálně') }} <b data-spec>94 × 54 mm</b> {{ L('so spadávkou 2 mm, aspoň 300 dpi.', 'se spadávkou 2 mm, aspoň 300 dpi.') }}</p></header>
-      <div class="files">
-        <label class="drop drop--sm" data-fdrop="front"><input type="file" accept="image/*,application/pdf" hidden><img alt=""><span>{{ L('Predná', 'Přední') }}<small>PDF, PNG, JPG</small></span></label>
-        <label class="drop drop--sm" data-fdrop="back"><input type="file" accept="image/*,application/pdf" hidden><img alt=""><span>{{ L('Zadná', 'Zadní') }}<small>{{ L('nepovinné', 'nepovinné') }}</small></span></label>
-      </div>
-      <ul class="checks" data-checks></ul>
-    </section>
-  </aside>
-
-  <!-- ===== PLÁTNO ===== -->
-  <section class="st-stage" data-stage>
-    <div class="st-top">
-      <div class="seg" data-sides><button class="on" data-side="front">{{ L('Predná', 'Přední') }}</button><button data-side="back">{{ L('Zadná', 'Zadní') }}</button></div>
-      <div class="seg seg--view" data-views><button class="on" data-view="edit">{{ L('Úpravy', 'Úpravy') }}</button><button data-view="3d">3D</button><button data-view="phone">{{ L('Telefón', 'Telefon') }}</button></div>
-    </div>
-
-    <div class="ctx" data-ctx hidden>
-      <div class="ctx__g" data-ctx-text>
-        <select class="ctx__font" data-fontsel aria-label="{{ L('Písmo', 'Písmo') }}"></select>
-        <div class="ctx__size"><button data-sz="-1" aria-label="−">−</button><input data-szv inputmode="decimal" aria-label="{{ L('Veľkosť', 'Velikost') }}"><button data-sz="1" aria-label="+">+</button></div>
-        <button class="ctx__b" data-bold title="{{ L('Tučné', 'Tučné') }}"><b>B</b></button>
-        <button class="ctx__b" data-italic title="{{ L('Kurzíva', 'Kurzíva') }}"><i>I</i></button>
-        <button class="ctx__b" data-upper title="{{ L('Veľké písmená', 'Velká písmena') }}">AA</button>
-        <div class="ctx__pop"><button class="ctx__b" data-pop="ls" title="{{ L('Rozostup', 'Rozestup') }}">↔</button>
-          <div class="pop" data-popbox="ls"><label>{{ L('Rozostup písmen', 'Rozestup písmen') }}<input type="range" min="-100" max="500" step="10" data-ls></label></div></div>
-        <div class="ctx__al" data-align><button data-a="left" title="{{ L('Doľava', 'Doleva') }}">⟸</button><button data-a="center" title="{{ L('Na stred', 'Na střed') }}">≡</button><button data-a="right" title="{{ L('Doprava', 'Doprava') }}">⟹</button></div>
-      </div>
-      <div class="ctx__g ctx__colors" data-ctx-colors></div>
-      <div class="ctx__g" data-ctx-img hidden><button class="ctx__b ctx__wide" data-replace>{{ L('Vymeniť', 'Vyměnit') }}</button><input type="file" accept="image/*" hidden data-replace-file></div>
-      <div class="ctx__g">
-        <div class="ctx__pop"><button class="ctx__b" data-pop="more" title="{{ L('Ďalšie', 'Další') }}">⋯</button>
-          <div class="pop pop--menu" data-popbox="more">
-            <button data-order="top">{{ L('Úplne dopredu', 'Úplně dopředu') }}</button>
-            <button data-order="up">{{ L('O vrstvu vyššie', 'O vrstvu výš') }}</button>
-            <button data-order="down">{{ L('O vrstvu nižšie', 'O vrstvu níž') }}</button>
-            <button data-order="bottom">{{ L('Úplne dozadu', 'Úplně dozadu') }}</button>
-            <hr>
-            <button data-alignc="hcenter">{{ L('Vycentrovať vodorovne', 'Vycentrovat vodorovně') }}</button>
-            <button data-alignc="vcenter">{{ L('Vycentrovať zvisle', 'Vycentrovat svisle') }}</button>
-            <label class="pop__row">{{ L('Priehľadnosť', 'Průhlednost') }}<input type="range" min="10" max="100" data-opacity></label>
-          </div></div>
-        <button class="ctx__b" data-dup title="{{ L('Duplikovať (Ctrl+D)', 'Duplikovat (Ctrl+D)') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
-        <button class="ctx__b ctx__del" data-del title="{{ L('Zmazať (Delete)', 'Smazat (Delete)') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
-      </div>
-    </div>
-
-    <div class="st-canvas" data-host><canvas data-canvas></canvas></div>
-    <div class="st-3d" data-3d hidden></div>
-    <div class="st-phone" data-phone hidden><div class="phone"><div class="phone__screen"><div class="phone__island"></div><div class="dcard-host" data-dhost></div></div></div></div>
-
-    <div class="st-ai" data-ai-stage hidden>
-      <div class="st-ai__load" data-ai-load>
-        <div class="dots"><i></i><i></i><i></i></div>
-        <p data-ai-step>{{ L('Čítam vaše zadanie…', 'Čtu vaše zadání…') }}</p>
-      </div>
-      <div class="st-ai__res" data-ai-res hidden>
-        <p class="st-ai__intro" data-ai-intro></p>
-        <div class="st-ai__grid" data-ai-grid></div>
-        <button class="st-ai__close" data-ai-close>{{ L('Zavrieť a pokračovať v úpravách', 'Zavřít a pokračovat v úpravách') }}</button>
-      </div>
-    </div>
-
-    <div class="st-bottom">
-      <button class="tb" data-undo disabled title="{{ L('Späť (Ctrl+Z)', 'Zpět (Ctrl+Z)') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 7 4.5 11.5 9 16"/><path d="M5 11.5h9.5a5 5 0 0 1 0 10H11"/></svg></button>
-      <button class="tb" data-redo disabled title="{{ L('Vpred', 'Vpřed') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 7l4.5 4.5L15 16"/><path d="M19 11.5H9.5a5 5 0 0 0 0 10H13"/></svg></button>
-      <span class="sep"></span>
-      <button class="tb tb--txt" data-marks aria-pressed="false">{{ L('Orez a spadávka', 'Ořez a spadávka') }}</button>
-      <button class="tb tb--txt" data-reset>{{ L('Obnoviť stranu', 'Obnovit stranu') }}</button>
-      <span class="dim" data-dim>90 × 50 mm</span>
     </div>
   </section>
 
-  <!-- ===== OBJEDNÁVKA ===== -->
-  <aside class="st-order" data-orderpanel>
-    <button class="st-order__x" data-order-close aria-label="{{ L('Zavrieť', 'Zavřít') }}">×</button>
-    <h2>{{ L('Objednávka', 'Objednávka') }}</h2>
-    <div class="kinds" role="radiogroup" data-kind>
-      <button role="radio" class="kind on" data-v="bundle"><b>{{ L('Tlačené + digitálna', 'Tištěné + digitální') }}</b><small>{{ L('Digitálna na prvý rok zadarmo', 'Digitální na první rok zdarma') }}</small><i>{{ L('TOP', 'TOP') }}</i></button>
-      <button role="radio" class="kind" data-v="print"><b>{{ L('Len tlačené', 'Jen tištěné') }}</b><small>{{ L('Klasické vizitky', 'Klasické vizitky') }}</small></button>
-      <button role="radio" class="kind" data-v="digital"><b>{{ L('Len digitálna', 'Jen digitální') }}</b><small>{{ prices.digital_year }} {{ prices.symbol }} / {{ L('rok', 'rok') }}</small></button>
+  <!-- ===== 2. VÝBER ===== -->
+  <section class="st2" data-pane="choose">
+    <div class="wrap">
+      <div class="ai" data-ai-box>
+        <div class="ai__prompt"><span class="ai__me" data-ai-me></span><button class="link" data-ai-change>{{ L('Zmeniť zadanie', 'Změnit zadání') }}</button></div>
+        <div class="ai__load" data-ai-load hidden><span class="dots"><i></i><i></i><i></i></span><b data-ai-step></b><small>{{ L('Trvá to zvyčajne 5 až 10 sekúnd', 'Trvá to obvykle 5 až 10 sekund') }}</small></div>
+        <p class="ai__intro" data-ai-intro></p>
+        <div class="mocks" data-ai-grid></div>
+        <div class="ai__more" data-ai-more hidden>
+          <span>{{ L('Nie celkom ono?', 'Není to úplně ono?') }}</span>
+          <button data-r="{{ L('tmavšie', 'tmavší') }}">{{ L('Tmavšie', 'Tmavší') }}</button>
+          <button data-r="{{ L('jemnejšie a minimalistickejšie', 'jemnější a minimalističtější') }}">{{ L('Jemnejšie', 'Jemnější') }}</button>
+          <button data-r="{{ L('výraznejšie a farebnejšie', 'výraznější a barevnější') }}">{{ L('Výraznejšie', 'Výraznější') }}</button>
+          <button data-r="{{ L('úplne iné návrhy', 'úplně jiné návrhy') }}">{{ L('Iné návrhy', 'Jiné návrhy') }}</button>
+        </div>
+        <form class="ask ask--re" data-ask-re hidden>
+          <textarea data-ask-re-in rows="2" maxlength="400" placeholder="{{ L('Upravte zadanie, napr. pridajte meno, mesto alebo štýl…', 'Upravte zadání, např. přidejte jméno, město nebo styl…') }}"></textarea>
+          <button class="btn btn--c btn--sm" type="submit">{{ L('Navrhni znova', 'Navrhni znovu') }}</button>
+        </form>
+      </div>
+      <div class="tpl" data-tpl-box hidden>
+        <h2 class="h-m">{{ L('Vyberte šablónu', 'Vyberte šablonu') }}</h2>
+        <div class="filt" data-filt>
+          <button class="on" data-f="">{{ L('Všetky', 'Všechny') }}</button>
+          <button data-f="elegantne">{{ L('Elegantné', 'Elegantní') }}</button>
+          <button data-f="moderne">{{ L('Moderné', 'Moderní') }}</button>
+          <button data-f="hrave">{{ L('Hravé', 'Hravé') }}</button>
+          <button data-f="prirodne">{{ L('Prírodné', 'Přírodní') }}</button>
+          <button data-f="tmave">{{ L('Tmavé', 'Tmavé') }}</button>
+        </div>
+        <div class="tgrid" data-tpls></div>
+      </div>
     </div>
-    <div class="opts" data-opts>
-      <div class="opt"><span>{{ L('Formát', 'Formát') }}</span><div class="seg seg--s" data-o="size"><button class="on" data-v="90x50">90×50</button><button data-v="85x55">85×55</button><button data-v="55x55">55×55</button></div></div>
-      <div class="opt"><span>{{ L('Papier', 'Papír') }}</span><div class="seg seg--s" data-o="paper"><button class="on" data-v="matny">{{ L('Matný 350 g', 'Matný 350 g') }}</button><button data-v="triplex">Triplex 720 g</button></div></div>
-      <div class="opt"><span>{{ L('Povrch', 'Povrch') }}</span><div class="seg seg--s seg--wrap" data-o="finish"><button class="on" data-v="none">{{ L('Bez úpravy', 'Bez úpravy') }}</button><button data-v="matna">{{ L('Matný', 'Matná') }}</button><button data-v="leskla">{{ L('Lesklý', 'Lesklá') }}</button><button data-v="soft">Soft-touch</button></div></div>
-      <div class="opt"><span>{{ L('Rohy', 'Rohy') }}</span><div class="seg seg--s" data-o="corners"><button class="on" data-v="straight">{{ L('Rovné', 'Rovné') }}</button><button data-v="round">{{ L('Zaoblené', 'Zaoblené') }}</button></div></div>
-      <div class="opt"><span>{{ L('Počet kusov', 'Počet kusů') }}</span><div class="qty" data-o="qty">{% for q in prices.qty %}<button{% if q == 250 %} class="on"{% endif %} data-v="{{ q }}"><b>{{ q }}</b><small data-qp="{{ q }}"></small></button>{% endfor %}</div></div>
-      <label class="tog"><input type="checkbox" data-express> <span>{{ L('Expres', 'Expres') }} <small>+{{ prices.express }} {{ prices.symbol }} · {{ L('o 2 dni skôr', 'o 2 dny dříve') }}</small></span></label>
-    </div>
-    <div class="sum">
-      <div class="sum__p"><span>{{ L('Spolu s DPH', 'Celkem s DPH') }}</span><b data-sum>—</b></div>
-      <p class="sum__m" data-sum-m></p>
-      <p class="sum__d" data-sum-d></p>
-      <button class="btn btn--c sum__cta" data-add-cart>{{ L('Pridať do košíka', 'Přidat do košíku') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
-      <button class="sum__pdf" data-pdf>{{ L('Stiahnuť tlačové PDF', 'Stáhnout tiskové PDF') }}</button>
-    </div>
-  </aside>
+  </section>
 
-  <div class="st-bar" data-bar>
-    <div><b data-bar-p>—</b><small data-bar-m></small></div>
-    <button class="btn btn--c btn--sm" data-bar-open>{{ L('Objednať', 'Objednat') }}</button>
-  </div>
+  <!-- ===== 3. ÚPRAVY ===== -->
+  <section class="st3" data-pane="edit">
+    <aside class="ed-side">
+      <nav class="ed-tabs" role="tablist">
+        <button role="tab" data-tab="udaje">{{ L('Údaje', 'Údaje') }}</button>
+        <button role="tab" data-tab="styl">{{ L('Farby a písmo', 'Barvy a písmo') }}</button>
+        <button role="tab" data-tab="logo">{{ L('Logo', 'Logo') }}</button>
+        <button role="tab" data-tab="viac">{{ L('Viac', 'Více') }}</button>
+      </nav>
+      <div class="ed-panels">
+        <section class="pn" data-pp="udaje">
+          <p class="pn__tip">{{ L('Text môžete upraviť aj priamo vo vizitke: dvakrát naň kliknite.', 'Text můžete upravit i přímo ve vizitce: dvakrát na něj klikněte.') }}</p>
+          <div class="fields">
+            {% for key, label, ac, type in [
+              ('name', L('Meno a priezvisko', 'Jméno a příjmení'), 'name', 'text'),
+              ('role', L('Pozícia / profesia', 'Pozice / profese'), 'organization-title', 'text'),
+              ('company', L('Firma', 'Firma'), 'organization', 'text'),
+              ('phone', L('Telefón', 'Telefon'), 'tel', 'tel'),
+              ('email', 'E-mail', 'email', 'email'),
+              ('web', 'Web', 'url', 'text'),
+              ('address', L('Adresa', 'Adresa'), 'street-address', 'text'),
+              ('tagline', L('Slogan', 'Slogan'), 'off', 'text'),
+            ] %}
+            <label class="fld"><span>{{ label }}</span><input type="{{ type }}" data-f="{{ key }}" autocomplete="{{ ac }}" maxlength="70"></label>
+            {% endfor %}
+          </div>
+          <details class="more" data-digital-fields>
+            <summary>{{ L('Digitálna vizitka: adresa, fotka, siete', 'Digitální vizitka: adresa, fotka, sítě') }}</summary>
+            <label class="fld"><span>{{ L('Vaša adresa', 'Vaše adresa') }}</span><div class="slug"><em>vizitkomat.eu/v/</em><input data-slug maxlength="40" autocomplete="off"></div></label>
+            <div class="up"><img alt="" data-photo-img><button class="btn btn--w btn--sm" data-photo-pick>{{ L('Pridať fotku', 'Přidat fotku') }}</button><button class="x" data-photo-del hidden aria-label="×">×</button><input type="file" accept="image/*" hidden data-photo-file></div>
+            <label class="fld"><span>Instagram</span><input data-soc="instagram" placeholder="https://instagram.com/…"></label>
+            <label class="fld"><span>Facebook</span><input data-soc="facebook" placeholder="https://facebook.com/…"></label>
+            <label class="fld"><span>LinkedIn</span><input data-soc="linkedin" placeholder="https://linkedin.com/in/…"></label>
+          </details>
+        </section>
+        <section class="pn" data-pp="styl">
+          <h3>{{ L('Farby', 'Barvy') }}</h3>
+          <div class="pals" data-pals></div>
+          <details class="more"><summary>{{ L('Vlastné farby', 'Vlastní barvy') }}</summary>
+            <div class="cpick">
+              <label><input type="color" data-c="bg"><span>{{ L('Pozadie', 'Pozadí') }}</span></label>
+              <label><input type="color" data-c="ink"><span>Text</span></label>
+              <label><input type="color" data-c="accent"><span>{{ L('Akcent', 'Akcent') }}</span></label>
+              <label><input type="color" data-c="soft"><span>{{ L('Doplnková', 'Doplňková') }}</span></label>
+            </div>
+          </details>
+          <p class="warn" data-contrast hidden>{{ L('Text a pozadie majú slabý kontrast, na papieri bude horšie čitateľný.', 'Text a pozadí mají slabý kontrast, na papíře bude hůř čitelný.') }}</p>
+          <h3>{{ L('Písmo', 'Písmo') }}</h3>
+          <div class="fonts" data-fonts></div>
+          <h3>{{ L('Zadná strana', 'Zadní strana') }}</h3>
+          <div class="backs" data-backs></div>
+        </section>
+        <section class="pn" data-pp="logo">
+          <h3>{{ L('Vaše logo', 'Vaše logo') }}</h3>
+          <label class="drop" data-drop>
+            <input type="file" accept="image/*" hidden data-drop-file>
+            <img alt="" data-drop-img>
+            <span>{{ L('Pustite sem logo', 'Pusťte sem logo') }}<small>{{ L('alebo kliknite · PNG, JPG, SVG', 'nebo klikněte · PNG, JPG, SVG') }}</small></span>
+          </label>
+          <div class="sw" data-logo-sw hidden></div>
+          <button class="btn btn--w btn--sm" data-logo-del hidden>{{ L('Odstrániť logo', 'Odstranit logo') }}</button>
+          <h3>{{ L('Nemáte logo? AI nakreslí znak', 'Nemáte logo? AI nakreslí znak') }}</h3>
+          <div class="markbox">
+            <img alt="" data-mark-img>
+            <form class="ask ask--mark" data-mark-form>
+              <input data-mark-in maxlength="60" placeholder="{{ L('Čo má znak zobrazovať? Napr. croissant', 'Co má znak zobrazovat? Např. croissant') }}">
+              <button class="btn btn--c btn--sm" type="submit">{{ L('Nakresli', 'Nakresli') }}</button>
+            </form>
+            <button class="link" data-mark-del hidden>{{ L('Bez znaku', 'Bez znaku') }}</button>
+          </div>
+        </section>
+        <section class="pn" data-pp="viac">
+          <p class="pn__tip">{{ L('Pridaný prvok chyťte a posuňte. Vybraný prvok upravíte v lište nad vizitkou.', 'Přidaný prvek chyťte a posuňte. Vybraný prvek upravíte v liště nad vizitkou.') }}</p>
+          <div class="adds">
+            <button data-add="text"><b class="a-t">Aa</b>{{ L('Text', 'Text') }}</button>
+            <button data-add="rect"><b class="a-r"></b>{{ L('Tvar', 'Tvar') }}</button>
+            <button data-add="circle"><b class="a-c"></b>{{ L('Kruh', 'Kruh') }}</button>
+            <button data-add="line"><b class="a-l"></b>{{ L('Čiara', 'Čára') }}</button>
+            <button data-add="qr"><b class="a-q"></b>QR</button>
+            <button data-add-img><b class="a-i"></b>{{ L('Obrázok', 'Obrázek') }}</button>
+            <input type="file" accept="image/*" hidden data-img-file>
+          </div>
+          <h3>{{ L('Ikony', 'Ikony') }}</h3>
+          <div class="icons" data-icons></div>
+          <h3>{{ L('Grafika na pozadí', 'Grafika na pozadí') }}</h3>
+          <div class="arts" data-arts></div>
+          <button class="tb tb--txt tb--full" data-marks aria-pressed="false">{{ L('Zobraziť orez a spadávku', 'Zobrazit ořez a spadávku') }}</button>
+        </section>
+      </div>
+    </aside>
+    <div class="ed-stage" data-stage>
+      <div class="ed-top">
+        <div class="seg" data-sides><button class="on" data-side="front">{{ L('Predná', 'Přední') }}</button><button data-side="back">{{ L('Zadná', 'Zadní') }}</button></div>
+        <div class="ed-hist"><button class="tb" data-undo disabled title="{{ L('Späť', 'Zpět') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 7 4.5 11.5 9 16"/><path d="M5 11.5h9.5a5 5 0 0 1 0 10H11"/></svg></button><button class="tb" data-redo disabled title="{{ L('Vpred', 'Vpřed') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 7l4.5 4.5L15 16"/><path d="M19 11.5H9.5a5 5 0 0 0 0 10H13"/></svg></button></div>
+      </div>
+      <div class="ctx" data-ctx hidden>
+        <div class="ctx__g" data-ctx-text>
+          <select class="ctx__font" data-fontsel aria-label="{{ L('Písmo', 'Písmo') }}"></select>
+          <div class="ctx__size"><button data-sz="-1">−</button><input data-szv inputmode="decimal" aria-label="{{ L('Veľkosť', 'Velikost') }}"><button data-sz="1">+</button></div>
+          <button class="ctx__b" data-bold title="{{ L('Tučné', 'Tučné') }}"><b>B</b></button>
+          <button class="ctx__b" data-italic title="{{ L('Kurzíva', 'Kurzíva') }}"><i>I</i></button>
+        </div>
+        <div class="ctx__g ctx__colors" data-ctx-colors></div>
+        <div class="ctx__g" data-ctx-img hidden><button class="ctx__b ctx__wide" data-replace>{{ L('Vymeniť', 'Vyměnit') }}</button><input type="file" accept="image/*" hidden data-replace-file></div>
+        <div class="ctx__g">
+          <div class="ctx__pop"><button class="ctx__b" data-pop="more" title="{{ L('Ďalšie', 'Další') }}">⋯</button>
+            <div class="pop pop--menu" data-popbox="more">
+              <button data-upper>{{ L('VEĽKÉ PÍSMENÁ', 'VELKÁ PÍSMENA') }}</button>
+              <label class="pop__row">{{ L('Rozostup písmen', 'Rozestup písmen') }}<input type="range" min="-100" max="500" step="10" data-ls></label>
+              <hr>
+              <button data-order="up">{{ L('Posunúť dopredu', 'Posunout dopředu') }}</button>
+              <button data-order="down">{{ L('Posunúť dozadu', 'Posunout dozadu') }}</button>
+              <button data-alignc="hcenter">{{ L('Vycentrovať', 'Vycentrovat') }}</button>
+              <label class="pop__row">{{ L('Priehľadnosť', 'Průhlednost') }}<input type="range" min="10" max="100" data-opacity></label>
+            </div></div>
+          <button class="ctx__b" data-dup title="{{ L('Duplikovať', 'Duplikovat') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg></button>
+          <button class="ctx__b ctx__del" data-del title="{{ L('Zmazať', 'Smazat') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+        </div>
+      </div>
+      <div class="ed-canvas" data-host><canvas data-canvas></canvas></div>
+      <div class="ed-foot">
+        <button class="link" data-back-choose>← {{ L('Iný návrh', 'Jiný návrh') }}</button>
+        <button class="btn btn--c btn--lg" data-to-order>{{ L('Pokračovať k objednávke', 'Pokračovat k objednávce') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. OBJEDNÁVKA ===== -->
+  <section class="st4" data-pane="order">
+    <div class="wrap st4__grid">
+      <div class="st4__vis">
+        <div class="st4__3d" data-3d><span class="st4__hint">{{ L('Potiahnite a otočte', 'Potáhněte a otočte') }}</span></div>
+        <div class="st4__thumbs"><img alt="" data-thumb-front><img alt="" data-thumb-back></div>
+        <button class="link" data-back-edit>← {{ L('Späť na úpravy', 'Zpět na úpravy') }}</button>
+      </div>
+      <div class="st4__opts">
+        <h2 class="h-m">{{ L('Vyberte si', 'Vyberte si') }}</h2>
+        <h3>{{ L('Čo chcete', 'Co chcete') }}</h3>
+        <div class="kinds" data-kind>
+          <button class="kind on" data-v="bundle"><b>{{ L('Tlačené + digitálna', 'Tištěné + digitální') }}</b><small>{{ L('digitálna na rok zadarmo', 'digitální na rok zdarma') }}</small></button>
+          <button class="kind" data-v="print"><b>{{ L('Len tlačené', 'Jen tištěné') }}</b><small>{{ L('klasické vizitky', 'klasické vizitky') }}</small></button>
+          <button class="kind" data-v="digital"><b>{{ L('Len digitálna', 'Jen digitální') }}</b><small>{{ prices.digital_year }} {{ prices.symbol }} / {{ L('rok', 'rok') }}</small></button>
+        </div>
+        <div data-print-opts>
+          <h3>{{ L('Papier', 'Papír') }}</h3>
+          <div class="papers" data-paper>
+            <button class="paper on" data-v="std"><i class="paper__sw"></i><b>{{ L('Štandard', 'Standard') }}</b><small>{{ L('matný 350 g', 'matný 350 g') }}</small><em data-pp-price="std"></em></button>
+            <button class="paper" data-v="soft"><i class="paper__sw paper__sw--soft"></i><b>{{ L('Prémium', 'Prémium') }}</b><small>{{ L('soft-touch, zamatový', 'soft-touch, sametový') }}</small><em data-pp-price="soft"></em></button>
+            <button class="paper" data-v="triplex"><i class="paper__sw paper__sw--tri"></i><b>{{ L('Luxus', 'Luxus') }}</b><small>{{ L('Triplex 720 g, hrubý', 'Triplex 720 g, silný') }}</small><em data-pp-price="triplex"></em></button>
+          </div>
+          <h3>{{ L('Počet kusov', 'Počet kusů') }}</h3>
+          <div class="qty" data-qty>{% for q in prices.qty %}<button{% if q == 250 %} class="on"{% endif %} data-v="{{ q }}"><b>{{ q }}</b><small data-qp="{{ q }}"></small></button>{% endfor %}</div>
+          <details class="more">
+            <summary>{{ L('Ďalšie možnosti: formát, rohy, expres', 'Další možnosti: formát, rohy, expres') }}</summary>
+            <div class="opt"><span>{{ L('Formát', 'Formát') }}</span><div class="seg seg--s" data-o="size"><button class="on" data-v="90x50">90×50</button><button data-v="85x55">85×55</button><button data-v="55x55">55×55</button></div></div>
+            <div class="opt"><span>{{ L('Rohy', 'Rohy') }}</span><div class="seg seg--s" data-o="corners"><button class="on" data-v="straight">{{ L('Rovné', 'Rovné') }}</button><button data-v="round">{{ L('Zaoblené', 'Zaoblené') }} <small data-round-p></small></button></div></div>
+            <div class="opt"><span>{{ L('Lesk namiesto matu', 'Lesk místo matu') }}</span><div class="seg seg--s" data-o="gloss"><button class="on" data-v="0">{{ L('Nie', 'Ne') }}</button><button data-v="1">{{ L('Lesklá laminácia', 'Lesklá laminace') }}</button></div></div>
+            <label class="tog"><input type="checkbox" data-express> <span>{{ L('Expresná výroba', 'Expresní výroba') }} <small>+{{ prices.express }} {{ prices.symbol }} · {{ L('o 2 dni skôr', 'o 2 dny dříve') }}</small></span></label>
+            <button class="link" data-pdf>{{ L('Stiahnuť tlačové PDF', 'Stáhnout tiskové PDF') }}</button>
+          </details>
+        </div>
+        <div class="sum">
+          <div class="sum__p"><span>{{ L('Spolu', 'Celkem') }}</span><b data-sum>—</b></div>
+          <p class="sum__m" data-sum-m></p>
+          <p class="sum__d" data-sum-d></p>
+          <button class="btn btn--c btn--lg sum__cta" data-add-cart>{{ L('Pridať do košíka', 'Přidat do košíku') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
+          <p class="sum__vat">{{ L('Nie sme platcami DPH, cena je konečná. Doprava zadarmo.', 'Nejsme plátci DPH, cena je konečná. Doprava zdarma.') }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 {% endblock %}
 {% block footer %}{% endblock %}
