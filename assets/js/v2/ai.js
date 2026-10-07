@@ -99,7 +99,9 @@ export async function askAI(prompt, base = {}, { previous, onArt } = {}) {
   const known = {};
   for (const k of ['name', 'role', 'company', 'tagline', 'address']) if (base[k] && base[k] !== DEFAULT_FIELDS[k]) known[k] = base[k];
   try {
-    const res = await postJSON('/design', { prompt, lang: CZ ? 'cz' : 'sk', fields: known, previous, art: false, nonce: previous ? Date.now() : 0 });
+    const body = { prompt, lang: CZ ? 'cz' : 'sk', fields: known, previous, art: false, nonce: previous ? Date.now() : 0 };
+    let res;
+    try { res = await postJSON('/design', body); } catch (e) { await new Promise((r) => setTimeout(r, 800)); res = await postJSON('/design', body); }
     if (!res.concepts || !res.concepts.length) throw new Error('empty');
     const fields = { ...DEFAULT_FIELDS, ...base, ...res.fields };
     if (!res.fields.company && !known.company) fields.company = base.company && base.company !== DEFAULT_FIELDS.company ? base.company : '';
@@ -115,14 +117,11 @@ export async function askAI(prompt, base = {}, { previous, onArt } = {}) {
       delete pal.name;
       const d = newDesign({ tpl: c.template, fonts: c.fonts || TEMPLATES[c.template].fonts, pal, art: c.art.mode === 'library' ? c.art.key : null, f: { ...fields } });
       d.direction = c.direction; d.ai = { art: c.art, mark: c.mark };
-      d.markPending = true; d.why = describe(d);
+      d.markPending = false; d.why = describe(d);
       return d;
     });
-    const subject = res.concepts.find((c) => c.mark)?.mark || prompt;
-    const icon = res.concepts.find((c) => c.icon)?.icon || '';
-    pickMark(icon, subject, A).then((m) => {
-      designs.forEach((d, i) => { d.markPending = false; if (m) { d.mark = m.src; d.markAI = m.ai; } d.why = describe(d); onArt && onArt(i, d); });
-    });
+    // žiadne automatické ikonky ako logo: šablóny majú typografický monogram / wordmark
+    designs.forEach((d) => { d.markPending = false; d.ai.icon = res.concepts.find((c) => c.icon)?.icon || ''; });
     let budget = 2;
     designs.forEach((d, i) => {
       if (d.ai.art.mode === 'generate' && d.ai.art.prompt && budget-- > 0) {
@@ -154,10 +153,10 @@ function deriveContacts(f, base) {
 
 // ---------- záloha bez servera ----------
 const IND_TPL = {
-  kadernik: ['znak', 'mramor', 'vzor'], reality: ['noirgold', 'kruh', 'zlato'], stavba: ['stuha', 'duo', 'firma'],
-  it: ['terminal', 'kruh', 'monolit'], pravnik: ['noirgold', 'znak', 'zlato'], wellness: ['znak', 'linia', 'vzor'],
-  foto: ['podpis', 'kruh', 'akvarel'], gastro: ['stuha', 'pecat', 'vzor'], auto: ['duo', 'kruh', 'stuha'],
-  lekar: ['kruh', 'znak', 'firma'], sport: ['duo', 'kruh', 'holo'],
+  kadernik: ['editorial', 'vzor', 'crop'], reality: ['monogram', 'noirgold', 'split'], stavba: ['stuha', 'swiss', 'duo'],
+  it: ['swiss', 'terminal', 'crop'], pravnik: ['monogram', 'noirgold', 'editorial'], wellness: ['minimal', 'linia', 'editorial'],
+  foto: ['editorial', 'crop', 'prechod'], gastro: ['wordmark', 'pecat', 'stuha'], auto: ['duo', 'swiss', 'split'],
+  lekar: ['split', 'kruh', 'minimal'], sport: ['crop', 'duo', 'kruh'],
 };
 const IND_PAL = {
   kadernik: ['ruza', 'krieda', 'levandula'], reality: ['noir', 'navy', 'smaragd'], stavba: ['kobalt', 'navy', 'piesok'],
@@ -174,7 +173,7 @@ function companyFrom(raw, name) {
   let run = [];
   for (let i = 0; i < words.length; i++) {
     const w = words[i];
-    if (CAPS.test(w) && !(i > 0 && PREP.has(words[i - 1].toLowerCase()))) { run.push(w); }
+    if (CAPS.test(w) && !(i > 0 && PREP.has(words[i - 1]))) { run.push(w); }
     else if (run.length) break;
   }
   const c = run.join(' ');
@@ -185,13 +184,13 @@ const BIZ = /^(pek[aá]re[nň]|pek[aá]rna|sal[oó]n|studio|štúdio|kaviare[nň
 // „Jana Malá, kaderníčka v Trnave“ → meno + profesia
 function nameRole(raw) {
   const U = 'A-ZÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽĚŘŮ', l = 'a-záäčďéíľĺňóôŕšťúýžěřů';
-  const m = raw.match(new RegExp(`^\\s*([${U}][${l}]+\\s+[${U}][${l}]+)\\s*[,–-]\\s*([${l} ]{3,40}?)(?=\\s+(?:v|vo|ve|z|zo|ze|u|pri|na|pre|pro|z)\\s|[,.;]|$)`, 'u'));
-  if (!m || BIZ.test(m[1].split(/\s+/)[0])) return {};
+  const m = raw.match(new RegExp(`^\\s*((?:(?:Ing|Mgr|MUDr|JUDr|PhDr|MVDr|Bc|RNDr|PaedDr|Dr)\\.\\s*)*[${U}][${l}]+\\s+[${U}][${l}]+)\\s*[,–-]\\s*([${l} ]{3,40}?)(?=\\s+(?:v|vo|ve|z|zo|ze|u|pri|na|pre|pro|z)\\s|[,.;]|$)`, 'u'));
+  if (!m || BIZ.test(m[1].replace(/^(?:[A-Za-z]+\.\s*)+/, '').split(/\s+/)[0])) return {};
   const role = m[2].trim().split(/\s+/).length <= 3 ? cap(m[2].trim()) : '';
   return { name: m[1], role };
 }
 function local(prompt, base, A, onArt) {
-  const ids = IND_TPL[A.industry] || ['znak', 'kruh', 'vzor'];
+  const ids = IND_TPL[A.industry] || ['editorial', 'wordmark', 'crop'];
   const pals = IND_PAL[A.industry] || ['krieda', 'more', 'ruza'];
   const L = CZ ? 'cz' : 'sk';
   const I = INDUSTRIES[A.industry];
@@ -209,11 +208,11 @@ function local(prompt, base, A, onArt) {
   const dirs = ['classic', 'modern', 'creative'];
   const designs = ids.map((id, i) => {
     const d = newDesign({ tpl: id, fonts: TEMPLATES[id].fonts, pal: { ...(PALETTES[pals[i]] || PALETTES[TEMPLATES[id].pal]) }, f: { ...f } });
-    d.direction = dirs[i]; d.markPending = true; d.why = describe(d);
+    d.direction = dirs[i]; d.markPending = false; d.why = describe(d);
     return d;
   });
   const p = plain(prompt);
   const hit = PROMPT_ICONS.find(([w]) => p.includes(plain(w)));
-  pickMark(hit ? hit[1] : (ICON_BY[A.industry] || 'sparkles'), prompt, A).then((m) => designs.forEach((d, i) => { d.markPending = false; if (m) d.mark = m.src; d.why = describe(d); onArt && onArt(i, d); }));
+  designs.forEach((d) => { d.markPending = false; d.ai = { icon: hit ? hit[1] : (ICON_BY[A.industry] || '') }; d.why = describe(d); });
   return { intro: introFrom(f, A), fields: f, designs, remote: false };
 }

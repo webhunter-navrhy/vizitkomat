@@ -31,6 +31,8 @@ const I = {
   youtube: '<rect x="3" y="6" width="18" height="12" rx="4"/><path d="m10.5 9.5 4 2.5-4 2.5Z"/>',
 };
 const ico = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true">${I[k] || I.web}</svg>`;
+const TITLES = /^(ing|mgr|mudr|judr|phdr|mvdr|bc|rndr|paeddr|doc|prof|dr|mba|phd|csc)\.?,?$/i;
+const mono = (f) => initials((f.name || '').split(/\s+/).filter((w) => w && !TITLES.test(w)).join(' ') || f.company || '');
 const SOC = { instagram: 'Instagram', facebook: 'Facebook', linkedin: 'LinkedIn', tiktok: 'TikTok', youtube: 'YouTube' };
 
 export function vcard(f, url) {
@@ -93,10 +95,10 @@ export function renderDigital(host, d, opts = {}) {
     f.address && ['map', t('Adresa', 'Adresa'), f.address, map],
   ].filter(Boolean);
 
-  const mini = `<div class="dc__mini"><span class="dc__mini-m">${d.logo ? `<img src="${d.logo}" alt="">` : d.mark ? `<i style="-webkit-mask-image:url(${d.mark});mask-image:url(${d.mark})"></i>` : esc(initials(f.name))}</span><b>${esc(f.name || '')}</b><small>${esc(f.role || f.company || '')}</small></div>`;
+  const mini = `<div class="dc__mini"><span class="dc__mini-m">${d.logo ? `<img src="${d.logo}" alt="">` : d.mark ? `<i style="-webkit-mask-image:url(${d.mark});mask-image:url(${d.mark})"></i>` : esc(mono(f))}</span><b>${esc(f.name || '')}</b><small>${esc(f.role || f.company || '')}</small></div>`;
   const face = (src, cls) => (src ? `<img class="${cls}" src="${src}" alt="">` : '');
   const hasCard = !!opts.front;
-  const avatar = d.photo ? `<img src="${d.photo}" alt="">` : d.logo ? `<img class="is-logo" src="${d.logo}" alt="">` : d.mark ? `<i class="is-mark" style="-webkit-mask-image:url(${d.mark});mask-image:url(${d.mark})"></i>` : `<span>${esc(initials(f.name))}</span>`;
+  const avatar = d.photo ? `<img src="${d.photo}" alt="">` : d.logo ? `<img class="is-logo" src="${d.logo}" alt="">` : d.mark ? `<i class="is-mark" style="-webkit-mask-image:url(${d.mark});mask-image:url(${d.mark})"></i>` : `<span>${esc(mono(f))}</span>`;
 
   host.innerHTML = `
   <article class="dc${dark ? ' dc--dark' : ''}${opts.static ? ' dc--static' : ''}" style="--d-bg:${p.bg};--d-ink:${p.ink};--d-acc:${p.accent};--d-acc-fg:${accFg};--d-acc-t:${accText};--d-soft:${p.soft};--d-muted:${muted};--d-line:${line};--d-panel:${panel};--d-fd:'${fp.display}';--d-dw:${fp.dw};--d-ft:'${fp.text}'">

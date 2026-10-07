@@ -59,8 +59,8 @@ export function personaFields(key) {
 
 // ktorá osoba ukazuje ktorú šablónu
 export const TPL_PERSONA = {
-  atelier: 'arch', noirgold: 'makler', monolit: 'it', mramor: 'kader', botanika: 'kvety', prechod: 'foto', bauhaus: 'arch',
-  terrazzo: 'zubar', linia: 'joga', akvarel: 'kvety', terminal: 'it', firma: 'uct', holo: 'nechty', drevo: 'stolar',
-  retro: 'barber', pecat: 'vino', podpis: 'foto', duo: 'elektro', zlato: 'advokat', znak: 'kader', kruh: 'kava', stuha: 'pekar', vzor: 'cukrar',
+  monogram: 'advokat', editorial: 'arch', swiss: 'it', crop: 'barber', wordmark: 'kava', split: 'uct', minimal: 'joga', pecat: 'vino',
+  kruh: 'zubar', vzor: 'cukrar', noirgold: 'makler', stuha: 'pekar', terminal: 'it', duo: 'elektro', mramor: 'nechty', botanika: 'kvety',
+  prechod: 'foto', bauhaus: 'arch', linia: 'joga', akvarel: 'kvety', podpis: 'kader',
 };
 export const personaLabel = (key) => PERSONAS[key]?.role || tr('Ukážka', 'Ukázka');

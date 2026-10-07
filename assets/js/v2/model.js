@@ -113,7 +113,7 @@ export const slugify = (s) => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
 /** Nový návrh */
 export function newDesign(over = {}) {
   return {
-    v: 2, size: '90x50', tpl: 'atelier', fonts: null, pal: null, art: null,
+    v: 2, size: '90x50', tpl: 'editorial', fonts: null, pal: null, art: null,
     f: { ...DEFAULT_FIELDS }, logo: null, mark: null, photo: null, back: 'auto',
     slug: '', socials: {}, sides: null, custom: false,
     ...over,

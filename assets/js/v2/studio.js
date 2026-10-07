@@ -68,7 +68,7 @@ async function loadDesign(d, sides, custom) {
    1. ZAČIATOK
    ========================================================= */
 function paintStart() {
-  const ids = ['znak', 'prechod', 'noirgold'];
+  const ids = ['monogram', 'crop', 'wordmark'];
   const imgs = $$('[data-way-thumbs] img');
   ids.forEach(async (id, i) => { if (!imgs[i].getAttribute('src')) imgs[i].src = await thumb(newDesign({ tpl: id, ...templateDefaults(id) }), 'front', 420); });
   if (st.saved?.d) {
@@ -302,7 +302,7 @@ function paintArts() {
 $('[data-arts]').addEventListener('click', async (e) => {
   const b = e.target.closest('[data-art]'); if (!b) return;
   const k = b.dataset.art || null;
-  const artTpls = ['mramor', 'prechod', 'holo', 'botanika', 'linia', 'akvarel', 'terrazzo', 'retro', 'drevo', 'bauhaus', 'noirgold', 'podpis'];
+  const artTpls = ['mramor', 'prechod', 'botanika', 'linia', 'akvarel', 'bauhaus', 'noirgold', 'podpis'];
   if (k && !artTpls.includes(ed.design.tpl)) await ed.setTemplate(({ botanika: 'botanika', 'liniove-listy': 'linia', 'akvarel-modry': 'akvarel' })[k] || 'mramor', true);
   await ed.setArt(k); paintArts();
 });
@@ -461,6 +461,6 @@ const persist = debounce(() => { if (ed && st.loaded) store.set(SAVE, { ...ed.ex
   const rez = params.get('rezim');
   if (rez === 'ai' && params.get('prompt')) runAI(params.get('prompt'));
   else if (rez === 'sablony') showTemplates();
-  else if (meno) { st.touched.add('name'); await loadDesign(newDesign({ tpl: 'znak', ...templateDefaults('znak'), f: { ...DEFAULT_FIELDS, name: meno } })); st.reached.add('choose'); go('edit'); }
+  else if (meno) { st.touched.add('name'); await loadDesign(newDesign({ tpl: 'editorial', ...templateDefaults('editorial'), f: { ...DEFAULT_FIELDS, name: meno } })); st.reached.add('choose'); go('edit'); }
   else if (rez === 'ai') setTimeout(() => $('[data-ask-start-in]').focus(), 300);
 })();

@@ -1,165 +1,176 @@
 [
  {
   "key": "kvety",
-  "prompt": "Mám kvetinárstvo v Nitre, chcem niečo jemné a prírodné.",
+  "prompt": "Mám kvetinárstvo Levanduľa v Nitre, chcem niečo jemné a prírodné. Som Mária Horváthová.",
   "fields": {
    "name": "Mária Horváthová",
    "role": "Kvetinárka",
-   "company": "Levanduľa",
-   "tagline": "Krásy z prírody",
+   "company": "Kvetinárstvo Levanduľa",
+   "tagline": "Krása kvetov pre každú chvíľu",
    "address": "Nitra"
   },
   "concepts": [
    {
+    "template": "vzor",
+    "fonts": "playfair",
+    "palette": {
+     "bg": "#E8ECE3",
+     "ink": "#1F2A22",
+     "accent": "#5E7D5A",
+     "soft": "#D3DCCB",
+     "name": "salvia"
+    },
+    "art": {
+     "mode": "none"
+    },
+    "direction": "classic"
+   },
+   {
+    "template": "swiss",
+    "fonts": "inter",
+    "palette": {
+     "bg": "#FFFFFF",
+     "ink": "#111111",
+     "accent": "#FF4F1F",
+     "soft": "#F1F1EF",
+     "name": "sneh"
+    },
+    "art": {
+     "mode": "none"
+    },
+    "direction": "modern"
+   },
+   {
     "template": "botanika",
     "fonts": "instrument",
     "palette": {
-     "bg": "#F7F4E9",
-     "ink": "#452B1F",
-     "accent": "#767e58",
-     "soft": "#C9E4CA"
+     "bg": "#F5F2EC",
+     "ink": "#1A1A18",
+     "accent": "#B4532A",
+     "soft": "#E8E2D7",
+     "name": "krieda"
     },
     "art": {
-     "key": "botanika",
-     "mode": "library"
-    }
-   },
-   {
-    "template": "akvarel",
-    "fonts": "playfair",
-    "palette": {
-     "bg": "#FFFFFF",
-     "ink": "#214457",
-     "accent": "#649173",
-     "soft": "#B2E6CE"
+     "mode": "library",
+     "key": "liniove-listy"
     },
-    "art": {
-     "mode": "file",
-     "file": "kvety-1.jpg",
-     "prompt": "delicate watercolor floral elements"
-    }
-   },
-   {
-    "template": "linia",
-    "fonts": "fraunces",
-    "palette": {
-     "bg": "#E5E5EA",
-     "ink": "#333333",
-     "accent": "#767e58",
-     "soft": "#F7F4E9"
-    },
-    "art": {
-     "key": "liniove-listy",
-     "mode": "library"
-    }
+    "direction": "creative"
    }
   ]
  },
  {
   "key": "vino",
-  "prompt": "Rodinné vinárstvo pri Pezinku, tradične a s nádychom luxusu.",
+  "prompt": "Juraj Mrva, rodinné Vinárstvo Pod Pezinkom, tradične a s nádychom luxusu.",
   "fields": {
    "name": "Juraj Mrva",
    "role": "Vinár",
    "company": "Vinárstvo Pod Pezinkom",
-   "tagline": "Poctivé víno s nádychom luxusu",
+   "tagline": "Tradične a s nádychom luxusu",
    "address": "Pezinok"
   },
   "concepts": [
    {
-    "template": "zlato",
+    "template": "monogram",
     "fonts": "bodoni",
     "palette": {
-     "bg": "#2f4f4f",
-     "ink": "#ffffff",
-     "accent": "#ffd700",
-     "soft": "#454545"
+     "bg": "#0E0E10",
+     "ink": "#F2F0EB",
+     "accent": "#D9B26F",
+     "soft": "#1D1D21",
+     "name": "noir"
     },
     "art": {
      "mode": "none"
-    }
+    },
+    "direction": "classic"
    },
    {
-    "template": "mramor",
-    "fonts": "playfair",
+    "template": "editorial",
+    "fonts": null,
     "palette": {
-     "bg": "#3b3f54",
-     "ink": "#ffffff",
-     "accent": "#8b9467",
-     "soft": "#666666"
+     "bg": "#0F3B2E",
+     "ink": "#F3EFE4",
+     "accent": "#D8B56A",
+     "soft": "#1A4B3C",
+     "name": "smaragd"
     },
     "art": {
-     "key": "mramor",
-     "mode": "library"
-    }
+     "mode": "none"
+    },
+    "direction": "modern"
    },
    {
     "template": "pecat",
-    "fonts": "instrument",
+    "fonts": "fraunces",
     "palette": {
-     "bg": "#432b1a",
-     "ink": "#ffffff",
-     "accent": "#8c8258",
-     "soft": "#964b00"
+     "bg": "#F4EFEA",
+     "ink": "#2B1418",
+     "accent": "#7A1F2B",
+     "soft": "#E7DAD5",
+     "name": "bordo"
     },
     "art": {
-     "mode": "none",
-     "prompt": "traditional wine barrel with grapes"
-    }
+     "mode": "none"
+    },
+    "direction": "creative"
    }
   ]
  },
  {
   "key": "it",
-  "prompt": "Programátor z Košíc, moderne, tmavo a hravo.",
+  "prompt": "Tomáš Varga, programátor z Košíc, firma Bitlab, moderne, tmavo a hravo.",
   "fields": {
    "name": "Tomáš Varga",
    "role": "Programátor",
    "company": "Bitlab",
-   "tagline": "Kód, ktorý sa dá čítať",
+   "tagline": "Kód s ľudskou tvárou",
    "address": "Košice"
   },
   "concepts": [
    {
-    "template": "terminal",
-    "fonts": "mono",
+    "template": "editorial",
+    "fonts": "instrument",
     "palette": {
-     "bg": "#2b2b2b",
-     "ink": "#ffffff",
-     "accent": "#4CAF50",
-     "soft": "#666666"
+     "bg": "#26282C",
+     "ink": "#F1F1EF",
+     "accent": "#9FD3C7",
+     "soft": "#35383D",
+     "name": "grafit"
     },
     "art": {
      "mode": "none"
-    }
-   },
-   {
-    "template": "monolit",
-    "fonts": "inter",
-    "palette": {
-     "bg": "#333333",
-     "ink": "#ffffff",
-     "accent": "#03A9F4",
-     "soft": "#555555"
     },
-    "art": {
-     "mode": "none"
-    }
+    "direction": "classic"
    },
    {
-    "template": "prechod",
+    "template": "swiss",
     "fonts": "geist",
     "palette": {
-     "bg": "#0E1230",
-     "ink": "#FFFFFF",
+     "bg": "#121411",
+     "ink": "#F0F2EA",
      "accent": "#C6F24E",
-     "soft": "#444444"
+     "soft": "#22261F",
+     "name": "limetka"
     },
     "art": {
-     "mode": "file",
-     "file": "it-2.jpg",
-     "prompt": "dark circuit lines"
-    }
+     "mode": "none"
+    },
+    "direction": "modern"
+   },
+   {
+    "template": "crop",
+    "fonts": "unbounded",
+    "palette": {
+     "bg": "#1E3BCF",
+     "ink": "#FFFFFF",
+     "accent": "#FFD23F",
+     "soft": "#3350DA",
+     "name": "kobalt"
+    },
+    "art": {
+     "mode": "none"
+    },
+    "direction": "creative"
    }
   ]
  }

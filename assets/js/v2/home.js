@@ -95,7 +95,7 @@ lazy($('.real'), async () => {
   const data = await fetch(VK.root + 'assets/ai/showcase.json').then((r) => r.json()).catch(() => []);
   const tabs = $('[data-real-tabs]');
   const labels = { kvety: tr('Kvetinárstvo', 'Květinářství'), vino: tr('Vinárstvo', 'Vinařství'), it: tr('Programátor', 'Programátor') };
-  const prompts = { kvety: tr('Mám kvetinárstvo v Nitre, chcem niečo jemné a prírodné.', 'Mám květinářství v Nitře, chci něco jemného a přírodního.'), vino: tr('Rodinné vinárstvo pri Pezinku, tradične a s nádychom luxusu.', 'Rodinné vinařství u Pezinku, tradičně a s nádechem luxusu.'), it: tr('Programátor z Košíc, moderne, tmavo a hravo.', 'Programátor z Košic, moderně, tmavě a hravě.') };
+  const prompts = { kvety: tr('Mám kvetinárstvo Levanduľa v Nitre, chcem niečo jemné a prírodné.', 'Mám květinářství Levandule v Nitře, chci něco jemného a přírodního.'), vino: tr('Rodinné vinárstvo pod Pezinkom, tradične a s nádychom luxusu.', 'Rodinné vinařství pod Pálavou, tradičně a s nádechem luxusu.'), it: tr('Programátor z Košíc, firma Bitlab, moderne, tmavo a hravo.', 'Programátor z Ostravy, firma Bitlab, moderně, tmavě a hravě.') };
   tabs.innerHTML = data.map((s, i) => `<button role="tab" data-real="${i}"${i ? '' : ' class="on"'}>${labels[s.key] || s.key}</button>`).join('');
   const DIRS = [tr('Klasický', 'Klasický'), tr('Moderný', 'Moderní'), tr('Kreatívny', 'Kreativní')];
   const SCENES = ['#2A3270', '#34306E', '#2B3A6B'];

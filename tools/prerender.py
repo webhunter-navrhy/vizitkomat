@@ -26,35 +26,36 @@ async () => {
   // šablóny
   for (const id of Object.keys(TEMPLATES)) {
     const pk = TPL_PERSONA[id] || 'arch';
-    const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: await markOf(PERSONAS[pk].icon) });
+    const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: null });
     await shot('tpl-' + id, d, 640);
   }
   // hero
   // hero: živá ukážka (6 odborov, predná aj zadná strana)
-  for (const [i, [id, pk]] of [['prechod', 'foto'], ['stuha', 'pekar'], ['noirgold', 'makler'], ['znak', 'kader'], ['kruh', 'kava'], ['pecat', 'vino']].entries()) {
-    const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: await markOf(PERSONAS[pk].icon) });
+  for (const [i, [id, pk]] of [['crop', 'barber'], ['wordmark', 'kava'], ['monogram', 'advokat'], ['editorial', 'kader'], ['pecat', 'pekar'], ['split', 'uct']].entries()) {
+    const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: null });
     out[`hero-${i}-f`] = await snapshot(d, 'front', 1100, 'image/jpeg', 0.88);
     out[`hero-${i}-b`] = await snapshot(d, 'back', 1100, 'image/jpeg', 0.88);
   }
   // AI ukážky (skutočné výstupy AI zo showcase.json)
   const data = await fetch('/assets/ai/showcase.json').then((r) => r.json());
   const ICON = { kvety: 'flower', vino: 'grape', it: 'code' };
-  const CZF = { kvety: { role: 'Květinářka', company: 'Levandule', tagline: 'Krásy z přírody', name: 'Marie Horváthová' }, vino: { role: 'Vinař', company: 'Vinařství Pod Pálavou', tagline: 'Poctivé víno s nádechem luxusu', name: 'Jiří Mrva', address: 'Mikulov' }, it: { tagline: 'Kód, který se dá číst', address: 'Ostrava' } };
+  const CZF = { kvety: { role: 'Květinářka', company: 'Květinářství Levandule', tagline: 'Krása květin pro každou chvíli', name: 'Marie Horváthová' }, vino: { role: 'Vinař', company: 'Vinařství Pod Pálavou', tagline: 'Tradičně a s nádechem luxusu', name: 'Jiří Mrva', address: 'Mikulov' }, it: { tagline: 'Kód s lidskou tváří', address: 'Ostrava' } };
   for (const s0 of data) {
     const s = CZ ? { ...s0, fields: { ...s0.fields, ...(CZF[s0.key] || {}) } } : s0;
     const tld = CZ ? 'cz' : 'sk';
     const plain = (t) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-    const dom = plain(s.fields.company).replace(/^vinar(stvo|stvi)\s+/, '').replace(/[^a-z0-9]+/g, '');
+    const dom = plain(s.fields.company).replace(/^(vinar(stvo|stvi)|kvetinarstvo|kvetinarstvi)\s+/, '').replace(/[^a-z0-9]+/g, '');
     const first = plain(s.fields.name).split(' ')[0];
     const f = { ...s.fields, phone: CZ ? '+420 605 123 456' : '+421 905 123 456', email: `${first}@${dom}.${tld}`, web: `${dom}.${tld}` };
     for (const [i, c] of s.concepts.entries()) {
+      if (!TEMPLATES[c.template]) continue;
       const art = c.art.mode === 'file' ? location.origin + '/assets/ai/' + c.art.file : c.art.mode === 'library' ? c.art.key : null;
-      const d = newDesign({ tpl: c.template, fonts: c.fonts || TEMPLATES[c.template].fonts, pal: { label: 'AI', ...c.palette }, art, f, mark: await markOf(ICON[s.key]) });
+      const d = newDesign({ tpl: c.template, fonts: c.fonts || TEMPLATES[c.template].fonts, pal: { label: 'AI', ...c.palette }, art, f, mark: null });
       await shot(`show-${s.key}-${i}`, d, 820);
     }
   }
   // krok 2
-  const d = newDesign({ tpl: 'atelier', ...templateDefaults('atelier'), f: personaFields('arch') });
+  const d = newDesign({ tpl: 'editorial', ...templateDefaults('editorial'), f: personaFields('arch') });
   out['step'] = await snapshot(d, 'front', 760, 'image/jpeg', 0.9);
   return out;
 }
