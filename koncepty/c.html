@@ -1,0 +1,56 @@
+<!doctype html><html lang="sk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
+<script>window.VK={lang:'sk',root:'../'}</script>
+
+<title>Koncept C – Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F6F4;--fg:#111;--mu:#6F6F6B;--line:rgba(0,0,0,.08);--ac:#FF5A1F}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font-family:'Geist',system-ui;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+.nav{position:fixed;inset:0 0 auto;z-index:10;display:flex;justify-content:center;padding:14px}
+.nav div{display:flex;align-items:center;gap:6px;padding:6px 6px 6px 18px;border-radius:99px;background:rgba(255,255,255,.75);backdrop-filter:blur(16px);box-shadow:0 1px 2px rgba(0,0,0,.05),0 8px 30px -10px rgba(0,0,0,.15)}
+.nav b{font-weight:600;letter-spacing:-.02em;margin-right:14px}.nav a{padding:8px 13px;border-radius:99px;font-size:14px;color:var(--mu)}.nav a.cta{background:var(--fg);color:#fff;margin-left:8px}
+.hero{min-height:100svh;padding:96px 20px 40px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.eb{font-family:'Geist Mono';font-size:12px;letter-spacing:.08em;color:var(--mu);text-transform:uppercase}
+h1{margin:14px 0 0;font-size:clamp(2.8rem,5.4vw,5.6rem);line-height:.98;letter-spacing:-.055em;font-weight:600;max-width:14ch}
+h1 span{color:var(--mu)}
+.lead{margin:22px auto 0;max-width:50ch;color:var(--mu);font-size:clamp(1.05rem,1.3vw,1.2rem);line-height:1.55}
+.ctas{margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.b1{padding:15px 24px;border-radius:99px;background:var(--fg);color:#fff;font-weight:500}.b2{padding:15px 24px;border-radius:99px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);font-weight:500}
+.stage{width:min(1100px,100%);height:min(50vh,480px);margin-top:0;position:relative}.stage::after{content:'';position:absolute;left:30%;right:30%;bottom:6%;height:40px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.18),transparent);filter:blur(6px);z-index:-1}
+.fin{display:inline-flex;gap:4px;padding:5px;border-radius:99px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.06),0 10px 30px -12px rgba(0,0,0,.2)}
+.fin button{border:0;background:none;font:inherit;font-size:14px;padding:9px 15px;border-radius:99px;cursor:pointer;color:var(--mu)}.fin button.on{background:var(--fg);color:#fff}
+.hint{margin-top:10px;font-family:'Geist Mono';font-size:11.5px;color:var(--mu)}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:min(1100px,100%);margin:70px auto 0;text-align:left}
+.row div{padding:26px;border-radius:24px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04)}.row h3{margin:0 0 8px;font-weight:600;letter-spacing:-.02em;font-size:20px}.row p{margin:0;color:var(--mu);line-height:1.5;font-size:15px}
+.row i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--ac);margin-bottom:16px}
+@media(max-width:800px){.row{grid-template-columns:1fr}.nav a:not(.cta){display:none}}
+</style></head><body>
+<header class="nav"><div><b>Vizitkomat</b><a href="#">Tvorba</a><a href="#">AI grafik</a><a href="#">Digitálna</a><a href="#">Cenník</a><a class="cta" href="#">Navrhnúť</a></div></header>
+<section class="hero">
+  <span class="eb">Tlač · digitál · AI grafik 24/7</span>
+  <h1>Vizitka, ktorá <span>robí dojem.</span></h1>
+  <p class="lead">AI grafik ju navrhne podľa vašej firmy, v editore ju doladíte ako v Canve a my ju vytlačíme na papier, ktorý cítiť.</p>
+  <div class="ctas"><a class="b1" href="#">Navrhnúť vizitku</a><a class="b2" href="#">Vyskúšať AI grafika</a></div>
+  <div class="stage" id="stage"></div>
+  <div class="fin" id="fin"><button class="on" data-f="matte">Matný 350 g</button><button data-f="soft">Soft-touch</button><button data-f="gloss">Lesk</button><button data-f="triplex">Triplex 720 g</button></div>
+  <p class="hint">Potiahnite vizitku a otočte ju</p>
+  <div class="row">
+    <div><i></i><h3>AI grafik 24/7</h3><p>Opíšete firmu a dostanete originálne návrhy s vlastnou grafikou.</p></div>
+    <div><i></i><h3>Editor ako Canva</h3><p>Kliknete do vizitky, posuniete text, zmeníte písmo aj farby.</p></div>
+    <div><i></i><h3>Aj do telefónu</h3><p>Digitálna vizitka s QR kódom na prvý rok zadarmo.</p></div>
+  </div>
+</section>
+<script type="module">
+import { newDesign } from '../assets/js/v2/model.js';
+import { templateDefaults } from '../assets/js/v2/templates.js';
+import { snapshot } from '../assets/js/v2/render.js';
+import { cardScene } from '../assets/js/v2/three-cards.js';
+const d=newDesign({tpl:'atelier',...templateDefaults('atelier')});
+const sc=await cardScene(document.getElementById('stage'),[{front:await snapshot(d,'front',1800,'image/jpeg',.93),back:await snapshot(d,'back',1800,'image/jpeg',.93),pos:[0,0,0],rot:[-0.32,-0.38,0.06],finish:'matte',edge:'#ECE7DC',thick:.7}],{camZ:215,fov:30,shadow:false,drag:true,float:true,floatAmt:1.2,parallaxAmt:.12,fit:150});
+document.getElementById('fin').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));const f=b.dataset.f;if(f==='triplex'){sc.setThickness(0,2.2,'#E8462B');sc.setFinish(0,'matte')}else{sc.setThickness(0,.7,'#ECE7DC');sc.setFinish(0,f)}});
+</script></body></html>

@@ -1,0 +1,55 @@
+<!doctype html><html lang="sk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
+<script>window.VK={lang:'sk',root:'../'}</script>
+
+<title>Koncept B – Pop</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#2440E6;--fg:#fff;--y:#FFD23F;--r:#FF6B4A;--ink:#0F1440}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font-family:'Bricolage Grotesque',system-ui;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+.nav{position:relative;z-index:10;display:flex;align-items:center;gap:2rem;padding:20px clamp(20px,4vw,56px)}
+.logo{font-weight:800;font-size:24px;letter-spacing:-.04em;display:flex;align-items:center;gap:8px}.logo i{width:26px;height:26px;border-radius:50%;background:var(--y);display:block}
+.nav nav{display:flex;gap:22px;margin-left:16px;font-weight:500}.nav .cta{margin-left:auto;padding:12px 20px;border-radius:14px;background:var(--y);color:var(--ink);font-weight:700;box-shadow:0 4px 0 #C99A00}
+.hero{position:relative;padding:30px clamp(20px,4vw,56px) 0;min-height:calc(100svh - 80px);overflow:hidden}
+h1{position:relative;z-index:2;font-size:clamp(4rem,11vw,12rem);line-height:.84;letter-spacing:-.06em;font-weight:800;margin:20px 0 0;max-width:12ch}
+h1 em{font-style:normal;color:var(--y)}
+.sub{position:relative;z-index:2;display:flex;gap:28px;align-items:flex-end;margin-top:34px;flex-wrap:wrap}
+.sub p{margin:0;font-size:clamp(1.1rem,1.5vw,1.35rem);max-width:32ch;line-height:1.4;font-weight:500}
+.go{display:inline-flex;align-items:center;gap:12px;padding:20px 28px;border-radius:20px;background:#fff;color:var(--ink);font-weight:800;font-size:20px;box-shadow:0 6px 0 rgba(0,0,0,.25);transition:transform .2s}
+.go:hover{transform:translateY(-3px) rotate(-1deg)}
+.go span{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--r);color:#fff}
+.stk{position:absolute;z-index:1;width:clamp(240px,24vw,380px);border-radius:6px;box-shadow:0 30px 50px -18px rgba(0,0,20,.6);transition:transform .5s cubic-bezier(.2,1.4,.4,1)}
+.stk:hover{transform:rotate(0deg) scale(1.05)!important;z-index:5}
+.band{position:relative;z-index:3;margin-top:70px;background:var(--y);color:var(--ink);transform:rotate(-2deg);padding:18px 0;white-space:nowrap;overflow:hidden;font-weight:800;font-size:clamp(1.4rem,2.6vw,2.4rem);letter-spacing:-.03em}
+.band div{display:inline-flex;gap:40px;animation:m 22s linear infinite}.band div span::after{content:' ✺';color:var(--r)}
+@keyframes m{to{transform:translateX(-50%)}}
+.ai{position:relative;z-index:2;margin:70px clamp(20px,4vw,56px) 60px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.bubble{background:#fff;color:var(--ink);border-radius:28px;padding:28px;font-size:22px;font-weight:600;line-height:1.3;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.bubble small{display:block;font-family:'Geist Mono';font-size:12px;color:#5865F2;margin-bottom:10px;font-weight:400}
+.bubble.bot{background:var(--ink);color:#fff}
+@media(max-width:900px){.stk{display:none}.stk.k1,.stk.k2{display:block;position:relative;width:70%;margin:20px 0 0 10%}.ai{grid-template-columns:1fr}.nav nav{display:none}}
+</style></head><body>
+<header class="nav"><a class="logo" href="#"><i></i>vizitkomat</a><nav><a href="#">Tvorba</a><a href="#">AI grafik</a><a href="#">Digitálna</a><a href="#">Cenník</a></nav><a class="cta" href="#">Chcem vizitky</a></header>
+<section class="hero">
+  <h1>Vizitka za <em>2 minúty.</em> Bez grafika.</h1>
+  <div class="sub"><p>Napíšte, čo robíte. AI grafik navrhne, vy doladíte, my vytlačíme a pošleme. Plus digitálna verzia do mobilu.</p><a class="go" href="#">Spustiť AI grafika <span>→</span></a></div>
+  <img class="stk k1" id="k1" alt="" style="right:4%;top:6%;transform:rotate(8deg)">
+  <img class="stk k2" id="k2" alt="" style="right:20%;top:34%;transform:rotate(-6deg)">
+  <img class="stk k3" id="k3" alt="" style="right:2%;top:56%;transform:rotate(4deg)">
+  <div class="band"><div><span>350 g papier</span><span>AI grafik 24/7</span><span>Doprava zdarma</span><span>Soft-touch</span><span>QR do telefónu</span><span>Od 24 €</span><span>350 g papier</span><span>AI grafik 24/7</span><span>Doprava zdarma</span><span>Soft-touch</span><span>QR do telefónu</span><span>Od 24 €</span></div></div>
+</section>
+<section class="ai">
+  <div class="bubble"><small>VY</small>„Mám rodinné vinárstvo pri Pezinku, chcem niečo poctivé a tradičné.“</div>
+  <div class="bubble bot"><small>AI GRAFIK</small>Pripravil som 3 návrhy so zelenou a zlatou, pečaťou a sloganom „Poctivo, ako za starých čias.“ Vyberte si.</div>
+</section>
+<script type="module">
+import { newDesign } from '../assets/js/v2/model.js';
+import { templateDefaults } from '../assets/js/v2/templates.js';
+import { snapshot } from '../assets/js/v2/render.js';
+const ids=[['k1','bauhaus'],['k2','retro'],['k3','holo']];
+for (const [el,t] of ids){document.getElementById(el).src=await snapshot(newDesign({tpl:t,...templateDefaults(t)}),'front',900,'image/jpeg');}
+</script></body></html>

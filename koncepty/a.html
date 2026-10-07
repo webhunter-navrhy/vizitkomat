@@ -1,0 +1,65 @@
+<!doctype html><html lang="sk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
+<script>window.VK={lang:'sk',root:'../'}</script>
+
+<title>Koncept A – Noir</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300..800&family=Geist+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0A0A0B;--fg:#F4F2EE;--mu:#8C8982;--line:rgba(255,255,255,.09);--ac:#FF5A1F}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font-family:'Inter Tight',system-ui;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+.nav{position:fixed;inset:0 0 auto;z-index:10;display:flex;align-items:center;gap:2rem;padding:18px clamp(20px,4vw,56px)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:19px;letter-spacing:-.02em}
+.logo i{width:22px;height:22px;border-radius:6px;background:var(--ac);display:block;box-shadow:inset 0 -7px 0 rgba(0,0,0,.25)}
+.nav nav{display:flex;gap:4px;margin-left:12px}.nav nav a{padding:8px 14px;border-radius:99px;color:var(--mu);font-size:14.5px}.nav nav a:hover{color:var(--fg);background:rgba(255,255,255,.06)}
+.nav .cta{margin-left:auto;padding:10px 18px;border-radius:99px;background:var(--fg);color:#000;font-weight:600;font-size:14px}
+.hero{position:relative;min-height:100svh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:110px clamp(20px,4vw,56px) 60px;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(60% 70% at 75% 45%,rgba(255,90,31,.16),transparent 60%),radial-gradient(40% 40% at 20% 90%,rgba(120,120,255,.07),transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(70% 60% at 60% 40%,#000,transparent 80%);opacity:.5;pointer-events:none}
+.copy{position:relative;z-index:2;max-width:640px}
+.tag{display:inline-flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border-radius:99px;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px var(--line);font-size:13px;color:var(--mu)}
+.tag b{padding:3px 8px;border-radius:99px;background:var(--ac);color:#000;font-weight:600;font-size:11.5px}
+h1{font-size:clamp(3.4rem,6.6vw,7rem);line-height:.92;letter-spacing:-.05em;font-weight:600;margin:28px 0 0}
+h1 span{color:var(--mu)}
+.lead{margin-top:26px;font-size:clamp(1.05rem,1.3vw,1.25rem);line-height:1.55;color:var(--mu);max-width:46ch}
+.lead b{color:var(--fg);font-weight:500}
+.box{margin-top:34px;display:flex;gap:6px;padding:6px;border-radius:16px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px var(--line);max-width:520px}
+.box input{flex:1;background:none;border:0;outline:0;color:var(--fg);font:inherit;font-size:16px;padding:0 14px}
+.box button{border:0;border-radius:11px;padding:14px 20px;background:var(--ac);color:#000;font:inherit;font-weight:600;font-size:15px;cursor:pointer}
+.chips{margin-top:26px;display:flex;flex-wrap:wrap;gap:22px;font-size:13.5px;color:var(--mu)}.chips span::before{content:'✓ ';color:var(--ac)}
+.stage{position:absolute;inset:60px 0 190px 40%;z-index:1}
+.modes{position:relative;z-index:2;grid-column:1/-1;margin-top:60px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mode{padding:18px;border-radius:16px;background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px var(--line);backdrop-filter:blur(10px)}
+.mode small{font-family:'Geist Mono';font-size:11px;color:var(--ac)}.mode h3{margin:10px 0 6px;font-size:18px;font-weight:600;letter-spacing:-.02em}.mode p{margin:0;font-size:13.5px;color:var(--mu);line-height:1.5}
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding-top:96px}.stage{position:relative;inset:auto;height:420px;margin:10px -20px 0}.modes{grid-template-columns:1fr 1fr}.nav nav{display:none}}
+</style></head><body>
+<header class="nav"><a class="logo" href="#"><i></i>Vizitkomat</a><nav><a href="#">Tvorba</a><a href="#">AI grafik</a><a href="#">Digitálna vizitka</a><a href="#">Cenník</a></nav><a class="cta" href="#">Navrhnúť vizitku</a></header>
+<section class="hero">
+  <div class="copy">
+    <span class="tag"><b>NOVÉ</b> AI grafik navrhne vizitku za 10 sekúnd</span>
+    <h1>Vizitky, ktoré si ľudia <span>nechajú.</span></h1>
+    <p class="lead">Popíšte svoju firmu a <b>AI grafik</b> vytvorí originálny návrh. Upravíte ho ako v Canve, my ho vytlačíme na prémiový papier a pošleme aj <b>digitálnu verziu do telefónu</b>.</p>
+    <form class="box" onsubmit="return false"><input placeholder="Napr. kaderníčka v Trnave, jemný štýl"><button>Navrhni mi vizitku</button></form>
+    <div class="chips"><span>Doprava zdarma SK a CZ</span><span>Kontrola dát človekom</span><span>Od 24 €</span></div>
+  </div>
+  <div class="stage" id="stage"></div>
+  <div class="modes">
+    <div class="mode"><small>01</small><h3>AI grafik 24/7</h3><p>Originálne návrhy z vášho popisu, aj s vlastnou grafikou.</p></div>
+    <div class="mode"><small>02</small><h3>Editor ako Canva</h3><p>Kliknete do vizitky a upravíte čokoľvek.</p></div>
+    <div class="mode"><small>03</small><h3>Z vášho loga</h3><p>Farby značky načítame z loga automaticky.</p></div>
+    <div class="mode"><small>04</small><h3>Digitálna vizitka</h3><p>QR kód a uloženie do kontaktov jedným ťuknutím.</p></div>
+  </div>
+</section>
+<script type="module">
+import { newDesign } from '../assets/js/v2/model.js';
+import { templateDefaults } from '../assets/js/v2/templates.js';
+import { snapshot } from '../assets/js/v2/render.js';
+import { cardScene } from '../assets/js/v2/three-cards.js';
+const set=[['mramor',[48,58,-60],[0.1,-0.5,0.16]],['prechod',[-62,30,-30],[0.18,0.42,-0.12]],['noirgold',[-6,2,10],[0.08,-0.28,0.06]],['monolit',[62,-34,45],[-0.12,-0.42,-0.1]],['zlato',[-40,-62,70],[0.3,0.2,0.14]]];
+const cards=[];
+for (const [t,pos,rot] of set){const d=newDesign({tpl:t,...templateDefaults(t)});cards.push({front:await snapshot(d,'front',1400,'image/jpeg',.92),back:await snapshot(d,'back',1400,'image/jpeg',.92),pos,rot,finish:t==='prechod'?'gloss':'soft',edge:'#E8E3D9'});}
+cardScene(document.getElementById('stage'),cards,{camZ:420,fov:30,shadow:false,parallaxAmt:.2,fit:420});
+</script></body></html>

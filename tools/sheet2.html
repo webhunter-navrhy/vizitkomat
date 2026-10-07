@@ -1,0 +1,24 @@
+<!doctype html><meta charset=utf-8>
+<link id=fcss rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>window.VK={lang:'sk',root:'../'}</script>
+<style>body{background:#bdb7ab;margin:0;padding:16px;font:12px monospace}.row{display:flex;gap:14px;margin-bottom:12px;align-items:center}img{width:430px;box-shadow:0 2px 8px rgba(0,0,0,.3)}b{width:80px}</style>
+<div id=o></div>
+<script type=module>
+import { FONT_CSS, newDesign } from '../assets/js/v2/model.js';
+import { TEMPLATES, templateDefaults } from '../assets/js/v2/templates.js';
+import { snapshot } from '../assets/js/v2/render.js';
+document.getElementById('fcss').href = FONT_CSS;
+const q=new URLSearchParams(location.search); const size=q.get('size')||'90x50'; const only=q.get('t');
+const o=document.getElementById('o');
+for (const id of Object.keys(TEMPLATES)) {
+  if (only && !only.split(',').includes(id)) continue;
+  const d=newDesign({tpl:id,size,...templateDefaults(id), back:q.get('back')||'auto'});
+  if (q.get('logo')) d.logo=q.get('logo');
+  const r=document.createElement('div'); r.className='row'; r.innerHTML=`<b>${id}</b>`;
+  for (const s of ['front','back']) { const im=new Image(); im.src=await snapshot(d,s,860); r.append(im); }
+  o.append(r);
+}
+document.body.dataset.done=1;
+</script>
