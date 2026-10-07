@@ -8,16 +8,28 @@
 <link rel="canonical" href="{{ canonical }}">
 <link rel="alternate" hreflang="{{ 'sk' if lang == 'sk' else 'cs' }}" href="{{ canonical }}">
 <link rel="alternate" hreflang="{{ 'cs' if lang == 'sk' else 'sk' }}" href="{{ alt_canonical }}">
-<meta name="robots" content="noindex">
+<link rel="alternate" hreflang="x-default" href="{{ canonical if lang == 'sk' else alt_canonical }}">
+{% if not production or page in ('kosik', '404') %}<meta name="robots" content="noindex">
+{% endif %}
 <meta name="theme-color" content="#2440E6">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Vizitkomat">
+<meta property="og:locale" content="{{ 'sk_SK' if lang == 'sk' else 'cs_CZ' }}">
+<meta property="og:url" content="{{ canonical }}">
 <meta property="og:title" content="{{ self.title() }}">
 <meta property="og:description" content="{{ self.description() }}">
-<meta property="og:image" content="{{ site }}assets/img/og.png">
+<meta property="og:image" content="{{ public }}assets/img/og-{{ lang }}.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="{{ R }}assets/img/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="{{ R }}assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="{{ R }}assets/img/apple-touch-icon.png">
+<link rel="manifest" href="{{ R }}manifest.webmanifest">
+{% if page == 'index' %}<script type="application/ld+json">{{ org_json }}</script>
+{% endif %}
+<link rel="preload" href="{{ R }}assets/fonts/bricolage-grotesque-300-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ R }}assets/fonts/bricolage-grotesque-300-800-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ A('assets/css/pop.css') }}">
 {% block head %}{% endblock %}
 <script type="importmap">{{ importmap }}</script>
@@ -77,26 +89,27 @@ window.VK = {
       <p>{{ L('Vizitky na papieri aj v telefóne. Navrhne ich AI grafik, upravíte ich ako v Canve, vytlačíme a doručíme.', 'Vizitky na papíře i v telefonu. Navrhne je AI grafik, upravíte je jako v Canvě, vytiskneme a doručíme.') }}</p>
     </div>
     <div class="foot__col">
-      <h3>{{ L('Tvorba', 'Tvorba') }}</h3>
+      <p class="foot__h">{{ L('Tvorba', 'Tvorba') }}</p>
       <a href="{{ link('tvorba') }}?rezim=ai">{{ L('AI grafik', 'AI grafik') }}</a>
       <a href="{{ link('tvorba') }}?rezim=sablony">{{ L('Šablóny', 'Šablony') }}</a>
       <a href="{{ link('tvorba') }}?rezim=logo">{{ L('Vizitka z loga', 'Vizitka z loga') }}</a>
       <a href="{{ link('vlastny') }}">{{ L('Tlač vlastného návrhu', 'Tisk vlastního návrhu') }}</a>
     </div>
     <div class="foot__col">
-      <h3>{{ L('Produkty', 'Produkty') }}</h3>
+      <p class="foot__h">{{ L('Produkty', 'Produkty') }}</p>
       <a href="{{ link('cennik') }}">{{ L('Tlačené vizitky', 'Tištěné vizitky') }}</a>
       <a href="{{ link('digitalna') }}">{{ L('Digitálna vizitka', 'Digitální vizitka') }}</a>
       <a href="{{ R }}v/demo/">{{ L('Ukážka digitálnej vizitky', 'Ukázka digitální vizitky') }}</a>
     </div>
     <div class="foot__col">
-      <h3>{{ L('Kontakt', 'Kontakt') }}</h3>
+      <p class="foot__h">{{ L('Kontakt', 'Kontakt') }}</p>
       <a href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a>
+      <a href="{{ link('kontakt') }}">{{ L('Kontakt a reklamácie', 'Kontakt a reklamace') }}</a>
       <span>{{ L('Slovensko a Česko', 'Česko a Slovensko') }}</span>
     </div>
   </div>
   <div class="foot__big" aria-hidden="true">vizitkomat</div>
-  <div class="foot__base"><span>© 2026 Vizitkomat.eu · webhunter s.r.o., IČO 29498511, Na Provaznici 2691/7, 150 00 Praha 5 · {{ L('nie sme platcami DPH', 'nejsme plátci DPH') }}</span><span><a href="{{ link('podmienky') }}">{{ L('Obchodné podmienky', 'Obchodní podmínky') }}</a> · <a href="{{ link('gdpr') }}">{{ L('Ochrana údajov', 'Ochrana údajů') }}</a></span></div>
+  <div class="foot__base"><span>© 2026 Vizitkomat.eu · webhunter s.r.o., IČO 29498511, Na Provaznici 2691/7, 150 00 Praha 5 · {{ L('nie sme platcami DPH', 'nejsme plátci DPH') }}</span><span><a href="{{ link('podmienky') }}">{{ L('Obchodné podmienky', 'Obchodní podmínky') }}</a> · <a href="{{ link('gdpr') }}">{{ L('Ochrana údajov', 'Ochrana údajů') }}</a> · <a href="{{ link('kontakt') }}">{{ L('Kontakt', 'Kontakt') }}</a></span></div>
 </footer>
 {% endblock %}
 

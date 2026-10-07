@@ -82,7 +82,7 @@ export function renderDigital(host, d, opts = {}) {
     </header>
     <div class="dcard__avatar">${avatar}</div>
     <div class="dcard__head">
-      <h1>${esc(f.name)}</h1>
+      <${opts.heading || 'p'} class="dc-name">${esc(f.name)}</${opts.heading || 'p'}>
       <p class="dcard__role">${esc(f.role || '')}</p>
       ${f.company ? `<p class="dcard__company">${esc(f.company)}</p>` : ''}
     </div>

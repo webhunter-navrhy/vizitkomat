@@ -71,9 +71,23 @@ $('[data-checkout]').addEventListener('submit', async (e) => {
   const data = Object.fromEntries(new FormData(f).entries());
   try { localStorage.setItem('vk2-checkout', JSON.stringify({ name: data.name, email: data.email, phone: data.phone, street: data.street, city: data.city, zip: data.zip, company: data.company, ico: data.ico, dic: data.dic })); } catch (x) { /* nič */ }
   const order = { number: 'VK' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + Math.floor(Math.random() * 900 + 100), lang: VK.lang, currency: P.currency, total: items.reduce((s, it) => s + itemPrice(it.config), 0), customer: data, items: items.map((it) => ({ kind: it.kind, config: it.config, design: it.design, price: itemPrice(it.config) })) };
-  const btn = f.querySelector('.co__go'); btn.disabled = true; btn.textContent = tr('Odosielam…', 'Odesílám…');
+  const btn = f.querySelector('.co__go'); const btnLabel = btn.innerHTML; btn.disabled = true; btn.textContent = tr('Odosielam…', 'Odesílám…');
   let sent = false;
-  if (VK.orderEndpoint) { try { const r = await fetch(VK.orderEndpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(order) }); if (r.ok) { const j = await r.json().catch(() => ({})); if (j.payUrl) { location.href = j.payUrl; return; } sent = true; } } catch (x) { /* nižšie */ } }
+  if (VK.orderEndpoint) {
+    try {
+      const r = await fetch(VK.orderEndpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(order) });
+      if (!r.ok) throw new Error('http ' + r.status);
+      const j = await r.json().catch(() => ({}));
+      if (j.number) order.number = j.number;
+      if (j.payUrl) { await store.cartClear(); location.href = j.payUrl; return; }
+      sent = true;
+    } catch (x) {
+      // objednávka neodišla: košík ostáva, zákazník môže skúsiť znova
+      btn.disabled = false; btn.innerHTML = btnLabel;
+      err.hidden = false; err.textContent = tr('Objednávku sa nepodarilo odoslať. Skúste to, prosím, o chvíľu znova alebo nám napíšte na info@vizitkomat.eu.', 'Objednávku se nepodařilo odeslat. Zkuste to prosím za chvíli znovu nebo nám napište na info@vizitkomat.eu.');
+      return;
+    }
+  }
   $('[data-full]').hidden = true; $('.cart__head').hidden = true; $('[data-done]').hidden = false;
   $('[data-done-num]').textContent = tr('Objednávka ', 'Objednávka ') + order.number;
   $('[data-done-img]').src = items[0]?.thumb || '';

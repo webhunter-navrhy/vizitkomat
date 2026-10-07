@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}{{ L('Kontakt | Vizitkomat', 'Kontakt | Vizitkomat') }}{% endblock %}
+{% block description %}{{ L('Kontakt na Vizitkomat.eu: e-mail, údaje o prevádzkovateľovi, reklamácie a otázky k objednávke.', 'Kontakt na Vizitkomat.eu: e-mail, údaje o provozovateli, reklamace a dotazy k objednávce.') }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
+{% block navclass %} solid{% endblock %}
+{% block main %}
+<section class="kt wrap">
+  <p class="kicker">{{ L('Kontakt', 'Kontakt') }}</p>
+  <h1 class="h-l">{{ L('Napíšte nám,', 'Napište nám,') }} <span class="hl-c">{{ L('odpíše človek.', 'odepíše člověk.') }}</span></h1>
+  <div class="kt__grid">
+    <a class="kt__card kt__card--main" href="mailto:info@vizitkomat.eu">
+      <span class="kt__label">E-mail</span>
+      <b>info@vizitkomat.eu</b>
+      <p>{{ L('Otázky k návrhu, objednávke aj firemné zákazky. Do správy pripíšte číslo objednávky, ak ho máte.', 'Dotazy k návrhu, objednávce i firemní zakázky. Do zprávy připište číslo objednávky, pokud ho máte.') }}</p>
+      <span class="btn btn--lg kt__go">{{ L('Napísať e-mail', 'Napsat e-mail') }} <span class="ar">→</span></span>
+    </a>
+    <div class="kt__card">
+      <span class="kt__label">{{ L('Reklamácia', 'Reklamace') }}</span>
+      <b>{{ L('Chyba v tlači? Vytlačíme znova.', 'Chyba v tisku? Vytiskneme znovu.') }}</b>
+      <p>{{ L('Pošlite e-mail s číslom objednávky a fotkou vizitiek. Postup je v', 'Pošlete e-mail s číslem objednávky a fotkou vizitek. Postup je v') }} <a class="link" href="{{ link('podmienky') }}">{{ L('obchodných podmienkach', 'obchodních podmínkách') }}</a>.</p>
+    </div>
+    <div class="kt__card">
+      <span class="kt__label">{{ L('Prevádzkovateľ', 'Provozovatel') }}</span>
+      <b>webhunter s.r.o.</b>
+      <p>{{ L('IČO', 'IČO') }} 29498511<br>Na Provaznici 2691/7, 150 00 Praha 5<br>{{ L('Nie sme platcami DPH.', 'Nejsme plátci DPH.') }}</p>
+    </div>
+    <div class="kt__card">
+      <span class="kt__label">{{ L('Rýchle odpovede', 'Rychlé odpovědi') }}</span>
+      <b>{{ L('Doprava, papier, platby', 'Doprava, papír, platby') }}</b>
+      <p><a class="link" href="{{ link('index') }}#otazky">{{ L('Časté otázky', 'Časté dotazy') }}</a> · <a class="link" href="{{ link('cennik') }}">{{ L('Cenník', 'Ceník') }}</a> · <a class="link" href="{{ link('gdpr') }}">{{ L('Ochrana údajov', 'Ochrana údajů') }}</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

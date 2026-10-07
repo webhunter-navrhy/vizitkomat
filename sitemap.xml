@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://vizitkomat.eu/</loc></url>
-  <url><loc>https://vizitkomat.eu/tvorba/</loc></url>
-  <url><loc>https://vizitkomat.eu/digitalna-vizitka/</loc></url>
-  <url><loc>https://vizitkomat.eu/cennik/</loc></url>
-  <url><loc>https://vizitkomat.eu/kosik/</loc></url>
-  <url><loc>https://vizitkomat.eu/vlastny-navrh/</loc></url>
-  <url><loc>https://vizitkomat.eu/obchodne-podmienky/</loc></url>
-  <url><loc>https://vizitkomat.eu/ochrana-osobnych-udajov/</loc></url>
-  <url><loc>https://vizitkomat.eu/cz/</loc></url>
-  <url><loc>https://vizitkomat.eu/cz/tvorba/</loc></url>
-  <url><loc>https://vizitkomat.eu/cz/digitalni-vizitka/</loc></url>
-  <url><loc>https://vizitkomat.eu/cz/cenik/</loc></url>
-  <url><loc>https://vizitkomat.eu/cz/kosik/</loc></url>
-  <url><loc>https://vizitkomat.eu/cz/vlastni-navrh/</loc></url>
-  <url><loc>https://vizitkomat.eu/cz/obchodni-podminky/</loc></url>
-  <url><loc>https://vizitkomat.eu/cz/ochrana-osobnich-udaju/</loc></url>
-  <url><loc>https://vizitkomat.eu/v/demo/</loc></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url><loc>https://vizitkomat.eu/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/"/><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/"/></url>
+  <url><loc>https://vizitkomat.eu/tvorba/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/tvorba/"/><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/tvorba/"/></url>
+  <url><loc>https://vizitkomat.eu/digitalna-vizitka/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/digitalna-vizitka/"/><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/digitalni-vizitka/"/></url>
+  <url><loc>https://vizitkomat.eu/cennik/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/cennik/"/><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/cenik/"/></url>
+  <url><loc>https://vizitkomat.eu/vlastny-navrh/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/vlastny-navrh/"/><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/vlastni-navrh/"/></url>
+  <url><loc>https://vizitkomat.eu/obchodne-podmienky/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/obchodne-podmienky/"/><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/obchodni-podminky/"/></url>
+  <url><loc>https://vizitkomat.eu/ochrana-osobnych-udajov/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/ochrana-osobnych-udajov/"/><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/ochrana-osobnich-udaju/"/></url>
+  <url><loc>https://vizitkomat.eu/kontakt/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/kontakt/"/><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/kontakt/"/></url>
+  <url><loc>https://vizitkomat.eu/cz/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/"/><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/"/></url>
+  <url><loc>https://vizitkomat.eu/cz/tvorba/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/tvorba/"/><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/tvorba/"/></url>
+  <url><loc>https://vizitkomat.eu/cz/digitalni-vizitka/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/digitalni-vizitka/"/><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/digitalna-vizitka/"/></url>
+  <url><loc>https://vizitkomat.eu/cz/cenik/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/cenik/"/><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/cennik/"/></url>
+  <url><loc>https://vizitkomat.eu/cz/vlastni-navrh/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/vlastni-navrh/"/><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/vlastny-navrh/"/></url>
+  <url><loc>https://vizitkomat.eu/cz/obchodni-podminky/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/obchodni-podminky/"/><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/obchodne-podmienky/"/></url>
+  <url><loc>https://vizitkomat.eu/cz/ochrana-osobnich-udaju/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/ochrana-osobnich-udaju/"/><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/ochrana-osobnych-udajov/"/></url>
+  <url><loc>https://vizitkomat.eu/cz/kontakt/</loc><lastmod>2026-10-07</lastmod><xhtml:link rel="alternate" hreflang="cs" href="https://vizitkomat.eu/cz/kontakt/"/><xhtml:link rel="alternate" hreflang="sk" href="https://vizitkomat.eu/kontakt/"/></url>
 </urlset>

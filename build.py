@@ -25,11 +25,24 @@ PAGES = [
     ('vlastny.html', 'vlastny-navrh/', 'vlastni-navrh/'),
     ('podmienky.html', 'obchodne-podmienky/', 'obchodni-podminky/'),
     ('gdpr.html', 'ochrana-osobnych-udajov/', 'ochrana-osobnich-udaju/'),
+    ('kontakt.html', 'kontakt/', 'kontakt/'),
     ('404.html', '404.html', None),
 ]
 LANGS = {'sk': '', 'cz': 'cz/'}
 SITE = 'https://vizitkomat.eu/'
+# False = testovacia verzia na webhunter-navrhy.github.io (noindex); True = ostrý web na vizitkomat.eu
+PRODUCTION = False
+PUBLIC = SITE if PRODUCTION else 'https://webhunter-navrhy.github.io/vizitkomat/'
 THREE = {'three': 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js', 'three/addons/': 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/'}
+
+
+ORG = {
+    '@context': 'https://schema.org', '@type': 'Organization', 'name': 'Vizitkomat', 'url': SITE,
+    'logo': SITE + 'assets/img/icon-512.png', 'email': 'info@vizitkomat.eu',
+    'legalName': 'webhunter s.r.o.', 'taxID': '29498511',
+    'address': {'@type': 'PostalAddress', 'streetAddress': 'Na Provaznici 2691/7', 'postalCode': '150 00', 'addressLocality': 'Praha 5', 'addressCountry': 'CZ'},
+    'areaServed': ['SK', 'CZ'],
+}
 
 
 def asset_hash(rel):
@@ -39,6 +52,8 @@ def asset_hash(rel):
 
 def main():
     env = Environment(loader=FileSystemLoader(str(SRC)), autoescape=False, trim_blocks=True, lstrip_blocks=True)
+    env.filters['faqld'] = lambda qa: {'@type': 'Question', 'name': qa[0], 'acceptedAnswer': {'@type': 'Answer', 'text': qa[1]}}
+    env.policies['json.dumps_kwargs'] = {'ensure_ascii': False}
     versions = {}
     for p in (ROOT / 'assets').rglob('*'):
         if p.is_file() and p.suffix in ('.css', '.js'):
@@ -88,7 +103,8 @@ def main():
                 alt_url=R + UO.get(key, UO['index']),
                 canonical=SITE + out_rel.replace('index.html', ''),
                 alt_canonical=SITE + UO.get(key, ''),
-                site=SITE, importmap=importmap,
+                site=SITE, public=PUBLIC, production=PRODUCTION, importmap=importmap,
+                org_json=json.dumps(ORG, ensure_ascii=False),
             )
             html = env.get_template(tpl).render(**ctx)
             out.parent.mkdir(parents=True, exist_ok=True)
@@ -104,16 +120,27 @@ def main():
     out.write_text(html)
     written.append('v/demo/index.html')
 
-    # sitemap
-    urls = []
+    # sitemap (s jazykovými verziami) a robots.txt
+    import datetime
+    today = datetime.date.today().isoformat()
+    U = {lang: urls_for(lang) for lang in LANGS}
+    rows = []
     for lang in LANGS:
-        for name, p in urls_for(lang).items():
-            if name != '404':
-                urls.append(SITE + p)
-    urls.append(SITE + 'v/demo/')
+        other = 'cz' if lang == 'sk' else 'sk'
+        for name, p in U[lang].items():
+            if name in ('404', 'kosik'):
+                continue
+            alt = U[other].get(name)
+            links = f'<xhtml:link rel="alternate" hreflang="{"sk" if lang == "sk" else "cs"}" href="{SITE + p}"/>'
+            if alt is not None:
+                links += f'<xhtml:link rel="alternate" hreflang="{"cs" if lang == "sk" else "sk"}" href="{SITE + alt}"/>'
+            rows.append(f'  <url><loc>{SITE + p}</loc><lastmod>{today}</lastmod>{links}</url>\n')
     (ROOT / 'sitemap.xml').write_text(
-        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        + ''.join(f'  <url><loc>{u}</loc></url>\n' for u in urls) + '</urlset>\n')
+        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
+        + ''.join(rows) + '</urlset>\n')
+    (ROOT / 'robots.txt').write_text(
+        ('User-agent: *\nDisallow: /kosik/\nDisallow: /cz/kosik/\nDisallow: /koncepty/\nDisallow: /v/\n' if PRODUCTION else 'User-agent: *\nDisallow: /\n')
+        + f'Sitemap: {SITE}sitemap.xml\n')
     print('\n'.join(written))
 
 

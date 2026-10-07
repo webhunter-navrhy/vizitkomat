@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}{{ L('Cenník vizitiek | Vizitkomat', 'Ceník vizitek | Vizitkomat') }}{% endblock %}
 {% block description %}{{ L('Tlačené vizitky od', 'Tištěné vizitky od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }} {{ L('za 100 ks vrátane dopravy. Soft-touch, Triplex 720 g a digitálna vizitka.', 'za 100 ks včetně dopravy. Soft-touch, Triplex 720 g a digitální vizitka.') }}{% endblock %}
-{% block head %}<link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">
+<script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'Product', 'name': L('Tlačené vizitky s návrhom od AI grafika', 'Tištěné vizitky s návrhem od AI grafika'), 'brand': {'@type': 'Brand', 'name': 'Vizitkomat'}, 'image': public ~ 'assets/img/og-' ~ lang ~ '.png', 'description': L('Obojstranné vizitky 90 × 50 mm na papieri 350 g až Triplex 720 g, návrh od AI grafika, doprava zdarma a digitálna vizitka na rok.', 'Oboustranné vizitky 90 × 50 mm na papíře 350 g až Triplex 720 g, návrh od AI grafika, doprava zdarma a digitální vizitka na rok.'), 'offers': {'@type': 'AggregateOffer', 'priceCurrency': prices.currency, 'lowPrice': prices.papers.matny['100'], 'highPrice': prices.papers.triplex['1000'], 'offerCount': 8, 'availability': 'https://schema.org/InStock'}} | tojson }}</script>{% endblock %}
 {% macro m(v) %}{{ '{:,}'.format(v).replace(',', ' ') }} {{ prices.symbol }}{% endmacro %}
 {% block main %}
 <section class="pr" data-nav="cream">
@@ -21,10 +22,10 @@
       </table>
     </div>
     <div class="pr__x">
-      <article class="bx bx--y"><h3>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</h3><p class="pr__p">{{ prices.digital_year }} {{ prices.symbol }}<small>/{{ L('rok', 'rok') }}</small></p><p>{{ L('K tlači prvý rok zadarmo.', 'K tisku první rok zdarma.') }}</p></article>
-      <article class="bx bx--w"><h3>{{ L('Expres', 'Expres') }}</h3><p class="pr__p">+{{ prices.express }} {{ prices.symbol }}</p><p>{{ L('O dva pracovné dni skôr.', 'O dva pracovní dny dříve.') }}</p></article>
-      <article class="bx bx--b"><h3>{{ L('Formáty', 'Formáty') }}</h3><p class="pr__p">{{ L('bez príplatku', 'bez příplatku') }}</p><p>90×50, 85×55, 55×55 mm</p></article>
-      <article class="bx bx--c"><h3>{{ L('Doprava', 'Doprava') }}</h3><p class="pr__p">{{ L('zadarmo', 'zdarma') }}</p><p>{{ L('Kuriér alebo výdajné miesto.', 'Kurýr nebo výdejní místo.') }}</p></article>
+      <article class="bx bx--y"><h2 class="bx__h">{{ L('Digitálna vizitka', 'Digitální vizitka') }}</h2><p class="pr__p">{{ prices.digital_year }} {{ prices.symbol }}<small>/{{ L('rok', 'rok') }}</small></p><p>{{ L('K tlači prvý rok zadarmo.', 'K tisku první rok zdarma.') }}</p></article>
+      <article class="bx bx--w"><h2 class="bx__h">{{ L('Expres', 'Expres') }}</h2><p class="pr__p">+{{ prices.express }} {{ prices.symbol }}</p><p>{{ L('O dva pracovné dni skôr.', 'O dva pracovní dny dříve.') }}</p></article>
+      <article class="bx bx--b"><h2 class="bx__h">{{ L('Formáty', 'Formáty') }}</h2><p class="pr__p">{{ L('bez príplatku', 'bez příplatku') }}</p><p>90×50, 85×55, 55×55 mm</p></article>
+      <article class="bx bx--c"><h2 class="bx__h">{{ L('Doprava', 'Doprava') }}</h2><p class="pr__p">{{ L('zadarmo', 'zdarma') }}</p><p>{{ L('Kuriér alebo výdajné miesto.', 'Kurýr nebo výdejní místo.') }}</p></article>
     </div>
     <div class="pr__cta"><h2 class="h-m">{{ L('Najprv navrhnite, platíte až na konci.', 'Nejdřív navrhněte, platíte až na konci.') }}</h2><a class="btn btn--c btn--lg" href="{{ link('tvorba') }}?rezim=ai">{{ L('Spustiť AI grafika', 'Spustit AI grafika') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a></div>
   </div>

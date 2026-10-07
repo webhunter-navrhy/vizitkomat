@@ -33,7 +33,7 @@
   const d = newDesign({ tpl: 'noirgold', ...templateDefaults('noirgold') });
   d.f = { name: 'Martin Kováč', role: 'Realitný maklér', company: 'Domov Reality', phone: '+421 905 123 456', email: 'martin@domovreality.sk', web: 'domovreality.sk', address: 'Panská 14, Bratislava', tagline: 'Kľúče odovzdávam osobne.' };
   d.socials = { instagram: 'https://instagram.com/', linkedin: 'https://linkedin.com/' };
-  renderDigital(document.getElementById('card'), d, { url: location.href, qr: (u) => qrSVG(u) });
+  renderDigital(document.getElementById('card'), d, { url: location.href, qr: (u) => qrSVG(u), heading: 'h1' });
 </script>
 </body>
 </html>

@@ -33,7 +33,7 @@
           <h2>{{ L('Navrhne mi', 'Navrhne mi') }} <span class="hl">{{ L('AI grafik', 'AI grafik') }}</span></h2>
           <p>{{ L('Napíšte jednou vetou, čím sa živíte. Do pár sekúnd dostanete tri hotové návrhy aj so znakom na mieru.', 'Napište jednou větou, čím se živíte. Do pár sekund dostanete tři hotové návrhy i se znakem na míru.') }}</p>
           <form class="ask" data-ask-start>
-            <textarea data-ask-start-in rows="2" maxlength="400" placeholder="{{ L('Napr. Som Jana, kaderníčka v Trnave, chcem niečo jemné', 'Např. Jsem Jana, kadeřnice v Brně, chci něco jemného') }}"></textarea>
+            <textarea data-ask-start-in aria-label="{{ L('Čím sa živíte?', 'Čím se živíte?') }}" rows="2" maxlength="400" placeholder="{{ L('Napr. Som Jana, kaderníčka v Trnave, chcem niečo jemné', 'Např. Jsem Jana, kadeřnice v Brně, chci něco jemného') }}"></textarea>
             <button class="btn btn--y" type="submit">{{ L('Navrhni', 'Navrhni') }} <span class="ar">→</span></button>
           </form>
           <div class="chips" data-chips>
@@ -43,9 +43,10 @@
             <button data-p="{{ L('Elektrikár z Prešova, výrazne a čitateľne', 'Elektrikář z Ostravy, výrazně a čitelně') }}">{{ L('Elektrikár', 'Elektrikář') }}</button>
             <button data-p="{{ L('Zubná ambulancia v Žiline, sviežo a dôveryhodne', 'Zubní ordinace v Brně, svěže a důvěryhodně') }}">{{ L('Zubár', 'Zubař') }}</button>
           </div>
+          <p class="way__note">{{ L('Zadanie spracuje AI od Googlu. Stačí odbor, mesto a štýl, citlivé údaje doň nepíšte.', 'Zadání zpracuje AI od Googlu. Stačí obor, město a styl, citlivé údaje do něj nepište.') }} <a href="{{ link('gdpr') }}">{{ L('Viac', 'Více') }}</a></p>
         </article>
         <button class="way way--tpl" data-start-tpl>
-          <div class="way__thumbs" data-way-thumbs><img alt=""><img alt=""><img alt=""></div>
+          <div class="way__thumbs" data-way-thumbs><img alt="" src="{{ pre['tpl-znak-f'] }}" width="640" height="368"><img alt="" src="{{ pre['tpl-prechod-f'] }}" width="640" height="368"><img alt="" src="{{ pre['tpl-noirgold-f'] }}" width="640" height="368"></div>
           <h2>{{ L('Vyberiem si šablónu', 'Vyberu si šablonu') }}</h2>
           <p>{{ L('23 šablón, každú hneď uvidíte s vaším menom.', '23 šablon, každou hned uvidíte se svým jménem.') }}</p>
           <span class="link">{{ L('Prezrieť šablóny', 'Prohlédnout šablony') }} →</span>
@@ -76,7 +77,7 @@
           <button data-r="{{ L('úplne iné návrhy', 'úplně jiné návrhy') }}">{{ L('Iné návrhy', 'Jiné návrhy') }}</button>
         </div>
         <form class="ask ask--re" data-ask-re hidden>
-          <textarea data-ask-re-in rows="2" maxlength="400" placeholder="{{ L('Upravte zadanie, napr. pridajte meno, mesto alebo štýl…', 'Upravte zadání, např. přidejte jméno, město nebo styl…') }}"></textarea>
+          <textarea data-ask-re-in aria-label="{{ L('Čím sa živíte?', 'Čím se živíte?') }}" rows="2" maxlength="400" placeholder="{{ L('Upravte zadanie, napr. pridajte meno, mesto alebo štýl…', 'Upravte zadání, např. přidejte jméno, město nebo styl…') }}"></textarea>
           <button class="btn btn--c btn--sm" type="submit">{{ L('Navrhni znova', 'Navrhni znovu') }}</button>
         </form>
       </div>

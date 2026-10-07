@@ -19,7 +19,7 @@
 .dcard__avatar img.is-logo { object-fit: contain; padding: 16px; background: #fff; }
 .dcard__avatar span { font-family: var(--d-fd), serif; font-weight: var(--d-dw); font-size: 36px; color: var(--d-accent); letter-spacing: -.02em; }
 .dcard__head { padding: 14px 20px 0; }
-.dcard__head h1 { font-family: var(--d-fd), serif; font-weight: var(--d-dw); font-size: 30px; line-height: 1.05; letter-spacing: -.02em; margin: 0; }
+.dcard__head h1, .dcard__head .dc-name { font-family: var(--d-fd), serif; font-weight: var(--d-dw); font-size: 30px; line-height: 1.05; letter-spacing: -.02em; margin: 0; }
 .dcard__role { margin: 6px 0 0; color: var(--d-accent); font-weight: 500; }
 .dcard__company { margin: 1px 0 0; color: var(--d-muted); font-size: 14px; }
 .dcard__actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 20px 16px 0; }

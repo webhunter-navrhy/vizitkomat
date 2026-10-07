@@ -1,9 +1,20 @@
 {% extends 'base.html' %}
 {% block title %}{{ L('Vizitkomat – vizitka za 2 minúty, navrhne ju AI grafik', 'Vizitkomat – vizitka za 2 minuty, navrhne ji AI grafik') }}{% endblock %}
 {% block description %}{{ L('Napíšte, čím sa živíte, a AI grafik navrhne originálne vizitky. Upravíte ich ako v Canve, vytlačíme na prémiový papier a pridáme digitálnu vizitku. Doprava zdarma.', 'Napište, čím se živíte, a AI grafik navrhne originální vizitky. Upravíte je jako v Canvě, vytiskneme na prémiový papír a přidáme digitální vizitku. Doprava zdarma.') }}{% endblock %}
+{% set FAQ = [
+  (L('Naozaj to navrhuje AI?', 'Opravdu to navrhuje AI?'), L('Áno. Váš popis spracuje jazykový model Gemini od Googlu: pochopí odbor, vyberie rozloženie, farby a písmo, napíše slogan a zvolí znak. Výsledok je normálna upraviteľná vizitka, nie obrázok, takže v nej zmeníte čokoľvek.', 'Ano. Váš popis zpracuje jazykový model Gemini od Googlu: pochopí obor, vybere rozložení, barvy a písmo, napíše slogan a zvolí znak. Výsledek je normální upravitelná vizitka, ne obrázek, takže v ní změníte cokoli.')),
+  (L('Ako dlho trvá doručenie?', 'Jak dlouho trvá doručení?'), L('Zvyčajne do 5 pracovných dní od schválenia tlačových dát, s expresom o dva dni skôr. Presný odhad vidíte pri objednávke.', 'Obvykle do 5 pracovních dnů od schválení tiskových dat, s expresem o dva dny dříve. Přesný odhad vidíte při objednávce.')),
+  (L('Uvidím vizitku pred tlačou?', 'Uvidím vizitku před tiskem?'), L('Áno, v editore vidíte presný náhľad aj s orezom a môžete si stiahnuť tlačové PDF. Pred tlačou návrh skontroluje človek a ak treba niečo upraviť, ozve sa vám.', 'Ano, v editoru vidíte přesný náhled i s ořezem a můžete si stáhnout tiskové PDF. Před tiskem návrh zkontroluje člověk a pokud je potřeba něco upravit, ozve se vám.')),
+  (L('Aký papier používate?', 'Jaký papír používáte?'), L('Štandardne matný 350 g, ktorý je pevný a príjemný na dotyk. Za príplatok soft-touch so zamatovým povrchom alebo luxusný Triplex 720 g s farebnou hranou. Tlač je vždy obojstranná.', 'Standardně matný 350 g, který je pevný a příjemný na dotek. Za příplatek soft-touch se sametovým povrchem nebo luxusní Triplex 720 g s barevnou hranou. Tisk je vždy oboustranný.')),
+  (L('Môžem nahrať vlastný návrh?', 'Mohu nahrát vlastní návrh?'), L('Áno, PDF alebo obrázok. Web hneď skontroluje rozlíšenie a spadávku, človek potom celý súbor.', 'Ano, PDF nebo obrázek. Web hned zkontroluje rozlišení a spadávku, člověk pak celý soubor.')),
+  (L('Čo sa stane s digitálnou vizitkou po roku?', 'Co se stane s digitální vizitkou po roce?'), L('Nič sa automaticky neplatí. Pred koncom roka vám napíšeme a predĺžiť ju môžete za ' ~ prices.digital_year ~ ' ' ~ prices.symbol ~ ' na ďalší rok. Ak nepredĺžite, vizitka sa vypne.', 'Nic se automaticky neplatí. Před koncem roku vám napíšeme a prodloužit ji můžete za ' ~ prices.digital_year ~ ' ' ~ prices.symbol ~ ' na další rok. Pokud neprodloužíte, vizitka se vypne.')),
+  (L('Čo ak bude na vizitkách chyba?', 'Co když bude na vizitkách chyba?'), L('Ak ide o chybu tlače, vytlačíme ich znova zadarmo. Preto návrh pred tlačou kontroluje človek a vy ho schvaľujete. Reklamáciu stačí poslať e-mailom s fotkou.', 'Pokud jde o chybu tisku, vytiskneme je znovu zdarma. Proto návrh před tiskem kontroluje člověk a vy ho schvalujete. Reklamaci stačí poslat e-mailem s fotkou.')),
+  (L('Dá sa objednať na firmu?', 'Dá se objednat na firmu?'), L('Samozrejme, s IČO aj DIČ. Faktúru pošleme e-mailom. Nie sme platcami DPH, takže cena je konečná aj pre firmy.', 'Samozřejmě, s IČO i DIČ. Fakturu pošleme e-mailem. Nejsme plátci DPH, takže cena je konečná i pro firmy.')),
+] %}
 {% block head %}
-<link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}">
+<link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ A('assets/css/home2.css') }}">
+<script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': FAQ | map('faqld') | list} | tojson }}</script>
 {% endblock %}
 {% block main %}
 
@@ -16,7 +27,7 @@
       <p class="lead hero__lead">{{ L('Napíšte, čím sa živíte. AI grafik navrhne tri originálne vizitky, vy ich doladíte ako v Canve a my ich vytlačíme a pošleme. K tomu digitálna verzia do mobilu.', 'Napište, čím se živíte. AI grafik navrhne tři originální vizitky, vy je doladíte jako v Canvě a my je vytiskneme a pošleme. K tomu digitální verze do mobilu.') }}</p>
       <form class="aibox" data-aibox>
         <label for="ai-in" class="sr">{{ L('Popis pre AI grafika', 'Popis pro AI grafika') }}</label>
-        <input id="ai-in" data-ai-in maxlength="300" autocomplete="off" placeholder="{{ L('Napr. kaderníčka v Trnave, jemný štýl', 'Např. kadeřnice v Brně, jemný styl') }}">
+        <input id="ai-in" data-ai-in aria-label="{{ L('Čím sa živíte?', 'Čím se živíte?') }}" maxlength="300" autocomplete="off" placeholder="{{ L('Napr. kaderníčka v Trnave, jemný štýl', 'Např. kadeřnice v Brně, jemný styl') }}">
         <button class="btn btn--c" type="submit">{{ L('Navrhni mi vizitky', 'Navrhni mi vizitky') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
       </form>
       <div class="hero__chips" data-ai-chips>
@@ -166,15 +177,13 @@
 </section>
 
 <!-- ===== FAQ ===== -->
-<section class="faq" data-nav="cream">
+<section class="faq" id="otazky" data-nav="cream">
   <div class="wrap faq__grid">
     <h2 class="h-l rv">{{ L('Otázky?', 'Otázky?') }}</h2>
     <div class="faq__list">
-      <details><summary>{{ L('Naozaj to navrhuje AI?', 'Opravdu to navrhuje AI?') }}</summary><p>{{ L('Áno. Váš popis spracuje jazykový model, ktorý vyberie rozloženie, farby, písmo a napíše slogan. Keď sa hodí, druhý model nakreslí grafiku na mieru. Výsledok je normálna upraviteľná vizitka, nie obrázok.', 'Ano. Váš popis zpracuje jazykový model, který vybere rozložení, barvy, písmo a napíše slogan. Když se hodí, druhý model nakreslí grafiku na míru. Výsledek je normální upravitelná vizitka, ne obrázek.') }}</p></details>
-      <details><summary>{{ L('Ako dlho trvá doručenie?', 'Jak dlouho trvá doručení?') }}</summary><p>{{ L('Zvyčajne do 5 pracovných dní od schválenia tlačových dát, s expresom o dva dni skôr. Presný odhad vidíte pri objednávke.', 'Obvykle do 5 pracovních dnů od schválení tiskových dat, s expresem o dva dny dříve. Přesný odhad vidíte při objednávce.') }}</p></details>
-      <details><summary>{{ L('Uvidím vizitku pred tlačou?', 'Uvidím vizitku před tiskem?') }}</summary><p>{{ L('Áno, v editore vidíte presný náhľad aj s orezom a môžete si stiahnuť tlačové PDF. Pred tlačou návrh skontroluje človek a ak treba niečo upraviť, ozve sa vám.', 'Ano, v editoru vidíte přesný náhled i s ořezem a můžete si stáhnout tiskové PDF. Před tiskem návrh zkontroluje člověk a pokud je potřeba něco upravit, ozve se vám.') }}</p></details>
-      <details><summary>{{ L('Môžem nahrať vlastný návrh?', 'Mohu nahrát vlastní návrh?') }}</summary><p>{{ L('Áno, PDF alebo obrázok. Editor skontroluje rozlíšenie a spadávku, človek potom celý súbor.', 'Ano, PDF nebo obrázek. Editor zkontroluje rozlišení a spadávku, člověk pak celý soubor.') }}</p></details>
-      <details><summary>{{ L('Dá sa objednať na firmu?', 'Dá se objednat na firmu?') }}</summary><p>{{ L('Samozrejme, s IČO aj DIČ. Faktúru pošleme e-mailom. Nie sme platcami DPH, takže cena je konečná aj pre firmy.', 'Samozřejmě, s IČO i DIČ. Fakturu pošleme e-mailem. Nejsme plátci DPH, takže cena je konečná i pro firmy.') }}</p></details>
+      {% for q, ans in FAQ %}
+      <details><summary>{{ q }}</summary><p>{{ ans }}</p></details>
+      {% endfor %}
     </div>
   </div>
 </section>

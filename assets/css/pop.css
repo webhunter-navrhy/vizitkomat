@@ -1,3 +1,55 @@
+/* Self-hosted: Bricolage Grotesque, Geist Mono (latin + latin-ext, SIL OFL) */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 300 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url('../fonts/bricolage-grotesque-300-800-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 300 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url('../fonts/bricolage-grotesque-300-800-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/geist-mono-400-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/geist-mono-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/geist-mono-500-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Geist Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/geist-mono-500-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* =========================================================
    Vizitkomat · Pop – dizajnový systém
    ========================================================= */
@@ -11,7 +63,8 @@
   --coral-2: #E2512F;
   --ink: #0F1440;
   --ink-2: #4A4F78;
-  --ink-3: #8186A8;
+  --ink-3: #5F6488;
+  --coral-t: #EC5331; /* korálová pre text na svetlom pozadí (kontrast ≥ 3:1) */
   --cream: #FFF6E6;
   --cream-2: #FCEBCB;
   --mint: #B8F0D2;
@@ -58,7 +111,9 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .h-m { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1; }
 .lead { font-size: clamp(1.08rem, 1.4vw, 1.3rem); line-height: 1.45; font-weight: 500; }
 .hl { color: var(--yellow); }
-.hl-c { color: var(--coral); }
+.hl-c { color: var(--coral-t); }
+[data-nav="yellow"] .hl-c { color: #CF3A1A; }
+[data-nav="blue"] .hl-c, [data-nav="ink"] .hl-c { color: var(--coral); }
 .hl-b { color: var(--cobalt); }
 .mark { background: var(--yellow); color: var(--ink); padding: 0 .12em; border-radius: .12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
 
@@ -136,12 +191,12 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .foot__in { width: var(--wrap); margin-inline: auto; display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 2.5rem; }
 .foot .brand { color: #fff; }
 .foot__brand p { margin-top: 1.1rem; max-width: 32ch; }
-.foot h3 { font-family: var(--mono); font-weight: 400; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .45); margin-bottom: .8rem; }
+.foot h3, .foot__h { font-family: var(--mono); font-weight: 400; font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .62); margin-bottom: .8rem; }
 .foot__col { display: grid; align-content: start; gap: .55rem; }
 .foot__col a:hover { color: var(--yellow); }
 .foot__big { width: var(--wrap); margin: 4rem auto 0; font-weight: 800; font-size: clamp(3.2rem, 15vw, 15rem); line-height: .8; letter-spacing: -.07em; color: var(--cobalt); user-select: none; }
 .foot__base a:hover { color: var(--yellow); }
-.foot__base { width: var(--wrap); margin: 2rem auto 0; padding-top: 1.4rem; border-top: 1px solid rgba(255, 255, 255, .12); display: flex; justify-content: space-between; gap: 1rem; font-size: .85rem; color: rgba(255, 255, 255, .45); flex-wrap: wrap; }
+.foot__base { width: var(--wrap); margin: 2rem auto 0; padding-top: 1.4rem; border-top: 1px solid rgba(255, 255, 255, .12); display: flex; justify-content: space-between; gap: 1rem; font-size: .85rem; color: rgba(255, 255, 255, .62); flex-wrap: wrap; }
 
 @media (max-width: 1060px) {
   .nav__links { display: none; }

@@ -41,8 +41,10 @@
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: .9rem; }
 .chips button { padding: .4rem .8rem; border-radius: 99px; font-size: .84rem; font-weight: 700; background: rgba(255, 255, 255, .14); color: #fff; transition: background-color .15s, transform .2s var(--pop); }
 .chips button:hover { background: var(--yellow); color: var(--ink); transform: rotate(-2deg); }
+.way__note { margin-top: .9rem; font-size: .78rem; line-height: 1.45; opacity: .75; }
+.way__note a { color: inherit; text-decoration: underline; }
 .way__thumbs { position: relative; height: 150px; margin-bottom: 1.2rem; }
-.way__thumbs img { position: absolute; width: 70%; aspect-ratio: 90/50; object-fit: cover; border-radius: 6px; box-shadow: 0 12px 24px -10px rgba(15, 20, 64, .45); background: #EEF0FA; }
+.way__thumbs img { position: absolute; width: 70%; height: auto; aspect-ratio: 90/50; object-fit: cover; border-radius: 6px; box-shadow: 0 12px 24px -10px rgba(15, 20, 64, .45); background: #EEF0FA; }
 .way__thumbs img:nth-child(1) { left: 0; top: 18px; transform: rotate(-6deg); }
 .way__thumbs img:nth-child(2) { left: 15%; top: 4px; transform: rotate(1deg); z-index: 2; }
 .way__thumbs img:nth-child(3) { right: 0; top: 30px; transform: rotate(6deg); }
