@@ -10,6 +10,7 @@ const ST = { nova: 'Nová', k_platbe: 'Čeká na platbu', zaplaceno: 'Zaplaceno'
 const KIND = { bundle: 'Tištěné + digitální', print: 'Tištěné', digital: 'Digitální vizitka' };
 const PAPER = { matny: 'matný 350 g', triplex: 'Triplex 720 g' };
 const FIN = { none: '', matna: 'matná laminace', leskla: 'lesklá laminace', soft: 'soft-touch' };
+const SIZE = { '90x50': '90 × 50 mm', '85x55': '85 × 55 mm', '55x55': '55 × 55 mm' };
 const badge = (s) => `<span class="st st-${s}">${ST[s] || s}</span>`;
 const fileUrl = (num, name) => `${API}/order/${num}/f/${encodeURIComponent(name)}?t=${encodeURIComponent(token)}`;
 
@@ -84,7 +85,7 @@ async function detailView(num) {
   try { data = await api('order/' + num); } catch (e) { main.innerHTML = `<a class="back" href="#objednavky">← Objednávky</a><p class="msg err">${esc(e.message)}</p>`; return; }
   const { order: o, pay, carriers } = data, c = o.customer, cur = o.currency;
   const filesOf = (i) => (o.files || []).filter((f) => f.item === i);
-  const specs = (cfg) => (cfg.kind === 'digital' ? 'jednorázově' : [cfg.size, PAPER[cfg.paper], cfg.paper !== 'triplex' && FIN[cfg.finish], cfg.corners === 'round' && 'zaoblené rohy', cfg.express && 'EXPRES', `${cfg.qty} ks`].filter(Boolean).join(' · '));
+  const specs = (cfg) => (cfg.kind === 'digital' ? 'jednorázově' : [SIZE[cfg.size] || cfg.size, PAPER[cfg.paper], cfg.paper !== 'triplex' && FIN[cfg.finish], cfg.corners === 'round' && 'zaoblené rohy', cfg.express && 'EXPRES', `${cfg.qty} ks`].filter(Boolean).join(' · '));
   const items = o.items.map((it, i) => {
     const fs = filesOf(i).filter((f) => !/karta-/.test(f.name));
     const dig = (it.kind === 'bundle' || it.kind === 'digital') && !it.custom;
