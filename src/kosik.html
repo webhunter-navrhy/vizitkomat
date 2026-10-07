@@ -56,9 +56,10 @@
       </fieldset>
       <fieldset>
         <legend>{{ L('Platba', 'Platba') }}</legend>
-        <div class="radios">
-          <label class="radio"><input type="radio" name="pay" value="card" checked><span><b>{{ L('Kartou online', 'Kartou online') }}</b><small>Visa, Mastercard, Apple Pay, Google Pay</small></span></label>
-          <label class="radio"><input type="radio" name="pay" value="transfer"><span><b>{{ L('Bankovým prevodom', 'Bankovním převodem') }}</b><small>{{ L('QR platba, tlačíme po pripísaní', 'QR platba, tiskneme po připsání') }}</small></span></label>
+        <input type="hidden" name="pay" value="transfer">
+        <div class="co__pay">
+          <b>{{ L('Platíte až po kontrole návrhu', 'Platíte až po kontrole návrhu') }}</b>
+          <span>{{ L('Návrh najprv skontroluje človek, potom vám pošleme e-mailom QR platbu. Nič neplatíte vopred a nič nezadávate.', 'Návrh nejdřív zkontroluje člověk, pak vám pošleme e-mailem QR platbu. Nic neplatíte předem a nic nezadáváte.') }}</span>
         </div>
         <label class="fl"><span>{{ L('Poznámka', 'Poznámka') }} <i>{{ L('nepovinné', 'nepovinné') }}</i></span><textarea name="note" rows="2"></textarea></label>
       </fieldset>
@@ -80,8 +81,8 @@
     <h2 class="h-l">{{ L('Ďakujeme,', 'Děkujeme,') }} <span class="hl-c">{{ L('máme to!', 'máme to!') }}</span></h2>
     <p class="lead" data-done-lead></p>
     <ol class="done__next">
-      <li><b>{{ L('Kontrola dát', 'Kontrola dat') }}</b><span>{{ L('Do 24 hodín prejdeme návrh a ak treba, napíšeme vám.', 'Do 24 hodin projdeme návrh a pokud je potřeba, napíšeme vám.') }}</span></li>
-      <li><b>{{ L('Tlač a digitálna vizitka', 'Tisk a digitální vizitka') }}</b><span>{{ L('Vizitky ideme tlačiť a digitálnu vám zapneme hneď.', 'Vizitky jdeme tisknout a digitální vám zapneme hned.') }}</span></li>
+      <li><b>{{ L('Kontrola návrhu', 'Kontrola návrhu') }}</b><span>{{ L('Do jedného pracovného dňa návrh skontrolujeme. Ak treba niečo upraviť, napíšeme vám.', 'Do jednoho pracovního dne návrh zkontrolujeme. Pokud je potřeba něco upravit, napíšeme vám.') }}</span></li>
+      <li><b>{{ L('Platba', 'Platba') }}</b><span>{{ L('Pošleme vám e-mailom QR platbu. Po pripísaní ideme hneď tlačiť.', 'Pošleme vám e-mailem QR platbu. Po připsání jdeme hned tisknout.') }}</span></li>
       <li><b>{{ L('Doručenie', 'Doručení') }}</b><span data-done-date></span></li>
     </ol>
     <p class="done__test" data-done-test hidden></p>

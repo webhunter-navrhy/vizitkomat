@@ -4,6 +4,18 @@ import { money, itemPrice, addWorkdays, fmtDay, session } from '../util.js';
 import { tr, SIZES } from './model.js';
 
 const VK = window.VK, P = VK.prices;
+const loadScript = (src) => new Promise((res, rej) => { if ([...document.scripts].some((x) => x.src === src)) return res(); const sc = document.createElement('script'); sc.src = src; sc.onload = res; sc.onerror = rej; document.head.append(sc); });
+// tlačové dáta: PDF z editora alebo pôvodné súbory zákazníka
+async function printFiles(it) {
+  const d = it.design || {};
+  if (d.custom) { const out = {}; if (d.files?.front?.orig) out.predna = d.files.front.orig; if (d.files?.back?.orig && d.files.backMode === 'file') out.zadna = d.files.back.orig; return out; }
+  if (it.kind === 'digital') return {};
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js');
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  const { exportPDF } = await import('./render.js');
+  const dd = { ...d }; if (dd.sides && !(dd.sides.front || dd.sides.back)) delete dd.sides;
+  return { tlac: await exportPDF(dd, 'tlac.pdf', { dataUrl: true }) };
+}
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = (s = '') => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -70,19 +82,23 @@ $('[data-checkout]').addEventListener('submit', async (e) => {
   err.hidden = true;
   const data = Object.fromEntries(new FormData(f).entries());
   try { localStorage.setItem('vk2-checkout', JSON.stringify({ name: data.name, email: data.email, phone: data.phone, street: data.street, city: data.city, zip: data.zip, company: data.company, ico: data.ico, dic: data.dic })); } catch (x) { /* nič */ }
-  const order = { number: 'VK' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + Math.floor(Math.random() * 900 + 100), lang: VK.lang, currency: P.currency, total: items.reduce((s, it) => s + itemPrice(it.config), 0), customer: data, items: items.map((it) => ({ kind: it.kind, config: it.config, design: it.design, price: itemPrice(it.config) })) };
-  const btn = f.querySelector('.co__go'); const btnLabel = btn.innerHTML; btn.disabled = true; btn.textContent = tr('Odosielam…', 'Odesílám…');
+  const order = { number: 'VK' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + Math.floor(Math.random() * 900 + 100), lang: VK.lang, currency: P.currency, total: items.reduce((s, it) => s + itemPrice(it.config), 0), customer: { ...data, terms: !!data.terms }, items: [] };
+  const btn = f.querySelector('.co__go'); const btnLabel = btn.innerHTML; btn.disabled = true; btn.textContent = tr('Pripravujem tlačové dáta…', 'Připravuji tisková data…');
   let sent = false;
   if (VK.orderEndpoint) {
     try {
+      for (const it of items) order.items.push({ kind: it.kind, config: it.config, title: it.title, design: it.design, thumb: it.thumb, files: await printFiles(it) });
+      btn.textContent = tr('Odosielam objednávku…', 'Odesílám objednávku…');
       const r = await fetch(VK.orderEndpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(order) });
       if (!r.ok) throw new Error('http ' + r.status);
       const j = await r.json().catch(() => ({}));
       if (j.number) order.number = j.number;
+      if (typeof j.total === 'number') order.total = j.total;
       if (j.payUrl) { await store.cartClear(); location.href = j.payUrl; return; }
       sent = true;
     } catch (x) {
       // objednávka neodišla: košík ostáva, zákazník môže skúsiť znova
+      console.error(x);
       btn.disabled = false; btn.innerHTML = btnLabel;
       err.hidden = false; err.textContent = tr('Objednávku sa nepodarilo odoslať. Skúste to, prosím, o chvíľu znova alebo nám napíšte na info@vizitkomat.eu.', 'Objednávku se nepodařilo odeslat. Zkuste to prosím za chvíli znovu nebo nám napište na info@vizitkomat.eu.');
       return;
@@ -92,7 +108,7 @@ $('[data-checkout]').addEventListener('submit', async (e) => {
   $('[data-done-num]').textContent = tr('Objednávka ', 'Objednávka ') + order.number;
   $('[data-done-img]').src = items[0]?.thumb || '';
   $('[data-done-date]').textContent = `${tr('Odhadom', 'Odhadem')} ${fmtDay(arrival(items))}`;
-  if (sent) { $('[data-done-lead]').textContent = tr(`Potvrdenie sme poslali na ${data.email}.`, `Potvrzení jsme poslali na ${data.email}.`); await store.cartClear(); }
+  if (sent) { $('[data-done-lead]').textContent = tr(`Potvrdenie sme poslali na ${data.email}. Suma ${money(order.total)} sa platí až po kontrole návrhu.`, `Potvrzení jsme poslali na ${data.email}. Částka ${money(order.total)} se platí až po kontrole návrhu.`); await store.cartClear(); }
   else { $('[data-done-lead]').textContent = tr(`Toto je ukážka potvrdenia. Suma ${money(order.total)}.`, `Toto je ukázka potvrzení. Částka ${money(order.total)}.`); const t = $('[data-done-test]'); t.hidden = false; t.textContent = tr('Testovacia prevádzka: e-shop ešte nie je napojený na platobnú bránu, objednávka sa nikam neodoslala.', 'Zkušební provoz: e-shop ještě není napojený na platební bránu, objednávka se nikam neodeslala.'); }
   scrollTo({ top: 0, behavior: 'smooth' });
 });

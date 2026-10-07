@@ -432,8 +432,7 @@ $('[data-add-cart]').addEventListener('click', async (e) => {
   const d = ed.printable();
   const [front, back] = await Promise.all([snapshot(d, 'front', 640, 'image/jpeg'), snapshot(d, 'back', 640, 'image/jpeg')]);
   await store.cartAdd({ kind: st.cfg.kind, config: { ...st.cfg }, design: d, thumb: front, thumbBack: back, title: d.f.name || tr('Vizitka', 'Vizitka') });
-  b.disabled = false;
-  toast(tr('Vizitka je v košíku.', 'Vizitka je v košíku.'), { href: VK.links.kosik, label: tr('Prejsť do košíka', 'Přejít do košíku') });
+  location.href = VK.links.kosik;
 });
 
 /* =========================================================

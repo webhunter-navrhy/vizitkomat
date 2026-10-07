@@ -204,3 +204,7 @@
 .kt__go { margin-top: auto; align-self: flex-start; }
 .kt__label { font-family: var(--mono); font-size: .76rem; letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
 @media (max-width: 760px) { .kt__grid { grid-template-columns: minmax(0, 1fr); } .kt__card--main { grid-row: auto; } }
+
+.co__pay { display: grid; gap: .3rem; padding: 1rem 1.1rem; border-radius: 16px; background: #EEF1FE; box-shadow: inset 0 0 0 2px #CBD3FA; margin-bottom: 1rem; }
+.co__pay span { font-size: .92rem; color: var(--ink-2); line-height: 1.5; }
+.co__prog { font-size: .9rem; color: var(--ink-2); margin-top: .6rem; text-align: center; }

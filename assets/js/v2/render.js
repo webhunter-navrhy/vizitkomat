@@ -271,7 +271,7 @@ export async function drawTo(canvas, d, side = 'front', width) {
 }
 
 /** Tlačové PDF – obe strany vrátane spadávky, 600 dpi */
-export async function exportPDF(d, filename = 'vizitka.pdf') {
+export async function exportPDF(d, filename = 'vizitka.pdf', opts = {}) {
   const S = sizeOf(d);
   const pw = S.w + 2 * BLEED, ph = S.h + 2 * BLEED;
   const { jsPDF } = window.jspdf;
@@ -287,6 +287,7 @@ export async function exportPDF(d, filename = 'vizitka.pdf') {
     first = false;
   }
   doc.setProperties({ title: `Vizitka – ${d.f.name}`, creator: 'Vizitkomat.eu' });
+  if (opts.dataUrl) return doc.output('datauristring');
   doc.save(filename);
 }
 

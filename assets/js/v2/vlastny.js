@@ -104,7 +104,7 @@ function paint() {
   const btn = $('[data-add]');
   btn.disabled = !st.files.front;
   btn.className = 'btn btn--lg sum__cta' + (st.files.front ? ' btn--y' : '');
-  btn.innerHTML = st.files.front ? `${tr('Pridať do košíka', 'Přidat do košíku')} <span class="ar">→</span>` : tr('Najprv nahrajte prednú stranu', 'Nejdřív nahrajte přední stranu');
+  btn.innerHTML = st.files.front ? `${tr('Objednať', 'Objednat')} <span class="ar">→</span>` : tr('Najprv nahrajte prednú stranu', 'Nejdřív nahrajte přední stranu');
 }
 $('[data-paper]').addEventListener('click', (e) => { const b = e.target.closest('.paper'); if (!b) return; st.tier = b.dataset.v; paint(); });
 $('[data-qty]').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.qty = +b.dataset.v; paint(); });
@@ -118,6 +118,6 @@ $('[data-add]').addEventListener('click', async () => {
     design: { custom: true, size: st.size, files: { front: st.files.front, back, backMode: st.files.back ? 'file' : st.back } },
     thumb: st.files.front.preview, thumbBack: back?.preview || '',
   });
-  toast(tr('Vizitky sú v košíku.', 'Vizitky jsou v košíku.'), { href: VK.links.kosik, label: tr('Prejsť do košíka', 'Přejít do košíku') });
+  location.href = VK.links.kosik;
 });
 paint();
