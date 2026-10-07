@@ -1,5 +1,5 @@
 {
-  "_poznamka": "Predajné ceny vrátane DPH. Nákup Bizay (SK, 10/2026, akcia): 100 ks 8,40 €, 250 ks 13,78 €, 500 ks 17,15 €, 1000 ks 26,74 € bez DPH, matný 350 g. Overiť dopravu a obojstrannú tlač.",
+  "_poznamka": "Predajné ceny (nie sme platcami DPH, cena je konečná). Nákup Bizay (SK, 10/2026, akcia): 100 ks 8,40 €, 250 ks 13,78 €, 500 ks 17,15 €, 1000 ks 26,74 € bez DPH, matný 350 g. Overiť dopravu a obojstrannú tlač.",
   "sk": {
     "currency": "EUR", "symbol": "€", "locale": "sk-SK", "vat": 23,
     "qty": [100, 250, 500, 1000],
@@ -14,7 +14,7 @@
       "soft":  { "100": 6, "250": 8, "500": 10, "1000": 14 }
     },
     "round": { "100": 9, "250": 12, "500": 16, "1000": 22 },
-    "digital_year": 19,
+    "digital": 15,
     "express": 9
   },
   "cz": {
@@ -31,7 +31,7 @@
       "soft":  { "100": 150, "250": 200, "500": 250, "1000": 350 }
     },
     "round": { "100": 220, "250": 290, "500": 390, "1000": 540 },
-    "digital_year": 450,
+    "digital": 390,
     "express": 220
   }
 }

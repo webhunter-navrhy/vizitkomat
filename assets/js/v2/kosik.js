@@ -9,12 +9,14 @@ const loadScript = (src) => new Promise((res, rej) => { if ([...document.scripts
 async function printFiles(it) {
   const d = it.design || {};
   if (d.custom) { const out = {}; if (d.files?.front?.orig) out.predna = d.files.front.orig; if (d.files?.back?.orig && d.files.backMode === 'file') out.zadna = d.files.back.orig; return out; }
-  if (it.kind === 'digital') return {};
   await loadScript('https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js');
   await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-  const { exportPDF } = await import('./render.js');
+  const { exportPDF, snapshot } = await import('./render.js');
   const dd = { ...d }; if (dd.sides && !(dd.sides.front || dd.sides.back)) delete dd.sides;
-  return { tlac: await exportPDF(dd, 'tlac.pdf', { dataUrl: true }) };
+  const out = {};
+  if (it.kind !== 'digital') out.tlac = await exportPDF(dd, 'tlac.pdf', { dataUrl: true });
+  if (it.kind === 'bundle' || it.kind === 'digital') { out['karta-f'] = await snapshot(dd, 'front', 1100, 'image/jpeg', 0.88); out['karta-b'] = await snapshot(dd, 'back', 1100, 'image/jpeg', 0.88); }
+  return out;
 }
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -23,9 +25,9 @@ const KIND = { bundle: tr('Tlačené + digitálna', 'Tištěné + digitální'),
 const PAPER = { matny: tr('matný 350 g', 'matný 350 g'), triplex: 'Triplex 720 g' };
 const FIN = { none: '', matna: tr('matná laminácia', 'matná laminace'), leskla: tr('lesklá laminácia', 'lesklá laminace'), soft: 'soft-touch' };
 function specs(c, it) {
-  if (c.kind === 'digital') return [tr('12 mesiacov', '12 měsíců')];
+  if (c.kind === 'digital') return [tr('jednorazovo, bez predplatného', 'jednorázově, bez předplatného')];
   if (it?.design?.custom) return [tr('vlastný návrh', 'vlastní návrh'), SIZES[c.size]?.label, PAPER[c.paper], c.paper !== 'triplex' && FIN[c.finish], c.corners === 'round' && tr('zaoblené rohy', 'zaoblené rohy'), c.express && 'expres'].filter(Boolean);
-  return [SIZES[c.size]?.label, PAPER[c.paper], c.paper !== 'triplex' && FIN[c.finish], c.corners === 'round' && tr('zaoblené rohy', 'zaoblené rohy'), c.express && 'expres', c.kind === 'bundle' && tr('+ digitálna na rok zadarmo', '+ digitální na rok zdarma')].filter(Boolean);
+  return [SIZES[c.size]?.label, PAPER[c.paper], c.paper !== 'triplex' && FIN[c.finish], c.corners === 'round' && tr('zaoblené rohy', 'zaoblené rohy'), c.express && 'expres', c.kind === 'bundle' && tr('+ digitálna zadarmo', '+ digitální zdarma')].filter(Boolean);
 }
 function arrival(items) { const now = new Date(); const ex = items.every((i) => i.config.express || i.kind === 'digital'); return addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + (ex ? 2 : 4)); }
 

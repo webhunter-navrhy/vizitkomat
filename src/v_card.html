@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="{{ 'cs' if lang == 'cz' else 'sk' }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{ title }}</title>
+<meta name="description" content="{{ desc }}">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="{{ theme }}">
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ desc }}">
+{% if og %}<meta property="og:image" content="{{ og }}">{% endif %}
+<link rel="icon" href="{{ R }}assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ R }}assets/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}">
+<style>
+  html, body { margin: 0; min-height: 100%; background: {{ theme }}; }
+  .vpage { max-width: 480px; margin: 0 auto; min-height: 100svh; }
+  @media (min-width: 560px) { body { padding: 32px 0; background: radial-gradient(circle at 50% 0%, color-mix(in srgb, {{ theme }} 80%, #fff), {{ theme }}); } .vpage { min-height: auto; border-radius: 30px; overflow: hidden; box-shadow: 0 30px 80px -30px rgba(0,0,0,.55); } }
+  .vnote { max-width: 480px; margin: 16px auto 24px; text-align: center; font: 12px/1.5 system-ui, sans-serif; opacity: .7; }
+</style>
+<script type="importmap">{{ importmap }}</script>
+<script>window.VK = { lang: '{{ lang }}', links: {} };</script>
+</head>
+<body>
+<main class="vpage" id="card"></main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script type="application/json" id="data">{{ card_json }}</script>
+<script type="module">
+  import { newDesign, FONTS, FONT_CSS } from '{{ R }}assets/js/v2/model.js';
+  import { templateDefaults } from '{{ R }}assets/js/v2/templates.js';
+  import { renderDigital } from '{{ R }}assets/js/v2/digital.js';
+  import { qrSVG } from '{{ R }}assets/js/util.js';
+  const card = JSON.parse(document.getElementById('data').textContent);
+  const d = card.design || newDesign({ tpl: card.tpl, ...templateDefaults(card.tpl) });
+  if (!card.design) { d.f = card.f; d.socials = card.socials || {}; d.digital = card.digital || {}; }
+  // len písma tejto vizitky
+  const fp = FONTS[d.fonts] || {};
+  const fams = FONT_CSS.split('?')[1].split('&').filter((x) => x.startsWith('family=') && [fp.display, fp.text].some((n) => n && x.startsWith('family=' + n.replace(/ /g, '+') + (x.includes(':') ? ':' : ''))));
+  if (fams.length) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?' + fams.join('&') + '&display=swap'; document.head.append(l); }
+  const url = location.href.split('#')[0].split('?')[0];
+  renderDigital(document.getElementById('card'), d, { url, qr: (u) => qrSVG(u), heading: 'h1', front: card.front ? '{{ R }}' + card.front : null, back: card.back ? '{{ R }}' + card.back : null });
+</script>
+</body>
+</html>

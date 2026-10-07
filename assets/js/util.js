@@ -20,7 +20,7 @@ export function printPrice(c, P = VK.prices) {
   return p;
 }
 export function itemPrice(c, P = VK.prices) {
-  if (c.kind === 'digital') return P.digital_year;
+  if (c.kind === 'digital') return P.digital ?? P.digital_year;
   return printPrice(c, P);
 }
 

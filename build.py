@@ -111,14 +111,38 @@ def main():
             out.write_text(html)
             written.append(out.relative_to(ROOT).as_posix())
 
-    # ukážka digitálnej vizitky (jedna, bez jazykových verzií)
-    out = ROOT / 'v' / 'demo' / 'index.html'
+    # administrácia (mimo sitemap, noindex)
+    out = ROOT / 'admin' / 'index.html'
     out.parent.mkdir(parents=True, exist_ok=True)
-    R = '../../'
-    im = json.dumps({'imports': {**THREE, **{f'{R}{k}': f'{R}{k}?v={v}' for k, v in versions.items() if k.endswith('.js')}}})
-    html = env.get_template('v_demo.html').render(R=R, importmap=im, A=lambda rel: f"{R}{rel}?v={versions.get(rel, '0')}")
-    out.write_text(html)
-    written.append('v/demo/index.html')
+    out.write_text(env.get_template('admin.html').render(R='../', A=lambda rel: f"../{rel}?v={versions.get(rel, '0')}"))
+    written.append('admin/index.html')
+
+    # digitálne vizitky: ukážka + zverejnené z administrácie (_data/cards/<adresa>.json)
+    cards = [('demo', {'demo': True, 'lang': 'sk', 'tpl': 'noirgold', 'front': 'assets/pre/sk/tpl-noirgold-f.jpg', 'back': 'assets/pre/sk/tpl-noirgold-b.jpg',
+                       'f': {'name': 'Martin Kováč', 'role': 'Realitný maklér', 'company': 'Domov Reality', 'phone': '+421 905 123 456', 'email': 'martin@domovreality.sk', 'web': 'domovreality.sk', 'address': 'Panská 14, Bratislava', 'tagline': 'Kľúče odovzdávam osobne.'},
+                       'socials': {'instagram': 'https://instagram.com/', 'linkedin': 'https://linkedin.com/'},
+                       'digital': {'bio': 'Pomáham rodinám predať byt za férovú cenu a bez stresu. 12 rokov v Bratislave, stovky odovzdaných kľúčov.', 'services': 'Predaj bytov a domov\nOcenenie nehnuteľnosti\nPrenájom\nHypotéka na kľúč', 'hours': 'Po – Pi: 8:00 – 18:00\nSo: po dohode'}})]
+    for fp in sorted((ROOT / '_data' / 'cards').glob('*.json')) if (ROOT / '_data' / 'cards').exists() else []:
+        c = json.loads(fp.read_text())
+        if c.get('until') and c['until'] < __import__('datetime').date.today().isoformat() and not c.get('lifetime', True):
+            continue
+        cards.append((c['slug'], c))
+    for slug, c in cards:
+        out = ROOT / 'v' / slug / 'index.html'
+        out.parent.mkdir(parents=True, exist_ok=True)
+        R = '../../'
+        im = json.dumps({'imports': {**THREE, **{f'{R}{k}': f'{R}{k}?v={v}' for k, v in versions.items() if k.endswith('.js')}}})
+        f = (c.get('design') or {}).get('f') or c.get('f') or {}
+        lang = c.get('lang', 'sk')
+        pal = (c.get('design') or {}).get('pal') or {}
+        title = ' – '.join(x for x in [f.get('name'), f.get('company') if f.get('company') != f.get('name') else ''] if x) + (' · digitální vizitka' if lang == 'cz' else ' · digitálna vizitka')
+        desc = ', '.join(x for x in [f.get('role'), f.get('company'), f.get('phone')] if x)
+        html = env.get_template('v_card.html').render(
+            R=R, importmap=im, A=lambda rel, R=R: f"{R}{rel}?v={versions.get(rel, '0')}", lang=lang, demo=c.get('demo'),
+            title=title, desc=desc, theme=pal.get('bg', '#0E0E10'), og=(PUBLIC + c['front']) if c.get('front') else '',
+            card_json=json.dumps(c, ensure_ascii=False).replace('</', '<\\/'))
+        out.write_text(html)
+        written.append(out.relative_to(ROOT).as_posix())
 
     # sitemap (s jazykovými verziami) a robots.txt
     import datetime
@@ -139,7 +163,7 @@ def main():
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
         + ''.join(rows) + '</urlset>\n')
     (ROOT / 'robots.txt').write_text(
-        ('User-agent: *\nDisallow: /kosik/\nDisallow: /cz/kosik/\nDisallow: /koncepty/\nDisallow: /v/\n' if PRODUCTION else 'User-agent: *\nDisallow: /\n')
+        ('User-agent: *\nDisallow: /kosik/\nDisallow: /cz/kosik/\nDisallow: /koncepty/\nDisallow: /v/\nDisallow: /admin/\n' if PRODUCTION else 'User-agent: *\nDisallow: /\n')
         + f'Sitemap: {SITE}sitemap.xml\n')
     print('\n'.join(written))
 

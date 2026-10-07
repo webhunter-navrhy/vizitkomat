@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}{{ L('Digitálna vizitka do telefónu | Vizitkomat', 'Digitální vizitka do telefonu | Vizitkomat') }}{% endblock %}
-{% block description %}{{ L('Digitálna vizitka s vlastnou adresou a QR kódom. Kontakt sa uloží jedným ťuknutím, zmeny robíte kedykoľvek. K tlačeným vizitkám na rok zadarmo.', 'Digitální vizitka s vlastní adresou a QR kódem. Kontakt se uloží jedním ťuknutím, změny děláte kdykoli. K tištěným vizitkám na rok zdarma.') }}{% endblock %}
+{% block description %}{{ L('Digitálna vizitka s vlastnou adresou a QR kódom. Kontakt sa uloží jedným ťuknutím, zmeny urobíme kedykoľvek. K tlačeným vizitkám zadarmo, inak jednorazovo za ' ~ prices.digital ~ ' ' ~ prices.symbol ~ '.', 'Digitální vizitka s vlastní adresou a QR kódem. Kontakt se uloží jedním ťuknutím, změny uděláme kdykoli. K tištěným vizitkám zdarma, jinak jednorázově za ' ~ prices.digital ~ ' ' ~ prices.symbol ~ '.') }}{% endblock %}
 {% block head %}<link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}"><link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
 {% block main %}
 <section class="dg-hero" data-nav="yellow">
@@ -44,10 +44,10 @@
 </section>
 <section class="dg-price" data-nav="cream">
   <div class="wrap dg-price__grid">
-    <div><h2 class="h-l">{{ prices.digital_year }} {{ prices.symbol }} <span class="hl-c">{{ L('na rok.', 'na rok.') }}</span></h2><p class="lead">{{ L('K tlačeným vizitkám je prvý rok zadarmo. Neobnovuje sa samo.', 'K tištěným vizitkám je první rok zdarma. Neobnovuje se samo.') }}</p></div>
+    <div><h2 class="h-l">{{ prices.digital }} {{ prices.symbol }} <span class="hl-c">{{ L('raz a navždy.', 'jednou provždy.') }}</span></h2><p class="lead">{{ L('Žiadne predplatné ani poplatky každý rok. K tlačeným vizitkám ju dostanete zadarmo.', 'Žádné předplatné ani poplatky každý rok. K tištěným vizitkám ji dostanete zdarma.') }}</p></div>
     <div class="dg-cards">
       <a class="pcard pcard--y" href="{{ link('tvorba') }}?druh=bundle"><span class="pcard__q">{{ L('Najvýhodnejšie', 'Nejvýhodnější') }}</span><b class="pcard__p">{{ L('od', 'od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }}</b><span class="pcard__per">{{ L('100 tlačených + digitálna zadarmo', '100 tištěných + digitální zdarma') }}</span><span class="pcard__go">{{ L('Navrhnúť', 'Navrhnout') }} →</span></a>
-      <a class="pcard pcard--w" href="{{ link('tvorba') }}?druh=digital"><span class="pcard__q">{{ L('Len digitálna', 'Jen digitální') }}</span><b class="pcard__p">{{ prices.digital_year }} {{ prices.symbol }}</b><span class="pcard__per">{{ L('na 12 mesiacov', 'na 12 měsíců') }}</span><span class="pcard__go">{{ L('Vytvoriť', 'Vytvořit') }} →</span></a>
+      <a class="pcard pcard--w" href="{{ link('tvorba') }}?druh=digital"><span class="pcard__q">{{ L('Len digitálna', 'Jen digitální') }}</span><b class="pcard__p">{{ prices.digital }} {{ prices.symbol }}</b><span class="pcard__per">{{ L('jednorazovo, bez predplatného', 'jednorázově, bez předplatného') }}</span><span class="pcard__go">{{ L('Vytvoriť', 'Vytvořit') }} →</span></a>
     </div>
   </div>
 </section>

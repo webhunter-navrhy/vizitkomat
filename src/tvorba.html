@@ -123,12 +123,18 @@
             {% endfor %}
           </div>
           <details class="more" data-digital-fields>
-            <summary>{{ L('Digitálna vizitka: adresa, fotka, siete', 'Digitální vizitka: adresa, fotka, sítě') }}</summary>
+            <summary>{{ L('Digitálna vizitka: fotka, o mne, služby, siete', 'Digitální vizitka: fotka, o mně, služby, sítě') }}</summary>
             <label class="fld"><span>{{ L('Vaša adresa', 'Vaše adresa') }}</span><div class="slug"><em>vizitkomat.eu/v/</em><input data-slug maxlength="40" autocomplete="off"></div></label>
             <div class="up"><img alt="" data-photo-img><button class="btn btn--w btn--sm" data-photo-pick>{{ L('Pridať fotku', 'Přidat fotku') }}</button><button class="x" data-photo-del hidden aria-label="×">×</button><input type="file" accept="image/*" hidden data-photo-file></div>
             <label class="fld"><span>Instagram</span><input data-soc="instagram" placeholder="https://instagram.com/…"></label>
             <label class="fld"><span>Facebook</span><input data-soc="facebook" placeholder="https://facebook.com/…"></label>
             <label class="fld"><span>LinkedIn</span><input data-soc="linkedin" placeholder="https://linkedin.com/in/…"></label>
+            <label class="fld"><span>TikTok</span><input data-soc="tiktok" placeholder="https://tiktok.com/@…"></label>
+            <label class="fld"><span>YouTube</span><input data-soc="youtube" placeholder="https://youtube.com/@…"></label>
+            <label class="fld"><span>WhatsApp <i>{{ L('ak je iné ako telefón', 'pokud je jiné než telefon') }}</i></span><input data-dig="whatsapp" type="tel" placeholder="+421…"></label>
+            <label class="fld"><span>{{ L('O mne', 'O mně') }}</span><textarea data-dig="bio" rows="3" maxlength="400" placeholder="{{ L('Pár viet o tom, čo robíte a pre koho.', 'Pár vět o tom, co děláte a pro koho.') }}"></textarea></label>
+            <label class="fld"><span>{{ L('Služby', 'Služby') }} <i>{{ L('každá na nový riadok', 'každá na nový řádek') }}</i></span><textarea data-dig="services" rows="3" maxlength="400"></textarea></label>
+            <label class="fld"><span>{{ L('Otváracie hodiny', 'Otevírací doba') }} <i>{{ L('napr. Po – Pi: 9:00 – 17:00', 'např. Po – Pá: 9:00 – 17:00') }}</i></span><textarea data-dig="hours" rows="2" maxlength="200"></textarea></label>
           </details>
         </section>
         <section class="pn" data-pp="styl">
@@ -235,9 +241,9 @@
         <h2 class="h-m">{{ L('Vyberte si', 'Vyberte si') }}</h2>
         <h3>{{ L('Čo chcete', 'Co chcete') }}</h3>
         <div class="kinds" data-kind>
-          <button class="kind on" data-v="bundle"><b>{{ L('Tlačené + digitálna', 'Tištěné + digitální') }}</b><small>{{ L('digitálna na rok zadarmo', 'digitální na rok zdarma') }}</small></button>
+          <button class="kind on" data-v="bundle"><b>{{ L('Tlačené + digitálna', 'Tištěné + digitální') }}</b><small>{{ L('digitálna zadarmo', 'digitální zdarma') }}</small></button>
           <button class="kind" data-v="print"><b>{{ L('Len tlačené', 'Jen tištěné') }}</b><small>{{ L('klasické vizitky', 'klasické vizitky') }}</small></button>
-          <button class="kind" data-v="digital"><b>{{ L('Len digitálna', 'Jen digitální') }}</b><small>{{ prices.digital_year }} {{ prices.symbol }} / {{ L('rok', 'rok') }}</small></button>
+          <button class="kind" data-v="digital"><b>{{ L('Len digitálna', 'Jen digitální') }}</b><small>{{ prices.digital }} {{ prices.symbol }} {{ L('jednorazovo', 'jednorázově') }}</small></button>
         </div>
         <div data-print-opts>
           <h3>{{ L('Papier', 'Papír') }}</h3>

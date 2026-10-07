@@ -151,7 +151,7 @@ $('[data-ai-grid]').addEventListener('click', async (e) => {
   const mock = e.target.closest('.mock'); if (!mock) return;
   const d = st.ai[+mock.dataset.i];
   const prev = st.loaded ? ed.design : null;
-  await loadDesign(newDesign({ tpl: d.tpl, fonts: d.fonts, pal: d.pal, art: d.art, mark: d.mark, f: { ...d.f }, direction: d.direction, ai: d.ai, logo: prev?.logo || null, photo: prev?.photo || null, socials: prev?.socials || {} }));
+  await loadDesign(newDesign({ tpl: d.tpl, fonts: d.fonts, pal: d.pal, art: d.art, mark: d.mark, f: { ...d.f }, direction: d.direction, ai: d.ai, logo: prev?.logo || null, photo: prev?.photo || null, socials: prev?.socials || {}, digital: prev?.digital || {} }));
   go('edit');
 });
 $$('[data-ai-more] [data-r]').forEach((b) => b.addEventListener('click', () => {
@@ -182,7 +182,7 @@ $('[data-filt]').addEventListener('click', (e) => { const b = e.target.closest('
 $('[data-tpls]').addEventListener('click', async (e) => {
   const b = e.target.closest('[data-tpl]'); if (!b) return;
   const id = b.dataset.tpl, prev = st.loaded ? ed.design : null;
-  await loadDesign(newDesign({ tpl: id, ...templateDefaults(id), f: prev ? { ...prev.f } : { ...DEFAULT_FIELDS }, logo: prev?.logo || null, mark: prev?.mark || null, photo: prev?.photo || null, socials: prev?.socials || {} }));
+  await loadDesign(newDesign({ tpl: id, ...templateDefaults(id), f: prev ? { ...prev.f } : { ...DEFAULT_FIELDS }, logo: prev?.logo || null, mark: prev?.mark || null, photo: prev?.photo || null, socials: prev?.socials || {}, digital: prev?.digital || {} }));
   go('edit');
 });
 
@@ -208,6 +208,7 @@ function syncFields() {
   $$('[data-f]').forEach((i) => { if (document.activeElement !== i) i.value = d.f[i.dataset.f] || ''; });
   $('[data-slug]').value = d.slug || '';
   $$('[data-soc]').forEach((i) => { i.value = (d.socials || {})[i.dataset.soc] || ''; });
+  $$('[data-dig]').forEach((i) => { i.value = (d.digital || {})[i.dataset.dig] || ''; });
   const ph = $('[data-photo-img]');
   if (d.photo) { ph.src = d.photo; $('[data-photo-del]').hidden = false; } else { ph.removeAttribute('src'); $('[data-photo-del]').hidden = true; }
 }
@@ -222,6 +223,7 @@ function setSlug(v) { ed.design.slug = v; $('[data-slug]').value = v; updateQR()
 const updateQR = debounce(() => ed && ed.setQR(qrFor(ed.design.slug)), 500);
 $('[data-slug]').addEventListener('input', (e) => { st.slugTouched = true; ed.design.slug = slugify(e.target.value); updateQR(); persist(); });
 $$('[data-soc]').forEach((i) => i.addEventListener('input', () => { ed.design.socials = { ...(ed.design.socials || {}), [i.dataset.soc]: i.value.trim() }; persist(); }));
+$$('[data-dig]').forEach((i) => i.addEventListener('input', () => { ed.design.digital = { ...(ed.design.digital || {}), [i.dataset.dig]: i.value }; persist(); }));
 $('[data-photo-pick]').addEventListener('click', () => $('[data-photo-file]').click());
 $('[data-photo-file]').addEventListener('change', async (e) => { const f = e.target.files[0]; if (!f) return; ed.design.photo = await shrink(f, 520); syncFields(); persist(); e.target.value = ''; });
 $('[data-photo-del]').addEventListener('click', () => { ed.design.photo = null; syncFields(); persist(); });
@@ -404,7 +406,7 @@ function paintOrder() {
   $('[data-express]').checked = !!c.express;
   const total = itemPrice(c, P);
   $('[data-sum]').textContent = money(total);
-  $('[data-sum-m]').textContent = dig ? tr('na 12 mesiacov', 'na 12 měsíců') : `${c.qty} ${tr('ks', 'ks')} · ${money(total / c.qty, { decimals: 2 })} / ${tr('ks', 'ks')}${c.kind === 'bundle' ? ' · ' + tr('+ digitálna zadarmo', '+ digitální zdarma') : ''}`;
+  $('[data-sum-m]').textContent = dig ? tr('jednorazovo, bez predplatného', 'jednorázově, bez předplatného') : `${c.qty} ${tr('ks', 'ks')} · ${money(total / c.qty, { decimals: 2 })} / ${tr('ks', 'ks')}${c.kind === 'bundle' ? ' · ' + tr('+ digitálna zadarmo', '+ digitální zdarma') : ''}`;
   const now = new Date();
   $('[data-sum-d]').textContent = dig ? tr('Digitálnu vizitku zapneme hneď po zaplatení.', 'Digitální vizitku zapneme hned po zaplacení.') : `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + (c.express ? 2 : 4)))}`;
   $('[data-pdf]').hidden = dig;

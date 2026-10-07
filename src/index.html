@@ -7,7 +7,7 @@
   (L('Uvidím vizitku pred tlačou?', 'Uvidím vizitku před tiskem?'), L('Áno, v editore vidíte presný náhľad aj s orezom a môžete si stiahnuť tlačové PDF. Pred tlačou návrh skontroluje človek a ak treba niečo upraviť, ozve sa vám.', 'Ano, v editoru vidíte přesný náhled i s ořezem a můžete si stáhnout tiskové PDF. Před tiskem návrh zkontroluje člověk a pokud je potřeba něco upravit, ozve se vám.')),
   (L('Aký papier používate?', 'Jaký papír používáte?'), L('Štandardne matný 350 g, ktorý je pevný a príjemný na dotyk. Za príplatok soft-touch so zamatovým povrchom alebo luxusný Triplex 720 g s farebnou hranou. Tlač je vždy obojstranná.', 'Standardně matný 350 g, který je pevný a příjemný na dotek. Za příplatek soft-touch se sametovým povrchem nebo luxusní Triplex 720 g s barevnou hranou. Tisk je vždy oboustranný.')),
   (L('Môžem nahrať vlastný návrh?', 'Mohu nahrát vlastní návrh?'), L('Áno, PDF alebo obrázok. Web hneď skontroluje rozlíšenie a spadávku, človek potom celý súbor.', 'Ano, PDF nebo obrázek. Web hned zkontroluje rozlišení a spadávku, člověk pak celý soubor.')),
-  (L('Čo sa stane s digitálnou vizitkou po roku?', 'Co se stane s digitální vizitkou po roce?'), L('Nič sa automaticky neplatí. Pred koncom roka vám napíšeme a predĺžiť ju môžete za ' ~ prices.digital_year ~ ' ' ~ prices.symbol ~ ' na ďalší rok. Ak nepredĺžite, vizitka sa vypne.', 'Nic se automaticky neplatí. Před koncem roku vám napíšeme a prodloužit ji můžete za ' ~ prices.digital_year ~ ' ' ~ prices.symbol ~ ' na další rok. Pokud neprodloužíte, vizitka se vypne.')),
+  (L('Platí sa digitálna vizitka každý rok?', 'Platí se digitální vizitka každý rok?'), L('Nie. K tlačeným vizitkám ju dostanete zadarmo, samostatne stojí jednorazovo ' ~ prices.digital ~ ' ' ~ prices.symbol ~ '. Žiadne predplatné, nič sa automaticky neobnovuje.', 'Ne. K tištěným vizitkám ji dostanete zdarma, samostatně stojí jednorázově ' ~ prices.digital ~ ' ' ~ prices.symbol ~ '. Žádné předplatné, nic se automaticky neobnovuje.')),
   (L('Čo ak bude na vizitkách chyba?', 'Co když bude na vizitkách chyba?'), L('Ak ide o chybu tlače, vytlačíme ich znova zadarmo. Preto návrh pred tlačou kontroluje človek a vy ho schvaľujete. Reklamáciu stačí poslať e-mailom s fotkou.', 'Pokud jde o chybu tisku, vytiskneme je znovu zdarma. Proto návrh před tiskem kontroluje člověk a vy ho schvalujete. Reklamaci stačí poslat e-mailem s fotkou.')),
   (L('Dá sa objednať na firmu?', 'Dá se objednat na firmu?'), L('Samozrejme, s IČO aj DIČ. Faktúru pošleme e-mailom. Nie sme platcami DPH, takže cena je konečná aj pre firmy.', 'Samozřejmě, s IČO i DIČ. Fakturu pošleme e-mailem. Nejsme plátci DPH, takže cena je konečná i pro firmy.')),
 ] %}
@@ -159,7 +159,7 @@
     </div>
     <div class="dig__copy">
       <h2 class="h-l rv">{{ L('A k tomu', 'A k tomu') }} <span class="hl-c">{{ L('aj v telefóne.', 'i v telefonu.') }}</span></h2>
-      <p class="lead rv">{{ L('Ku každej tlačenej vizitke dostanete digitálnu na rok zadarmo. Vlastná adresa, QR kód na zadnej strane a tlačidlo, ktoré vás uloží do kontaktov.', 'Ke každé tištěné vizitce dostanete digitální na rok zdarma. Vlastní adresa, QR kód na zadní straně a tlačítko, které vás uloží do kontaktů.') }}</p>
+      <p class="lead rv">{{ L('Ku každej tlačenej vizitke dostanete digitálnu zadarmo, bez predplatného. Vlastná adresa, QR kód na zadnej strane a tlačidlo, ktoré vás uloží do kontaktov.', 'Ke každé tištěné vizitce dostanete digitální zdarma, bez předplatného. Vlastní adresa, QR kód na zadní straně a tlačítko, které vás uloží do kontaktů.') }}</p>
       <ul class="dig__list rv">
         <li><b>{{ L('Uložiť do kontaktov', 'Uložit do kontaktů') }}</b>{{ L('jedným ťuknutím na iPhone aj Androide', 'jedním ťuknutím na iPhonu i Androidu') }}</li>
         <li><b>{{ L('Zmeny kedykoľvek', 'Změny kdykoli') }}</b>{{ L('nové číslo bez novej tlače', 'nové číslo bez nového tisku') }}</li>
@@ -174,7 +174,7 @@
 <section class="price" data-nav="cream">
   <div class="wrap">
     <h2 class="h-l rv">{{ L('Jasná cena.', 'Jasná cena.') }} <span class="hl-c">{{ L('Doprava zdarma.', 'Doprava zdarma.') }}</span></h2>
-    <p class="lead rv price__lead">{{ L('V cene je návrh s AI grafikom, obojstranná tlač, kontrola dát človekom, doprava a digitálna vizitka na rok.', 'V ceně je návrh s AI grafikem, oboustranný tisk, kontrola dat člověkem, doprava a digitální vizitka na rok.') }}</p>
+    <p class="lead rv price__lead">{{ L('V cene je návrh s AI grafikom, obojstranná tlač, kontrola dát človekom, doprava a digitálna vizitka.', 'V ceně je návrh s AI grafikem, oboustranný tisk, kontrola dat člověkem, doprava a digitální vizitka.') }}</p>
     <div class="price__grid">
       {% for q, col, tag, who in [
         (100, 'w', L('Na vyskúšanie', 'Na vyzkoušení'), L('Ideálne na začiatok alebo na test nového dizajnu.', 'Ideální na začátek nebo na test nového designu.')),
