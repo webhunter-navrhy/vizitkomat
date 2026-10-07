@@ -1,7 +1,7 @@
 // Košík a objednávka (v2)
 import * as store from './store.js';
 import { money, itemPrice, addWorkdays, fmtDay, session } from '../util.js';
-import { tr, SIZES } from './model.js';
+import { tr, SIZES, slugify } from './model.js';
 
 const VK = window.VK, P = VK.prices;
 const loadScript = (src) => new Promise((res, rej) => { if ([...document.scripts].some((x) => x.src === src)) return res(); const sc = document.createElement('script'); sc.src = src; sc.onload = res; sc.onerror = rej; document.head.append(sc); });
@@ -35,13 +35,15 @@ let items = [];
 async function paint() {
   items = await store.cartItems();
   $('[data-empty]').hidden = !!items.length; $('[data-full]').hidden = !items.length;
+  try { $('[data-mine-link]').hidden = !JSON.parse(localStorage.getItem('vk2-orders') || '[]').length; } catch (e) { /* nič */ }
   if (!items.length) return;
+  $('[data-team-box]').hidden = !items.some((i) => !i.design?.custom && i.kind !== 'digital');
   $('[data-items]').innerHTML = items.map((it) => {
     const c = it.config;
     const q = c.kind === 'digital' ? '' : `<label class="it__q"><span class="sr">${tr('Počet kusov', 'Počet kusů')}</span><select data-qty="${it.id}">${P.qty.map((n) => `<option value="${n}"${n === c.qty ? ' selected' : ''}>${n} ${tr('ks', 'ks')}</option>`).join('')}</select></label>`;
     return `<li class="it"><div class="it__v">${it.thumb ? `<img src="${it.thumb}" alt="">` : ''}${it.thumbBack ? `<img src="${it.thumbBack}" alt="">` : ''}</div>
       <div class="it__b"><p class="it__k">${KIND[it.kind] || ''}</p><h3>${esc(it.title)}</h3><p class="it__s">${specs(c, it).map(esc).join(' · ')}</p>
-      <div class="it__a">${q}${it.design?.custom ? '' : `<button data-edit="${it.id}">${tr('Upraviť', 'Upravit')}</button>`}<button data-del="${it.id}">${tr('Odstrániť', 'Odstranit')}</button></div></div>
+      <div class="it__a">${q}${it.design?.custom ? '' : `<button data-edit="${it.id}">${tr('Upraviť', 'Upravit')}</button><button data-team="${it.id}">+ ${tr('Kolega', 'Kolega')}</button>`}<button data-del="${it.id}">${tr('Odstrániť', 'Odstranit')}</button></div></div>
       <b class="it__p">${money(itemPrice(c))}</b></li>`;
   }).join('');
   const total = items.reduce((s, it) => s + itemPrice(it.config), 0);
@@ -95,6 +97,10 @@ $('[data-checkout]').addEventListener('submit', async (e) => {
       if (!r.ok) throw new Error('http ' + r.status);
       const j = await r.json().catch(() => ({}));
       if (j.number) order.number = j.number;
+      if (j.token) {
+        order.track = `${VK.links.objednavka}?c=${encodeURIComponent(j.number)}&t=${encodeURIComponent(j.token)}`;
+        try { const m = JSON.parse(localStorage.getItem('vk2-orders') || '[]').filter((x) => x.c !== j.number); m.unshift({ c: j.number, t: j.token, d: new Date().toISOString(), s: 'nova', total: j.total ?? order.total }); localStorage.setItem('vk2-orders', JSON.stringify(m.slice(0, 12))); } catch (x) { /* nič */ }
+      }
       if (typeof j.total === 'number') order.total = j.total;
       if (j.payUrl) { await store.cartClear(); location.href = j.payUrl; return; }
       sent = true;
@@ -110,8 +116,77 @@ $('[data-checkout]').addEventListener('submit', async (e) => {
   $('[data-done-num]').textContent = tr('Objednávka ', 'Objednávka ') + order.number;
   $('[data-done-img]').src = items[0]?.thumb || '';
   $('[data-done-date]').textContent = `${tr('Odhadom', 'Odhadem')} ${fmtDay(arrival(items))}`;
+  if (order.track) { const a = $('[data-done-track]'); a.href = order.track; a.hidden = false; }
   if (sent) { $('[data-done-lead]').textContent = tr(`Potvrdenie sme poslali na ${data.email}. Suma ${money(order.total)} sa platí až po kontrole návrhu.`, `Potvrzení jsme poslali na ${data.email}. Částka ${money(order.total)} se platí až po kontrole návrhu.`); await store.cartClear(); }
   else { $('[data-done-lead]').textContent = tr(`Toto je ukážka potvrdenia. Suma ${money(order.total)}.`, `Toto je ukázka potvrzení. Částka ${money(order.total)}.`); const t = $('[data-done-test]'); t.hidden = false; t.textContent = tr('Testovacia prevádzka: e-shop ešte nie je napojený na platobnú bránu, objednávka sa nikam neodoslala.', 'Zkušební provoz: e-shop ještě není napojený na platební bránu, objednávka se nikam neodeslala.'); }
   scrollTo({ top: 0, behavior: 'smooth' });
 });
 window.addEventListener('vk:cart', paint);
+
+/* ---------- kolegovia: rovnaký dizajn, iné údaje ---------- */
+const dlg = $('[data-team-dlg]'), tf = $('[data-team-form]');
+let teamSrc = null, prevTok = 0;
+// prepíše texty naviazané na polia aj v ručne upravených stranách
+function withFields(design, f) {
+  const d = JSON.parse(JSON.stringify(design));
+  d.f = { ...d.f, ...f };
+  d.slug = slugify(d.f.name); d.qrUrl = `https://vizitkomat.eu/v/${d.slug}/`;
+  for (const side of ['front', 'back']) {
+    const js = d.sides?.[side]; if (!js) continue;
+    (js.objects || []).forEach((o) => {
+      const k = o.data?.field; if (!k || !(k in f)) return;
+      const v = f[k] || '';
+      if (o.data.part != null) { const w = v.trim().split(/\s+/); o.text = o.data.part === 0 ? (w.length > 1 ? w.slice(0, -1).join(' ') : v) : (w.length > 1 ? w[w.length - 1] : ''); }
+      else o.text = (o.data.prefix || '') + (o.data.upper ? v.toLocaleUpperCase() : v);
+    });
+  }
+  return d;
+}
+async function renderer() {
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js');
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js');
+  return import('./render.js');
+}
+const teamFields = () => { const fd = new FormData(tf); return { name: fd.get('name').trim(), role: fd.get('role').trim(), phone: fd.get('phone').trim(), email: fd.get('email').trim() }; };
+let prevT;
+async function teamPreview() {
+  if (!teamSrc) return; const tok = ++prevTok;
+  const f = teamFields(); if (!f.name) return;
+  const { snapshot } = await renderer();
+  const u = await snapshot(withFields(teamSrc.design, f), 'front', 760, 'image/jpeg', 0.86);
+  if (tok === prevTok) $('[data-team-img]').src = u;
+}
+function openTeam(id) {
+  teamSrc = items.find((x) => x.id === id) || items.find((x) => !x.design?.custom && x.kind !== 'digital');
+  if (!teamSrc) return;
+  tf.reset();
+  $('[data-team-src]').textContent = teamSrc.title;
+  $('[data-team-img]').src = teamSrc.thumb || '';
+  // doména e-mailu ako nápoveda
+  const dom = (teamSrc.design?.f?.email || '').split('@')[1];
+  tf.email.placeholder = dom ? `kolega@${dom}` : '';
+  dlg.showModal(); tf.name.focus();
+  renderer();
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-team]'); if (b) openTeam(b.dataset.team);
+  if (e.target.closest('[data-team-open]')) openTeam();
+});
+tf.addEventListener('input', () => { clearTimeout(prevT); prevT = setTimeout(teamPreview, 260); });
+dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+tf.addEventListener('submit', async (e) => {
+  if (e.submitter?.value !== 'ok') return;
+  e.preventDefault();
+  const f = teamFields();
+  if (!f.name) { tf.name.focus(); return; }
+  const go = $('[data-team-go]'); go.disabled = true;
+  try {
+    const { snapshot } = await renderer();
+    const d = withFields(teamSrc.design, f);
+    const [front, back] = await Promise.all([snapshot(d, 'front', 640, 'image/jpeg'), snapshot(d, 'back', 640, 'image/jpeg')]);
+    await store.cartAdd({ kind: teamSrc.kind, config: { ...teamSrc.config }, design: d, thumb: front, thumbBack: back, title: f.name });
+    dlg.close();
+    toastMsg(tr(`${f.name} je v košíku.`, `${f.name} je v košíku.`));
+  } finally { go.disabled = false; }
+});
+function toastMsg(t) { import('./site.js').then((m) => m.toast?.(t)).catch(() => {}); }

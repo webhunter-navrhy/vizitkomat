@@ -26,6 +26,7 @@ PAGES = [
     ('podmienky.html', 'obchodne-podmienky/', 'obchodni-podminky/'),
     ('gdpr.html', 'ochrana-osobnych-udajov/', 'ochrana-osobnich-udaju/'),
     ('kontakt.html', 'kontakt/', 'kontakt/'),
+    ('objednavka.html', 'objednavka/', 'objednavka/'),
     ('404.html', '404.html', None),
 ]
 LANGS = {'sk': '', 'cz': 'cz/'}
@@ -152,7 +153,7 @@ def main():
     for lang in LANGS:
         other = 'cz' if lang == 'sk' else 'sk'
         for name, p in U[lang].items():
-            if name in ('404', 'kosik'):
+            if name in ('404', 'kosik', 'objednavka'):
                 continue
             alt = U[other].get(name)
             links = f'<xhtml:link rel="alternate" hreflang="{"sk" if lang == "sk" else "cs"}" href="{SITE + p}"/>'

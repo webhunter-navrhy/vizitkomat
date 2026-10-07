@@ -15,12 +15,25 @@
     <h2 class="h-m">{{ L('Košík je zatiaľ prázdny.', 'Košík je zatím prázdný.') }}</h2>
     <p>{{ L('AI grafik čaká na vaše zadanie. Prvé návrhy máte za pár sekúnd.', 'AI grafik čeká na vaše zadání. První návrhy máte za pár sekund.') }}</p>
     <a class="btn btn--c btn--lg" href="{{ link('tvorba') }}?rezim=ai">{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a>
+    <a class="link" href="{{ link('objednavka') }}" data-mine-link hidden>{{ L('Moje objednávky', 'Moje objednávky') }} →</a>
   </div>
 
   <div class="cart__grid" data-full hidden>
     <section>
       <ul class="items" data-items></ul>
-      <a class="link" href="{{ link('tvorba') }}">{{ L('Pridať ďalšiu vizitku', 'Přidat další vizitku') }} +</a>
+      <div class="cart__more">
+        <a class="link" href="{{ link('tvorba') }}">{{ L('Pridať ďalšiu vizitku', 'Přidat další vizitku') }} +</a>
+      </div>
+      <div class="team" data-team-box hidden>
+        <div class="team__ic" aria-hidden="true"><i>JN</i><i>PK</i><i>+</i></div>
+        <div><b>{{ L('Vizitky pre celý tím', 'Vizitky pro celý tým') }}</b><span>{{ L('Rovnaký dizajn, iné meno a kontakty. Pridáte kolegu za pár sekúnd.', 'Stejný design, jiné jméno a kontakty. Přidáte kolegu za pár sekund.') }}</span></div>
+        <button class="btn btn--sm" data-team-open>{{ L('Pridať kolegu', 'Přidat kolegu') }} <span class="ar">+</span></button>
+      </div>
+      <ol class="next3">
+        <li><b>{{ L('Kontrola človekom', 'Kontrola člověkem') }}</b><span>{{ L('Grafik skontroluje texty, okraje aj rozlíšenie. Ak niečo nesedí, ozve sa.', 'Grafik zkontroluje texty, okraje i rozlišení. Pokud něco nesedí, ozve se.') }}</span></li>
+        <li><b>{{ L('QR platba e-mailom', 'QR platba e-mailem') }}</b><span>{{ L('Platíte až po kontrole. Žiadne karty, žiadne zálohy.', 'Platíte až po kontrole. Žádné karty, žádné zálohy.') }}</span></li>
+        <li><b>{{ L('Tlač a doprava zadarmo', 'Tisk a doprava zdarma') }}</b><span>{{ L('Stav objednávky sledujete online, číslo zásielky dostanete e-mailom.', 'Stav objednávky sledujete online, číslo zásilky dostanete e-mailem.') }}</span></li>
+      </ol>
     </section>
 
     <form class="co" data-checkout novalidate>
@@ -86,8 +99,23 @@
       <li><b>{{ L('Doručenie', 'Doručení') }}</b><span data-done-date></span></li>
     </ol>
     <p class="done__test" data-done-test hidden></p>
-    <a class="btn" href="{{ link('index') }}">{{ L('Späť na úvod', 'Zpět na úvod') }}</a>
+    <div class="done__btns"><a class="btn btn--c" href="#" data-done-track hidden>{{ L('Sledovať objednávku', 'Sledovat objednávku') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a><a class="btn btn--w" href="{{ link('index') }}">{{ L('Späť na úvod', 'Zpět na úvod') }}</a></div>
   </section>
 </div>
+<dialog class="dlg" data-team-dlg>
+  <form method="dialog" class="dlg__in" data-team-form>
+    <button class="dlg__x" value="cancel" formnovalidate aria-label="{{ L('Zavrieť', 'Zavřít') }}">×</button>
+    <h2>{{ L('Pridať kolegu', 'Přidat kolegu') }}</h2>
+    <p>{{ L('Vizitka bude mať rovnaký dizajn ako', 'Vizitka bude mít stejný design jako') }} <b data-team-src></b>{{ L(', len s týmito údajmi.', ', jen s těmito údaji.') }}</p>
+    <div class="dlg__prev"><img alt="" data-team-img></div>
+    <label class="fl"><span>{{ L('Meno a priezvisko', 'Jméno a příjmení') }}</span><input name="name" required autocomplete="off"></label>
+    <label class="fl"><span>{{ L('Pozícia', 'Pozice') }}</span><input name="role" autocomplete="off"></label>
+    <div class="row2">
+      <label class="fl"><span>{{ L('Telefón', 'Telefon') }}</span><input name="phone" type="tel" autocomplete="off"></label>
+      <label class="fl"><span>E-mail</span><input name="email" type="email" autocomplete="off"></label>
+    </div>
+    <button class="btn btn--c" value="ok" data-team-go>{{ L('Pridať do košíka', 'Přidat do košíku') }} <span class="ar" style="background:#fff;color:var(--coral)">+</span></button>
+  </form>
+</dialog>
 {% endblock %}
 {% block scripts %}<script type="module" src="{{ A('assets/js/v2/kosik.js') }}"></script>{% endblock %}

@@ -53,7 +53,7 @@ async () => {
     for (const [i, c] of s.concepts.entries()) {
       if (!TEMPLATES[c.template]) continue;
       const art = c.art.mode === 'file' ? location.origin + '/assets/ai/' + c.art.file : c.art.mode === 'library' ? c.art.key : null;
-      const d = newDesign({ tpl: c.template, fonts: c.fonts || TEMPLATES[c.template].fonts, pal: { label: 'AI', ...c.palette }, art, f, mark: null });
+      const d = newDesign({ tpl: c.template, fonts: c.fonts || TEMPLATES[c.template].fonts, pal: { label: 'AI', ...c.palette }, art, f, mark: null, emblem: emblemFor(ICON[s.key], s.fields.role) });
       await shot(`show-${s.key}-${i}`, d, 900, 1000);
     }
   }

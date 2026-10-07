@@ -117,7 +117,9 @@ lazy($('.real'), async () => {
 
 /* ---------- šablóny ---------- */
 lazy($('.tpls'), () => {
-  const ids = Object.keys(TEMPLATES);
+  // ilustrované šablóny ako prvé
+  const RICH = ['glow', 'saloon', 'cafe', 'samet', 'venec', 'deco', 'odznak', 'medic', 'builders', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'ruzovezlato', 'akvarelsalvia', 'konfety'];
+  const ids = [...RICH, ...Object.keys(TEMPLATES).filter((id) => !RICH.includes(id))].filter((id) => TEMPLATES[id]).slice(0, 36);
   const rows = [ids.filter((_, i) => i % 2 === 0), ids.filter((_, i) => i % 2 === 1)];
   for (const [ri, list] of rows.entries()) {
     const items = [...list, ...list];

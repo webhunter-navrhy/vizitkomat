@@ -1,12 +1,14 @@
 // Tvorba – sprievodca v 4 krokoch: začiatok → výber návrhu → úpravy → objednávka
 import { SIZES, FONTS, PALETTES, ART, newDesign, contrast, slugify, tr, CZ, DEFAULT_FIELDS } from './model.js';
 import { TEMPLATES, BACK_KEYS, templateDefaults } from './templates.js';
-import { snapshot, exportPDF, loadImg, photo, mockup } from './render.js';
+import { snapshot, exportPDF, loadImg, photo, mockup, inspect } from './render.js';
 import { createEditor } from './editor.js';
 import { askAI, makeMark, API } from './ai.js';
 import { ICONS, iconSVG } from '../icons.js';
 import { analyzeLogo, fileToDataURL } from '../logo.js';
 import * as store from './store.js';
+import { PERSONAS, personaFields, TPL_PERSONA } from './personas.js';
+import { emblemFor } from './emblems.js';
 import { toast } from './site.js';
 import { money, printPrice, itemPrice, addWorkdays, fmtDay, debounce, session } from '../util.js';
 
@@ -33,6 +35,7 @@ function go(step) {
   $('[data-wz]').dataset.step = step;
   $$('[data-go]').forEach((li) => { const s = li.dataset.go; li.classList.toggle('on', s === step); li.classList.toggle('ok', s !== step && st.reached.has(s)); });
   window.scrollTo(0, 0);
+  if (step === 'edit') { const c = st.cfg; $('[data-ed-price]').innerHTML = c.kind === 'digital' ? `<b>${money(VK.prices.digital)}</b>` : `${c.qty} ${tr('ks', 'ks')} <b>${money(itemPrice(c, VK.prices))}</b><small>${tr('doprava zadarmo', 'doprava zdarma')}</small>`; }
   if (step === 'edit') ensureEditor().then(() => { ed.fit(); openTab($('[data-tab][aria-selected=true]')?.dataset.tab || 'udaje'); });
   if (step === 'order') enterOrder();
 }
@@ -163,29 +166,76 @@ $$('[data-ai-more] [data-r]').forEach((b) => b.addEventListener('click', () => {
 $('[data-ai-change]').addEventListener('click', () => { const f = $('[data-ask-re]'); f.hidden = !f.hidden; $('[data-ask-re-in]').value = st.lastPrompt; $('[data-ask-re-in]').focus(); });
 $('[data-ask-re]').addEventListener('submit', (e) => { e.preventDefault(); const v = $('[data-ask-re-in]').value.trim(); if (v.length > 2) runAI(v); });
 
-let tplTok = 0;
+let tplTok = 0, tplIO = null;
+const IND = {
+  beauty: ['beauty', 'kozmetika', 'salon', 'kader', 'nechty', 'barber', 'masaz'],
+  gastro: ['kaviaren', 'gastro', 'restauracia', 'bistro', 'pekaren', 'cukraren', 'bar', 'vino', 'vinarstvo', 'pivovar', 'caj'],
+  reality: ['reality', 'architekt', 'stavba', 'developer', 'interier'],
+  zdravie: ['lekar', 'zubar', 'terapeut', 'wellness', 'joga', 'psycholog', 'fyzioterapia', 'ambulancia', 'spa'],
+  remeslo: ['remeslo', 'stolar', 'stavba', 'auto', 'zahrady', 'farma', 'tradicne'],
+  pravo: ['pravnik', 'advokat', 'financie', 'uctovnictvo', 'poistenie', 'konzultant', 'poradenstvo'],
+  kreativ: ['foto', 'dizajn', 'kreativ', 'it', 'marketing', 'agentura', 'hudba', 'umelec', 'startup'],
+};
+const RICH = ['glow', 'saloon', 'cafe', 'samet', 'venec', 'deco', 'odznak', 'medic', 'builders', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'ruzovezlato', 'akvarelsalvia', 'konfety'];
+// ukážkový obor šablóny, s menom zákazníka
+function personaFor(id, nm) {
+  const pk = TPL_PERSONA[id] || 'arch', p = PERSONAS[pk], f = personaFields(pk);
+  if (nm) {
+    const old = p.name.split(' ')[0], neu = nm.split(' ')[0];
+    if (f.company && f.company.includes(old)) f.company = f.company.replace(old, neu);
+    if (f.email) f.email = slugify(neu).replace(/-/g, '') + '@' + f.email.split('@')[1];
+    f.name = nm;
+  }
+  return { f, emblem: emblemFor(p.icon, p.role) };
+}
+const tplFields = (id) => {
+  const prev = st.loaded ? ed.design : null, nm = $('[data-tpl-name]').value.trim();
+  if (!prev && !nm) return null; // ukážkové firmy z predrenderu
+  if (!prev) return personaFor(id, nm).f;
+  const f = { ...prev.f };
+  if (nm) f.name = nm;
+  return f;
+};
+async function tplRender(id, box) {
+  const f = tplFields(id); const prev = st.loaded ? ed.design : null;
+  const im = $(`[data-tpl="${id}"] img`, box); if (!im) return;
+  const key = JSON.stringify(f) + (prev?.logo ? 'L' : '');
+  if (im.dataset.k === key) return;
+  im.dataset.k = key;
+  if (!f) { im.src = VK.pre['tpl-' + id + '-m'] || ''; return; }
+  const dd = newDesign({ tpl: id, ...templateDefaults(id), f, logo: prev?.logo || null, mark: prev?.mark || null, emblem: prev?.emblem || personaFor(id).emblem });
+  const u = await mockup(await photo(await thumb(dd, 'front', 720)), await photo(await thumb(dd, 'back', 720)), { width: 640, ratio: 0.72, seed: Object.keys(TEMPLATES).indexOf(id) });
+  if (im.dataset.k === key) im.src = u;
+}
 async function showTemplates() {
   st.mode = 'tpl';
   $('[data-ai-box]').hidden = true; $('[data-tpl-box]').hidden = false;
   go('choose');
-  const filt = $('[data-filt] .on')?.dataset.f || '';
-  const prev = st.loaded ? ed.design : null;
-  const f = prev ? { ...prev.f } : { ...DEFAULT_FIELDS };
-  const ids = Object.keys(TEMPLATES).filter((id) => !filt || TEMPLATES[id].tags.includes(filt));
-  const box = $('[data-tpls]'); const tok = ++tplTok;
-  box.innerHTML = ids.map((id) => `<button data-tpl="${id}"><img alt=""><span>${TEMPLATES[id].name}</span></button>`).join('');
-  for (const id of ids) {
-    if (tok !== tplTok) return;
-    const dd = newDesign({ tpl: id, ...templateDefaults(id), f, logo: prev?.logo || null, mark: prev?.mark || null });
-    const u = await mockup(await photo(await thumb(dd, 'front', 720)), await photo(await thumb(dd, 'back', 720)), { width: 640, ratio: 0.72, seed: ids.indexOf(id) });
-    const im = $(`[data-tpl="${id}"] img`, box); if (im) im.src = u;
-  }
+  const filt = $('[data-filt] .on')?.dataset.f || '', ind = $('[data-ind] .on')?.dataset.i || '';
+  if (st.loaded && !$('[data-tpl-name]').value) $('[data-tpl-name]').value = ed.design.f.name || '';
+  const tags = (id) => TEMPLATES[id].tags;
+  const ids = Object.keys(TEMPLATES)
+    .filter((id) => (!filt || tags(id).includes(filt)) && (!ind || IND[ind].some((t) => tags(id).includes(t))))
+    .sort((a, b) => (RICH.includes(b) - RICH.includes(a)));
+  $('[data-tpl-count]').textContent = ids.length;
+  const box = $('[data-tpls]'); ++tplTok;
+  box.innerHTML = ids.length ? ids.map((id) => `<button data-tpl="${id}"><img alt="" loading="lazy">${RICH.includes(id) ? `<em>${tr('Ilustrovaná', 'Ilustrovaná')}</em>` : ''}<span>${TEMPLATES[id].name}</span></button>`).join('')
+    : `<p class="tgrid__none">${tr('Takú kombináciu nemáme. Skúste iný štýl.', 'Takovou kombinaci nemáme. Zkuste jiný styl.')}</p>`;
+  tplIO?.disconnect();
+  tplIO = new IntersectionObserver((ents) => ents.forEach((e) => { if (e.isIntersecting) { tplIO.unobserve(e.target); tplRender(e.target.dataset.tpl, box); } }), { rootMargin: '300px' });
+  $$('[data-tpl]', box).forEach((b) => tplIO.observe(b));
 }
+const reTpl = debounce(() => { const box = $('[data-tpls]'); $$('[data-tpl]', box).forEach((b) => { const r = b.getBoundingClientRect(); if (r.top < innerHeight + 300 && r.bottom > -300) tplRender(b.dataset.tpl, box); else { b.querySelector('img').dataset.k = ''; tplIO?.observe(b); } }); }, 450);
+$('[data-tpl-name]').addEventListener('input', reTpl);
 $('[data-filt]').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; $$('[data-filt] button').forEach((x) => x.classList.toggle('on', x === b)); showTemplates(); });
+$('[data-ind]').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; $$('[data-ind] button').forEach((x) => x.classList.toggle('on', x === b)); showTemplates(); });
 $('[data-tpls]').addEventListener('click', async (e) => {
   const b = e.target.closest('[data-tpl]'); if (!b) return;
   const id = b.dataset.tpl, prev = st.loaded ? ed.design : null;
-  await loadDesign(newDesign({ tpl: id, ...templateDefaults(id), f: prev ? { ...prev.f } : { ...DEFAULT_FIELDS }, logo: prev?.logo || null, mark: prev?.mark || null, photo: prev?.photo || null, socials: prev?.socials || {}, digital: prev?.digital || {} }));
+  const nm = $('[data-tpl-name]').value.trim();
+  const pf = personaFor(id, nm);
+  const f0 = prev ? { ...prev.f } : pf.f; if (nm) { f0.name = nm; st.touched.add('name'); }
+  await loadDesign(newDesign({ tpl: id, ...templateDefaults(id), f: f0, emblem: prev?.emblem || pf.emblem, logo: prev?.logo || null, mark: prev?.mark || null, photo: prev?.photo || null, socials: prev?.socials || {}, digital: prev?.digital || {} }));
   go('edit');
 });
 
@@ -379,20 +429,92 @@ function cfgFor(t, c = st.cfg) {
   return { ...c, paper: 'matny', finish: c.finish === 'leskla' ? 'leskla' : 'none' };
 }
 const finishOf = () => (st.cfg.paper === 'triplex' ? 'matte' : st.cfg.finish === 'leskla' ? 'gloss' : st.cfg.finish === 'soft' ? 'soft' : 'matte');
+const SCENE_LIST = ['travertin', 'len', 'mramor', 'dub', 'beton', 'tien', 'saten', 'kraft', 'terakota'];
+const v4 = { view: 'photo', scene: null, f: null, b: null, pf: null, pb: null, cache: new Map(), tok: 0, pf4: null };
 async function enterOrder() {
   if (!st.loaded) return;
   paintOrder();
   const d = ed.printable();
+  $('[data-view-busy]').hidden = false;
   const [f, b] = await Promise.all([snapshot(d, 'front', 1600, 'image/jpeg'), snapshot(d, 'back', 1600, 'image/jpeg')]);
+  Object.assign(v4, { f, b, pf: await photo(f), pb: await photo(b) }); v4.cache.clear();
   $('[data-thumb-front]').src = f; $('[data-thumb-back]').src = b;
+  paintScenes();
+  showView(v4.view);
+  runPreflight(d);
+  if (scene) { await scene.setTexture(0, 'front', f); await scene.setTexture(0, 'back', b); paint3D(); }
+}
+function paintScenes() {
+  const box = $('[data-scenes]');
+  box.innerHTML = `<span>${tr('Podklad', 'Podklad')}</span>` + SCENE_LIST.map((k) => `<button data-scene="${k}" class="${v4.scene === k ? 'on' : ''}" style="background-image:url(${VK.root}assets/scenes/${k}.jpg)" aria-label="${k}"></button>`).join('');
+  box.hidden = v4.view === '3d';
+}
+async function viewImg(v) {
+  const key = v + '|' + (v4.scene || '');
+  if (!v4.cache.has(key)) {
+    const o = { width: 1400, ratio: 0.75, scene: v4.scene || undefined, seed: 1, quality: 0.88 };
+    v4.cache.set(key, v === 'photo' ? mockup(v4.pf, v4.pb, o) : mockup(v === 'front' ? v4.pf : v4.pb, null, { ...o, single: true, tiltF: -2 }));
+  }
+  return v4.cache.get(key);
+}
+async function showView(v) {
+  v4.view = v; const tok = ++v4.tok;
+  $$('[data-view]').forEach((b) => b.classList.toggle('on', b.dataset.view === v));
+  const img = $('[data-view-img]'), box3 = $('[data-3d]');
+  $('[data-scenes]').hidden = v === '3d';
+  if (v === '3d') { img.hidden = true; box3.hidden = false; $('[data-view-busy]').hidden = true; await init3D(); return; }
+  box3.hidden = true; img.hidden = false;
+  if (!v4.pf) return;
+  $('[data-view-busy]').hidden = false;
+  const u = await viewImg(v);
+  if (tok !== v4.tok) return;
+  img.classList.remove('in'); img.src = u; void img.offsetWidth; img.classList.add('in');
+  $('[data-view-busy]').hidden = true;
+}
+$('[data-views]').addEventListener('click', (e) => { const b = e.target.closest('[data-view]'); if (b) showView(b.dataset.view); });
+$('[data-scenes]').addEventListener('click', (e) => { const b = e.target.closest('[data-scene]'); if (!b) return; v4.scene = v4.scene === b.dataset.scene ? null : b.dataset.scene; paintScenes(); showView(v4.view === '3d' ? 'photo' : v4.view); });
+async function init3D() {
   const S = SIZES[st.cfg.size], key = S.w + 'x' + S.h;
   const { cardScene } = await import('./three-cards.js');
   if (!scene || sceneKey !== key) {
     scene?.dispose(); $('[data-3d]').querySelectorAll('canvas').forEach((c) => c.remove());
-    scene = await cardScene($('[data-3d]'), [{ front: f, back: b, w: S.w, h: S.h, pos: [0, 0, 0], rot: [-0.25, -0.45, 0.05], finish: finishOf(), thick: st.cfg.paper === 'triplex' ? 2.2 : 0.7, edge: st.cfg.paper === 'triplex' ? '#FF6B4A' : '#EDE8DE' }], { camZ: 205, fov: 30, shadow: false, drag: true, float: false, parallaxAmt: 0.1, fit: 150 });
+    scene = await cardScene($('[data-3d]'), [{ front: v4.f, back: v4.b, w: S.w, h: S.h, pos: [0, 0, 0], rot: [-0.25, -0.45, 0.05], finish: finishOf(), thick: st.cfg.paper === 'triplex' ? 2.2 : 0.7, edge: st.cfg.paper === 'triplex' ? '#FF6B4A' : '#EDE8DE' }], { camZ: 205, fov: 30, shadow: false, drag: true, float: false, parallaxAmt: 0.1, fit: 150 });
     sceneKey = key;
-  } else { await scene.setTexture(0, 'front', f); await scene.setTexture(0, 'back', b); paint3D(); }
+  }
 }
+// kontrola pred tlačou
+async function runPreflight(d) {
+  $('[data-pf-sum]').textContent = tr('kontrolujem…', 'kontroluji…'); $('[data-pf]').classList.remove('ok', 'warn');
+  try { v4.pf4 = { r: await inspect(d), d }; } catch (e) { console.warn(e); v4.pf4 = null; }
+  paintPreflight();
+}
+function paintPreflight() {
+  if (!v4.pf4) { $('[data-pf]').hidden = true; return; }
+  $('[data-pf]').hidden = false;
+  const { r, d } = v4.pf4, f = d.f || {}, L = [];
+  const ok = (t) => L.push({ ok: true, t }), warn = (t, fix, label) => L.push({ ok: false, t, fix, label });
+  if (f.name && f.name.trim()) ok(tr('Meno je vyplnené', 'Jméno je vyplněné')); else warn(tr('Chýba meno', 'Chybí jméno'), 'edit', tr('Doplniť', 'Doplnit'));
+  if ((f.phone || '').trim() || (f.email || '').trim()) ok(tr('Je tam telefón alebo e-mail', 'Je tam telefon nebo e-mail')); else warn(tr('Nie je tam telefón ani e-mail', 'Není tam telefon ani e-mail'), 'edit', tr('Doplniť', 'Doplnit'));
+  if (r.small.length) { const m = r.small.reduce((a, b) => (a.pt < b.pt ? a : b)); warn(tr(`Veľmi malé písmo (${m.pt.toFixed(1)} pt): „${m.text}“. Na papieri sa zle číta.`, `Velmi malé písmo (${m.pt.toFixed(1)} pt): „${m.text}“. Na papíře se špatně čte.`), 'edit', tr('Upraviť', 'Upravit')); }
+  else ok(tr('Písmo je dosť veľké na tlač', 'Písmo je dost velké pro tisk'));
+  if (r.edge.length) warn(tr(`„${r.edge[0].text}“ je príliš blízko okraja, pri orezaní sa môže odrezať.`, `„${r.edge[0].text}“ je moc blízko okraje, při ořezu se může useknout.`), 'edit', tr('Posunúť', 'Posunout'));
+  else ok(tr('Texty sú v bezpečnej zóne', 'Texty jsou v bezpečné zóně'));
+  if (r.lowres.length) warn(tr(`Logo alebo fotka má nízke rozlíšenie (${r.lowres[0].dpi} dpi), môže byť rozmazané.`, `Logo nebo fotka má nízké rozlišení (${r.lowres[0].dpi} dpi), může být rozmazané.`), 'edit', tr('Vymeniť', 'Vyměnit'));
+  const pal = d.pal || PALETTES[TEMPLATES[d.tpl]?.pal];
+  if (pal && contrast(pal.bg, pal.ink) < 3) warn(tr('Text a pozadie majú slabý kontrast.', 'Text a pozadí mají slabý kontrast.'), 'edit', tr('Upraviť', 'Upravit'));
+  if (r.qr && st.cfg.kind === 'print') warn(tr('QR kód vedie na digitálnu vizitku, ktorá nie je v objednávke.', 'QR kód vede na digitální vizitku, která není v objednávce.'), 'bundle', tr('Pridať zadarmo', 'Přidat zdarma'));
+  else if (r.qr) ok(tr(`QR vedie na vizitkomat.eu/v/${d.slug}`, `QR vede na vizitkomat.eu/v/${d.slug}`));
+  ok(tr('Spadávka 2 mm, PDF 600 dpi', 'Spadávka 2 mm, PDF 600 dpi'));
+  const bad = L.filter((x) => !x.ok).length;
+  $('[data-pf]').classList.toggle('ok', !bad); $('[data-pf]').classList.toggle('warn', !!bad);
+  $('[data-pf-sum]').textContent = bad ? tr(`${bad} na kontrolu`, `${bad} ke kontrole`) : tr('všetko v poriadku', 'vše v pořádku');
+  $('[data-pf-list]').innerHTML = L.sort((a, b) => a.ok - b.ok).map((x) => `<li class="${x.ok ? 'ok' : 'warn'}"><i>${x.ok ? '✓' : '!'}</i><span>${esc(x.t)}</span>${x.fix ? `<button data-pf-fix="${x.fix}">${esc(x.label)}</button>` : ''}</li>`).join('');
+}
+$('[data-pf-list]').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-pf-fix]'); if (!b) return;
+  if (b.dataset.pfFix === 'bundle') { st.cfg.kind = 'bundle'; paintOrder(); persist(); paintPreflight(); toast(tr('Digitálna vizitka je pridaná zadarmo.', 'Digitální vizitka je přidaná zdarma.')); }
+  else go('edit');
+});
 function paint3D() { if (!scene) return; scene.setFinish(0, finishOf()); scene.setThickness(0, st.cfg.paper === 'triplex' ? 2.2 : 0.7, st.cfg.paper === 'triplex' ? '#FF6B4A' : '#EDE8DE'); }
 function paintOrder() {
   const P = VK.prices, c = st.cfg, dig = c.kind === 'digital';
@@ -415,7 +537,7 @@ function paintOrder() {
   $('[data-sum-d]').textContent = dig ? tr('Digitálnu vizitku zapneme hneď po zaplatení.', 'Digitální vizitku zapneme hned po zaplacení.') : `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + (c.express ? 2 : 4)))}`;
   $('[data-pdf]').hidden = dig;
 }
-$('[data-kind]').addEventListener('click', (e) => { const b = e.target.closest('.kind'); if (!b) return; st.cfg.kind = b.dataset.v; paintOrder(); persist(); });
+$('[data-kind]').addEventListener('click', (e) => { const b = e.target.closest('.kind'); if (!b) return; st.cfg.kind = b.dataset.v; paintOrder(); persist(); paintPreflight(); });
 $('[data-paper]').addEventListener('click', (e) => { const b = e.target.closest('.paper'); if (!b) return; st.cfg = cfgFor(b.dataset.v); paintOrder(); paint3D(); persist(); });
 $('[data-qty]').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.cfg.qty = +b.dataset.v; paintOrder(); persist(); });
 $$('[data-o]').forEach((seg) => seg.addEventListener('click', async (e) => {

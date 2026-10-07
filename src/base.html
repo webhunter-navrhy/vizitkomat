@@ -9,7 +9,7 @@
 <link rel="alternate" hreflang="{{ 'sk' if lang == 'sk' else 'cs' }}" href="{{ canonical }}">
 <link rel="alternate" hreflang="{{ 'cs' if lang == 'sk' else 'sk' }}" href="{{ alt_canonical }}">
 <link rel="alternate" hreflang="x-default" href="{{ canonical if lang == 'sk' else alt_canonical }}">
-{% if not production or page in ('kosik', '404') %}<meta name="robots" content="noindex">
+{% if not production or page in ('kosik', '404', 'objednavka') %}<meta name="robots" content="noindex">
 {% endif %}
 <meta name="theme-color" content="#2440E6">
 <meta property="og:type" content="website">
@@ -36,7 +36,7 @@
 <script>
 window.VK = {
   lang: '{{ lang }}', root: '{{ R }}',
-  links: { home: '{{ link("index") }}', vlastny: '{{ link("vlastny") }}', tvorba: '{{ link("tvorba") }}', kosik: '{{ link("kosik") }}', digital: '{{ link("digitalna") }}', cennik: '{{ link("cennik") }}', demo: '{{ R }}v/demo/' },
+  links: { home: '{{ link("index") }}', vlastny: '{{ link("vlastny") }}', tvorba: '{{ link("tvorba") }}', kosik: '{{ link("kosik") }}', digital: '{{ link("digitalna") }}', cennik: '{{ link("cennik") }}', objednavka: '{{ link("objednavka") }}', demo: '{{ R }}v/demo/' },
   prices: {{ prices_json }},
   pre: {{ pre_json }},
   orderEndpoint: 'https://vizitkomat-api.webhunter.workers.dev/order'

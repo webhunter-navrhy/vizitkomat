@@ -86,7 +86,7 @@ export function proTemplates(h) {
           T(f.role, { field: 'role', x: m + 4, y: m + 3, size: 1.9, font: 't', color: '#77706A', fit: W * 0.6 }),
           C(W - m - 1, m + 1, 0.9, { fill: pal.bg }),
           ...contacts(c, { x: W - m, yb: H - m, align: 'right', keys: ['address', 'phone', 'email'], size: 2.05, lh: 3, color: ink, fit: W * 0.55 }),
-          T(f.web || '', { field: 'web', x: m - 1.2, y: H / 2, ox: 'center', oy: 'center', size: 1.8, font: 't', ls: 0.12, color: '#77706A', rot: -90 }),
+          T(f.web || '', { field: 'web', x: m + 0.4, y: H / 2, ox: 'center', oy: 'center', size: 1.8, font: 't', ls: 0.12, color: '#77706A', rot: -90 }),
         ] };
       },
     },
@@ -314,8 +314,8 @@ export function proTemplates(h) {
       back(c) {
         const { W, H, f, pal, m } = c;
         return { bg: { color: '#FBFAF7' }, objs: [
-          logoOr(c, W - m - 22, m + 2.4, 6, 6, { tint: pal.bg }, MONO(c, { x: W - m - 22, y: m + 2.6, ox: 'center', oy: 'center', size: 3.4, w: 300, color: pal.bg, ls: 0.1 })),
-          T(brand(c).toLocaleUpperCase(), { field: 'company', x: W - m - 17, y: m + 2.6, oy: 'center', size: 2.3, font: 'd', w: 400, ls: 0.12, color: pal.bg, fit: 20 }),
+          logoOr(c, W - m - 31, m + 2.4, 6, 6, { tint: pal.bg }, MONO(c, { x: W - m - 31, y: m + 2.6, ox: 'center', oy: 'center', size: 3.4, w: 300, color: pal.bg, ls: 0.1 })),
+          T(brand(c).toLocaleUpperCase(), { field: 'company', x: W - m, y: m + 2.6, ox: 'right', oy: 'center', size: 2.1, font: 'd', w: 400, ls: 0.1, color: pal.bg, fit: 26 }),
           T((bare(f.name) || f.name).toLocaleUpperCase(), { field: 'name', x: m, y: H * 0.58, oy: 'bottom', size: 2.3, font: 't', w: 700, ls: 0.06, color: '#1A1A1A', fit: W * 0.55 }),
           T(f.role, { field: 'role', x: m, y: H * 0.58 + 0.6, size: 1.9, font: 't', color: '#555', fit: W * 0.55 }),
           ...contacts(c, { x: m, yb: H - m, keys: ['phone', 'email'], size: 1.95, lh: 2.8, color: '#1A1A1A', fit: W * 0.55 }),

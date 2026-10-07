@@ -78,6 +78,8 @@ export const paint = (c, fallback) => (isFoil(c) ? foilGrad(c) : (c || fallback)
 // ---------- prevody ----------
 const px = (mm) => (mm + BLEED) * K;
 const len = (mm) => mm * K;
+// najmenšie písmo pre tlač: 1,7 mm ≈ 4,8 pt (dlhé texty s obmedzenou šírkou 1,6 mm)
+const MIN_TXT = 1.7, MIN_FIT = 1.6;
 
 function scalePath(d) {
   const tokens = d.match(/[a-zA-Z]|-?\d*\.?\d+(?:e-?\d+)?/g) || [];
@@ -151,11 +153,11 @@ export async function toFabric(o, lay, ctx = {}) {
       obj = new fab.IText(textValue(o), {
         left: px(o.x), top: px(o.y), originX: o.ox || 'left', originY: o.oy || 'top',
         fontFamily: ft.family, fontWeight: ft.weight, fontStyle: o.it ? 'italic' : 'normal',
-        fontSize: len(o.size || 2.2), fill: String(textValue(o)).trim() ? await fillOf(o.color, lay.pal.ink, Math.max(20, (o.size || 2.2) * 8)) : (isFoil(o.color) ? (FOILS[o.color.slice(5)] || FOILS.gold)[1] : (o.color || lay.pal.ink)), charSpacing: (o.ls || 0) * 1000,
+        fontSize: len(Math.max(o.size || 2.2, MIN_TXT)), fill: String(textValue(o)).trim() ? ((o.size || 2.2) < 5.5 ? paint(o.color, lay.pal.ink) : await fillOf(o.color, lay.pal.ink, Math.max(110, (o.size || 2.2) * 22))) : (isFoil(o.color) ? (FOILS[o.color.slice(5)] || FOILS.gold)[1] : (o.color || lay.pal.ink)), charSpacing: (o.ls || 0) * 1000,
         textAlign: o.ox === 'right' ? 'right' : o.ox === 'center' ? 'center' : 'left',
         lineHeight: o.lh || 1.12, opacity: o.opacity ?? 1, objectCaching: false,
       });
-      if (o.fit && obj.width > len(o.fit)) obj.set('fontSize', obj.fontSize * (len(o.fit) / obj.width));
+      if (o.fit && obj.width > len(o.fit)) obj.set('fontSize', Math.max(len(MIN_FIT), obj.fontSize * (len(o.fit) / obj.width)));
       break;
     }
     case 'rect': {
@@ -387,4 +389,36 @@ export async function mockup(front, back, opts = {}) {
     drawCard(x, fi, W * 0.42, H * 0.64, cw, ch, (opts.tiltF ?? -4) * Math.PI / 180, depth);
   } else drawCard(x, fi, W / 2, H / 2, cw, ch, (opts.tiltF ?? -3) * Math.PI / 180, depth);
   return c.toDataURL('image/jpeg', opts.quality ?? 0.86);
+}
+
+/** Kontrola pred tlačou: malé písmo, text pri okraji, slabé rozlíšenie obrázkov, QR. */
+export async function inspect(d) {
+  const S = sizeOf(d), out = { small: [], edge: [], lowres: [], qr: false, texts: 0 };
+  const CONTACT = ['name', 'role', 'company', 'phone', 'email', 'web', 'address', 'tagline'];
+  const x0 = len(BLEED + SAFE) - len(1), y0 = x0, x1 = len(BLEED + S.w - SAFE) + len(1), y1 = len(BLEED + S.h - SAFE) + len(1);
+  for (const side of ['front', 'back']) {
+    const sc = await staticCanvas(d, side);
+    const walk = (list) => list.forEach((o) => {
+      if (o.type === 'group' && o.data?.kind !== 'qr') return;
+      if (!o.visible || o.data?.bg) return;
+      if (o.data?.kind === 'qr') { out.qr = true; return; }
+      if (/text/.test(o.type) && String(o.text || '').trim()) {
+        out.texts++;
+        const pt = (o.fontSize * (o.scaleY || 1)) / len(1) / (25.4 / 72);
+        if (pt < 4.5) out.small.push({ side, text: String(o.text).slice(0, 40), pt });
+        if (o.data?.field && CONTACT.includes(o.data.field) && pt < 14) {
+          const r = o.getBoundingRect(true, true);
+          if (r.left < x0 || r.top < y0 || r.left + r.width > x1 || r.top + r.height > y1) out.edge.push({ side, text: String(o.text).slice(0, 40) });
+        }
+      }
+      if (o.type === 'image' && ['logo', 'photo'].includes(o.data?.role)) {
+        const el = o.getElement?.(); const wmm = (o.width * (o.scaleX || 1)) / len(1);
+        const dpi = el && wmm ? (el.naturalWidth || el.width) / (wmm / 25.4) : 999;
+        if (dpi < 150) out.lowres.push({ side, dpi: Math.round(dpi) });
+      }
+    });
+    walk(sc.getObjects());
+    sc.dispose();
+  }
+  return out;
 }

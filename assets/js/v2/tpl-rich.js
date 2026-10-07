@@ -433,7 +433,7 @@ export function richTemplates(h) {
       back(c) {
         const { W, H, f, m } = c; const teal = '#1F8A86', dark = '#12302F';
         return { bg: { color: '#F3F9F8' }, objs: [
-          R(-2, -2, W + 4, 8.5, teal), T(brand(c), { field: 'company', x: m, y: 3.4, oy: 'center', size: 2.4, font: 't', w: 600, color: '#FFFFFF', fit: W * 0.7 }),
+          R(-2, -2, W + 4, 11, teal), T(brand(c), { field: 'company', x: m, y: 4.9, oy: 'center', size: 2.4, font: 't', w: 600, color: '#FFFFFF', fit: W * 0.7 }),
           ...iconRows(c, ['phone', 'email', 'web', 'address'], { x: m, y: H * 0.36, lh: 3.6, r: 1.25, circle: teal, color: dark, size: 2.05, fit: W * 0.62 }),
           R(W - m - 12.6, H * 0.38 - 0.6, 13.2, 13.2, '#FFFFFF'), QR(W - m - 12, H * 0.38, 12, dark),
         ] };

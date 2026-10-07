@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ L('Stav objednávky | Vizitkomat', 'Stav objednávky | Vizitkomat') }}{% endblock %}
+{% block description %}{{ L('Stav vašej objednávky vizitiek, platba QR kódom a sledovanie zásielky.', 'Stav vaší objednávky vizitek, platba QR kódem a sledování zásilky.') }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
+{% block navclass %} solid{% endblock %}
+{% block main %}
+<div class="trk wrap" data-trk>
+  <div class="trk__load" data-load><span class="dots"><i></i><i></i><i></i></span>{{ L('Načítavam objednávku…', 'Načítám objednávku…') }}</div>
+  <div class="empty" data-none hidden>
+    <span class="sticker">{{ L('hmm', 'hmm') }}</span>
+    <h1 class="h-m">{{ L('Objednávku sme nenašli.', 'Objednávku jsme nenašli.') }}</h1>
+    <p>{{ L('Skontrolujte odkaz z e-mailu alebo nám napíšte na', 'Zkontrolujte odkaz z e-mailu nebo nám napište na') }} <a href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a>.</p>
+  </div>
+  <div data-mine hidden></div>
+  <div class="trk__grid" data-ok hidden>
+    <section class="trk__main">
+      <p class="kicker" data-num></p>
+      <h1 class="h-l" data-head></h1>
+      <p class="lead" data-lead></p>
+      <ol class="tl" data-tl></ol>
+      <div class="pay" data-pay hidden>
+        <div class="pay__qr" data-qr></div>
+        <div class="pay__b">
+          <h2>{{ L('Zaplaťte QR kódom', 'Zaplaťte QR kódem') }}</h2>
+          <p>{{ L('Naskenujte kód v aplikácii banky. Údaje sa vyplnia samy.', 'Naskenujte kód v aplikaci banky. Údaje se vyplní samy.') }}</p>
+          <dl data-paydl></dl>
+        </div>
+      </div>
+      <div class="trk__ship" data-ship hidden></div>
+    </section>
+    <aside class="trk__side">
+      <div class="trk__cards" data-cards></div>
+      <div class="trk__sum" data-sum></div>
+      <p class="trk__help">{{ L('Otázky alebo zmena? Napíšte na', 'Dotazy nebo změna? Napište na') }} <a href="mailto:info@vizitkomat.eu" data-mail>info@vizitkomat.eu</a> {{ L('a uveďte číslo objednávky.', 'a uveďte číslo objednávky.') }}</p>
+    </aside>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script type="module" src="{{ A('assets/js/v2/objednavka.js') }}"></script>{% endblock %}

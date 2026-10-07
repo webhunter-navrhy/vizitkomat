@@ -82,9 +82,23 @@
         </form>
       </div>
       <div class="tpl" data-tpl-box hidden>
-        <h2 class="h-m">{{ L('Vyberte šablónu', 'Vyberte šablonu') }}</h2>
+        <div class="tpl__head">
+          <h2 class="h-m">{{ L('Vyberte šablónu', 'Vyberte šablonu') }} <small data-tpl-count></small></h2>
+          <label class="tpl__name"><span>{{ L('Vyskúšajte s vaším menom', 'Vyzkoušejte se svým jménem') }}</span><input data-tpl-name maxlength="40" autocomplete="name" placeholder="{{ L('Napr. Jana Malá', 'Např. Jana Malá') }}"></label>
+        </div>
+        <div class="filt filt--ind" data-ind>
+          <button class="on" data-i="">{{ L('Všetky odbory', 'Všechny obory') }}</button>
+          <button data-i="beauty">{{ L('Krása a vlasy', 'Krása a vlasy') }}</button>
+          <button data-i="gastro">{{ L('Kaviareň a jedlo', 'Kavárna a jídlo') }}</button>
+          <button data-i="reality">{{ L('Reality a stavby', 'Reality a stavby') }}</button>
+          <button data-i="zdravie">{{ L('Zdravie a wellness', 'Zdraví a wellness') }}</button>
+          <button data-i="remeslo">{{ L('Remeslo', 'Řemeslo') }}</button>
+          <button data-i="pravo">{{ L('Právo a financie', 'Právo a finance') }}</button>
+          <button data-i="kreativ">{{ L('Kreatíva a IT', 'Kreativa a IT') }}</button>
+        </div>
         <div class="filt" data-filt>
-          <button class="on" data-f="">{{ L('Všetky', 'Všechny') }}</button>
+          <button class="on" data-f="">{{ L('Každý štýl', 'Každý styl') }}</button>
+          <button data-f="luxusne">{{ L('Luxusné', 'Luxusní') }}</button>
           <button data-f="elegantne">{{ L('Elegantné', 'Elegantní') }}</button>
           <button data-f="moderne">{{ L('Moderné', 'Moderní') }}</button>
           <button data-f="hrave">{{ L('Hravé', 'Hravé') }}</button>
@@ -224,6 +238,7 @@
       <div class="ed-canvas" data-host><canvas data-canvas></canvas></div>
       <div class="ed-foot">
         <button class="link" data-back-choose>← {{ L('Iný návrh', 'Jiný návrh') }}</button>
+        <span class="ed-price" data-ed-price></span>
         <button class="btn btn--c btn--lg" data-to-order>{{ L('Pokračovať k objednávke', 'Pokračovat k objednávce') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
       </div>
     </div>
@@ -233,9 +248,19 @@
   <section class="st4" data-pane="order">
     <div class="wrap st4__grid">
       <div class="st4__vis">
-        <div class="st4__3d" data-3d><span class="st4__hint">{{ L('Potiahnite a otočte', 'Potáhněte a otočte') }}</span></div>
-        <div class="st4__thumbs"><img alt="" data-thumb-front><img alt="" data-thumb-back></div>
+        <div class="seg seg--s st4__views" data-views><button class="on" data-view="photo">{{ L('Fotka', 'Fotka') }}</button><button data-view="front">{{ L('Predná', 'Přední') }}</button><button data-view="back">{{ L('Zadná', 'Zadní') }}</button><button data-view="3d">3D</button></div>
+        <div class="st4__stage" data-stage4>
+          <img class="st4__img" alt="" data-view-img>
+          <div class="st4__3d" data-3d hidden><span class="st4__hint">{{ L('Potiahnite a otočte', 'Potáhněte a otočte') }}</span></div>
+          <span class="st4__busy" data-view-busy><span class="dots"><i></i><i></i><i></i></span></span>
+        </div>
+        <div class="st4__scenes" data-scenes></div>
+        <div class="pf" data-pf>
+          <div class="pf__h"><b>{{ L('Kontrola pred tlačou', 'Kontrola před tiskem') }}</b><span data-pf-sum>{{ L('kontrolujem…', 'kontroluji…') }}</span></div>
+          <ul data-pf-list></ul>
+        </div>
         <button class="link" data-back-edit>← {{ L('Späť na úpravy', 'Zpět na úpravy') }}</button>
+        <img alt="" data-thumb-front hidden><img alt="" data-thumb-back hidden>
       </div>
       <div class="st4__opts">
         <h2 class="h-m">{{ L('Vyberte si', 'Vyberte si') }}</h2>

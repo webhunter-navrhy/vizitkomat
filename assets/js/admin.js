@@ -83,7 +83,7 @@ async function detailView(num) {
   const main = shell('objednavky', `<a class="back" href="#objednavky">← Objednávky</a><p class="muted">Načítám ${esc(num)}…</p>`);
   let data;
   try { data = await api('order/' + num); } catch (e) { main.innerHTML = `<a class="back" href="#objednavky">← Objednávky</a><p class="msg err">${esc(e.message)}</p>`; return; }
-  const { order: o, pay, carriers } = data, c = o.customer, cur = o.currency;
+  const { order: o, pay, carriers, track } = data, c = o.customer, cur = o.currency;
   const filesOf = (i) => (o.files || []).filter((f) => f.item === i);
   const specs = (cfg) => (cfg.kind === 'digital' ? 'jednorázově' : [SIZE[cfg.size] || cfg.size, PAPER[cfg.paper], cfg.paper !== 'triplex' && FIN[cfg.finish], cfg.corners === 'round' && 'zaoblené rohy', cfg.express && 'EXPRES', `${cfg.qty} ks`].filter(Boolean).join(' · '));
   const items = o.items.map((it, i) => {
@@ -109,7 +109,7 @@ async function detailView(num) {
     <div class="dhead"><h1>${o.number}</h1>${badge(o.status)}<span class="muted">${dt(o.created)} · ${o.lang.toUpperCase()}</span><span class="sum">${money(o.total, cur)}</span></div>
     <div class="grid2"><div class="stack">
       <section class="box"><h2>Položky</h2>${items}</section>
-      <section class="box"><h2>Zákazník</h2><dl class="kv"><dt>Jméno</dt><dd>${esc(c.name)}</dd><dt>E-mail</dt><dd><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></dd><dt>Telefon</dt><dd><a href="tel:${esc(c.phone)}">${esc(c.phone)}</a></dd>
+      <section class="box"><h2>Zákazník</h2><dl class="kv"><dt>Jméno</dt><dd>${esc(c.name)}</dd><dt>E-mail</dt><dd><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></dd><dt>Telefon</dt><dd><a href="tel:${esc(c.phone)}">${esc(c.phone)}</a></dd>${track ? `<dt>Stránka zákazníka</dt><dd><a href="${esc(track)}" target="_blank">Stav objednávky ↗</a></dd>` : ''}
         ${c.company ? `<dt>Firma</dt><dd>${esc(c.company)}${c.ico ? ', IČO ' + esc(c.ico) : ''}${c.dic ? ', DIČ ' + esc(c.dic) : ''}${c.icdph ? ', IČ DPH ' + esc(c.icdph) : ''}</dd>` : ''}
         ${c.street ? `<dt>Doručení</dt><dd>${c.ship === 'packeta' ? 'Packeta (výdejní místo)' : 'Kurýr'} · ${esc([c.street, `${c.zip} ${c.city}`, c.country].filter(Boolean).join(', '))}</dd>` : ''}
         ${c.note ? `<dt>Poznámka</dt><dd>${esc(c.note)}</dd>` : ''}</dl></section>
@@ -206,6 +206,7 @@ async function settingsView() {
       <h3 style="margin-top:8px">E-maily</h3>
       ${f('notifyTo', 'Kam chodí nové objednávky', 'info.webhunter@email.cz')}
       ${f('replyTo', 'Kam zákazníci odpovídají', 'info.webhunter@email.cz')}
+      ${f('siteUrl', 'Adresa webu (odkazy v e-mailech)', 'https://vizitkomat.eu/', 'Po spuštění domény změňte na https://vizitkomat.eu/')}
       <div data-msg></div><button class="btn y" type="submit">Uložit nastavení</button></form>
   </div><div class="stack">
 
