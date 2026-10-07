@@ -46,9 +46,9 @@
         <label class="fl"><span>E-mail</span><input name="email" type="email" autocomplete="email" required></label>
         <label class="chk"><input type="checkbox" data-company-toggle> {{ L('Nakupujem na firmu', 'Nakupuji na firmu') }}</label>
         <div class="co__company" data-company hidden>
+          <label class="fl"><span>IČO <i data-ico-st>{{ L('údaje doplníme z registra', 'údaje doplníme z ARES') }}</i></span><input name="ico" inputmode="numeric" maxlength="10" data-ico></label>
           <label class="fl"><span>{{ L('Názov firmy', 'Název firmy') }}</span><input name="company" autocomplete="organization"></label>
-          <div class="row3">
-            <label class="fl"><span>IČO</span><input name="ico" inputmode="numeric"></label>
+          <div class="row2">
             <label class="fl"><span>DIČ</span><input name="dic"></label>
             {% if lang == 'sk' %}<label class="fl"><span>IČ DPH</span><input name="icdph"></label>{% endif %}
           </div>
@@ -83,7 +83,7 @@
         <label class="chk chk--terms"><input type="checkbox" name="terms" required> <span>{{ L('Súhlasím s', 'Souhlasím s') }} <a href="{{ link('podmienky') }}" target="_blank">{{ L('obchodnými podmienkami', 'obchodními podmínkami') }}</a> {{ L('a beriem na vedomie', 'a beru na vědomí') }} <a href="{{ link('gdpr') }}" target="_blank">{{ L('spracovanie osobných údajov', 'zpracování osobních údajů') }}</a>. {{ L('Vizitky sa vyrábajú na mieru, po spustení výroby od zmluvy nie je možné odstúpiť.', 'Vizitky se vyrábějí na míru, po zahájení výroby nelze od smlouvy odstoupit.') }}</span></label>
         <p class="co__err" data-err hidden></p>
         <button class="btn btn--y btn--lg co__go" type="submit">{{ L('Objednať s povinnosťou platby', 'Objednat s povinností platby') }}</button>
-        <p class="co__safe">{{ L('Pred tlačou návrh skontroluje človek.', 'Před tiskem návrh zkontroluje člověk.') }}</p>
+        <ul class="co__trust"><li>{{ L('Platíte až po kontrole návrhu', 'Platíte až po kontrole návrhu') }}</li><li>{{ L('Bez registrácie a bez karty', 'Bez registrace a bez karty') }}</li><li>{{ L('Doprava zadarmo do CZ aj SK', 'Doprava zdarma do CZ i SK') }}</li></ul>
       </aside>
     </form>
   </div>

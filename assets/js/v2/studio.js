@@ -120,9 +120,32 @@ async function runAI(prompt, previous) {
   st.ai = r.designs;
   $('[data-ai-load]').hidden = true;
   $('[data-ai-intro]').textContent = r.intro;
+  paintMine();
   paintMocks();
   $('[data-ai-more]').hidden = false;
 }
+// vlastné údaje priamo vo výbere návrhov (živo sa prepíšu do všetkých troch)
+const MINE_K = ['name', 'phone', 'email', 'web'];
+function paintMine() {
+  const box = $('[data-mine]'); box.hidden = !st.ai.length;
+  const f = st.ai[0]?.f || {};
+  $$('[data-m]', box).forEach((i) => { const k = i.dataset.m; if (document.activeElement !== i) i.value = f[k] && f[k] !== DEFAULT_FIELDS[k] ? f[k] : ''; });
+}
+const remock = debounce(() => st.ai.forEach((_, i) => paintMockImgs(i)), 650);
+$('[data-mine]').addEventListener('input', (e) => {
+  const i = e.target.closest('[data-m]'); if (!i) return;
+  const k = i.dataset.m, v = i.value.trim();
+  st.touched.add(k);
+  const FREE = /^(gmail|seznam|email|centrum|post|azet|zoznam|outlook|hotmail|icloud|yahoo|atlas|volny|tiscali)\./i;
+  st.ai.forEach((d) => {
+    d.f[k] = v;
+    // web podľa domény e-mailu (vymyslený web od AI nahradíme)
+    if (k === 'email' && !st.touched.has('web') && v.includes('@')) { const dom = v.split('@')[1] || ''; d.f.web = dom.includes('.') && !FREE.test(dom) ? dom : ''; }
+  });
+  if (k === 'email' && !st.touched.has('web')) $('[data-m="web"]').value = st.ai[0]?.f.web || '';
+  remock();
+});
+$('[data-mine]').addEventListener('submit', (e) => e.preventDefault());
 const SCENES = ['#E9E2D6', '#DCE3EC', '#E6DED8'];
 function sceneFor(d, i) { return d.pal && contrast(d.pal.bg, '#FFFFFF') > 6 ? ['#E9E2D6', '#DDE1EA', '#E7E0DA'][i % 3] : SCENES[i % 3]; }
 function dirLabel(dir, i) { return { classic: tr('Klasický', 'Klasický'), modern: tr('Moderný', 'Moderní'), creative: tr('Kreatívny', 'Kreativní') }[dir] || `${tr('Návrh', 'Návrh')} ${i + 1}`; }
@@ -136,11 +159,15 @@ function paintMocks() {
     paintMockImgs(i);
   });
 }
+const mockTok = [];
 async function paintMockImgs(i) {
   const el = $(`.mock[data-i="${i}"]`); if (!el) return;
-  const d = st.ai[i];
+  const d = st.ai[i], tok = (mockTok[i] = (mockTok[i] || 0) + 1);
+  el.classList.add('is-busy');
   const [f, b] = await Promise.all([thumb(d, 'front', 900).then((u) => photo(u)), thumb(d, 'back', 900).then((u) => photo(u))]);
   const m = await mockup(f, b, { width: 1000, seed: i });
+  if (mockTok[i] !== tok) return;
+  el.classList.remove('is-busy');
   el.querySelector('.mock__scene').classList.add('is-photo');
   el.querySelector('.mock__front').src = m; el.querySelector('.mock__back').removeAttribute('src');
 }
@@ -176,7 +203,7 @@ const IND = {
   pravo: ['pravnik', 'advokat', 'financie', 'uctovnictvo', 'poistenie', 'konzultant', 'poradenstvo'],
   kreativ: ['foto', 'dizajn', 'kreativ', 'it', 'marketing', 'agentura', 'hudba', 'umelec', 'startup'],
 };
-const RICH = ['glow', 'saloon', 'cafe', 'samet', 'venec', 'deco', 'odznak', 'medic', 'builders', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'ruzovezlato', 'akvarelsalvia', 'konfety'];
+const RICH = ['kytice', 'klas', 'etiketa', 'lotos', 'vykres', 'erb', 'objektiv', 'prazirna', 'arkada', 'stavitel', 'neon', 'eukalyptus', 'garaz', 'chmel', 'hvezdy', 'panorama', 'letokruhy', 'dortik', 'glow', 'saloon', 'builders', 'cafe', 'samet', 'venec', 'deco', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'odznak', 'medic', 'konfety', 'ruzovezlato', 'akvarelsalvia'];
 // ukážkový obor šablóny, s menom zákazníka
 function personaFor(id, nm) {
   const pk = TPL_PERSONA[id] || 'arch', p = PERSONAS[pk], f = personaFields(pk);
@@ -494,6 +521,9 @@ function paintPreflight() {
   const { r, d } = v4.pf4, f = d.f || {}, L = [];
   const ok = (t) => L.push({ ok: true, t }), warn = (t, fix, label) => L.push({ ok: false, t, fix, label });
   if (f.name && f.name.trim()) ok(tr('Meno je vyplnené', 'Jméno je vyplněné')); else warn(tr('Chýba meno', 'Chybí jméno'), 'edit', tr('Doplniť', 'Doplnit'));
+  const SAMPLE = /(605|905) 123 456|@hruskastudio\.|hruskastudio\./;
+  const sample = ['phone', 'email', 'web'].filter((k) => SAMPLE.test(f[k] || ''));
+  if (sample.length) warn(tr('Na vizitke sú ešte ukážkové kontakty (telefón alebo e-mail). Prepíšte ich na svoje.', 'Na vizitce jsou ještě ukázkové kontakty (telefon nebo e-mail). Přepište je na své.'), 'edit', tr('Prepísať', 'Přepsat'));
   if ((f.phone || '').trim() || (f.email || '').trim()) ok(tr('Je tam telefón alebo e-mail', 'Je tam telefon nebo e-mail')); else warn(tr('Nie je tam telefón ani e-mail', 'Není tam telefon ani e-mail'), 'edit', tr('Doplniť', 'Doplnit'));
   if (r.small.length) { const m = r.small.reduce((a, b) => (a.pt < b.pt ? a : b)); warn(tr(`Veľmi malé písmo (${m.pt.toFixed(1)} pt): „${m.text}“. Na papieri sa zle číta.`, `Velmi malé písmo (${m.pt.toFixed(1)} pt): „${m.text}“. Na papíře se špatně čte.`), 'edit', tr('Upraviť', 'Upravit')); }
   else ok(tr('Písmo je dosť veľké na tlač', 'Písmo je dost velké pro tisk'));
@@ -564,6 +594,38 @@ $('[data-add-cart]').addEventListener('click', async (e) => {
 });
 
 /* =========================================================
+   ULOŽIŤ NA NESKÔR (odkaz e-mailom)
+   ========================================================= */
+const sdlg = $('[data-save-dlg]'), sform = $('[data-save-form]');
+$$('[data-save-open]').forEach((b) => b.addEventListener('click', async () => {
+  if (!st.loaded) return;
+  sform.hidden = false; $('[data-save-ok]').hidden = true; $('[data-save-err]').hidden = true;
+  try { const c = JSON.parse(localStorage.getItem('vk2-checkout') || 'null'); if (c?.email && !sform.email.value) sform.email.value = c.email; } catch (e) { /* nič */ }
+  if (!sform.email.value && ed.design.f.email && ed.design.f.email !== DEFAULT_FIELDS.email) sform.email.value = ed.design.f.email;
+  sdlg.showModal();
+  $('[data-save-img]').src = await snapshot(ed.printable(), 'front', 720, 'image/jpeg', 0.86);
+}));
+$$('[data-save-x]').forEach((b) => b.addEventListener('click', () => sdlg.close()));
+sdlg.addEventListener('click', (e) => { if (e.target === sdlg) sdlg.close(); });
+sform.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = sform.email.value.trim(), err = $('[data-save-err]');
+  if (!/^\S+@\S+\.\S+$/.test(email)) { err.hidden = false; err.textContent = tr('Skontrolujte e-mail.', 'Zkontrolujte e-mail.'); sform.email.focus(); return; }
+  const go = $('[data-save-go]'); go.disabled = true;
+  try {
+    const state = { ...ed.export(), cfg: st.cfg, slugTouched: st.slugTouched, touched: [...st.touched] };
+    const thumb = await snapshot(ed.printable(), 'front', 720, 'image/jpeg', 0.84);
+    const r = await fetch(API + '/draft', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, lang: VK.lang, state, thumb }) });
+    if (!r.ok) throw new Error(r.status);
+    const j = await r.json();
+    try { localStorage.setItem('vk2-draft-id', j.id); } catch (x) { /* nič */ }
+    sform.hidden = true; $('[data-save-ok]').hidden = false;
+    $('[data-save-to]').textContent = tr(`Poslali sme ho na ${email}. Ak nepríde do pár minút, pozrite sa do priečinka Hromadné alebo Spam.`, `Poslali jsme ho na ${email}. Pokud nepřijde do pár minut, podívejte se do složky Hromadné nebo Spam.`);
+  } catch (x) { err.hidden = false; err.textContent = tr('Nepodarilo sa odoslať. Skúste to o chvíľu znova.', 'Nepodařilo se odeslat. Zkuste to za chvíli znovu.'); }
+  finally { go.disabled = false; }
+});
+
+/* =========================================================
    UKLADANIE A ŠTART
    ========================================================= */
 const persist = debounce(() => { if (ed && st.loaded) store.set(SAVE, { ...ed.export(), cfg: st.cfg, slugTouched: st.slugTouched, touched: [...st.touched] }); }, 700);
@@ -584,6 +646,21 @@ const persist = debounce(() => { if (ed && st.loaded) store.set(SAVE, { ...ed.ex
     await loadDesign(newDesign(draft)); go('edit');
     return;
   }
+  // návrat z e-mailu „uložiť na neskôr“
+  const nid = params.get('navrh');
+  if (nid && /^[a-z2-9]{9}$/.test(nid)) {
+    try {
+      const r = await fetch(`${API}/draft/${nid}`); if (!r.ok) throw new Error(r.status);
+      const { state: s } = await r.json();
+      st.cfg = { ...st.cfg, ...s.cfg }; st.slugTouched = !!s.slugTouched; (s.touched || []).forEach((k) => st.touched.add(k));
+      st.reached.add('choose');
+      await loadDesign(s.d, s.sides, s.custom); go('edit');
+      toast(tr('Vitajte späť, vizitka je presne tak, ako ste ju nechali.', 'Vítejte zpět, vizitka je přesně tak, jak jste ji nechali.'));
+      history.replaceState(null, '', location.pathname);
+      return;
+    } catch (e) { toast(tr('Uložený návrh sme nenašli, platí 90 dní.', 'Uložený návrh jsme nenašli, platí 90 dní.')); }
+  }
+  if (params.get('pokracovat') && st.saved?.d) { $('[data-resume-go]').click(); return; }
   const rez = params.get('rezim');
   if (rez === 'ai' && params.get('prompt')) runAI(params.get('prompt'));
   else if (rez === 'sablony') showTemplates();

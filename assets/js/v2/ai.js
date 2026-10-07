@@ -155,11 +155,14 @@ function deriveContacts(f, base) {
 
 // ---------- záloha bez servera ----------
 const IND_TPL = {
-  kadernik: ['saloon', 'glow', 'maison'], reality: ['samet', 'builders', 'venec'], stavba: ['builders', 'odznak', 'morton'],
-  it: ['kontrast', 'swiss', 'bodka'], pravnik: ['venec', 'deco', 'luxury'], wellness: ['vetvicka', 'boho', 'akvarelsalvia'],
-  foto: ['foto', 'ruzovezlato', 'galeria'], gastro: ['cafe', 'odznak', 'figlia'], auto: ['odznak', 'builders', 'loud'],
-  lekar: ['medic', 'vlnyluxe', 'maitland'], sport: ['odznak', 'loud', 'crop'],
+  kadernik: ['saloon', 'arkada', 'glow'], reality: ['panorama', 'samet', 'builders'], stavba: ['stavitel', 'vykres', 'builders'],
+  it: ['neon', 'kontrast', 'swiss'], pravnik: ['erb', 'deco', 'venec'], wellness: ['lotos', 'hvezdy', 'vetvicka'],
+  foto: ['objektiv', 'eukalyptus', 'ruzovezlato'], gastro: ['prazirna', 'cafe', 'klas'], auto: ['garaz', 'stavitel', 'odznak'],
+  lekar: ['medic', 'vlnyluxe', 'maitland'], sport: ['odznak', 'garaz', 'loud'],
 };
+// konkrétny odbor podľa slov v zadaní → ilustrovaná šablóna na prvé miesto
+const KW_TPL = [[/pek[aá]r|chleb|chlieb|kvás/i, 'klas'], [/v[ií]n[aoá]r|vinař|víno|vino\b/i, 'etiketa'], [/kvet|květ|flor/i, 'kytice'], [/pivo|pivovar|sládek|sládok/i, 'chmel'], [/stol[aá]r|truhl|nábyt|nabyt/i, 'letokruhy'], [/cukr|tort|dort|zákusk|zakusk/i, 'dortik'], [/foto|fotograf/i, 'objektiv'], [/káv|kav[aá]r|kavia|barista|pražia|praží/i, 'prazirna'], [/svad|svat|wedding/i, 'eukalyptus'], [/advok|práv|prav[nň]|notár|notář/i, 'erb'], [/archit/i, 'vykres'], [/auto|servis|mechan|pneu/i, 'garaz'], [/jóg|jog[ay]/i, 'lotos'], [/terap|psych|kouč|kouc/i, 'hvezdy'], [/realit|makl/i, 'panorama'], [/stav[ebi]|stavb/i, 'stavitel'], [/program|vývoj|vyvoj|softw/i, 'neon'], [/kader|kadeř|salón|salon|nech|neht/i, 'arkada']];
+
 const IND_PAL = {
   kadernik: ['ruza', 'krieda', 'levandula'], reality: ['noir', 'navy', 'smaragd'], stavba: ['kobalt', 'navy', 'piesok'],
   it: ['limetka', 'grafit', 'sneh'], pravnik: ['noir', 'bordo', 'smaragd'], wellness: ['salvia', 'krieda', 'levandula'],
@@ -192,7 +195,9 @@ function nameRole(raw) {
   return { name: m[1], role };
 }
 function local(prompt, base, A, onArt) {
-  const ids = IND_TPL[A.industry] || ['glow', 'saloon', 'odznak'];
+  let ids = IND_TPL[A.industry] || ['glow', 'saloon', 'odznak'];
+  const kw = KW_TPL.find(([re]) => re.test(prompt));
+  if (kw) ids = [kw[1], ...ids.filter((t) => t !== kw[1])].slice(0, 3);
   const pals = IND_PAL[A.industry] || ['krieda', 'more', 'ruza'];
   const L = CZ ? 'cz' : 'sk';
   const I = INDUSTRIES[A.industry];

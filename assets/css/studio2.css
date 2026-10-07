@@ -25,7 +25,7 @@
 .resume img { width: 110px; aspect-ratio: 90/50; object-fit: cover; border-radius: 6px; box-shadow: 0 6px 14px -6px rgba(15, 20, 64, .4); }
 .resume b { display: block; } .resume span { font-size: .88rem; color: var(--ink-2); }
 .resume .btn { margin-left: auto; }
-.ways { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 16px; }
+.ways { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 22px; }
 .way { position: relative; display: flex; flex-direction: column; text-align: left; padding: 1.8rem; border-radius: 30px; background: #fff; box-shadow: 0 0 0 3px var(--ink), 8px 9px 0 var(--ink); transition: transform .3s var(--pop), box-shadow .3s var(--pop); min-height: 380px; }
 .way:hover { transform: translate(-2px, -3px); box-shadow: 0 0 0 3px var(--ink), 10px 12px 0 var(--ink); }
 .way h2 { font-size: clamp(1.8rem, 2.6vw, 2.4rem); }
@@ -43,7 +43,7 @@
 .chips button:hover { background: var(--yellow); color: var(--ink); transform: rotate(-2deg); }
 .way__note { margin-top: .9rem; font-size: .78rem; line-height: 1.45; opacity: .75; }
 .way__note a { color: inherit; text-decoration: underline; }
-.way__thumbs { position: relative; height: 150px; margin-bottom: 1.2rem; }
+.way__thumbs { position: relative; aspect-ratio: 2 / 1; margin-bottom: 1.2rem; }
 .way__thumbs img { position: absolute; width: 70%; height: auto; aspect-ratio: 90/50; object-fit: cover; border-radius: 3px; box-shadow: var(--card-sh); background: #EEF0FA; }
 .way__thumbs img:nth-child(1) { left: 0; top: 18px; transform: rotate(-6deg); }
 .way__thumbs img:nth-child(2) { left: 15%; top: 4px; transform: rotate(1deg); z-index: 2; }
@@ -368,3 +368,27 @@
 .ed-price b { font-size: 1.25rem; color: var(--ink); letter-spacing: -.03em; }
 .ed-price small { font-size: .72rem; color: #1D7A45; font-weight: 700; }
 @media (max-width: 700px) { .ed-price { display: none; } }
+
+/* vlastné údaje vo výbere */
+.mine4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 12px; align-items: end; padding: 1.1rem 1.2rem 1.2rem; margin: 0 0 1.4rem; border-radius: 22px; background: #fff; box-shadow: var(--sh); }
+.mine4__h { grid-column: 1 / -1; font-size: 1.05rem; letter-spacing: -.02em; }
+.mine4__h small { font-weight: 600; color: var(--ink-3); font-size: .86rem; letter-spacing: 0; margin-left: .3rem; }
+.mine4 label { display: grid; gap: .25rem; }
+.mine4 span { font-size: .74rem; font-weight: 700; color: var(--ink-2); }
+.mine4 input { min-height: 44px; border: 0; border-radius: 12px; padding: .6rem .8rem; background: #F3F4FB; font-weight: 700; font-size: .95rem; outline: 0; box-shadow: inset 0 0 0 2px transparent; transition: box-shadow .15s, background-color .15s; }
+.mine4 input:focus { background: #fff; box-shadow: inset 0 0 0 2px var(--cobalt); }
+.mock.is-busy .mock__front { filter: blur(1.5px) saturate(.9); transition: filter .3s; }
+@media (max-width: 900px) { .mine4 { grid-template-columns: 1fr 1fr; } }
+.ed-save { margin-left: 1.2rem; color: var(--ink-2); }
+.sum__save { justify-self: center; color: #fff; opacity: .85; font-size: .88rem; }
+.sum { display: grid; }
+@media (max-width: 700px) { .ed-save { display: none; } }
+.paper, .qty button { position: relative; }
+.badge4 { position: absolute; top: -9px; right: 10px; padding: .18rem .5rem; border-radius: 99px; background: var(--coral); color: #fff; font-size: .64rem; font-weight: 800; letter-spacing: .01em; box-shadow: 0 2px 0 var(--coral-2); white-space: nowrap; }
+.qty .badge4 { right: 50%; transform: translateX(50%); }
+.skel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; margin-top: 2rem; }
+.skel i { aspect-ratio: 5/4; border-radius: 26px; background: linear-gradient(100deg, #EFE6D6 30%, #FBF4E8 50%, #EFE6D6 70%) 0 0 / 300% 100%; animation: skel 1.4s linear infinite; }
+.skel i:nth-child(2) { animation-delay: .15s; } .skel i:nth-child(3) { animation-delay: .3s; }
+@keyframes skel { to { background-position: -150% 0; } }
+@media (max-width: 900px) { .skel { grid-template-columns: 1fr; } .skel i + i { display: none; } }
+@media (prefers-reduced-motion: reduce) { .skel i { animation: none; } }

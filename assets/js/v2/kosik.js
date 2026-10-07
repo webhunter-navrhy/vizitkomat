@@ -32,6 +32,29 @@ function specs(c, it) {
 function arrival(items) { const now = new Date(); const ex = items.every((i) => i.config.express || i.kind === 'digital'); return addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + (ex ? 2 : 4)); }
 
 let items = [];
+// výhodnejšia ponuka k položke: viac kusov alebo lepší papier
+function upsell(it) {
+  const c = it.config; if (c.kind === 'digital') return '';
+  const now = itemPrice(c), out = [];
+  const nq = P.qty[P.qty.indexOf(c.qty) + 1];
+  if (nq) {
+    const np = itemPrice({ ...c, qty: nq }), diff = np - now;
+    if (diff <= now * 0.5) out.push(`<button data-up="${it.id}" data-qty-to="${nq}"><b>${tr(`${nq} ks za +${money(diff)}`, `${nq} ks za +${money(diff)}`)}</b><small>${tr('cena za kus', 'cena za kus')} ${money(np / nq, { decimals: 2 })} ${tr('namiesto', 'místo')} ${money(now / c.qty, { decimals: 2 })}</small></button>`);
+  }
+  if (c.paper === 'matny' && (c.finish || 'none') === 'none' && !it.design?.custom) {
+    const sp = itemPrice({ ...c, finish: 'soft' });
+    out.push(`<button data-up="${it.id}" data-soft="1"><b>${tr('Zamatový soft-touch', 'Sametový soft-touch')} +${money(sp - now)}</b><small>${tr('najobľúbenejší, príjemný na dotyk', 'nejoblíbenější, příjemný na dotek')}</small></button>`);
+  }
+  return out.length ? `<div class="it__up">${out.join('')}</div>` : '';
+}
+// odpočet: do 14:00 v pracovný deň ideme o deň skôr
+function deadline() {
+  const n = new Date(), d = n.getDay();
+  if (d === 0 || d === 6 || n.getHours() >= 14) return '';
+  const left = (14 * 60) - (n.getHours() * 60 + n.getMinutes());
+  const h = Math.floor(left / 60), m = left % 60;
+  return tr(`Objednajte do 14:00 (zostáva ${h ? h + ' h ' : ''}${m} min) a počítame s týmto termínom.`, `Objednejte do 14:00 (zbývá ${h ? h + ' h ' : ''}${m} min) a počítáme s tímto termínem.`);
+}
 async function paint() {
   items = await store.cartItems();
   $('[data-empty]').hidden = !!items.length; $('[data-full]').hidden = !items.length;
@@ -44,6 +67,7 @@ async function paint() {
     return `<li class="it"><div class="it__v">${it.thumb ? `<img src="${it.thumb}" alt="">` : ''}${it.thumbBack ? `<img src="${it.thumbBack}" alt="">` : ''}</div>
       <div class="it__b"><p class="it__k">${KIND[it.kind] || ''}</p><h3>${esc(it.title)}</h3><p class="it__s">${specs(c, it).map(esc).join(' · ')}</p>
       <div class="it__a">${q}${it.design?.custom ? '' : `<button data-edit="${it.id}">${tr('Upraviť', 'Upravit')}</button><button data-team="${it.id}">+ ${tr('Kolega', 'Kolega')}</button>`}<button data-del="${it.id}">${tr('Odstrániť', 'Odstranit')}</button></div></div>
+      ${upsell(it)}
       <b class="it__p">${money(itemPrice(c))}</b></li>`;
   }).join('');
   const total = items.reduce((s, it) => s + itemPrice(it.config), 0);
@@ -52,7 +76,7 @@ async function paint() {
   const dig = items.every((i) => i.kind === 'digital');
   $('[data-ship-fs]').hidden = dig;
   $$('[data-ship-fs] [required]').forEach((i) => { i.required = !dig; });
-  $('[data-date]').textContent = dig ? tr('Digitálnu vizitku zapneme hneď po zaplatení.', 'Digitální vizitku zapneme hned po zaplacení.') : `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(arrival(items))}`;
+  $('[data-date]').innerHTML = dig ? tr('Digitálnu vizitku zapneme hneď po zaplatení.', 'Digitální vizitku zapneme hned po zaplacení.') : `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(arrival(items))}${deadline() ? `<small>${deadline()}</small>` : ''}`;
 }
 document.addEventListener('click', async (e) => {
   const del = e.target.closest('[data-del]'); if (del) { await store.cartRemove(del.dataset.del); paint(); }
@@ -64,6 +88,34 @@ document.addEventListener('click', async (e) => {
     await store.cartRemove(it.id);
     location.href = VK.links.tvorba + '?rezim=texty';
   }
+});
+document.addEventListener('click', async (e) => {
+  const u = e.target.closest('[data-up]'); if (!u) return;
+  const it = items.find((x) => x.id === u.dataset.up); if (!it) return;
+  if (u.dataset.qtyTo) await store.cartUpdate(it.id, { config: { qty: +u.dataset.qtyTo } });
+  if (u.dataset.soft) await store.cartUpdate(it.id, { config: { finish: 'soft' } });
+  paint();
+});
+setInterval(() => { if (items.length) paint(); }, 60000);
+// IČO → údaje firmy z ARES / RPO
+let icoT;
+$('[data-ico]').addEventListener('input', (e) => {
+  clearTimeout(icoT);
+  const v = e.target.value.replace(/\s/g, ''), st = $('[data-ico-st]'), f = $('[data-checkout]');
+  if (!/^\d{8}$/.test(v)) return;
+  icoT = setTimeout(async () => {
+    st.textContent = tr('hľadám…', 'hledám…');
+    try {
+      const land = f.country?.value === 'SK' ? 'sk' : 'cz';
+      const r = await fetch(`${VK.orderEndpoint.replace(/\/order$/, '')}/firma?ico=${v}&land=${land}`);
+      if (!r.ok) throw new Error(r.status);
+      const j = await r.json();
+      f.company.value = j.company || f.company.value;
+      if (j.dic && f.dic && !f.dic.value) f.dic.value = j.dic;
+      if (!f.street.value && j.street) { f.street.value = j.street; f.city.value = j.city; f.zip.value = j.zip; if (f.country && j.country) f.country.value = j.country; }
+      st.textContent = tr('✓ doplnené z registra', '✓ doplněno z ARES');
+    } catch (x) { st.textContent = tr('firmu sme nenašli, vyplňte ručne', 'firmu jsme nenašli, vyplňte ručně'); }
+  }, 300);
 });
 document.addEventListener('change', async (e) => { const s = e.target.closest('[data-qty]'); if (s) { await store.cartUpdate(s.dataset.qty, { config: { qty: +s.value } }); paint(); } });
 $('[data-company-toggle]').addEventListener('change', (e) => { $('[data-company]').hidden = !e.target.checked; });

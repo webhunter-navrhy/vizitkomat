@@ -12,19 +12,40 @@
 {% if og %}<meta property="og:image" content="{{ og }}">{% endif %}
 <link rel="icon" href="{{ R }}assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="{{ R }}assets/img/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="{{ title.split(' – ')[0].split(' · ')[0] }}">
+<meta property="og:type" content="profile">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}">
 <style>
   html, body { margin: 0; min-height: 100%; background: {{ theme }}; }
-  .vpage { max-width: 480px; margin: 0 auto; min-height: 100svh; }
-  @media (min-width: 560px) { body { padding: 32px 0; background: radial-gradient(circle at 50% 0%, color-mix(in srgb, {{ theme }} 80%, #fff), {{ theme }}); } .vpage { min-height: auto; border-radius: 30px; overflow: hidden; box-shadow: 0 30px 80px -30px rgba(0,0,0,.55); } }
-  .vnote { max-width: 480px; margin: 16px auto 24px; text-align: center; font: 12px/1.5 system-ui, sans-serif; opacity: .7; }
+  .vpage { width: 100%; max-width: 480px; margin: 0 auto; min-height: 100svh; }
+  @media (min-width: 560px) {
+    body { padding: 32px 0; background: radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, {{ theme }} 82%, #fff), {{ theme }} 70%); }
+    .vpage { min-height: auto; border-radius: 34px; overflow: clip; box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 40px 90px -36px rgba(0,0,0,.6); }
+    .vpage .dc__bar { border-radius: 0 0 34px 34px; }
+  }
 </style>
 <script type="importmap">{{ importmap }}</script>
 <script>window.VK = { lang: '{{ lang }}', links: {} };</script>
 </head>
 <body>
-<main class="vpage" id="card"></main>
+<div class="vwrap">
+  <aside class="vside" data-vside hidden>
+    <div class="vside__qr" data-vqr></div>
+    <h2 data-vname></h2>
+    <p>{{ 'Naskenujte QR kód telefonem a uložte si kontakt jedním ťuknutím.' if lang == 'cz' else 'Naskenujte QR kód telefónom a uložte si kontakt jedným ťuknutím.' }}</p>
+    <ol class="vside__steps">
+      <li><b>1</b>{{ 'Otevřete fotoaparát' if lang == 'cz' else 'Otvorte fotoaparát' }}</li>
+      <li><b>2</b>{{ 'Namiřte na kód' if lang == 'cz' else 'Namierte na kód' }}</li>
+      <li><b>3</b>{{ 'Ťukněte na „Uložit do kontaktů“' if lang == 'cz' else 'Ťuknite na „Uložiť do kontaktov“' }}</li>
+    </ol>
+  </aside>
+  <main class="vpage" id="card"></main>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script type="application/json" id="data">{{ card_json }}</script>
@@ -41,7 +62,16 @@
   const fams = FONT_CSS.split('?')[1].split('&').filter((x) => x.startsWith('family=') && [fp.display, fp.text].some((n) => n && x.startsWith('family=' + n.replace(/ /g, '+') + (x.includes(':') ? ':' : ''))));
   if (fams.length) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?' + fams.join('&') + '&display=swap'; document.head.append(l); }
   const url = location.href.split('#')[0].split('?')[0];
-  renderDigital(document.getElementById('card'), d, { url, qr: (u) => qrSVG(u), heading: 'h1', front: card.front ? '{{ R }}' + card.front : null, back: card.back ? '{{ R }}' + card.back : null });
+  d.slug = d.slug || card.slug;
+  const el = renderDigital(document.getElementById('card'), d, { url, qr: (u) => qrSVG(u), heading: 'h1', ref: 'v-' + (card.slug || 'v'), front: card.front ? '{{ R }}' + card.front : null, back: card.back ? '{{ R }}' + card.back : null });
+  // počítač: QR na naskenovanie vedľa vizitky
+  const side = document.querySelector('[data-vside]');
+  if (side) {
+    document.documentElement.style.setProperty('--v-ink', getComputedStyle(el).getPropertyValue('--d-ink') || '#111');
+    side.querySelector('[data-vqr]').innerHTML = qrSVG(url);
+    side.querySelector('[data-vname]').textContent = (d.f && (d.f.name || d.f.company)) || '';
+    side.hidden = false;
+  }
 </script>
 </body>
 </html>

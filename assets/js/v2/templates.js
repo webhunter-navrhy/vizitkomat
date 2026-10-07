@@ -4,6 +4,7 @@
 import { SIZES, SAFE, FONTS, PALETTES, initials, splitName, mix, readable, luminance, contrast, tr } from './model.js';
 import { proTemplates } from './tpl-pro.js';
 import { richTemplates } from './tpl-rich.js';
+import { luxTemplates } from './tpl-lux.js';
 
 // ---------- pomocníci ----------
 const T = (text, o = {}) => ({ type: 'text', text, ...o });
@@ -686,6 +687,7 @@ export const TEMPLATES = {
 };
 
 Object.assign(TEMPLATES, richTemplates({ T, R, C, Ln, P, QR, IMG, I, MONO, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, seeded, smooth, SCRIPT }));
+Object.assign(TEMPLATES, luxTemplates({ T, R, C, Ln, P, QR, IMG, I, MONO, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, seeded, smooth, SCRIPT }));
 Object.assign(TEMPLATES, proTemplates({ T, R, C, Ln, P, QR, IMG, MONO, contacts, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, topoPaths, seeded, smooth, SCRIPT }));
 
 // ---------- zadné strany na výber ----------

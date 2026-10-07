@@ -222,3 +222,24 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .aibox input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 1.08rem; font-weight: 600; padding: 0 1rem; }
 .aibox input::placeholder { color: var(--ink-3); font-weight: 500; }
 @media (max-width: 640px) { .aibox { flex-direction: column; } .aibox input { padding: .9rem .6rem .4rem; } .aibox .btn { width: 100%; } }
+
+/* rozpracovaná vizitka */
+.resume-pill { position: fixed; left: 50%; bottom: 18px; z-index: 80; transform: translate(-50%, 140%); transition: transform .5s var(--pop); display: flex; align-items: center; gap: 4px; padding: 6px 6px 6px 8px; border-radius: 99px; background: var(--ink); color: #fff; box-shadow: 0 14px 30px -10px rgba(15, 20, 64, .55); max-width: calc(100% - 24px); }
+.resume-pill.on { transform: translate(-50%, 0); }
+.resume-pill a { display: flex; align-items: center; gap: .8rem; padding-right: .4rem; min-width: 0; }
+.resume-pill i { width: 34px; height: 34px; border-radius: 50%; background: var(--yellow); flex: none; position: relative; }
+.resume-pill i::after { content: ''; position: absolute; inset: 11px 8px; border-radius: 2px; background: var(--ink); }
+.resume-pill span { display: grid; line-height: 1.15; min-width: 0; }
+.resume-pill b { font-size: .86rem; }
+.resume-pill small { font-size: .74rem; opacity: .7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.resume-pill em { font-style: normal; font-weight: 800; font-size: .86rem; padding: .55rem .9rem; border-radius: 99px; background: var(--coral); white-space: nowrap; }
+.resume-pill button { width: 30px; height: 30px; border-radius: 50%; color: #fff; opacity: .6; font-size: 1.1rem; }
+/* lepiace CTA na mobile */
+.mcta { display: none; }
+@media (max-width: 760px) {
+  .mcta { display: grid; justify-items: center; gap: 1px; position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 70; padding: .8rem 1rem; border-radius: 18px; background: var(--coral); color: #fff; box-shadow: 0 5px 0 var(--coral-2), 0 16px 30px -10px rgba(15, 20, 64, .5); transform: translateY(160%); transition: transform .45s var(--pop); }
+  .mcta.on { transform: none; }
+  .mcta span { font-weight: 800; font-size: 1.05rem; }
+  .mcta small { font-size: .72rem; opacity: .9; font-weight: 600; }
+  .resume-pill { bottom: 92px; }
+}

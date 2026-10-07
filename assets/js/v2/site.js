@@ -52,3 +52,30 @@ export function toast(msg, action) {
   requestAnimationFrame(() => toastEl.classList.add('on'));
   clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('on'), action ? 6000 : 3500);
 }
+
+/* ---------- konverzie: rozpracovaná vizitka + lepiace CTA na mobile ---------- */
+const PAGE = document.body.className.replace(/.*page-(\S+).*/, '$1');
+const tr2 = (sk, cz) => (window.VK?.lang === 'cz' ? cz : sk);
+if (!['tvorba', 'kosik', 'objednavka', 'admin', 'v_card'].includes(PAGE)) {
+  // pripomenutie rozpracovaného návrhu (uložený v IndexedDB editora)
+  import('./store.js').then(async ({ get }) => {
+    const s = await get('studio-v2'); if (!s?.d?.f) return;
+    let closed = false; try { closed = sessionStorage.getItem('vk2-resume-x') === '1'; } catch (e) { /* nič */ }
+    if (closed || cartCountFast()) return;
+    const el = document.createElement('div'); el.className = 'resume-pill';
+    el.innerHTML = `<a href="${window.VK.links.tvorba}?pokracovat=1"><i></i><span><b>${tr2('Rozpracovaná vizitka', 'Rozpracovaná vizitka')}</b><small></small></span><em>${tr2('Pokračovať', 'Pokračovat')} →</em></a><button aria-label="×">×</button>`;
+    el.querySelector('small').textContent = s.d.f.name || '';
+    el.querySelector('button').addEventListener('click', () => { el.remove(); try { sessionStorage.setItem('vk2-resume-x', '1'); } catch (e) { /* nič */ } });
+    document.body.append(el);
+    setTimeout(() => el.classList.add('on'), 1200);
+  });
+  // lepiace tlačidlo na mobile po odscrollovaní hero
+  if (!['404', 'digitalna'].includes(PAGE)) {
+    const bar = document.createElement('a'); bar.className = 'mcta'; bar.href = window.VK.links.tvorba + '?rezim=ai';
+    bar.innerHTML = `<span>${tr2('Navrhnúť vizitku', 'Navrhnout vizitku')}</span><small>${tr2('návrh zadarmo, platíte až po kontrole', 'návrh zdarma, platíte až po kontrole')}</small>`;
+    document.body.append(bar);
+    const hero = document.querySelector('.hero, main section'); let shown = false;
+    const upd = () => { const on = window.scrollY > (hero ? hero.offsetHeight * 0.8 : 500) && (window.innerHeight + window.scrollY < document.body.scrollHeight - 420); if (on !== shown) { shown = on; bar.classList.toggle('on', on); } };
+    window.addEventListener('scroll', () => requestAnimationFrame(upd), { passive: true }); upd();
+  }
+}

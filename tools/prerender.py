@@ -58,7 +58,7 @@ async () => {
     }
   }
   // krok 2
-  const d = newDesign({ tpl: 'editorial', ...templateDefaults('editorial'), f: personaFields('arch') });
+  const d = newDesign({ tpl: 'glow', ...templateDefaults('glow'), f: personaFields('nechty'), emblem: emblemFor(PERSONAS.nechty.icon, PERSONAS.nechty.role) });
   out['step'] = await snapshot(d, 'front', 760, 'image/jpeg', 0.9);
   return out;
 }

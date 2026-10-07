@@ -1,7 +1,19 @@
 {% extends 'base.html' %}
+{% set FAQD = [
+  (L('Platí sa digitálna vizitka každý rok?', 'Platí se digitální vizitka každý rok?'), L('Nie. Zaplatíte raz ' ~ prices.digital ~ ' ' ~ prices.symbol ~ ' a vizitka beží bez predplatného. K tlačeným vizitkám ju dostanete zadarmo.', 'Ne. Zaplatíte jednou ' ~ prices.digital ~ ' ' ~ prices.symbol ~ ' a vizitka běží bez předplatného. K tištěným vizitkám ji dostanete zdarma.')),
+  (L('Musí si niekto inštalovať aplikáciu?', 'Musí si někdo instalovat aplikaci?'), L('Nie. Vizitka sa otvorí v prehliadači na iPhone aj Androide. Kontakt sa uloží cez tlačidlo „Uložiť do kontaktov“ aj s fotkou a sociálnymi sieťami.', 'Ne. Vizitka se otevře v prohlížeči na iPhonu i Androidu. Kontakt se uloží přes tlačítko „Uložit do kontaktů“ i s fotkou a sociálními sítěmi.')),
+  (L('Čo keď zmením číslo alebo prácu?', 'Co když změním číslo nebo práci?'), L('Napíšte nám a údaje zmeníme. Adresa aj QR kód ostávajú rovnaké, takže tlačené vizitky netreba vyhadzovať.', 'Napište nám a údaje změníme. Adresa i QR kód zůstávají stejné, takže tištěné vizitky není třeba vyhazovat.')),
+  (L('Môžem tam mať online rezerváciu?', 'Můžu tam mít online rezervaci?'), L('Áno. Vložte odkaz na váš rezervačný systém (Reservio, Calendly, Bookio…) a na vizitke bude veľké tlačidlo „Rezervovať termín“.', 'Ano. Vložte odkaz na váš rezervační systém (Reservio, Calendly, Bookio…) a na vizitce bude velké tlačítko „Rezervovat termín“.')),
+  (L('Ako ju budem zdieľať?', 'Jak ji budu sdílet?'), L('QR kódom na tlačenej vizitke, odkazom cez WhatsApp či SMS, v podpise e-mailu alebo ukážete QR priamo z telefónu na celú obrazovku.', 'QR kódem na tištěné vizitce, odkazem přes WhatsApp či SMS, v podpisu e-mailu nebo ukážete QR přímo z telefonu na celou obrazovku.')),
+  (L('Ako dlho bude fungovať?', 'Jak dlouho bude fungovat?'), L('Bez časového obmedzenia, kým beží Vizitkomat. Nič neplatíte každý rok a nič sa automaticky nepredlžuje.', 'Bez časového omezení, dokud běží Vizitkomat. Nic neplatíte každý rok a nic se automaticky neprodlužuje.')),
+] %}
 {% block title %}{{ L('Digitálna vizitka do telefónu | Vizitkomat', 'Digitální vizitka do telefonu | Vizitkomat') }}{% endblock %}
-{% block description %}{{ L('Digitálna vizitka s vlastnou adresou a QR kódom. Kontakt sa uloží jedným ťuknutím, zmeny urobíme kedykoľvek. K tlačeným vizitkám zadarmo, inak jednorazovo za ' ~ prices.digital ~ ' ' ~ prices.symbol ~ '.', 'Digitální vizitka s vlastní adresou a QR kódem. Kontakt se uloží jedním ťuknutím, změny uděláme kdykoli. K tištěným vizitkám zdarma, jinak jednorázově za ' ~ prices.digital ~ ' ' ~ prices.symbol ~ '.') }}{% endblock %}
-{% block head %}<link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}"><link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
+{% block description %}{{ L('Digitálna vizitka s vlastnou adresou a QR kódom. Kontakt sa uloží jedným ťuknutím, online rezervácia, recenzie aj otváracie hodiny. K tlačeným vizitkám zadarmo, inak jednorazovo za ' ~ prices.digital ~ ' ' ~ prices.symbol ~ '.', 'Digitální vizitka s vlastní adresou a QR kódem. Kontakt se uloží jedním ťuknutím, online rezervace, recenze i otevírací doba. K tištěným vizitkám zdarma, jinak jednorázově za ' ~ prices.digital ~ ' ' ~ prices.symbol ~ '.') }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}"><link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">
+
+<script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': FAQD | map('faqld') | list} | tojson }}</script>
+<script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'Product', 'name': L('Digitálna vizitka', 'Digitální vizitka'), 'brand': {'@type': 'Brand', 'name': 'Vizitkomat'}, 'offers': {'@type': 'Offer', 'price': prices.digital, 'priceCurrency': prices.currency, 'availability': 'https://schema.org/InStock'}} | tojson }}</script>
+{% endblock %}
 {% block main %}
 <section class="dg-hero" data-nav="yellow">
   <div class="wrap dg-hero__grid">
@@ -10,10 +22,11 @@
       <h1 class="h-xl dg-h">{{ L('Vizitka, ktorá sa', 'Vizitka, která se') }} <span class="hl-c">{{ L('nestratí.', 'neztratí.') }}</span></h1>
       <p class="lead dg-lead">{{ L('Vlastná adresa, QR kód a tlačidlo „Uložiť do kontaktov“. Pošlete ju cez WhatsApp, ukážete na stretnutí alebo ju má každý, kto naskenuje vašu tlačenú vizitku.', 'Vlastní adresa, QR kód a tlačítko „Uložit do kontaktů“. Pošlete ji přes WhatsApp, ukážete na schůzce nebo ji má každý, kdo naskenuje vaši tištěnou vizitku.') }}</p>
       <form class="aibox" data-dg-form>
-        <input id="dg-name" maxlength="40" autocomplete="name" placeholder="{{ L('Vaše meno a priezvisko', 'Vaše jméno a příjmení') }}" aria-label="{{ L('Meno', 'Jméno') }}">
+        <input id="dg-name" maxlength="40" autocomplete="name" placeholder="{{ L('Napíšte svoje meno a pozrite sa', 'Napište své jméno a podívejte se') }}" aria-label="{{ L('Meno', 'Jméno') }}">
         <button class="btn btn--b" type="submit">{{ L('Vytvoriť', 'Vytvořit') }} <span class="ar">→</span></button>
       </form>
-      <p class="dg-url">vizitkomat.eu/v/<b data-dg-slug>martin-kovac</b></p>
+      <p class="dg-url">vizitkomat.eu/v/<b data-dg-slug>{{ L('martin-kovac', 'martin-kovar') }}</b></p>
+      <div class="dgl-proof"><span>{{ L('bez aplikácie', 'bez aplikace') }}</span><span>{{ L('bez predplatného', 'bez předplatného') }}</span><span>{{ L('k tlači zadarmo', 'k tisku zdarma') }}</span></div>
     </div>
     <div class="dg-vis">
       <div class="phone"><div class="phone__screen"><div class="phone__island"></div><div class="dcard-host" data-dg-phone></div></div></div>
@@ -21,27 +34,74 @@
     </div>
   </div>
 </section>
+
+<section class="dgl-demo" data-nav="cream">
+  <div class="wrap dgl-demo__grid">
+    <div class="dgl-demo__vis">
+      <div class="phone"><div class="phone__screen"><div class="phone__island"></div><div class="dcard-host" data-dgl-phone></div></div></div>
+    </div>
+    <div>
+      <p class="kicker">{{ L('Vyskúšajte si ju', 'Vyzkoušejte si ji') }}</p>
+      <h2 class="h-l">{{ L('Ťuknite,', 'Ťukněte,') }} <span class="hl-c">{{ L('posúvajte, uložte.', 'posouvejte, uložte.') }}</span></h2>
+      <p class="lead">{{ L('Toto je skutočná digitálna vizitka, nie obrázok. Farby a písmo preberá z vašej tlačenej vizitky.', 'Tohle je skutečná digitální vizitka, ne obrázek. Barvy a písmo přebírá z vaší tištěné vizitky.') }}</p>
+      <div class="dgl-tabs" data-dgl-tabs role="tablist">
+        <button class="on" role="tab" aria-selected="true" data-p="makler" style="--c:linear-gradient(135deg,#151515,#C9A15A)"><i></i>{{ L('Realitný maklér', 'Realitní makléř') }}</button>
+        <button role="tab" aria-selected="false" data-p="nechty" style="--c:linear-gradient(135deg,#F6E3E0,#B87A6A)"><i></i>{{ L('Nechtové štúdio', 'Nehtové studio') }}</button>
+        <button role="tab" aria-selected="false" data-p="kava" style="--c:linear-gradient(135deg,#F1E8DA,#5A3B26)"><i></i>{{ L('Kaviareň', 'Kavárna') }}</button>
+      </div>
+      <ul class="dgl-list">
+        <li><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16v12H4z"/><circle cx="9" cy="11" r="2"/><path d="M6.5 16c.5-1.5 1.4-2.2 2.5-2.2s2 .7 2.5 2.2M14 10h4M14 13h3"/></svg></span><b>{{ L('Uloženie do kontaktov aj s fotkou', 'Uložení do kontaktů i s fotkou') }}</b><p>{{ L('Meno, firma, číslo, e-mail, web, adresa aj Instagram v jednom ťuknutí.', 'Jméno, firma, číslo, e-mail, web, adresa i Instagram jedním ťuknutím.') }}</p></li>
+        <li><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/></svg></span><b>{{ L('Online rezervácia', 'Online rezervace') }}</b><p>{{ L('Veľké tlačidlo na váš rezervačný systém. Klienti si termín zarezervujú bez telefonovania.', 'Velké tlačítko na váš rezervační systém. Klienti si termín zarezervují bez telefonování.') }}</p></li>
+        <li><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span><b>{{ L('„Otvorené teraz“', '„Otevřeno teď“') }}</b><p>{{ L('Z otváracích hodín vizitka sama ukáže, či máte otvorené a kedy otvárate.', 'Z otevírací doby vizitka sama ukáže, jestli máte otevřeno a kdy otevíráte.') }}</p></li>
+        <li><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.8 2.5 5.1 5.6.8-4 4 1 5.5-5-2.6-5 2.6 1-5.5-4-4 5.6-.8Z"/></svg></span><b>{{ L('Viac recenzií na Google', 'Víc recenzí na Googlu') }}</b><p>{{ L('Tlačidlo „Ohodnoťte nás“ priamo na vizitke, keď je zákazník najspokojnejší.', 'Tlačítko „Ohodnoťte nás“ přímo na vizitce, když je zákazník nejspokojenější.') }}</p></li>
+        <li><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3.5M7.5 8 12 3.5 16.5 8"/><path d="M5 12.5V19a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 19v-6.5"/></svg></span><b>{{ L('Zdieľanie jedným ťuknutím', 'Sdílení jedním ťuknutím') }}</b><p>{{ L('WhatsApp, SMS, e-mail alebo QR kód na celú obrazovku.', 'WhatsApp, SMS, e-mail nebo QR kód na celou obrazovku.') }}</p></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <section class="dg-how" data-nav="cream">
   <div class="wrap">
     <h2 class="h-l">{{ L('Tri kroky,', 'Tři kroky,') }} <span class="hl-b">{{ L('žiadna aplikácia.', 'žádná aplikace.') }}</span></h2>
     <ol class="dg-steps">
-      <li><span>1</span><h3>{{ L('Navrhnete', 'Navrhnete') }}</h3><p>{{ L('V rovnakom editore ako tlačenú vizitku. Pridáte fotku, pár viet o sebe, služby, otváracie hodiny a siete.', 'Ve stejném editoru jako tištěnou vizitku. Přidáte fotku, pár vět o sobě, služby, otevírací dobu a sítě.') }}</p></li>
+      <li><span>1</span><h3>{{ L('Navrhnete', 'Navrhnete') }}</h3><p>{{ L('V rovnakom editore ako tlačenú vizitku. Pridáte fotku, pár viet o sebe, služby s cenami, otváracie hodiny, rezerváciu a siete.', 'Ve stejném editoru jako tištěnou vizitku. Přidáte fotku, pár vět o sobě, služby s cenami, otevírací dobu, rezervaci a sítě.') }}</p></li>
       <li><span>2</span><h3>{{ L('Dostanete adresu', 'Dostanete adresu') }}</h3><p>{{ L('vizitkomat.eu/v/vase-meno a QR kód, aj na zadnú stranu tlačenej vizitky.', 'vizitkomat.eu/v/vase-jmeno a QR kód, i na zadní stranu tištěné vizitky.') }}</p></li>
       <li><span>3</span><h3>{{ L('Zdieľate', 'Sdílíte') }}</h3><p>{{ L('Odkazom, QR kódom alebo v podpise e-mailu. Kto ju otvorí, uloží si vás jedným ťuknutím.', 'Odkazem, QR kódem nebo v podpisu e-mailu. Kdo ji otevře, uloží si vás jedním ťuknutím.') }}</p></li>
     </ol>
   </div>
 </section>
+
 <section class="dg-feats" data-nav="ink">
   <div class="wrap">
     <div class="bento">
-      <article class="bx bx--y"><h3>{{ L('Uložiť do kontaktov', 'Uložit do kontaktů') }}</h3><p>{{ L('iPhone aj Android. Meno, firma, číslo, e-mail, web aj adresa naraz.', 'iPhone i Android. Jméno, firma, číslo, e-mail, web i adresa najednou.') }}</p></article>
+      <article class="bx bx--y"><h3>{{ L('Uložiť do kontaktov', 'Uložit do kontaktů') }}</h3><p>{{ L('iPhone aj Android. Meno, firma, číslo, e-mail, web, adresa, siete aj fotka naraz.', 'iPhone i Android. Jméno, firma, číslo, e-mail, web, adresa, sítě i fotka najednou.') }}</p></article>
       <article class="bx bx--c"><h3>{{ L('Zmeny kedykoľvek', 'Změny kdykoli') }}</h3><p>{{ L('Nové číslo či pozícia? Napíšte nám a zmeníme ich, bez novej tlače. QR kód na papieri ostáva.', 'Nové číslo či pozice? Napište nám a změníme je, bez nového tisku. QR kód na papíře zůstává.') }}</p></article>
-      <article class="bx bx--b"><h3>{{ L('Vaša vizitka aj v mobile', 'Vaše vizitka i v mobilu') }}</h3><p>{{ L('Hore je vaša skutočná vizitka, ťuknutím sa otočí. Farby aj písmo ladia s papierom.', 'Nahoře je vaše skutečná vizitka, ťuknutím se otočí. Barvy i písmo ladí s papírem.') }}</p></article>
-      <article class="bx bx--w"><h3>{{ L('Bez aplikácie', 'Bez aplikace') }}</h3><p>{{ L('Otvorí sa v prehliadači, nikto nič neinštaluje.', 'Otevře se v prohlížeči, nikdo nic neinstaluje.') }}</p></article>
+      <article class="bx bx--b"><h3>{{ L('Vaša vizitka aj v mobile', 'Vaše vizitka i v mobilu') }}</h3><p>{{ L('Hore je vaša skutočná vizitka, ťuknutím sa otočí a pri pohybe sa leskne. Farby aj písmo ladia s papierom.', 'Nahoře je vaše skutečná vizitka, ťuknutím se otočí a při pohybu se leskne. Barvy i písmo ladí s papírem.') }}</p></article>
+      <article class="bx bx--w"><h3>{{ L('Na plochu ako appka', 'Na plochu jako appka') }}</h3><p>{{ L('Otvorí sa v prehliadači a dá sa pridať na plochu telefónu. Nikto nič neinštaluje.', 'Otevře se v prohlížeči a dá se přidat na plochu telefonu. Nikdo nic neinstaluje.') }}</p></article>
       <article class="bx bx--soon"><h3>{{ L('Pripravujeme', 'Připravujeme') }}</h3><p>{{ L('Apple a Google Wallet · NFC karta · štatistiky zobrazení', 'Apple a Google Wallet · NFC karta · statistiky zobrazení') }}</p></article>
     </div>
   </div>
 </section>
+
+<section class="dgl-cmp" data-nav="cream">
+  <div class="wrap">
+    <h2 class="h-l">{{ L('Papier sa minie.', 'Papír dojde.') }} <span class="hl-c">{{ L('Odkaz nie.', 'Odkaz ne.') }}</span></h2>
+    <div class="dgl-table">
+      <table>
+        <thead><tr><th></th><th>{{ L('Len papier', 'Jen papír') }}</th><th>{{ L('Len digitálna', 'Jen digitální') }}</th><th class="dgl-on">{{ L('Papier + digitálna', 'Papír + digitální') }}</th></tr></thead>
+        <tbody>
+          <tr><td>{{ L('Dá sa podať pri stretnutí', 'Dá se podat při schůzce') }}</td><td class="y">✓</td><td class="n">—</td><td class="y dgl-on">✓</td></tr>
+          <tr><td>{{ L('Uloženie do kontaktov ťuknutím', 'Uložení do kontaktů ťuknutím') }}</td><td class="n">—</td><td class="y">✓</td><td class="y dgl-on">✓</td></tr>
+          <tr><td>{{ L('Pošlete cez WhatsApp či e-mail', 'Pošlete přes WhatsApp či e-mail') }}</td><td class="n">—</td><td class="y">✓</td><td class="y dgl-on">✓</td></tr>
+          <tr><td>{{ L('Zmena čísla bez novej tlače', 'Změna čísla bez nového tisku') }}</td><td class="n">—</td><td class="y">✓</td><td class="y dgl-on">✓</td></tr>
+          <tr><td>{{ L('Rezervácia, recenzie, otváracie hodiny', 'Rezervace, recenze, otevírací doba') }}</td><td class="n">—</td><td class="y">✓</td><td class="y dgl-on">✓</td></tr>
+          <tr><td>{{ L('Cena', 'Cena') }}</td><td>{{ L('od', 'od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }}</td><td>{{ prices.digital }} {{ prices.symbol }}</td><td class="dgl-on"><b>{{ L('od', 'od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }}</b><br><small>{{ L('digitálna zadarmo', 'digitální zdarma') }}</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 <section class="dg-price" data-nav="cream">
   <div class="wrap dg-price__grid">
     <div><h2 class="h-l">{{ prices.digital }} {{ prices.symbol }} <span class="hl-c">{{ L('raz a navždy.', 'jednou provždy.') }}</span></h2><p class="lead">{{ L('Žiadne predplatné ani poplatky každý rok. K tlačeným vizitkám ju dostanete zadarmo.', 'Žádné předplatné ani poplatky každý rok. K tištěným vizitkám ji dostanete zdarma.') }}</p></div>
@@ -49,6 +109,23 @@
       <a class="pcard pcard--y" href="{{ link('tvorba') }}?druh=bundle"><span class="pcard__q">{{ L('Najvýhodnejšie', 'Nejvýhodnější') }}</span><b class="pcard__p">{{ L('od', 'od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }}</b><span class="pcard__per">{{ L('100 tlačených + digitálna zadarmo', '100 tištěných + digitální zdarma') }}</span><span class="pcard__go">{{ L('Navrhnúť', 'Navrhnout') }} →</span></a>
       <a class="pcard pcard--w" href="{{ link('tvorba') }}?druh=digital"><span class="pcard__q">{{ L('Len digitálna', 'Jen digitální') }}</span><b class="pcard__p">{{ prices.digital }} {{ prices.symbol }}</b><span class="pcard__per">{{ L('jednorazovo, bez predplatného', 'jednorázově, bez předplatného') }}</span><span class="pcard__go">{{ L('Vytvoriť', 'Vytvořit') }} →</span></a>
     </div>
+  </div>
+</section>
+
+<section class="dgl-faq" data-nav="cream">
+  <div class="wrap dgl-faq__grid">
+    <h2 class="h-l">{{ L('Otázky?', 'Otázky?') }}</h2>
+    <div>{% for q, a in FAQD %}<details{% if loop.first %} open{% endif %}><summary>{{ q }}</summary><p>{{ a }}</p></details>{% endfor %}</div>
+  </div>
+</section>
+
+<section class="dgl-cta" data-nav="cobalt">
+  <div class="wrap dgl-cta__in">
+    <div>
+      <h2 class="h-l">{{ L('Vaša vizitka za 2 minúty.', 'Vaše vizitka za 2 minuty.') }}</h2>
+      <p>{{ L('Platíte až po kontrole návrhu. Bez predplatného.', 'Platíte až po kontrole návrhu. Bez předplatného.') }}</p>
+    </div>
+    <a class="btn btn--y btn--lg" href="{{ link('tvorba') }}?druh=bundle">{{ L('Vytvoriť vizitku', 'Vytvořit vizitku') }} <span class="ar">→</span></a>
   </div>
 </section>
 {% endblock %}

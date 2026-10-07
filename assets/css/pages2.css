@@ -301,3 +301,35 @@
   .team { grid-template-columns: 1fr; text-align: left; }
   .team__ic { display: none; }
 }
+.dlg__err { color: var(--coral-2); font-weight: 700; font-size: .88rem; margin: 0; }
+.dlg__fine { color: var(--ink-3); font-size: .78rem; text-align: center; }
+.dlg__ok { justify-items: start; }
+.dlg__ok .sticker { width: 86px; height: 86px; }
+/* košík: výhodnejšie ponuky, odpočet, dôvera */
+.it { grid-template-areas: 'v b p' 'v up up'; }
+.it__v { grid-area: v; } .it__b { grid-area: b; } .it__p { grid-area: p; }
+.it__up { grid-area: up; display: flex; flex-wrap: wrap; gap: 8px; }
+.it__up button { display: grid; gap: .1rem; text-align: left; padding: .6rem .85rem; border-radius: 14px; background: #FFF6E0; box-shadow: inset 0 0 0 2px #F5DC94; transition: transform .2s var(--pop), box-shadow .2s; }
+.it__up button:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 2px var(--yellow-2); }
+.it__up b { font-size: .86rem; }
+.it__up b::before { content: '+ '; color: var(--coral-2); }
+.it__up small { font-size: .74rem; color: var(--ink-2); font-weight: 500; }
+.co__date small { display: block; margin-top: .25rem; font-weight: 600; color: #fff; opacity: .85; font-size: .8rem; }
+.co__trust { display: grid; gap: .3rem; font-size: .8rem; font-weight: 600; opacity: .9; }
+.co__trust li { display: flex; gap: .5rem; align-items: center; }
+.co__trust li::before { content: '✓'; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; background: rgba(255, 255, 255, .18); font-size: .66rem; }
+.fl > span i[data-ico-st] { color: #1D7A45; }
+@media (max-width: 640px) { .it { grid-template-areas: 'v b' 'p p' 'up up'; } }
+.pr__t td a { display: inline-block; padding: .3rem .55rem; margin: -.3rem -.55rem; border-radius: 10px; transition: background-color .15s, transform .2s var(--pop); }
+.pr__t td a:hover { background: var(--ink); color: #fff; transform: translateY(-2px); }
+.pr__t tr.hi td a:hover { background: var(--ink); }
+.pr__hint { margin-top: .8rem; font-size: .86rem; font-weight: 600; color: var(--ink-3); }
+.pr__p small { display: block; margin-top: .35rem; font-size: .82rem; font-weight: 600; letter-spacing: 0; opacity: .75; }
+.pr__t td { white-space: nowrap; }
+@media (max-width: 700px) {
+  .pr__t table { min-width: 620px; }
+  .pr__t th:first-child { position: sticky; left: 0; z-index: 2; background: #fff; box-shadow: 6px 0 10px -8px rgba(15, 20, 64, .35); min-width: 132px; }
+  .pr__t tr.hi th:first-child { background: var(--yellow); }
+  .pr__t td { font-size: 1.15rem; }
+  .pr__hint::before { content: '← → '; }
+}

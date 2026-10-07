@@ -45,10 +45,20 @@ export const PERSONAS = {
     { name: 'Ondřej Bača', role: 'Barista', company: 'Kavárna Zrnko', tagline: 'Káva, kvůli které se vyplatí zastavit.', address: 'Český Krumlov' }, 'coffee'),
   cukrar: P({ name: 'Zuzana Sladká', role: 'Cukrárka', company: 'Cukráreň Zuzka', tagline: 'Torty, na ktoré sa nezabúda.', address: 'Komárno' },
     { name: 'Zuzana Sladká', role: 'Cukrářka', company: 'Cukrárna Zuzka', tagline: 'Dorty, na které se nezapomíná.', address: 'Tábor' }, 'cake'),
+  auto: P({ name: 'Peter Kolár', role: 'Automechanik', company: 'Autoservis Kolár', tagline: 'Opravené poctivo a načas.', address: 'Trenčín' },
+    { name: 'Petr Kolář', role: 'Automechanik', company: 'Autoservis Kolář', tagline: 'Opraveno poctivě a včas.', address: 'Kolín' }, 'wrench'),
+  stavba: P({ name: 'Ing. Marek Benda', role: 'Stavbyvedúci', company: 'Benda Stavby', tagline: 'Staviame pevne a načas.', address: 'Žilina' },
+    { name: 'Ing. Marek Benda', role: 'Stavbyvedoucí', company: 'Benda Stavby', tagline: 'Stavíme pevně a včas.', address: 'Ústí nad Labem' }, 'hammer'),
+  pivo: P({ name: 'Lukáš Sládek', role: 'Sládok', company: 'Pivovar Pod Hradom', tagline: 'Varené pomaly, s rešpektom.', address: 'Bojnice' },
+    { name: 'Lukáš Sládek', role: 'Sládek', company: 'Pivovar Pod Hradem', tagline: 'Vařeno pomalu, s respektem.', address: 'Kutná Hora' }, 'beer'),
+  terapeut: P({ name: 'Mgr. Lucia Tichá', role: 'Psychoterapeutka', company: 'Priestor Ticho', tagline: 'Miesto, kde sa dá nadýchnuť.', address: 'Banská Bystrica' },
+    { name: 'Mgr. Lucie Tichá', role: 'Psychoterapeutka', company: 'Prostor Ticho', tagline: 'Místo, kde se dá nadechnout.', address: 'České Budějovice' }, 'moon'),
+  svadba: P({ name: 'Simona Veselá', role: 'Svadobná koordinátorka', company: 'Áno, prosím', tagline: 'Váš deň, bez starostí.', address: 'Bratislava' },
+    { name: 'Simona Veselá', role: 'Svatební koordinátorka', company: 'Ano, prosím', tagline: 'Váš den, bez starostí.', address: 'Brno' }, 'leaf'),
 };
 
 const DOM = (p) => p.company.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/^(studio|stolarstvo|truhlarstvi|pekaren|pekarna|kaviaren|kavarna|cukraren|cukrarna|vinarstvo|vinarstvi)\s+/, '').replace(/[^a-z0-9]+/g, '');
-const FIRST = (p) => p.name.replace(/^(MUDr\.|Ing\.|JUDr\.)\s*/, '').split(' ')[0].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const FIRST = (p) => p.name.replace(/^(MUDr\.|Ing\.|JUDr\.|Mgr\.)\s*/, '').split(' ')[0].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
 /** Polia vizitky pre osobu. */
 export function personaFields(key) {
@@ -59,6 +69,7 @@ export function personaFields(key) {
 
 // ktorá osoba ukazuje ktorú šablónu
 export const TPL_PERSONA = {
+  kytice: 'kvety', klas: 'pekar', etiketa: 'vino', lotos: 'joga', vykres: 'arch', erb: 'advokat', objektiv: 'foto', prazirna: 'kava', arkada: 'kader', stavitel: 'stavba', neon: 'it', eukalyptus: 'svadba', garaz: 'auto', chmel: 'pivo', hvezdy: 'terapeut', panorama: 'makler', letokruhy: 'stolar', dortik: 'cukrar',
   glow: 'nechty', saloon: 'kader', builders: 'makler', cafe: 'kava', samet: 'makler', venec: 'vino', deco: 'advokat', vetvicka: 'kvety', mramorzlato: 'nechty', vlnyluxe: 'zubar', boho: 'joga', odznak: 'barber', medic: 'zubar', konfety: 'cukrar', ruzovezlato: 'nechty', akvarelsalvia: 'kvety',
   lina: 'nechty', alder: 'arch', ticha: 'joga', bodka: 'it', bistro: 'kava', galeria: 'foto', topo: 'makler', stoh: 'barber', organic: 'kvety', ahoj: 'cukrar', luxury: 'advokat', obrys: 'arch', olivia: 'nechty', morton: 'stolar', ar: 'advokat', letterpress: 'foto', egon: 'vino', velora: 'kvety', groom: 'kader', maison: 'kader', muse: 'zubar', casa: 'arch', perla: 'nechty', pruhy: 'cukrar', maitland: 'uct', figlia: 'pekar', ostraka: 'foto', hrastar: 'arch', loud: 'barber', cb: 'stolar', drop: 'kava', foto: 'foto', kontrast: 'it',
   podpis: 'nechty', vlny: 'foto', linka: 'arch', tvary: 'barber', oblouk: 'joga', pismena: 'cukrar', vrstevnice: 'stolar', pruh: 'kava',

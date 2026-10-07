@@ -140,7 +140,7 @@
 <!-- ===== ŠABLÓNY ===== -->
 <section class="tpls" data-nav="coral">
   <div class="wrap tpls__head">
-    <h2 class="h-l rv">{{ L('70 šablón.', '70 šablon.') }} <span class="tpls__y">{{ L('Tisíce kombinácií.', 'Tisíce kombinací.') }}</span></h2>
+    <h2 class="h-l rv">{{ L('88 šablón.', '88 šablon.') }} <span class="tpls__y">{{ L('Tisíce kombinácií.', 'Tisíce kombinací.') }}</span></h2>
     <p class="lead rv">{{ L('Navrhnuté podľa najobľúbenejších vizitiek na Pintereste. Tu s ukážkovými firmami, v editore hneď s vaším menom.', 'Navržené podle nejoblíbenějších vizitek na Pinterestu. Tady s ukázkovými firmami, v editoru hned s vaším jménem.') }}</p>
   </div>
   <div class="tpls__rows" data-tpl-rows>
@@ -167,6 +167,17 @@
       </ul>
       <a class="btn rv" href="{{ link('digitalna') }}">{{ L('Viac o digitálnej vizitke', 'Více o digitální vizitce') }} <span class="ar">→</span></a>
     </div>
+  </div>
+</section>
+
+<!-- ===== POROVNANIE ===== -->
+<section class="cmp" data-nav="cream">
+  <div class="wrap">
+    <h2 class="h-l rv">{{ L('Prečo nie', 'Proč ne') }} <span class="hl-c">{{ L('hocijaká tlačiareň?', 'kdejaká tiskárna?') }}</span></h2>
+    <div class="cmp__box rv"><table>
+      <thead><tr><th></th><th class="us"><span>vizitkomat</span></th><th>{{ L('Bežná online tlačiareň', 'Běžná online tiskárna') }}</th><th>{{ L('Grafik na zákazku', 'Grafik na zakázku') }}</th></tr></thead>
+      <tbody><tr><th>{{ L('Návrh od grafika', 'Návrh od grafika') }}</th><td class="us">{{ L('AI grafik, zadarmo', 'AI grafik, zdarma') }}</td><td data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">{{ L('nie, vlastný súbor', 'ne, vlastní soubor') }}</td><td data-l="{{ L('Grafik', 'Grafik') }}">{{ L('áno, platí sa zvlášť', 'ano, platí se zvlášť') }}</td></tr><tr><th>{{ L('Hotové za', 'Hotovo za') }}</th><td class="us">{{ L('2 minúty', '2 minuty') }}</td><td data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">{{ L('podľa toho, kto navrhuje', 'podle toho, kdo navrhuje') }}</td><td data-l="{{ L('Grafik', 'Grafik') }}">{{ L('dni až týždne', 'dny až týdny') }}</td></tr><tr><th>{{ L('Kontrola dát človekom', 'Kontrola dat člověkem') }}</th><td class="us">{{ L('áno, vždy', 'ano, vždy') }}</td><td data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">{{ L('väčšinou automat', 'většinou automat') }}</td><td data-l="{{ L('Grafik', 'Grafik') }}">{{ L('áno', 'ano') }}</td></tr><tr><th>{{ L('Digitálna vizitka s QR', 'Digitální vizitka s QR') }}</th><td class="us">{{ L('k tlači zadarmo', 'k tisku zdarma') }}</td><td class="no" data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">✕</td><td class="no" data-l="{{ L('Grafik', 'Grafik') }}">✕</td></tr><tr><th>{{ L('Platba', 'Platba') }}</th><td class="us">{{ L('až po kontrole návrhu', 'až po kontrole návrhu') }}</td><td data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">{{ L('vopred kartou', 'předem kartou') }}</td><td data-l="{{ L('Grafik', 'Grafik') }}">{{ L('záloha vopred', 'záloha předem') }}</td></tr><tr><th>{{ L('Doprava', 'Doprava') }}</th><td class="us">{{ L('zadarmo', 'zdarma') }}</td><td data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">{{ L('často sa platí', 'často se platí') }}</td><td data-l="{{ L('Grafik', 'Grafik') }}">—</td></tr></tbody>
+    </table></div>
   </div>
 </section>
 
@@ -209,6 +220,7 @@
 
 <!-- ===== CTA ===== -->
 <section class="final" data-nav="blue">
+  <div class="final__cards" aria-hidden="true"><img alt="" src="{{ pre['tpl-etiketa-f'] }}" loading="lazy"><img alt="" src="{{ pre['tpl-saloon-f'] }}" loading="lazy"><img alt="" src="{{ pre['tpl-kytice-f'] }}" loading="lazy"></div>
   <div class="wrap">
     <h2 class="h-xl final__h">{{ L('Vaša vizitka je', 'Vaše vizitka je') }} <span class="hl">{{ L('2 minúty', '2 minuty') }}</span> {{ L('odtiaľto.', 'odsud.') }}</h2>
     <form class="aibox aibox--final" data-aibox-final>
