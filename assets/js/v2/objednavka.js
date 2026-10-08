@@ -1,5 +1,5 @@
 // Stav objednávky pre zákazníka (verejný odkaz s tokenom z e-mailu)
-import { money, fmtDay, addWorkdays } from '../util.js';
+import { money, fmtDay, addWorkdays, deliveryDays } from '../util.js';
 import { tr } from './model.js';
 
 const VK = window.VK;
@@ -32,7 +32,7 @@ const HEAD = {
   k_platbe: [tr('Zostáva', 'Zbývá'), tr('len platba', 'jen platba'), tr('Návrh je pripravený na tlač. Vizitky vytlačíme hneď po pripísaní platby.', 'Návrh je připravený k tisku. Vizitky vytiskneme hned po připsání platby.')],
   zaplaceno: [tr('Ďakujeme,', 'Děkujeme,'), tr('máme zaplatené', 'máme zaplaceno'), tr('Vizitky posielame do tlače. Hneď ako vyrazia, uvidíte tu číslo zásielky.', 'Vizitky posíláme do tisku. Jakmile vyrazí, uvidíte tu číslo zásilky.')],
   tisk: [tr('Vizitky', 'Vizitky'), tr('sa tlačia', 'se tisknou'), tr('Tlačiareň ich práve vyrába. Číslo zásielky sa tu objaví po odoslaní.', 'Tiskárna je právě vyrábí. Číslo zásilky se tu objeví po odeslání.')],
-  odeslano: [tr('Vizitky sú', 'Vizitky jsou'), tr('na ceste', 'na cestě'), tr('Kuriér ich doručí zvyčajne do 1 až 2 pracovných dní.', 'Kurýr je doručí obvykle do 1 až 2 pracovních dnů.')],
+  odeslano: [tr('Vizitky sú', 'Vizitky jsou'), tr('na ceste', 'na cestě'), tr('Kuriér DPD ich doručí zvyčajne do 3 až 6 pracovných dní. Číslo zásielky nájdete nižšie.', 'Kurýr DPD je doručí obvykle do 3 až 6 pracovních dnů. Číslo zásilky najdete níže.')],
   hotovo: [tr('Hotovo,', 'Hotovo,'), tr('užívajte', 'užívejte'), tr('Ďakujeme za objednávku. Keď budete potrebovať ďalšie, návrh máte uložený.', 'Děkujeme za objednávku. Až budete potřebovat další, návrh máte uložený.')],
   zruseno: [tr('Objednávka', 'Objednávka'), tr('je zrušená', 'je zrušená'), tr('Ak ide o omyl, odpíšte nám na e-mail.', 'Pokud jde o omyl, odepište nám na e-mail.')],
 };
@@ -78,7 +78,7 @@ function paint(o) {
   if (!digOnly && !['odeslano', 'hotovo', 'zruseno'].includes(o.status)) {
     const ex = o.items.every((i) => i.config?.express || i.kind === 'digital');
     const base = o.history.find((hh) => hh.s === 'zaplaceno')?.t || new Date().toISOString();
-    sh.push(`<div><b>${tr('Odhad doručenia', 'Odhad doručení')}</b><span>${esc(fmtDay(addWorkdays(new Date(base), ex ? 2 : 4)))}${o.status === 'nova' || o.status === 'k_platbe' ? ' · ' + tr('ak zaplatíte dnes', 'pokud zaplatíte dnes') : ''}</span></div>`);
+    sh.push(`<div><b>${tr('Odhad doručenia', 'Odhad doručení')}</b><span>${esc(fmtDay(addWorkdays(new Date(base), deliveryDays(ex) - 1)))}${o.status === 'nova' || o.status === 'k_platbe' ? ' · ' + tr('ak zaplatíte dnes', 'pokud zaplatíte dnes') : ''}</span></div>`);
   }
   if (sh.length) { $('[data-ship]').hidden = false; $('[data-ship]').innerHTML = sh.join(''); }
   // položky

@@ -313,7 +313,7 @@ So: po domluvě') }}"></textarea></label>
             <div class="opt"><span>{{ L('Formát', 'Formát') }}</span><div class="seg seg--s" data-o="size"><button class="on" data-v="90x50">90×50</button><button data-v="85x55">85×55</button><button data-v="55x55">55×55</button></div></div>
             <div class="opt"><span>{{ L('Rohy', 'Rohy') }}</span><div class="seg seg--s" data-o="corners"><button class="on" data-v="straight">{{ L('Rovné', 'Rovné') }}</button><button data-v="round">{{ L('Zaoblené', 'Zaoblené') }} <small data-round-p></small></button></div></div>
             <div class="opt"><span>{{ L('Lesk namiesto matu', 'Lesk místo matu') }}</span><div class="seg seg--s" data-o="gloss"><button class="on" data-v="0">{{ L('Nie', 'Ne') }}</button><button data-v="1">{{ L('Lesklá laminácia', 'Lesklá laminace') }}</button></div></div>
-            <label class="tog"><input type="checkbox" data-express> <span>{{ L('Expresná výroba', 'Expresní výroba') }} <small>+{{ prices.express }} {{ prices.symbol }} · {{ L('o 2 dni skôr', 'o 2 dny dříve') }}</small></span></label>
+            <label class="tog"><input type="checkbox" data-express> <span>{{ L('Expresná výroba', 'Expresní výroba') }} <small>+{{ prices.express }} {{ prices.symbol }} · {{ L('doručenie do ' ~ prices.days.express ~ ' prac. dní', 'doručení do ' ~ prices.days.express ~ ' prac. dnů') }}</small></span></label>
             <button class="link" data-pdf>{{ L('Stiahnuť tlačové PDF', 'Stáhnout tiskové PDF') }}</button>
           </details>
         </div>

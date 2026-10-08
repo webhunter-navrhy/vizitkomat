@@ -5,7 +5,7 @@ import { snapshot } from './render.js';
 import { askAI } from './ai.js';
 import { renderDigital } from './digital.js';
 import { TPL_PERSONA, personaLabel } from './personas.js';
-import { qrSVG, addWorkdays, fmtDay, session, absUrl } from '../util.js';
+import { qrSVG, addWorkdays, fmtDay, session, absUrl, deliveryDays } from '../util.js';
 
 const VK = window.VK;
 const $ = (s, el = document) => el.querySelector(s);
@@ -88,7 +88,7 @@ $('[data-aibox-final]').addEventListener('submit', (e) => { e.preventDefault(); 
 /* ---------- kroky ---------- */
 lazy($('.how'), () => {
   const now = new Date();
-  $('[data-arrive]').textContent = new Intl.DateTimeFormat(CZ ? 'cs-CZ' : 'sk-SK', { weekday: 'long', day: 'numeric', month: 'numeric' }).format(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + 4));
+  $('[data-arrive]').textContent = new Intl.DateTimeFormat(CZ ? 'cs-CZ' : 'sk-SK', { weekday: 'long', day: 'numeric', month: 'numeric' }).format(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + deliveryDays(false)));
 });
 
 /* ---------- AI ukážky ---------- */

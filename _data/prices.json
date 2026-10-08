@@ -1,37 +1,159 @@
 {
-  "_poznamka": "Predajné ceny (nie sme platcami DPH, cena je konečná). Nákup Bizay (SK, 10/2026, akcia): 100 ks 8,40 €, 250 ks 13,78 €, 500 ks 17,15 €, 1000 ks 26,74 € bez DPH, matný 350 g. Overiť dopravu a obojstrannú tlač.",
+  "_poznamka": "Predajné ceny (nie sme platcami DPH, cena je konečná, doprava zdarma). Prepočítané 8. 10. 2026 z kalkulačky Bizay: nákupná cena BEZ zľavy pre nových zákazníkov (-5 € / -100 Kč len na 1. objednávku), s DPH (SK 23 %, CZ 21 %) a s dopravou DPD (SK: výroba Urgent +13,5 % a 2,81 € bez DPH, doručenie 9 prac. dní od objednania u Bizay; CZ: výroba Normal +15,7 % a 119,43 Kč bez DPH, 9 prac. dní). Hrubá marža 40 % (cena = náklad / 0,6) pre KAŽDÚ kombináciu formátu, papiera, úpravy a rohov; základ je 90×50 mm, iné formáty majú príplatok v 'sizes'. Expres: SK FedEx 5 prac. dní, CZ UPS 5 prac. dní. 'days' = odhad pre zákazníka od objednávky (kontrola + platba + výroba a doprava).",
   "sk": {
-    "currency": "EUR", "symbol": "€", "locale": "sk-SK", "vat": 23,
-    "qty": [100, 250, 500, 1000],
+    "currency": "EUR",
+    "symbol": "€",
+    "locale": "sk-SK",
+    "vat": 23,
+    "qty": [
+      100,
+      250,
+      500,
+      1000
+    ],
     "papers": {
-      "matny":   { "100": 24, "250": 32, "500": 42, "1000": 59 },
-      "triplex": { "100": 69, "250": 89, "500": 119, "1000": 169 }
+      "matny": {
+        "100": 36,
+        "250": 51,
+        "500": 59,
+        "1000": 75
+      },
+      "triplex": {
+        "100": 121,
+        "250": 157,
+        "500": 214,
+        "1000": 326
+      }
     },
     "finishes": {
-      "none":  { "100": 0, "250": 0, "500": 0, "1000": 0 },
-      "matna": { "100": 3, "250": 4, "500": 5, "1000": 7 },
-      "leskla":{ "100": 3, "250": 4, "500": 5, "1000": 7 },
-      "soft":  { "100": 6, "250": 8, "500": 10, "1000": 14 }
+      "none": {
+        "100": 0,
+        "250": 0,
+        "500": 0,
+        "1000": 0
+      },
+      "matna": {
+        "100": 25,
+        "250": 37,
+        "500": 37,
+        "1000": 37
+      },
+      "leskla": {
+        "100": 25,
+        "250": 37,
+        "500": 37,
+        "1000": 37
+      },
+      "soft": {
+        "100": 34,
+        "250": 41,
+        "500": 41,
+        "1000": 41
+      }
     },
-    "round": { "100": 9, "250": 12, "500": 16, "1000": 22 },
+    "round": {
+      "100": 48,
+      "250": 48,
+      "500": 48,
+      "1000": 52
+    },
     "digital": 15,
-    "express": 9
+    "express": 19,
+    "sizes": {
+      "85x55": {
+        "100": 12,
+        "250": 23,
+        "500": 23,
+        "1000": 34
+      },
+      "55x55": {
+        "100": 5,
+        "250": 0,
+        "500": 0,
+        "1000": 0
+      }
+    },
+    "days": {
+      "std": 11,
+      "express": 7
+    }
   },
   "cz": {
-    "currency": "CZK", "symbol": "Kč", "locale": "cs-CZ", "vat": 21,
-    "qty": [100, 250, 500, 1000],
+    "currency": "CZK",
+    "symbol": "Kč",
+    "locale": "cs-CZ",
+    "vat": 21,
+    "qty": [
+      100,
+      250,
+      500,
+      1000
+    ],
     "papers": {
-      "matny":   { "100": 590, "250": 790, "500": 1050, "1000": 1450 },
-      "triplex": { "100": 1690, "250": 2190, "500": 2890, "1000": 4090 }
+      "matny": {
+        "100": 840,
+        "250": 1120,
+        "500": 1290,
+        "1000": 1590
+      },
+      "triplex": {
+        "100": 2500,
+        "250": 3220,
+        "500": 4350,
+        "1000": 6550
+      }
     },
     "finishes": {
-      "none":  { "100": 0, "250": 0, "500": 0, "1000": 0 },
-      "matna": { "100": 80, "250": 100, "500": 130, "1000": 180 },
-      "leskla":{ "100": 80, "250": 100, "500": 130, "1000": 180 },
-      "soft":  { "100": 150, "250": 200, "500": 250, "1000": 350 }
+      "none": {
+        "100": 0,
+        "250": 0,
+        "500": 0,
+        "1000": 0
+      },
+      "matna": {
+        "100": 490,
+        "250": 730,
+        "500": 730,
+        "1000": 730
+      },
+      "leskla": {
+        "100": 490,
+        "250": 730,
+        "500": 730,
+        "1000": 730
+      },
+      "soft": {
+        "100": 670,
+        "250": 800,
+        "500": 800,
+        "1000": 800
+      }
     },
-    "round": { "100": 220, "250": 290, "500": 390, "1000": 540 },
+    "round": {
+      "100": 950,
+      "250": 950,
+      "500": 950,
+      "1000": 1030
+    },
     "digital": 390,
-    "express": 220
+    "express": 770,
+    "sizes": {
+      "85x55": {
+        "100": 280,
+        "250": 500,
+        "500": 500,
+        "1000": 680
+      },
+      "55x55": {
+        "100": 80,
+        "250": 0,
+        "500": 0,
+        "1000": 0
+      }
+    },
+    "days": {
+      "std": 11,
+      "express": 7
+    }
   }
 }

@@ -10,7 +10,7 @@ import * as store from './store.js';
 import { PERSONAS, personaFields, TPL_PERSONA } from './personas.js';
 import { emblemFor } from './emblems.js';
 import { toast } from './site.js';
-import { money, printPrice, itemPrice, addWorkdays, fmtDay, debounce, session, qrSVG } from '../util.js';
+import { money, printPrice, itemPrice, addWorkdays, fmtDay, debounce, session, qrSVG, deliveryDays } from '../util.js';
 
 const VK = window.VK;
 const $ = (s, el = document) => el.querySelector(s);
@@ -551,6 +551,10 @@ function paintOrder() {
   $('[data-print-opts]').style.display = dig ? 'none' : '';
   $$('[data-kind] .kind').forEach((b) => b.classList.toggle('on', b.dataset.v === c.kind));
   const t = tier();
+  // Triplex sa nevyrába so zaoblenými rohmi; formáty s príplatkom ukážeme pri tlačidle
+  if (t === 'triplex' && c.corners === 'round') { c.corners = 'straight'; ed.setCorners('straight'); }
+  const rb = $('[data-o="corners"] [data-v="round"]'); if (rb) { rb.disabled = t === 'triplex'; rb.title = t === 'triplex' ? tr('Triplex len s rovnými rohmi', 'Triplex jen s rovnými rohy') : ''; }
+  $$('[data-o="size"] button').forEach((b) => { const add = P.sizes?.[b.dataset.v]?.[String(c.qty)] || 0; b.dataset.label ||= b.textContent; b.innerHTML = b.dataset.label + (add ? `<small> +${money(add)}</small>` : ''); });
   $$('[data-paper] .paper').forEach((b) => b.classList.toggle('on', b.dataset.v === t));
   const stdP = printPrice(cfgFor('std', { ...c, finish: 'none' }), P);
   $$('[data-pp-price]').forEach((e) => { const k = e.dataset.ppPrice; e.textContent = k === 'std' ? money(stdP) : '+' + money(printPrice(cfgFor(k), P) - stdP); });
@@ -564,7 +568,7 @@ function paintOrder() {
   $('[data-sum]').textContent = money(total);
   $('[data-sum-m]').textContent = dig ? tr('jednorazovo, bez predplatného', 'jednorázově, bez předplatného') : `${c.qty} ${tr('ks', 'ks')} · ${money(total / c.qty, { decimals: 2 })} / ${tr('ks', 'ks')}${c.kind === 'bundle' ? ' · ' + tr('+ digitálna zadarmo', '+ digitální zdarma') : ''}`;
   const now = new Date();
-  $('[data-sum-d]').textContent = dig ? tr('Digitálnu vizitku zapneme hneď po zaplatení.', 'Digitální vizitku zapneme hned po zaplacení.') : `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + (c.express ? 2 : 4)))}`;
+  $('[data-sum-d]').textContent = dig ? tr('Digitálnu vizitku zapneme hneď po zaplatení.', 'Digitální vizitku zapneme hned po zaplacení.') : `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + deliveryDays(c.express)))}`;
   $('[data-pdf]').hidden = dig;
 }
 $('[data-kind]').addEventListener('click', (e) => { const b = e.target.closest('.kind'); if (!b) return; st.cfg.kind = b.dataset.v; paintOrder(); persist(); paintPreflight(); });

@@ -16,6 +16,7 @@ export function printPrice(c, P = VK.prices) {
   let p = P.papers[c.paper]?.[q] ?? 0;
   if (c.paper !== 'triplex') p += P.finishes[c.finish || 'none']?.[q] ?? 0;
   if (c.corners === 'round') p += P.round[q] ?? 0;
+  p += P.sizes?.[c.size]?.[q] ?? 0;
   if (c.express) p += P.express;
   return p;
 }
@@ -23,6 +24,9 @@ export function itemPrice(c, P = VK.prices) {
   if (c.kind === 'digital') return P.digital ?? P.digital_year;
   return printPrice(c, P);
 }
+
+// odhad doručenia v pracovných dňoch od objednávky (kontrola, platba, výroba, doprava)
+export const deliveryDays = (express, P = VK.prices) => (express ? P.days?.express ?? 7 : P.days?.std ?? 11);
 
 // pracovné dni
 export function addWorkdays(date, n) {

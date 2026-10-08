@@ -11,22 +11,23 @@
     <p class="lead pr__lead">{{ L('Ceny sú konečné, nie sme platcami DPH. Zahŕňajú návrh s AI grafikom, obojstrannú tlač, kontrolu dát človekom a dopravu na Slovensko aj do Česka.', 'Ceny jsou konečné, nejsme plátci DPH. Zahrnují návrh s AI grafikem, oboustranný tisk, kontrolu dat člověkem a dopravu po Česku i na Slovensku.') }}</p>
     <div class="pr__t" tabindex="0" role="region" aria-label="{{ L('Ceny', 'Ceny') }}">
       <table>
-        <thead><tr><th>{{ L('Papier', 'Papír') }}</th>{% for q in prices.qty %}<th>{{ q }} {{ L('ks', 'ks') }}</th>{% endfor %}</tr></thead>
+        <thead><tr><th>{{ L('Papier', 'Papír') }} <small>{{ L('90 × 50 mm, obojstranne', '90 × 50 mm, oboustranně') }}</small></th>{% for q in prices.qty %}<th>{{ q }} {{ L('ks', 'ks') }}</th>{% endfor %}</tr></thead>
         <tbody>
           <tr><th><b>{{ L('Matný 350 g', 'Matný 350 g') }}</b><small>{{ L('bez úpravy', 'bez úpravy') }}</small></th>{% for q in prices.qty %}<td><a href="{{ link('tvorba') }}?rezim=ai&papier=matny&povrch=none&ks={{ q }}" title="{{ L('Navrhnúť s touto cenou', 'Navrhnout s touto cenou') }}">{{ m(prices.papers.matny[q|string]) }}</a></td>{% endfor %}</tr>
           <tr><th><b>{{ L('Matný + laminácia', 'Matný + laminace') }}</b><small>{{ L('matná alebo lesklá', 'matná nebo lesklá') }}</small></th>{% for q in prices.qty %}<td><a href="{{ link('tvorba') }}?rezim=ai&papier=matny&povrch=matna&ks={{ q }}" title="{{ L('Navrhnúť s touto cenou', 'Navrhnout s touto cenou') }}">{{ m(prices.papers.matny[q|string] + prices.finishes.matna[q|string]) }}</a></td>{% endfor %}</tr>
           <tr class="hi"><th><b>{{ L('Matný + soft-touch', 'Matný + soft-touch') }}</b><small>{{ L('zamatový povrch', 'sametový povrch') }}</small></th>{% for q in prices.qty %}<td><a href="{{ link('tvorba') }}?rezim=ai&papier=matny&povrch=soft&ks={{ q }}" title="{{ L('Navrhnúť s touto cenou', 'Navrhnout s touto cenou') }}">{{ m(prices.papers.matny[q|string] + prices.finishes.soft[q|string]) }}</a></td>{% endfor %}</tr>
           <tr><th><b>Triplex 720 g</b><small>{{ L('farebné jadro', 'barevné jádro') }}</small></th>{% for q in prices.qty %}<td><a href="{{ link('tvorba') }}?rezim=ai&papier=triplex&povrch=none&ks={{ q }}" title="{{ L('Navrhnúť s touto cenou', 'Navrhnout s touto cenou') }}">{{ m(prices.papers.triplex[q|string]) }}</a></td>{% endfor %}</tr>
         </tbody>
-        <tfoot><tr><th>{{ L('Zaoblené rohy', 'Zaoblené rohy') }}</th>{% for q in prices.qty %}<td>+ {{ m(prices.round[q|string]) }}</td>{% endfor %}</tr></tfoot>
+        <tfoot><tr><th>{{ L('Zaoblené rohy', 'Zaoblené rohy') }}</th>{% for q in prices.qty %}<td>+ {{ m(prices.round[q|string]) }}</td>{% endfor %}</tr>
+          {% for s, lbl in [('85x55', '85 × 55 mm'), ('55x55', '55 × 55 mm')] %}<tr><th>{{ L('Formát', 'Formát') }} {{ lbl }}</th>{% for q in prices.qty %}<td>{% if prices.sizes[s][q|string] %}+ {{ m(prices.sizes[s][q|string]) }}{% else %}{{ L('bez príplatku', 'bez příplatku') }}{% endif %}</td>{% endfor %}</tr>{% endfor %}</tfoot>
       </table>
     </div>
     <p class="pr__hint">{{ L('Kliknite na cenu a začnite navrhovať rovno s ňou.', 'Klikněte na cenu a začněte navrhovat rovnou s ní.') }}</p>
     <div class="pr__x">
       <article class="bx bx--y"><h2 class="bx__h">{{ L('Digitálna vizitka', 'Digitální vizitka') }}</h2><p class="pr__p">{{ prices.digital }} {{ prices.symbol }}<small> {{ L('jednorazovo', 'jednorázově') }}</small></p><p>{{ L('K tlačeným vizitkám zadarmo. Bez predplatného.', 'K tištěným vizitkám zdarma. Bez předplatného.') }}</p></article>
-      <article class="bx bx--w"><h2 class="bx__h">{{ L('Expres', 'Expres') }}</h2><p class="pr__p">+{{ prices.express }} {{ prices.symbol }}</p><p>{{ L('O dva pracovné dni skôr.', 'O dva pracovní dny dříve.') }}</p></article>
-      <article class="bx bx--b"><h2 class="bx__h">{{ L('Formáty', 'Formáty') }}</h2><p class="pr__p">{{ L('bez príplatku', 'bez příplatku') }}</p><p>90×50, 85×55, 55×55 mm</p></article>
-      <article class="bx bx--c"><h2 class="bx__h">{{ L('Doprava', 'Doprava') }}</h2><p class="pr__p">{{ L('zadarmo', 'zdarma') }}</p><p>{{ L('Kuriér alebo výdajné miesto.', 'Kurýr nebo výdejní místo.') }}</p></article>
+      <article class="bx bx--w"><h2 class="bx__h">{{ L('Expres', 'Expres') }}</h2><p class="pr__p">+{{ prices.express }} {{ prices.symbol }}</p><p>{{ L('Doručenie do ' ~ prices.days.express ~ ' pracovných dní namiesto ' ~ prices.days.std ~ '.', 'Doručení do ' ~ prices.days.express ~ ' pracovních dnů místo ' ~ prices.days.std ~ '.') }}</p></article>
+      <article class="bx bx--b"><h2 class="bx__h">{{ L('Formáty', 'Formáty') }}</h2><p class="pr__p">90 × 50 mm</p><p>{{ L('Najobľúbenejší formát je v cene. Európsky 85 × 55 a štvorec 55 × 55 s príplatkom podľa tabuľky.', 'Nejoblíbenější formát je v ceně. Evropský 85 × 55 a čtverec 55 × 55 s příplatkem podle tabulky.') }}</p></article>
+      <article class="bx bx--c"><h2 class="bx__h">{{ L('Doprava', 'Doprava') }}</h2><p class="pr__p">{{ L('zadarmo', 'zdarma') }}</p><p>{{ L('Kuriér DPD až k vám, so sledovaním zásielky.', 'Kurýr DPD až k vám, se sledováním zásilky.') }}</p></article>
     </div>
     <div class="pr__cta"><h2 class="h-m">{{ L('Najprv navrhnite, platíte až na konci.', 'Nejdřív navrhněte, platíte až na konci.') }}</h2><a class="btn btn--c btn--lg" href="{{ link('tvorba') }}?rezim=ai">{{ L('Spustiť AI grafika', 'Spustit AI grafika') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a></div>
   </div>

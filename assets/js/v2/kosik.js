@@ -1,6 +1,6 @@
 // Košík a objednávka (v2)
 import * as store from './store.js';
-import { money, itemPrice, addWorkdays, fmtDay, session } from '../util.js';
+import { money, itemPrice, addWorkdays, fmtDay, session, deliveryDays } from '../util.js';
 import { tr, SIZES, slugify } from './model.js';
 
 const VK = window.VK, P = VK.prices;
@@ -29,7 +29,7 @@ function specs(c, it) {
   if (it?.design?.custom) return [tr('vlastný návrh', 'vlastní návrh'), SIZES[c.size]?.label, PAPER[c.paper], c.paper !== 'triplex' && FIN[c.finish], c.corners === 'round' && tr('zaoblené rohy', 'zaoblené rohy'), c.express && 'expres'].filter(Boolean);
   return [SIZES[c.size]?.label, PAPER[c.paper], c.paper !== 'triplex' && FIN[c.finish], c.corners === 'round' && tr('zaoblené rohy', 'zaoblené rohy'), c.express && 'expres', c.kind === 'bundle' && tr('+ digitálna zadarmo', '+ digitální zdarma')].filter(Boolean);
 }
-function arrival(items) { const now = new Date(); const ex = items.every((i) => i.config.express || i.kind === 'digital'); return addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + (ex ? 2 : 4)); }
+function arrival(items) { const now = new Date(); const ex = items.every((i) => i.config.express || i.kind === 'digital'); return addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + deliveryDays(ex)); }
 
 let items = [];
 // výhodnejšia ponuka k položke: viac kusov alebo lepší papier

@@ -2,7 +2,7 @@
 import { SIZES, BLEED, tr } from './model.js';
 import * as store from './store.js';
 import { toast } from './site.js';
-import { money, printPrice, addWorkdays, fmtDay } from '../util.js';
+import { money, printPrice, addWorkdays, fmtDay, deliveryDays } from '../util.js';
 import { fileToDataURL } from '../logo.js';
 
 const VK = window.VK, P = VK.prices;
@@ -83,7 +83,7 @@ $('[data-backopt]').addEventListener('click', (e) => { const b = e.target.closes
 $('[data-size]').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.size = b.dataset.v; $$('[data-size] button').forEach((x) => x.classList.toggle('on', x === b)); const S = SIZES[st.size]; $('[data-spec]').textContent = `${S.w + 4} × ${S.h + 4} mm`; paintChecks(); });
 
 function cfg() {
-  const base = { kind: 'print', size: st.size, qty: st.qty, corners: st.corners, express: st.express };
+  const base = { kind: 'print', size: st.size, qty: st.qty, corners: st.tier === 'triplex' ? 'straight' : st.corners, express: st.express };
   if (st.tier === 'triplex') return { ...base, paper: 'triplex', finish: 'none' };
   if (st.tier === 'soft') return { ...base, paper: 'matny', finish: 'soft' };
   return { ...base, paper: 'matny', finish: 'none' };
@@ -95,12 +95,14 @@ function paint() {
   $$('[data-pp-price]').forEach((e) => { const k = e.dataset.ppPrice; const cc = k === 'triplex' ? { ...c, paper: 'triplex', finish: 'none' } : k === 'soft' ? { ...c, paper: 'matny', finish: 'soft' } : { ...c, paper: 'matny', finish: 'none' }; e.textContent = k === 'std' ? money(stdP) : '+' + money(printPrice(cc, P) - stdP); });
   $$('[data-qp]').forEach((s) => { s.textContent = money(printPrice({ ...c, qty: +s.dataset.qp }, P)); });
   $$('[data-qty] button').forEach((b) => b.classList.toggle('on', +b.dataset.v === st.qty));
-  $('[data-round-p]').textContent = '+' + money(P.round[String(st.qty)]);
+  $('[data-round-p]').textContent = st.tier === 'triplex' ? tr('Triplex len s rovnými rohmi', 'Triplex jen s rovnými rohy') : '+' + money(P.round[String(st.qty)]);
+  $('[data-round]').disabled = st.tier === 'triplex'; if (st.tier === 'triplex') $('[data-round]').checked = false;
+  $$('[data-size] button').forEach((b) => { const add = P.sizes?.[b.dataset.v]?.[String(st.qty)] || 0; b.dataset.label ||= b.textContent; b.innerHTML = b.dataset.label + (add ? `<small> +${money(add)}</small>` : ''); });
   const total = printPrice(c, P);
   $('[data-sum]').textContent = money(total);
   $('[data-sum-m]').textContent = `${st.qty} ${tr('ks', 'ks')} · ${money(total / st.qty, { decimals: 2 })} / ${tr('ks', 'ks')}`;
   const now = new Date();
-  $('[data-sum-d]').textContent = `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + (st.express ? 2 : 4)))}`;
+  $('[data-sum-d]').textContent = `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + deliveryDays(st.express)))}`;
   const btn = $('[data-add]');
   btn.disabled = !st.files.front;
   btn.className = 'btn btn--lg sum__cta' + (st.files.front ? ' btn--y' : '');

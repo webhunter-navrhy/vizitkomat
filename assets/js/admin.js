@@ -144,8 +144,9 @@ async function detailView(num) {
 
 /* ---------- ceník a marže ---------- */
 const QTY = ['100', '250', '500', '1000'];
-const ROWS = [['papers', 'matny', 'Matný 350 g'], ['papers', 'triplex', 'Triplex 720 g'], ['finishes', 'matna', '+ matná laminace'], ['finishes', 'leskla', '+ lesklá laminace'], ['finishes', 'soft', '+ soft-touch'], ['round', null, '+ zaoblené rohy']];
-const DEFAULT_COSTS = { sk: { papers: { matny: { 100: 10.33, 250: 16.95, 500: 21.09, 1000: 32.89 } } }, cz: { papers: { matny: { 100: 258, 250: 424, 500: 527, 1000: 822 } } } };
+const ROWS = [['papers', 'matny', 'Matný 350 g'], ['papers', 'triplex', 'Triplex 720 g'], ['finishes', 'matna', '+ matná laminace'], ['finishes', 'leskla', '+ lesklá laminace'], ['finishes', 'soft', '+ soft-touch'], ['round', null, '+ zaoblené rohy'], ['sizes', '85x55', '+ formát 85 × 55'], ['sizes', '55x55', '+ formát 55 × 55']];
+// nákup Bizay 90×50 obojstranne bez zľavy pre nových zákazníkov, s DPH a dopravou DPD (8. 10. 2026)
+const DEFAULT_COSTS = {"sk": {"papers": {"matny": {"100": 21.41, "250": 30.07, "500": 35.2, "1000": 44.45}, "triplex": {"100": 72.19, "250": 93.92, "500": 128.27, "1000": 195.27}}}, "cz": {"papers": {"matny": {"100": 499, "250": 669, "500": 770, "1000": 953}, "triplex": {"100": 1500, "250": 1928, "500": 2605, "1000": 3926}}}};
 async function pricesView() {
   const main = shell('cenik', '<h1 class="pg">Ceník a marže</h1><p class="muted">Načítám…</p>');
   let data; try { data = await api('prices'); } catch (e) { main.innerHTML = `<p class="msg err">${esc(e.message)}</p>`; return; }
@@ -155,7 +156,7 @@ async function pricesView() {
   const set = (o, g, k, q, v) => { if (k) { ((o[g] ||= {})[k] ||= {})[q] = v; } else { (o[g] ||= {})[q] = v; } };
   const draw = () => {
     const p = P[lang], c = (C[lang] ||= {}), cur = lang === 'sk' ? 'EUR' : 'CZK';
-    const mg = (price, cost) => { if (!cost || !price) return ''; const m = price - cost, pct = Math.round((m / price) * 100); return `<span class="mg ${pct >= 35 ? 'ok' : 'low'}">${money(Math.round(m * 100) / 100, cur)} · ${pct} %</span>`; };
+    const mg = (price, cost) => { if (!cost || !price) return ''; const m = price - cost, pct = Math.round((m / price) * 100); return `<span class="mg ${pct >= 38 ? 'ok' : 'low'}">${money(Math.round(m * 100) / 100, cur)} · ${pct} %</span>`; };
     main.querySelector('[data-pt]').innerHTML = `<table class="ptable"><thead><tr><th></th>${QTY.map((q) => `<th class="r">${q} ks</th>`).join('')}</tr></thead><tbody>
       ${ROWS.map(([g, k, label]) => `<tr><td class="lbl">${label}<br><span class="muted">prodej / nákup</span></td>${QTY.map((q) => `<td class="r"><input type="number" step="any" min="0" data-p="${g}|${k || ''}|${q}" value="${get(p, g, k, q) ?? ''}"><input type="number" step="any" min="0" data-c="${g}|${k || ''}|${q}" value="${get(c, g, k, q) ?? ''}" placeholder="nákup" style="margin-top:4px;background:#fff">${g === 'papers' ? mg(get(p, g, k, q), get(c, g, k, q)) : ''}</td>`).join('')}</tr>`).join('')}
       <tr><td class="lbl">Expres</td><td class="r"><input type="number" step="any" min="0" data-s="express" value="${p.express}"></td><td colspan="3"></td></tr>
@@ -167,7 +168,7 @@ async function pricesView() {
     <div class="grid2"><section class="box"><div class="tabs"><button class="chip" data-tab="cz">Česko (Kč)</button><button class="chip" data-tab="sk">Slovensko (€)</button></div>
       <p class="muted">Horní pole je prodejní cena na webu (konečná, nejsme plátci DPH). Spodní je vaše nákupní cena včetně DPH a dopravy – z ní se počítá marže. Ceny zahrnují dopravu zdarma.</p>
       <div data-pt style="overflow-x:auto"></div></section>
-    <div class="stack"><section class="box act"><h3>Dopočítat ceny z marže</h3><p class="muted">Vyplňte nákupní ceny a cílovou marži, ceny papíru se dopočítají a zaokrouhlí.</p><label class="f">Cílová marže v %<input type="number" data-target value="55" min="0" max="95"></label><button class="btn o" data-calc>Dopočítat</button></section>
+    <div class="stack"><section class="box act"><h3>Dopočítat ceny z marže</h3><p class="muted">Vyplňte nákupní ceny a cílovou marži, ceny papíru se dopočítají a zaokrouhlí.</p><label class="f">Cílová marže v %<input type="number" data-target value="40" min="0" max="95"></label><button class="btn o" data-calc>Dopočítat</button></section>
       <section class="box act"><h3>Uložit</h3><p class="muted">Ceny se hned použijí v objednávkách a web se do 2 minut přegeneruje s novými cenami.</p><div data-msg></div><button class="btn y" data-save>Uložit ceník</button></section></div></div>`;
   main.addEventListener('input', (e) => {
     const t = e.target; const v = t.value === '' ? undefined : Number(t.value);

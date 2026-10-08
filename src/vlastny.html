@@ -49,7 +49,7 @@
       <h3>{{ L('Počet kusov', 'Počet kusů') }}</h3>
       <div class="qty" data-qty>{% for q in prices.qty %}<button{% if q == 250 %} class="on"{% endif %} data-v="{{ q }}"><b>{{ q }}</b><small data-qp="{{ q }}"></small></button>{% endfor %}</div>
       <label class="tog own__tog"><input type="checkbox" data-round> <span>{{ L('Zaoblené rohy', 'Zaoblené rohy') }} <small data-round-p></small></span></label>
-      <label class="tog own__tog"><input type="checkbox" data-express> <span>{{ L('Expres', 'Expres') }} <small>+{{ prices.express }} {{ prices.symbol }} · {{ L('o 2 dni skôr', 'o 2 dny dříve') }}</small></span></label>
+      <label class="tog own__tog"><input type="checkbox" data-express> <span>{{ L('Expres', 'Expres') }} <small>+{{ prices.express }} {{ prices.symbol }} · {{ L('doručenie do ' ~ prices.days.express ~ ' prac. dní', 'doručení do ' ~ prices.days.express ~ ' prac. dnů') }}</small></span></label>
       <div class="sum">
         <div class="sum__p"><span>{{ L('Spolu', 'Celkem') }}</span><b data-sum>—</b></div>
         <p class="sum__m" data-sum-m></p>
