@@ -373,6 +373,10 @@ function drawCard(x, im, cx, cy, w, h, ang, depth) {
   // jemný lesk zhora
   const g = x.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2); g.addColorStop(0, 'rgba(255,255,255,0.10)'); g.addColorStop(0.5, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(0,0,0,0.06)');
   x.fillStyle = g; x.fillRect(-w / 2, -h / 2, w, h);
+  // odlesk na hornej a ľavej hrane papiera + jemné stmavenie protiľahlých hrán
+  x.lineWidth = Math.max(1, w * 0.0016);
+  x.strokeStyle = 'rgba(255,255,255,0.55)'; x.beginPath(); x.moveTo(-w / 2, h / 2); x.lineTo(-w / 2, -h / 2); x.lineTo(w / 2, -h / 2); x.stroke();
+  x.strokeStyle = 'rgba(0,0,0,0.18)'; x.beginPath(); x.moveTo(w / 2, -h / 2); x.lineTo(w / 2, h / 2); x.lineTo(-w / 2, h / 2); x.stroke();
   x.restore();
 }
 export async function mockup(front, back, opts = {}) {

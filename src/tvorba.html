@@ -49,7 +49,7 @@
         <button class="way way--tpl" data-start-tpl>
           <div class="way__thumbs" data-way-thumbs><img alt="" src="{{ pre['tpl-glow-f'] }}" width="640" height="368"><img alt="" src="{{ pre['tpl-saloon-f'] }}" width="640" height="368"><img alt="" src="{{ pre['tpl-cafe-f'] }}" width="640" height="368"></div>
           <h2>{{ L('Vyberiem si šablónu', 'Vyberu si šablonu') }}</h2>
-          <p>{{ L('88 šablón, každú hneď uvidíte s vaším menom.', '88 šablon, každou hned uvidíte se svým jménem.') }}</p>
+          <p>{{ L('98 šablón, každú hneď uvidíte s vaším menom.', '98 šablon, každou hned uvidíte se svým jménem.') }}</p>
           <span class="link">{{ L('Prezrieť šablóny', 'Prohlédnout šablony') }} →</span>
         </button>
         <a class="way way--file" href="{{ link('vlastny') }}">
@@ -144,23 +144,34 @@
             <label class="fld"><span>{{ label }}</span><input type="{{ type }}" data-f="{{ key }}" autocomplete="{{ ac }}" maxlength="70"></label>
             {% endfor %}
           </div>
-          <details class="more" data-digital-fields>
+          <details class="more more--dig" data-digital-fields>
             <summary>{{ L('Digitálna vizitka: fotka, o mne, služby, siete', 'Digitální vizitka: fotka, o mně, služby, sítě') }}</summary>
+            <button class="dgp-open" type="button" data-dgp-open><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg><span><b>{{ L('Pozrieť náhľad v telefóne', 'Zobrazit náhled v telefonu') }}</b><small>{{ L('mení sa naživo, ako píšete', 'mění se živě, jak píšete') }}</small></span></button>
+            <p class="dgp-h">{{ L('Adresa a fotka', 'Adresa a fotka') }}</p>
             <label class="fld"><span>{{ L('Vaša adresa', 'Vaše adresa') }}</span><div class="slug"><em>vizitkomat.eu/v/</em><input data-slug maxlength="40" autocomplete="off"></div></label>
             <div class="up"><img alt="" data-photo-img><button class="btn btn--w btn--sm" data-photo-pick>{{ L('Pridať fotku', 'Přidat fotku') }}</button><button class="x" data-photo-del hidden aria-label="×">×</button><input type="file" accept="image/*" hidden data-photo-file></div>
+            <p class="dgp-tip">{{ L('Fotka tváre pôsobí osobnejšie a uloží sa aj do kontaktu v telefóne. Bez fotky použijeme logo alebo iniciály.', 'Fotka obličeje působí osobněji a uloží se i do kontaktu v telefonu. Bez fotky použijeme logo nebo iniciály.') }}</p>
+            <p class="dgp-h">{{ L('O vás a služby', 'O vás a služby') }}</p>
+            <label class="fld"><span>{{ L('O mne', 'O mně') }}</span><textarea data-dig="bio" rows="3" maxlength="400" placeholder="{{ L('Pár viet o tom, čo robíte a pre koho.', 'Pár vět o tom, co děláte a pro koho.') }}"></textarea></label>
+            <label class="fld"><span>{{ L('Služby', 'Služby') }} <i>{{ L('každá na nový riadok, napr. Strih – 25 €', 'každá na nový řádek, např. Střih – 450 Kč') }}</i></span><textarea data-dig="services" rows="3" maxlength="600" placeholder="{{ L('Strih – 25 €
+Farbenie – od 45 €', 'Střih – 450 Kč
+Barvení – od 990 Kč') }}"></textarea></label>
+            <label class="fld"><span>{{ L('Otváracie hodiny', 'Otevírací doba') }} <i>{{ L('napr. Po – Pi: 9:00 – 17:00', 'např. Po – Pá: 9:00 – 17:00') }}</i></span><textarea data-dig="hours" rows="2" maxlength="200" placeholder="{{ L('Po – Pi: 9:00 – 17:00
+So: po dohode', 'Po – Pá: 9:00 – 17:00
+So: po domluvě') }}"></textarea></label>
+            <p class="dgp-h">{{ L('Rezervácia a recenzie', 'Rezervace a recenze') }}</p>
+            <label class="fld"><span>{{ L('Rezervácia termínu', 'Rezervace termínu') }} <i>{{ L('odkaz na Reservio, Bookio, Calendly…', 'odkaz na Reservio, Calendly…') }}</i></span><input data-dig="booking" placeholder="https://…"></label>
+            <label class="fld"><span>{{ L('Text tlačidla rezervácie', 'Text tlačítka rezervace') }}</span><input data-dig="bookingLabel" maxlength="40" placeholder="{{ L('Rezervovať termín', 'Rezervovat termín') }}"></label>
+            <label class="fld"><span>{{ L('Google recenzie', 'Google recenze') }} <i>{{ L('odkaz na hodnotenie', 'odkaz na hodnocení') }}</i></span><input data-dig="reviews" placeholder="https://g.page/r/…"></label>
+            <label class="fld"><span>{{ L('Hodnotenie', 'Hodnocení') }} <i>{{ L('voliteľné, napr. 4,9 · 120 recenzií', 'volitelné, např. 4,9 · 120 recenzí') }}</i></span><input data-dig="rating" maxlength="40" placeholder="4,9 · 120 {{ L('recenzií', 'recenzí') }}"></label>
+            <p class="dgp-h">{{ L('Siete a odkazy', 'Sítě a odkazy') }}</p>
             <label class="fld"><span>Instagram</span><input data-soc="instagram" placeholder="https://instagram.com/…"></label>
             <label class="fld"><span>Facebook</span><input data-soc="facebook" placeholder="https://facebook.com/…"></label>
             <label class="fld"><span>LinkedIn</span><input data-soc="linkedin" placeholder="https://linkedin.com/in/…"></label>
             <label class="fld"><span>TikTok</span><input data-soc="tiktok" placeholder="https://tiktok.com/@…"></label>
             <label class="fld"><span>YouTube</span><input data-soc="youtube" placeholder="https://youtube.com/@…"></label>
             <label class="fld"><span>WhatsApp <i>{{ L('ak je iné ako telefón', 'pokud je jiné než telefon') }}</i></span><input data-dig="whatsapp" type="tel" placeholder="+421…"></label>
-            <label class="fld"><span>{{ L('O mne', 'O mně') }}</span><textarea data-dig="bio" rows="3" maxlength="400" placeholder="{{ L('Pár viet o tom, čo robíte a pre koho.', 'Pár vět o tom, co děláte a pro koho.') }}"></textarea></label>
-            <label class="fld"><span>{{ L('Služby', 'Služby') }} <i>{{ L('každá na nový riadok, napr. Strih – 25 €', 'každá na nový řádek, např. Střih – 450 Kč') }}</i></span><textarea data-dig="services" rows="3" maxlength="600"></textarea></label>
-            <label class="fld"><span>{{ L('Rezervácia termínu', 'Rezervace termínu') }} <i>{{ L('odkaz na Reservio, Bookio, Calendly…', 'odkaz na Reservio, Calendly…') }}</i></span><input data-dig="booking" placeholder="https://…"></label>
-            <label class="fld"><span>{{ L('Text tlačidla rezervácie', 'Text tlačítka rezervace') }}</span><input data-dig="bookingLabel" maxlength="40" placeholder="{{ L('Rezervovať termín', 'Rezervovat termín') }}"></label>
-            <label class="fld"><span>{{ L('Google recenzie', 'Google recenze') }} <i>{{ L('odkaz na hodnotenie', 'odkaz na hodnocení') }}</i></span><input data-dig="reviews" placeholder="https://g.page/r/…"></label>
             <label class="fld"><span>{{ L('Ďalšie odkazy', 'Další odkazy') }} <i>{{ L('každý na riadok: Názov | URL', 'každý na řádek: Název | URL') }}</i></span><textarea data-dig="links" rows="2" maxlength="600" placeholder="{{ L('Cenník | https://…', 'Ceník | https://…') }}"></textarea></label>
-            <label class="fld"><span>{{ L('Otváracie hodiny', 'Otevírací doba') }} <i>{{ L('napr. Po – Pi: 9:00 – 17:00', 'např. Po – Pá: 9:00 – 17:00') }}</i></span><textarea data-dig="hours" rows="2" maxlength="200"></textarea></label>
           </details>
         </section>
         <section class="pn" data-pp="styl">
@@ -255,6 +266,11 @@
         <button class="btn btn--c btn--lg" data-to-order>{{ L('Pokračovať k objednávke', 'Pokračovat k objednávce') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
       </div>
     </div>
+    <aside class="dgp" data-dgp hidden aria-label="{{ L('Náhľad digitálnej vizitky', 'Náhled digitální vizitky') }}">
+      <div class="dgp__head"><span class="dgp__live"><i></i>{{ L('Naživo', 'Živě') }}</span><b>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</b><button class="dgp__x" type="button" data-dgp-close aria-label="{{ L('Zavrieť náhľad', 'Zavřít náhled') }}">×</button></div>
+      <div class="dgp__phone"><div class="dgp__screen"><div class="dgp__island"></div><div class="dcard-host" data-dgp-host></div></div></div>
+      <p class="dgp__note">{{ L('Takto ju uvidí každý, kto naskenuje QR kód.', 'Takhle ji uvidí každý, kdo naskenuje QR kód.') }}</p>
+    </aside>
   </section>
 
   <!-- ===== 4. OBJEDNÁVKA ===== -->

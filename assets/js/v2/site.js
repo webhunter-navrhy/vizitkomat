@@ -70,7 +70,7 @@ if (!['tvorba', 'kosik', 'objednavka', 'admin', 'v_card'].includes(PAGE)) {
     setTimeout(() => el.classList.add('on'), 1200);
   });
   // lepiace tlačidlo na mobile po odscrollovaní hero
-  if (!['404', 'digitalna'].includes(PAGE)) {
+  if (!['404', 'digitalna', 'vlastny', 'kontakt', 'podmienky', 'gdpr'].includes(PAGE)) {
     const bar = document.createElement('a'); bar.className = 'mcta'; bar.href = window.VK.links.tvorba + '?rezim=ai';
     bar.innerHTML = `<span>${tr2('Navrhnúť vizitku', 'Navrhnout vizitku')}</span><small>${tr2('návrh zadarmo, platíte až po kontrole', 'návrh zdarma, platíte až po kontrole')}</small>`;
     document.body.append(bar);

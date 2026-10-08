@@ -156,12 +156,12 @@ function deriveContacts(f, base) {
 // ---------- záloha bez servera ----------
 const IND_TPL = {
   kadernik: ['saloon', 'arkada', 'glow'], reality: ['panorama', 'samet', 'builders'], stavba: ['stavitel', 'vykres', 'builders'],
-  it: ['neon', 'kontrast', 'swiss'], pravnik: ['erb', 'deco', 'venec'], wellness: ['lotos', 'hvezdy', 'vetvicka'],
+  it: ['neon', 'orbit', 'swiss'], pravnik: ['erb', 'deco', 'venec'], wellness: ['lotos', 'hvezdy', 'vetvicka'],
   foto: ['objektiv', 'eukalyptus', 'ruzovezlato'], gastro: ['prazirna', 'cafe', 'klas'], auto: ['garaz', 'stavitel', 'odznak'],
-  lekar: ['medic', 'vlnyluxe', 'maitland'], sport: ['odznak', 'garaz', 'loud'],
+  lekar: ['medic', 'vlnyluxe', 'maitland'], sport: ['sila', 'odznak', 'garaz'],
 };
 // konkrétny odbor podľa slov v zadaní → ilustrovaná šablóna na prvé miesto
-const KW_TPL = [[/pek[aá]r|chleb|chlieb|kvás/i, 'klas'], [/v[ií]n[aoá]r|vinař|víno|vino\b/i, 'etiketa'], [/kvet|květ|flor/i, 'kytice'], [/pivo|pivovar|sládek|sládok/i, 'chmel'], [/stol[aá]r|truhl|nábyt|nabyt/i, 'letokruhy'], [/cukr|tort|dort|zákusk|zakusk/i, 'dortik'], [/foto|fotograf/i, 'objektiv'], [/káv|kav[aá]r|kavia|barista|pražia|praží/i, 'prazirna'], [/svad|svat|wedding/i, 'eukalyptus'], [/advok|práv|prav[nň]|notár|notář/i, 'erb'], [/archit/i, 'vykres'], [/auto|servis|mechan|pneu/i, 'garaz'], [/jóg|jog[ay]/i, 'lotos'], [/terap|psych|kouč|kouc/i, 'hvezdy'], [/realit|makl/i, 'panorama'], [/stav[ebi]|stavb/i, 'stavitel'], [/program|vývoj|vyvoj|softw/i, 'neon'], [/kader|kadeř|salón|salon|nech|neht/i, 'arkada']];
+const KW_TPL = [[/svadobn\S* fotograf|svatebn\S* fotograf|wedding photo/i, 'vows'], [/elektrik|elektrikář|elektroinšt|elektroinst|elektrikár/i, 'iskra'], [/inštalat|instalat|vodoinšt|vodoinst|kúrenár|topenář|topenar/i, 'iskra'], [/upratov|úklid|uklid|čisti[ac]|čistí|cleaning/i, 'cisto'], [/fitness|fitko|osobn\S* tréner|osobn\S* trenér|tréner|trenér|trener|gym/i, 'sila'], [/tetov|tattoo/i, 'atrament'], [/účtov|uctov|účetn|ucetn|danov|daňov|mzdov/i, 'bilancia'], [/psycholog|psychoterap/i, 'dusa'], [/barber|holič|holic/i, 'britva'], [/cukr[aá]re|cukrář|cukrár|patisser|makrónk|makronk/i, 'glazura'], [/startup|start-up|saas|aplikác|aplikac/i, 'orbit'], [/pek[aá]r|chleb|chlieb|kvás/i, 'klas'], [/v[ií]n[aoá]r|vinař|víno|vino\b/i, 'etiketa'], [/kvet|květ|flor/i, 'kytice'], [/pivo|pivovar|sládek|sládok/i, 'chmel'], [/stol[aá]r|truhl|nábyt|nabyt/i, 'letokruhy'], [/cukr|tort|dort|zákusk|zakusk/i, 'dortik'], [/foto|fotograf/i, 'objektiv'], [/káv|kav[aá]r|kavia|barista|pražia|praží/i, 'prazirna'], [/svad|svat|wedding/i, 'eukalyptus'], [/advok|práv|prav[nň]|notár|notář/i, 'erb'], [/archit/i, 'vykres'], [/auto|servis|mechan|pneu/i, 'garaz'], [/jóg|jog[ay]/i, 'lotos'], [/terap|psych|kouč|kouc/i, 'hvezdy'], [/realit|makl/i, 'panorama'], [/stav[ebi]|stavb/i, 'stavitel'], [/program|vývoj|vyvoj|softw/i, 'neon'], [/kader|kadeř|salón|salon|nech|neht/i, 'arkada']];
 
 const IND_PAL = {
   kadernik: ['ruza', 'krieda', 'levandula'], reality: ['noir', 'navy', 'smaragd'], stavba: ['kobalt', 'navy', 'piesok'],

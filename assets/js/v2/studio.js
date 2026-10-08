@@ -10,7 +10,7 @@ import * as store from './store.js';
 import { PERSONAS, personaFields, TPL_PERSONA } from './personas.js';
 import { emblemFor } from './emblems.js';
 import { toast } from './site.js';
-import { money, printPrice, itemPrice, addWorkdays, fmtDay, debounce, session } from '../util.js';
+import { money, printPrice, itemPrice, addWorkdays, fmtDay, debounce, session, qrSVG } from '../util.js';
 
 const VK = window.VK;
 const $ = (s, el = document) => el.querySelector(s);
@@ -195,15 +195,15 @@ $('[data-ask-re]').addEventListener('submit', (e) => { e.preventDefault(); const
 
 let tplTok = 0, tplIO = null;
 const IND = {
-  beauty: ['beauty', 'kozmetika', 'salon', 'kader', 'nechty', 'barber', 'masaz'],
+  beauty: ['beauty', 'kozmetika', 'salon', 'kader', 'nechty', 'barber', 'masaz', 'tetovanie', 'tattoo'],
   gastro: ['kaviaren', 'gastro', 'restauracia', 'bistro', 'pekaren', 'cukraren', 'bar', 'vino', 'vinarstvo', 'pivovar', 'caj'],
   reality: ['reality', 'architekt', 'stavba', 'developer', 'interier'],
-  zdravie: ['lekar', 'zubar', 'terapeut', 'wellness', 'joga', 'psycholog', 'fyzioterapia', 'ambulancia', 'spa'],
-  remeslo: ['remeslo', 'stolar', 'stavba', 'auto', 'zahrady', 'farma', 'tradicne'],
-  pravo: ['pravnik', 'advokat', 'financie', 'uctovnictvo', 'poistenie', 'konzultant', 'poradenstvo'],
+  zdravie: ['lekar', 'zubar', 'terapeut', 'wellness', 'joga', 'psycholog', 'fyzioterapia', 'ambulancia', 'spa', 'fitness', 'trener', 'sport'],
+  remeslo: ['remeslo', 'stolar', 'stavba', 'auto', 'zahrady', 'farma', 'tradicne', 'elektro', 'elektrikar', 'instalater', 'upratovanie', 'cistenie'],
+  pravo: ['pravnik', 'advokat', 'financie', 'uctovnictvo', 'poistenie', 'konzultant', 'poradenstvo', 'dane', 'mzdy'],
   kreativ: ['foto', 'dizajn', 'kreativ', 'it', 'marketing', 'agentura', 'hudba', 'umelec', 'startup'],
 };
-const RICH = ['kytice', 'klas', 'etiketa', 'lotos', 'vykres', 'erb', 'objektiv', 'prazirna', 'arkada', 'stavitel', 'neon', 'eukalyptus', 'garaz', 'chmel', 'hvezdy', 'panorama', 'letokruhy', 'dortik', 'glow', 'saloon', 'builders', 'cafe', 'samet', 'venec', 'deco', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'odznak', 'medic', 'konfety', 'ruzovezlato', 'akvarelsalvia'];
+const RICH = ['kytice', 'klas', 'etiketa', 'lotos', 'vykres', 'erb', 'britva', 'glazura', 'vows', 'iskra', 'objektiv', 'prazirna', 'arkada', 'stavitel', 'neon', 'eukalyptus', 'garaz', 'atrament', 'cisto', 'bilancia', 'orbit', 'dusa', 'sila', 'hrastar', 'ticha', 'minimal', 'muse', 'maitland', 'organic', 'chmel', 'hvezdy', 'panorama', 'letokruhy', 'dortik', 'glow', 'saloon', 'builders', 'cafe', 'samet', 'venec', 'deco', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'odznak', 'medic', 'konfety', 'ruzovezlato', 'akvarelsalvia'];
 // ukážkový obor šablóny, s menom zákazníka
 function personaFor(id, nm) {
   const pk = TPL_PERSONA[id] || 'arch', p = PERSONAS[pk], f = personaFields(pk);
@@ -664,6 +664,56 @@ const persist = debounce(() => { if (ed && st.loaded) store.set(SAVE, { ...ed.ex
   const rez = params.get('rezim');
   if (rez === 'ai' && params.get('prompt')) runAI(params.get('prompt'));
   else if (rez === 'sablony') showTemplates();
+  else if (rez === 'logo') { await loadDesign(newDesign({ tpl: 'swiss', ...templateDefaults('swiss') })); st.reached.add('choose'); openTab('logo'); go('edit'); toast(tr('Nahrajte logo, farby vizitky sa mu prispôsobia.', 'Nahrajte logo, barvy vizitky se mu přizpůsobí.')); }
   else if (meno) { st.touched.add('name'); await loadDesign(newDesign({ tpl: 'editorial', ...templateDefaults('editorial'), f: { ...DEFAULT_FIELDS, name: meno } })); st.reached.add('choose'); go('edit'); }
   else if (rez === 'ai') setTimeout(() => $('[data-ask-start-in]').focus(), 300);
 })();
+
+/* =========================================================
+   Digitálna vizitka: živý náhľad v telefóne pri vypĺňaní
+   ========================================================= */
+{
+  const box = $('[data-dgp]'), host = $('[data-dgp-host]'), det = $('[data-digital-fields]');
+  const wide = matchMedia('(min-width: 1100px)');
+  document.body.append(box); // fixný panel mimo animovaných krokov sprievodcu
+  let open = false, hooked = false, faces = null, facesKey = '', userClosed = false;
+  const facesFor = async () => {
+    const d = ed.printable(), key = JSON.stringify([d.tpl, d.pal, d.fonts, d.f, d.logo, d.size, d.sides && d.sides.length]);
+    if (faces && key === facesKey) return faces;
+    const [front, back] = await Promise.all([snapshot(d, 'front', 900, 'image/jpeg', 0.86), snapshot(d, 'back', 900, 'image/jpeg', 0.86)]);
+    facesKey = key; faces = { front, back }; return faces;
+  };
+  let tok = 0;
+  const paint = async () => {
+    if (!open || !ed) return;
+    const my = ++tok;
+    const { renderDigital } = await import('./digital.js');
+    let fc = faces;
+    try { fc = await facesFor(); } catch (e) { /* náhľad aj bez obrázka vizitky */ }
+    if (my !== tok || !open) return;
+    const top = host.scrollTop;
+    const d = { ...ed.design, digital: { ...(ed.design.digital || {}) } };
+    renderDigital(host, d, { url: qrFor(d.slug), qr: (u) => qrSVG(u), front: fc?.front || null, back: fc?.back || null, static: false });
+    host.scrollTop = top;
+  };
+  const schedule = debounce(paint, 380);
+  const show = () => {
+    if (!ed) return;
+    if (!hooked) { ed.on('change', () => open && schedule()); ed.on('fields', () => open && schedule()); hooked = true; }
+    open = true; box.hidden = false; requestAnimationFrame(() => box.classList.add('on'));
+    document.documentElement.classList.toggle('dgp-lock', !wide.matches);
+    paint();
+  };
+  const hide = () => { open = false; box.classList.remove('on'); document.documentElement.classList.remove('dgp-lock'); setTimeout(() => { if (!open) box.hidden = true; }, 260); };
+  $('[data-dgp-open]').addEventListener('click', () => { userClosed = false; show(); });
+  $('[data-dgp-close]').addEventListener('click', () => { userClosed = true; hide(); });
+  // na širokej obrazovke sa náhľad otvorí sám s rozbalením časti „Digitálna vizitka“
+  det.addEventListener('toggle', () => { if (det.open && wide.matches && !userClosed) show(); else if (!det.open) hide(); });
+  // zmeny polí, paliet a písma
+  $('.ed-side').addEventListener('input', () => open && schedule());
+  $('.ed-side').addEventListener('click', (e) => { if (open && e.target.closest('[data-pal], [data-font], [data-photo-del]')) setTimeout(schedule, 250); });
+  $('[data-photo-file]').addEventListener('change', () => open && setTimeout(schedule, 400));
+  $$('[data-go]').forEach((li) => li.addEventListener('click', () => open && hide()));
+  $('[data-to-order]').addEventListener('click', () => open && hide());
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open && !wide.matches) hide(); });
+}

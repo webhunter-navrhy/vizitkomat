@@ -55,6 +55,20 @@ export const PERSONAS = {
     { name: 'Mgr. Lucie Tichá', role: 'Psychoterapeutka', company: 'Prostor Ticho', tagline: 'Místo, kde se dá nadechnout.', address: 'České Budějovice' }, 'moon'),
   svadba: P({ name: 'Simona Veselá', role: 'Svadobná koordinátorka', company: 'Áno, prosím', tagline: 'Váš deň, bez starostí.', address: 'Bratislava' },
     { name: 'Simona Veselá', role: 'Svatební koordinátorka', company: 'Ano, prosím', tagline: 'Váš den, bez starostí.', address: 'Brno' }, 'leaf'),
+  upratovanie: P({ name: 'Monika Bieleková', role: 'Upratovacie služby', company: 'Čisto & Hotovo', tagline: 'Vy oddychujete, my upratujeme.', address: 'Bratislava' },
+    { name: 'Monika Bílková', role: 'Úklidové služby', company: 'Čisto & Hotovo', tagline: 'Vy odpočíváte, my uklízíme.', address: 'Praha' }, 'broom'),
+  fitness: P({ name: 'Dávid Mráz', role: 'Osobný tréner', company: 'Mráz Fitness', tagline: 'Silnejší každý týždeň.', address: 'Košice' },
+    { name: 'David Mráz', role: 'Osobní trenér', company: 'Mráz Fitness', tagline: 'Silnější každý týden.', address: 'Brno' }, 'dumbbell'),
+  tetovanie: P({ name: 'Rasťo Čierny', role: 'Tatér', company: 'Čierny Atrament', tagline: 'Príbehy pod kožou.', address: 'Nitra' },
+    { name: 'Rosťa Černý', role: 'Tatér', company: 'Černý Inkoust', tagline: 'Příběhy pod kůží.', address: 'Plzeň' }, 'needle'),
+  uctovnicka: P({ name: 'Ing. Jana Vargová', role: 'Daňová poradkyňa', company: 'Vargová Účtovníctvo', tagline: 'Pokojné čísla, pokojný spánok.', address: 'Trnava' },
+    { name: 'Ing. Jana Vargová', role: 'Daňová poradkyně', company: 'Vargová Účetnictví', tagline: 'Klidná čísla, klidný spánek.', address: 'Olomouc' }, 'calculator'),
+  psycholog: P({ name: 'Mgr. Petra Lánska', role: 'Psychologička', company: 'Poradňa Lánska', tagline: 'Priestor byť sám sebou.', address: 'Žilina' },
+    { name: 'Mgr. Petra Lánská', role: 'Psycholožka', company: 'Poradna Lánská', tagline: 'Prostor být sám sebou.', address: 'Hradec Králové' }, 'butterfly'),
+  svfoto: P({ name: 'Ema Kráľová', role: 'Svadobná fotografka', company: 'Ema Kráľová Photo', tagline: 'Váš deň, navždy.', address: 'Piešťany' },
+    { name: 'Ema Králová', role: 'Svatební fotografka', company: 'Ema Králová Photo', tagline: 'Váš den, navždy.', address: 'Český Krumlov' }, 'camera'),
+  startup: P({ name: 'Filip Novotný', role: 'CEO & spoluzakladateľ', company: 'Nodo', tagline: 'Softvér, ktorý šetrí čas.', address: 'Bratislava' },
+    { name: 'Filip Novotný', role: 'CEO & spoluzakladatel', company: 'Nodo', tagline: 'Software, který šetří čas.', address: 'Praha' }, 'cpu'),
 };
 
 const DOM = (p) => p.company.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/^(studio|stolarstvo|truhlarstvi|pekaren|pekarna|kaviaren|kavarna|cukraren|cukrarna|vinarstvo|vinarstvi)\s+/, '').replace(/[^a-z0-9]+/g, '');
@@ -76,5 +90,6 @@ export const TPL_PERSONA = {
   monogram: 'advokat', editorial: 'arch', swiss: 'it', crop: 'barber', wordmark: 'kava', split: 'uct', minimal: 'joga', pecat: 'vino',
   vzor: 'cukrar', noirgold: 'makler', stuha: 'pekar', terminal: 'it', mramor: 'kader', botanika: 'kvety',
   prechod: 'foto', bauhaus: 'arch', linia: 'joga', akvarel: 'kvety',
+  iskra: 'elektro', cisto: 'upratovanie', sila: 'fitness', atrament: 'tetovanie', bilancia: 'uctovnicka', dusa: 'psycholog', vows: 'svfoto', britva: 'barber', glazura: 'cukrar', orbit: 'startup',
 };
 export const personaLabel = (key) => PERSONAS[key]?.role || tr('Ukážka', 'Ukázka');

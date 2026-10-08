@@ -140,7 +140,7 @@
 <!-- ===== ŠABLÓNY ===== -->
 <section class="tpls" data-nav="coral">
   <div class="wrap tpls__head">
-    <h2 class="h-l rv">{{ L('88 šablón.', '88 šablon.') }} <span class="tpls__y">{{ L('Tisíce kombinácií.', 'Tisíce kombinací.') }}</span></h2>
+    <h2 class="h-l rv">{{ L('98 šablón.', '98 šablon.') }} <span class="tpls__y">{{ L('Tisíce kombinácií.', 'Tisíce kombinací.') }}</span></h2>
     <p class="lead rv">{{ L('Navrhnuté podľa najobľúbenejších vizitiek na Pintereste. Tu s ukážkovými firmami, v editore hneď s vaším menom.', 'Navržené podle nejoblíbenějších vizitek na Pinterestu. Tady s ukázkovými firmami, v editoru hned s vaším jménem.') }}</p>
   </div>
   <div class="tpls__rows" data-tpl-rows>
@@ -198,7 +198,7 @@
         <span class="pcard__per">{{ ('%.2f' % (prices.papers.matny[q|string] / q)) | replace('.', ',') }} {{ prices.symbol }} / {{ L('kus', 'kus') }}</span>
         <p class="pcard__who">{{ who }}</p>
         <ul><li>{{ L('Matný papier 350 g', 'Matný papír 350 g') }}</li><li>{{ L('Obojstranná tlač', 'Oboustranný tisk') }}</li><li>{{ L('Digitálna vizitka zadarmo', 'Digitální vizitka zdarma') }}</li></ul>
-        <span class="pcard__go">{{ L('Navrhnúť', 'Navrhnout') }} →</span>
+        <span class="pcard__go">{{ L('Navrhnúť', 'Navrhnout') }} <i aria-hidden="true">→</i></span>
       </a>
       {% endfor %}
     </div>
@@ -209,7 +209,11 @@
 <!-- ===== FAQ ===== -->
 <section class="faq" id="otazky" data-nav="cream">
   <div class="wrap faq__grid">
-    <h2 class="h-l rv">{{ L('Otázky?', 'Otázky?') }}</h2>
+    <div class="faq__side">
+      <h2 class="h-l rv">{{ L('Otázky?', 'Otázky?') }}</h2>
+      <p class="faq__sub rv">{{ L('Najčastejšie otázky pred prvou objednávkou. Ak tu tú svoju nenájdete, odpíše vám človek, zvyčajne do pár hodín.', 'Nejčastější otázky před první objednávkou. Pokud tu tu svou nenajdete, odepíše vám člověk, obvykle do pár hodin.') }}</p>
+      <a class="faq__ask rv" href="{{ link('kontakt') }}"><span class="faq__ava" aria-hidden="true">@</span><span><b>{{ L('Opýtajte sa nás', 'Zeptejte se nás') }}</b><small>info@vizitkomat.eu</small></span><span class="faq__ar" aria-hidden="true">→</span></a>
+    </div>
     <div class="faq__list">
       {% for q, ans in FAQ %}
       <details><summary>{{ q }}</summary><p>{{ ans }}</p></details>

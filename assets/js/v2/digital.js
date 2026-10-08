@@ -1,4 +1,4 @@
-// Digitálna vizitka 4.0 – stránka v telefóne v štýle tlačenej vizitky: obálka so vzorom značky a skutočnou vizitkou (otočí sa),
+// Digitálna vizitka 5.0 – stránka v telefóne v štýle tlačenej vizitky: obálka so vzorom značky a skutočnou vizitkou (otočí sa),
 // meno písmom vizitky, uloženie do kontaktov, rýchle akcie, rezervácia s najbližšími dňami, služby ako menu, hodiny so stavom,
 // recenzie, mapa, odkazy, siete, galéria, zdieľanie a QR na celú obrazovku. Použitie: /v/<adresa>/, ukážka na webe (static), náhľad.
 import { FONTS, FONT_CSS, PALETTES, FOILS, SIZES, initials, contrast, mix, luminance } from './model.js';
@@ -188,13 +188,26 @@ function pattern(kind, seed, col) {
   return `<svg class="dc__pat" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${P.join('')}</svg>`;
 }
 
-/* ---------- štylizovaná mapa (bez externých dlaždíc) ---------- */
+/* ---------- štylizovaná mapa mesta vo farbách značky (bez externých dlaždíc) ---------- */
 function mapArt(seed, c) {
-  const r = rng(seed), W = 400, H = 170, P = [];
+  const r = rng(seed), W = 400, H = 200, P = [];
   P.push(`<rect width="${W}" height="${H}" fill="${c.base}"/>`);
-  P.push(`<path d="M${-20} ${40 + r() * 60} C ${120} ${r() * 160}, ${260} ${60 + r() * 100}, ${420} ${20 + r() * 120}" fill="none" stroke="${c.water}" stroke-width="16" stroke-linecap="round"/>`);
-  P.push(`<ellipse cx="${60 + r() * 280}" cy="${30 + r() * 110}" rx="${34 + r() * 26}" ry="${20 + r() * 16}" fill="${c.park}"/>`);
-  for (let i = 0; i < 9; i++) { const v = r() < 0.5, p = r() * (v ? W : H), a = (r() - 0.5) * 60; P.push(v ? `<path d="M${p} -10 L${p + a} ${H + 10}" stroke="${c.road}" stroke-width="${i < 3 ? 7 : 3.5}" stroke-linecap="round"/>` : `<path d="M-10 ${p} L${W + 10} ${p + a}" stroke="${c.road}" stroke-width="${i < 3 ? 7 : 3.5}" stroke-linecap="round"/>`); }
+  // bloky domov v nepravidelnej mriežke (medzery = ulice)
+  const cols = [0], rows = [0];
+  for (let x = 0; x < W;) { x += 38 + r() * 46; cols.push(Math.min(W + 30, x)); }
+  for (let y = 0; y < H;) { y += 30 + r() * 34; rows.push(Math.min(H + 30, y)); }
+  for (let i = 0; i < cols.length - 1; i++) for (let j = 0; j < rows.length - 1; j++) {
+    const x = cols[i] + 4, y = rows[j] + 4, w = cols[i + 1] - cols[i] - 8, h = rows[j + 1] - rows[j] - 8;
+    if (w < 8 || h < 8) continue;
+    const park = r() < 0.07;
+    P.push(`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${park ? c.park : c.block}"/>`);
+    if (!park && w > 30 && r() < 0.5) P.push(`<path d="M${(x + w / 2).toFixed(1)} ${y.toFixed(1)}V${(y + h).toFixed(1)}" stroke="${c.base}" stroke-width="1.4"/>`);
+  }
+  // rieka a hlavná trieda
+  const y0 = 30 + r() * 140;
+  P.push(`<path d="M-20 ${y0.toFixed(0)} C 110 ${(y0 - 50 + r() * 100).toFixed(0)}, 250 ${(y0 - 40 + r() * 80).toFixed(0)}, 420 ${(20 + r() * 160).toFixed(0)}" fill="none" stroke="${c.water}" stroke-width="15" stroke-linecap="round"/>`);
+  P.push(`<path d="M${(r() * 120).toFixed(0)} -10 L${(280 + r() * 120).toFixed(0)} ${H + 10}" stroke="${c.road}" stroke-width="7" stroke-linecap="round"/>`);
+  P.push(`<path d="M-10 ${(60 + r() * 80).toFixed(0)} L${W + 10} ${(70 + r() * 80).toFixed(0)}" stroke="${c.road}" stroke-width="5" stroke-linecap="round"/>`);
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${P.join('')}</svg>`;
 }
 
@@ -227,41 +240,65 @@ function ensureFonts(fp) {
   document.head.append(l);
 }
 
+
+const safeHex = (c, fb) => (typeof c === 'string' && /^#[0-9a-f]{6}$/i.test(c) ? c : fb);
+const WD = () => (L() === 'cz' ? ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'] : ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So']);
+// stav dňa v týždni z otváracích hodín: 2 otvorené, 1 po dohode, 0 zatvorené
+function weekState(rows) {
+  const known = rows.filter((r) => r.days.length);
+  return [1, 2, 3, 4, 5, 6, 0].map((wd) => { const r = known.find((x) => x.days.includes(wd)); return { wd, s: !r ? 0 : r.ranges?.length ? 2 : /zatv|zavř|zavr|closed/i.test(r.value || '') ? 0 : 1 }; });
+}
+// „4,9 · 127 recenzií“ → { num: '4,9', val: 4.9, note: '127 recenzií' }
+function parseRating(s = '') {
+  const m = String(s).match(/(\d)[.,](\d)/); if (!m) return null;
+  const val = +(m[1] + '.' + m[2]); if (val > 5) return null;
+  return { num: `${m[1]},${m[2]}`, val, note: String(s).replace(m[0], '').replace(/^[\s·•|,–-]+/, '').trim() };
+}
+
 /**
  * d – návrh (rovnaký model ako tlačená vizitka): d.f, d.pal, d.fonts, d.photo, d.logo, d.mark, d.socials, d.slug, d.size,
  *     d.digital { bio, services (riadky, voliteľne „Služba – 25 €“), hours (riadky), whatsapp,
- *                 booking (URL rezervácie), bookingLabel, reviews (URL recenzií Google), links (riadky „Názov | URL“),
- *                 gallery (riadky s URL fotiek), cover (URL fotky do obálky) }
+ *                 booking (URL rezervácie), bookingLabel, reviews (URL recenzií Google), rating („4,9 · 120 recenzií“),
+ *                 links (riadky „Názov | URL“), gallery (riadky s URL fotiek), cover (URL fotky do obálky) }
  * opts.url – verejná adresa · opts.qr(text) → svg · opts.front/back – obrázky vizitky · opts.static – len náhľad
  * opts.heading – značka mena (h1 na verejnej stránke) · opts.ref – kód odporúčania do odkazu „chcem tiež“
  */
 export function renderDigital(host, d, opts = {}) {
   const T0 = TEMPLATES[d.tpl] || {};
   const fp = FONTS[d.fonts] || FONTS[T0.fonts] || FONTS.instrument;
-  const p = d.pal || PALETTES[T0.pal] || PALETTES.krieda;
+  const p0 = d.pal || PALETTES[T0.pal] || PALETTES.krieda;
+  const p = { ...p0, bg: safeHex(p0.bg, '#F5F2EC'), ink: safeHex(p0.ink, '#1A1A18'), accent: safeHex(p0.accent, '#B4532A') };
   ensureFonts(fp);
   const f = d.f || {}, dg = d.digital || {};
   const dark = luminance(p.bg) < 0.25;
   const ink = contrast(p.ink, p.bg) >= 4.5 ? p.ink : (dark ? '#F5F2EC' : '#16151A');
   const accFg = contrast(p.accent, '#FFFFFF') >= contrast(p.accent, '#111111') ? '#FFFFFF' : '#111111';
   const accText = contrast(p.accent, p.bg) >= 3 ? p.accent : ink;
-  const muted = mix(ink, p.bg, 0.42), line = mix(ink, p.bg, 0.87), panel = mix(ink, p.bg, dark ? 0.93 : 0.955);
+  const muted = mix(ink, p.bg, 0.42), line = mix(ink, p.bg, dark ? 0.86 : 0.88);
+  // svetlé témy: panely svetlejšie ako pozadie (papier na papieri), tmavé: jemne vystúpené
+  const veryLight = luminance(p.bg) > 0.9;
+  const panel = dark ? mix(ink, p.bg, 0.93) : veryLight ? mix(ink, p.bg, 0.965) : mix(p.bg, '#FFFFFF', 0.62);
   const tint = mix(p.accent, p.bg, dark ? 0.84 : 0.88);
   const cover = mix(p.bg, p.accent, dark ? 0.1 : 0.13);
   const fs = p.foil && FOILS[p.foil];
   const foil = fs ? `linear-gradient(115deg,${fs[0]},${fs[2]} 38%,${fs[3]} 62%,${fs[4]} 82%,${fs[5]})` : `linear-gradient(115deg,${mix(p.accent, '#000000', 0.12)},${mix(p.accent, '#FFFFFF', 0.2)} 48%,${p.accent})`;
   const btn = fs ? foil : p.accent, btnFg = fs ? '#2A1F0B' : accFg;
   const patCol = fs ? fs[2] : (contrast(p.accent, cover) >= 1.6 ? p.accent : ink);
+  // „pas“ do peňaženky: farba značky
+  const passBg = dark ? mix(p.bg, '#000000', 0.35) : (contrast(p.accent, '#FFFFFF') >= 2.2 ? p.accent : mix(ink, p.accent, 0.25));
+  const passFg = contrast(passBg, '#FFFFFF') >= contrast(passBg, '#111111') ? '#FFFFFF' : '#111111';
   const tel = (f.phone || '').replace(/[^\d+]/g, '');
   const wa = (dg.whatsapp || (dg.whatsappSame !== false ? tel : '')).replace(/[^\d]/g, '');
   const web = f.web ? href(f.web) : '';
-  const map = f.address ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(f.address) : '';
+  const q = encodeURIComponent(f.address || '');
+  const map = f.address ? 'https://www.google.com/maps/search/?api=1&query=' + q : '';
   const url = opts.url || '';
   const socials = Object.entries(d.socials || {}).filter(([k, v]) => v && SOC[k]);
   const services = lines(dg.services), hours = parseHours(dg.hours);
   const status = openStatus(hours);
   const links = lines(dg.links).map((x) => { const [a, b] = x.split('|').map((s) => s.trim()); return b ? [a, b] : [hostOf(a), a]; }).filter(([, u]) => u);
   const gallery = lines(dg.gallery).filter((u) => /^(https?:|data:|\.{0,2}\/)/.test(u)).slice(0, 12);
+  const rating = parseRating(dg.rating);
   const H = opts.heading || 'p';
   const ext = (h) => (/^https?:/.test(h) ? ' target="_blank" rel="noopener"' : '');
   const name = f.name || f.company || '';
@@ -271,6 +308,8 @@ export function renderDigital(host, d, opts = {}) {
   const sz = SIZES[d.size] || SIZES['90x50'];
   const seed = hash((d.slug || name) + d.tpl);
   const city = (f.address || '').split(',').map((s) => s.trim()).filter(Boolean).pop() || '';
+  const shortUrl = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  const hairMono = /Bodoni|Italiana|Josefin|Tenor|Cormorant|Marcellus/.test(fp.display);
 
   const quick = [
     tel && ['phone', t('Zavolať', 'Zavolat'), 'tel:' + tel],
@@ -290,35 +329,55 @@ export function renderDigital(host, d, opts = {}) {
   const miniF = `<span class="dc__mini"><span class="dc__mini-m">${markHtml}</span><span class="dc__mini-t"><b>${esc(name)}</b><small>${esc(f.role || co)}</small></span></span>`;
   const miniB = `<span class="dc__mini dc__mini--b"><b>${esc(co || name)}</b>${f.tagline ? `<small>${esc(f.tagline)}</small>` : ''}</span>`;
   const hasCard = !!opts.front;
-  const avatar = d.photo ? `<img src="${d.photo}" alt="">` : d.logo ? `<img class="is-logo" src="${d.logo}" alt="">` : d.mark ? `<i class="is-mark" style="-webkit-mask-image:url(${d.mark});mask-image:url(${d.mark})"></i>` : `<span>${esc(mono(f))}</span>`;
+  const avatar = d.photo ? `<img src="${d.photo}" alt="">` : d.logo ? `<img class="is-logo" src="${d.logo}" alt="">` : d.mark ? `<i class="is-mark" style="-webkit-mask-image:url(${d.mark});mask-image:url(${d.mark})"></i>` : `<span class="dc__mono">${esc(mono(f))}</span>`;
 
-  let n = 0;
-  const sh = (title, extra = '') => `<header class="dc__sh"><span class="dc__no">${String(++n).padStart(2, '0')}</span><h2>${title}</h2>${extra}</header>`;
+  const sh = (title, extra = '') => `<header class="dc__sh"><h2>${title}</h2>${extra}</header>`;
   // „Služba – cena“: cena za bodkami ako v menu
-  const svc = (s) => { const m = s.match(/^(.+?)\s+[–—|-]\s+([^–—|]{1,22})$/); return m && /\d|zadarmo|zdarma|dohod|na mieru|na míru/i.test(m[2]) ? `<li><span>${esc(m[1])}</span><i aria-hidden="true"></i><b>${esc(m[2])}</b></li>` : `<li><span>${esc(s)}</span></li>`; };
+  const svc = (s) => { const m = s.match(/^(.+?)\s+[–—|-]\s+([^–—|]{1,24})$/); return m && /\d|zadarmo|zdarma|dohod|na mieru|na míru/i.test(m[2]) ? `<li><span>${esc(m[1])}</span><i aria-hidden="true"></i><b>${esc(m[2])}</b></li>` : `<li><span>${esc(s)}</span></li>`; };
   const statusChip = status ? `<span class="dc__open${status.open ? ' is-open' : ''}${status.soft ? ' is-soft' : ''}"><i></i>${esc(status.text)}</span>` : '';
   const days = dg.booking ? nextDays(hours) : [];
+  const stars = (v = 5) => `<span class="dc__stars" aria-hidden="true">${[1, 2, 3, 4, 5].map((k) => `<span class="${v >= k - 0.25 ? 'on' : v >= k - 0.75 ? 'half' : ''}">${ico('star')}</span>`).join('')}</span>`;
 
   const S = [];
-  if (dg.booking) S.push(`<section class="dc__sec dc__book">
-      <a class="dc__book-in" href="${esc(href(dg.booking))}" target="_blank" rel="noopener">
+  if (dg.booking) S.push(`<section class="dc__sec dc__sec--book">
+      <a class="dc__book" href="${esc(href(dg.booking))}" target="_blank" rel="noopener">
         <span class="dc__book-h"><i>${ico('cal')}</i><span><b>${esc(dg.bookingLabel || t('Rezervovať termín', 'Rezervovat termín'))}</b><small>${t('Vyberte si čas online, bez telefonovania', 'Vyberte si čas online, bez telefonování')}</small></span></span>
         ${days.length ? `<span class="dc__days">${days.map((x, i) => `<span${i ? '' : ' class="on"'}><small>${x.top}</small><b>${x.num}</b></span>`).join('')}</span>` : ''}
-        <span class="dc__book-go">${t('Zobraziť voľné termíny', 'Zobrazit volné termíny')}${ico('arrow')}</span>
+        <span class="dc__book-go"><span>${t('Zobraziť voľné termíny', 'Zobrazit volné termíny')}</span>${ico('arrow')}</span>
       </a></section>`);
-  if (dg.bio) S.push(`<section class="dc__sec">${sh(t('O mne', 'O mně'))}<p class="dc__bio">${esc(dg.bio).replace(/\n/g, '<br>')}</p></section>`);
-  if (services.length) S.push(`<section class="dc__sec">${sh(t('Služby a ceny', 'Služby a ceny'))}<ul class="dc__svc">${services.map(svc).join('')}</ul></section>`);
-  if (gallery.length) S.push(`<section class="dc__sec dc__sec--bleed">${sh(t('Ukážky práce', 'Ukázky práce'))}<div class="dc__gal">${gallery.map((u) => `<img src="${esc(u)}" alt="" loading="lazy" decoding="async">`).join('')}</div></section>`);
-  if (hours.length) S.push(`<section class="dc__sec">${sh(t('Otváracie hodiny', 'Otevírací doba'), statusChip)}<ul class="dc__hours">${hours.map((h) => `<li${status && h.days.includes(status.today) ? ' class="is-today"' : ''}><span>${esc(h.label)}</span>${h.value ? `<b>${esc(h.value)}</b>` : ''}</li>`).join('')}</ul></section>`);
-  if (dg.reviews) S.push(`<section class="dc__sec"><a class="dc__rev" href="${esc(href(dg.reviews))}" target="_blank" rel="noopener"><span class="dc__stars" aria-hidden="true">${ico('star').repeat(5)}</span><b>${t('Boli ste spokojní?', 'Byli jste spokojeni?')}</b><small>${t('Recenzia na Google zaberie 30 sekúnd a nám veľmi pomôže.', 'Recenze na Googlu zabere 30 sekund a nám moc pomůže.')}</small><span class="dc__rev-go">${t('Napísať recenziu', 'Napsat recenzi')}${ico('arrow')}</span></a></section>`);
-  if (rows.length || f.address) S.push(`<section class="dc__sec">${sh(t('Kontakt', 'Kontakt'))}<ul class="dc__rows">${rows.map(([k, lab, v, h]) => `<li><a href="${h}"${ext(h)}><i>${ico(k)}</i><span><small>${lab}</small>${esc(v)}</span>${ico('chev')}</a></li>`).join('')}</ul>${f.address ? `<a class="dc__map" href="${map}" target="_blank" rel="noopener">${mapArt(hash(f.address), { base: panel, road: mix(ink, p.bg, dark ? 0.82 : 0.9), water: mix(p.accent, p.bg, 0.78), park: mix(p.accent, p.bg, 0.86) })}<span class="dc__pin" aria-hidden="true">${ico('pin')}</span><span class="dc__map-t"><span><small>${t('Adresa', 'Adresa')}</small><b>${esc(f.address)}</b></span><em>${ico('nav')}${t('Navigovať', 'Navigovat')}</em></span></a>` : ''}</section>`);
+  if (dg.bio) S.push(`<section class="dc__sec dc__sec--bio">${sh(t('O mne', 'O mně'))}<p class="dc__bio">${esc(dg.bio).replace(/\n/g, '<br>')}</p>${f.name && f.name !== co ? `<p class="dc__sign">${esc(bare(f.name))}</p>` : ''}</section>`);
+  if (services.length) S.push(`<section class="dc__sec">${sh(t('Služby a ceny', 'Služby a ceny'))}<div class="dc__menu"><ul class="dc__svc">${services.map(svc).join('')}</ul></div></section>`);
+  if (gallery.length) S.push(`<section class="dc__sec dc__sec--bleed">${sh(t('Ukážky práce', 'Ukázky práce'), `<span class="dc__cnt">${gallery.length}</span>`)}<div class="dc__gal">${gallery.map((u, i) => `<button data-dc-gal="${i}" aria-label="${t('Zväčšiť fotku', 'Zvětšit fotku')} ${i + 1}"><img src="${esc(u)}" alt="" loading="lazy" decoding="async"></button>`).join('')}</div></section>`);
+  if (hours.length) {
+    const wk = weekState(hours), W = WD();
+    S.push(`<section class="dc__sec">${sh(t('Otváracie hodiny', 'Otevírací doba'), statusChip)}
+      ${wk.some((x) => x.s) ? `<div class="dc__week" aria-hidden="true">${wk.map((x) => `<span class="s${x.s}${status && status.today === x.wd ? ' is-today' : ''}"><b>${W[x.wd]}</b><i></i></span>`).join('')}</div>` : ''}
+      <ul class="dc__hours">${hours.map((h) => `<li${status && h.days.includes(status.today) ? ' class="is-today"' : ''}><span>${esc(h.label)}${status && h.days.includes(status.today) ? `<em>${t('dnes', 'dnes')}</em>` : ''}</span>${h.value ? `<b>${esc(h.value)}</b>` : ''}</li>`).join('')}</ul></section>`);
+  }
+  if (dg.reviews || rating) S.push(`<section class="dc__sec"><a class="dc__rev${rating ? ' has-num' : ''}"${dg.reviews ? ` href="${esc(href(dg.reviews))}" target="_blank" rel="noopener"` : ''}>
+      ${rating ? `<span class="dc__rev-n"><b>${rating.num}</b>${stars(rating.val)}<small>${esc(rating.note || t('hodnotenie na Google', 'hodnocení na Googlu'))}</small></span>` : stars(5)}
+      <span class="dc__rev-t"><b>${t('Boli ste spokojní?', 'Byli jste spokojeni?')}</b><small>${t('Recenzia na Google zaberie 30 sekúnd a nám veľmi pomôže.', 'Recenze na Googlu zabere 30 sekund a nám moc pomůže.')}</small></span>
+      ${dg.reviews ? `<span class="dc__rev-go"><span>${t('Napísať recenziu', 'Napsat recenzi')}</span>${ico('arrow')}</span>` : ''}</a></section>`);
+  if (rows.length || f.address) S.push(`<section class="dc__sec">${sh(t('Kontakt', 'Kontakt'))}<ul class="dc__rows">${rows.map(([k, lab, v, h]) => `<li><a href="${h}"${ext(h)}><i>${ico(k)}</i><span><small>${lab}</small>${esc(v)}</span>${ico('chev')}</a></li>`).join('')}</ul>
+      ${f.address ? `<div class="dc__map"><a class="dc__map-art" href="${map}" target="_blank" rel="noopener" aria-label="${t('Otvoriť mapu', 'Otevřít mapu')}">${mapArt(hash(f.address), { base: mix(p.bg, dark ? '#000000' : '#FFFFFF', dark ? 0.25 : 0.35), block: dark ? mix(ink, p.bg, 0.9) : mix(ink, p.bg, 0.935), road: dark ? mix(ink, p.bg, 0.8) : '#FFFFFF', water: mix(p.accent, p.bg, dark ? 0.7 : 0.72), park: mix(p.accent, p.bg, dark ? 0.8 : 0.82) })}<span class="dc__pin" aria-hidden="true">${ico('pin')}</span></a>
+        <div class="dc__map-t"><span><small>${t('Adresa', 'Adresa')}</small><b>${esc(f.address)}</b></span></div>
+        <div class="dc__maps"><a href="${map}" target="_blank" rel="noopener">${ico('nav')}Google Maps</a><a href="https://maps.apple.com/?q=${q}" target="_blank" rel="noopener">${ico('map')}Apple</a><a href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">${ico('nav')}Waze</a></div></div>` : ''}</section>`);
   if (links.length) S.push(`<section class="dc__sec">${sh(t('Odkazy', 'Odkazy'))}<ul class="dc__links">${links.map(([a, u]) => `<li><a href="${esc(href(u))}" target="_blank" rel="noopener"><span><b>${esc(a)}</b><small>${esc(hostOf(u))}</small></span><i>${ico('arrow')}</i></a></li>`).join('')}</ul></section>`);
-  if (socials.length) S.push(`<section class="dc__sec">${sh(t('Sledujte ma', 'Sledujte mě'))}<div class="dc__soc">${socials.map(([k, v]) => `<a href="${esc(href(v))}" target="_blank" rel="noopener" style="--b:${B[k][0]}" aria-label="${SOC[k]}"><i>${bico(k)}</i><span>${SOC[k]}</span></a>`).join('')}</div></section>`);
+  if (socials.length) S.push(`<section class="dc__sec">${sh(t('Sledujte ma', 'Sledujte mě'))}<div class="dc__soc" style="--n:${Math.min(socials.length, 4)}">${socials.map(([k, v]) => `<a href="${esc(href(v))}" target="_blank" rel="noopener" style="--b:${B[k][0]}" aria-label="${SOC[k]}"><i>${bico(k)}</i><span>${SOC[k]}</span></a>`).join('')}</div></section>`);
+
+  const pass = `<button class="dc__pass" data-dc-qr aria-label="${t('Ukázať QR kód na celú obrazovku', 'Ukázat QR kód na celou obrazovku')}">
+      <span class="dc__pass-top"><span class="dc__pass-av">${avatar}</span><span class="dc__pass-br">${esc(co || name)}</span><em>${t('Vizitka', 'Vizitka')}</em></span>
+      <span class="dc__pass-name">${esc(name)}</span>
+      <span class="dc__pass-meta">${f.role ? `<span><small>${t('Pozícia', 'Pozice')}</small><b>${esc(f.role)}</b></span>` : ''}${f.phone ? `<span><small>${t('Telefón', 'Telefon')}</small><b>${esc(f.phone)}</b></span>` : ''}</span>
+      <span class="dc__pass-qr" data-dc-qrmini></span>
+      <span class="dc__pass-url">${esc(shortUrl || t('vaša adresa', 'vaše adresa'))}</span>
+    </button>`;
 
   host.innerHTML = `
-  <article class="dc${dark ? ' dc--dark' : ' dc--light'}${fs ? ' dc--foil' : ''}${/Bebas|Archivo|Unbounded|Syne|Rubik|Mono|Abril|Caveat/.test(fp.display) ? ' dc--loud' : ''}${opts.static ? ' dc--static' : ''}${hasCard ? ' dc--card' : ''}" style="--d-bg:${p.bg};--d-ink:${ink};--d-acc:${p.accent};--d-acc-fg:${accFg};--d-acc-t:${accText};--d-muted:${muted};--d-line:${line};--d-panel:${panel};--d-tint:${tint};--d-cover:${cover};--d-foil:${foil};--d-btn:${btn};--d-btn-fg:${btnFg};--d-fd:'${fp.display}';--d-dw:${fp.dw};--d-ft:'${fp.text}';--d-ar:${sz.w}/${sz.h}">
+  <article class="dc${dark ? ' dc--dark' : ' dc--light'}${fs ? ' dc--foil' : ''}${hairMono ? ' dc--hair' : ''}${/Bebas|Archivo|Unbounded|Syne|Rubik|Mono|Abril|Caveat/.test(fp.display) ? ' dc--loud' : ''}${opts.static ? ' dc--static' : ''}${hasCard ? ' dc--card' : ''}" style="--d-bg:${p.bg};--d-ink:${ink};--d-acc:${p.accent};--d-acc-fg:${accFg};--d-acc-t:${accText};--d-muted:${muted};--d-line:${line};--d-panel:${panel};--d-tint:${tint};--d-cover:${cover};--d-foil:${foil};--d-btn:${btn};--d-btn-fg:${btnFg};--d-pass:${passBg};--d-pass-fg:${passFg};--d-fd:'${fp.display}';--d-dw:${fp.dw};--d-ft:'${fp.text}';--d-ar:${sz.w}/${sz.h}">
     <header class="dc__cover"${dg.cover ? ` style="--cov:url('${esc(dg.cover)}')"` : ''}>
       ${dg.cover ? '<span class="dc__cov-img" aria-hidden="true"></span>' : pattern(patternKind(T0.tags || [], dark), seed, patCol)}
+      <span class="dc__spot" aria-hidden="true"></span>
       <div class="dc__top">
         <span class="dc__brand">${esc(co || t('Digitálna vizitka', 'Digitální vizitka'))}</span>
         <span class="dc__tbtns"><button class="dc__ibtn" data-dc-qr aria-label="${t('Ukázať QR kód', 'Ukázat QR kód')}">${ico('qr')}</button><button class="dc__ibtn" data-dc-share aria-label="${t('Zdieľať vizitku', 'Sdílet vizitku')}">${ico('share')}</button></span>
@@ -328,12 +387,13 @@ export function renderDigital(host, d, opts = {}) {
           <span class="dc__face dc__face--f">${hasCard ? face(opts.front) : miniF}<i class="dc__sheen"></i></span>
           <span class="dc__face dc__face--b">${hasCard && opts.back ? face(opts.back) : miniB}<i class="dc__sheen"></i></span>
         </button>
+        <span class="dc__floor" aria-hidden="true"></span>
       </div>
     </header>
     <section class="dc__id">
       <div class="dc__idrow"><div class="dc__av">${avatar}</div>${statusChip || `<span class="dc__fliphint">${ico('flip')}${t('Ťuknite na vizitku', 'Ťukněte na vizitku')}</span>`}</div>
       <${H} class="dc__name">${esc(name)}</${H}>
-      ${f.role || co ? `<p class="dc__role">${f.role ? `<b>${esc(f.role)}</b>` : ''}${co ? `<span>${esc(co)}${city ? ' · ' + esc(city) : ''}</span>` : ''}</p>` : ''}
+      ${f.role || co ? `<p class="dc__role">${f.role ? `<b>${esc(f.role)}</b>` : ''}${co ? `<span>${esc(co)}${city ? ' · ' + esc(city) : ''}</span>` : city ? `<span>${esc(city)}</span>` : ''}</p>` : ''}
       ${f.tagline ? `<p class="dc__tag">${esc(f.tagline)}</p>` : ''}
     </section>
     <div class="dc__cta" data-dc-cta>
@@ -342,10 +402,10 @@ export function renderDigital(host, d, opts = {}) {
     </div>
     ${S.join('')}
     <section class="dc__sec dc__share">
-      <div class="dc__qrcard"><div class="dc__qrmini" data-dc-qrmini></div><span>${esc(url.replace(/^https?:\/\//, '').replace(/\/$/, '') || t('vaša adresa', 'vaše adresa'))}</span></div>
+      ${pass}
       <h2 class="dc__share-h">${t('Pošlite vizitku ďalej', 'Pošlete vizitku dál')}</h2>
-      <p>${t('Nechajte si naskenovať kód alebo pošlite odkaz cez WhatsApp, SMS či e-mail.', 'Nechte si naskenovat kód nebo pošlete odkaz přes WhatsApp, SMS či e-mail.')}</p>
-      <button class="dc__ghost" data-dc-share>${ico('share')}<span>${t('Zdieľať vizitku', 'Sdílet vizitku')}</span></button>
+      <p>${t('Ukážte kód na celú obrazovku alebo pošlite odkaz cez WhatsApp, SMS či e-mail.', 'Ukažte kód na celou obrazovku nebo pošlete odkaz přes WhatsApp, SMS či e-mail.')}</p>
+      <div class="dc__share-b"><button class="dc__ghost" data-dc-share>${ico('share')}<span>${t('Zdieľať', 'Sdílet')}</span></button><button class="dc__ghost" data-dc-qr>${ico('qr')}<span>${t('QR kód', 'QR kód')}</span></button></div>
     </section>
     <footer class="dc__foot"><a href="${home}" target="_blank" rel="noopener"><span>${t('Chcete tiež takúto vizitku?', 'Chcete taky takovou vizitku?')}</span><b>${t('Vytvorte si ju na', 'Vytvořte si ji na')} vizitkomat.eu →</b></a></footer>
     <div class="dc__bar" data-dc-bar>
@@ -358,7 +418,7 @@ export function renderDigital(host, d, opts = {}) {
     <div class="dc__sheet" data-dc-sheet hidden role="dialog" aria-modal="true" aria-label="${t('Zdieľať', 'Sdílet')}">
       <div class="dc__sheet-in">
         <span class="dc__grab" aria-hidden="true"></span>
-        <div class="dc__sheet-h"><span class="dc__bar-av">${avatar}</span><span><b>${esc(name)}</b><small>${esc(url.replace(/^https?:\/\//, ''))}</small></span></div>
+        <div class="dc__sheet-h"><span class="dc__bar-av">${avatar}</span><span><b>${esc(name)}</b><small>${esc(shortUrl)}</small></span></div>
         <div class="dc__sheet-g">
           <a data-sh="wa" href="#" target="_blank" rel="noopener"><i style="--b:#25D366">${ico('wa')}</i>WhatsApp</a>
           <a data-sh="sms" href="#"><i style="--b:#34C759">${ico('sms')}</i>SMS</a>
@@ -375,6 +435,7 @@ export function renderDigital(host, d, opts = {}) {
       <button class="dc__ibtn dc__close" data-dc-qrclose aria-label="${t('Zavrieť', 'Zavřít')}">${ico('x')}</button>
       <div class="dc__qrbigcard"><span class="dc__bar-av">${avatar}</span><b>${esc(name)}</b><small>${esc([f.role, co].filter(Boolean).join(' · '))}</small><div class="dc__qrbig" data-dc-qrbig></div><p>${ico('sun')}${t('Zvýšte jas a nechajte naskenovať fotoaparátom', 'Zvyšte jas a nechte naskenovat fotoaparátem')}</p></div>
     </div>
+    ${gallery.length ? `<div class="dc__lb" data-dc-lb hidden role="dialog" aria-modal="true" aria-label="${t('Galéria', 'Galerie')}"><button class="dc__ibtn dc__close" data-dc-lbclose aria-label="${t('Zavrieť', 'Zavřít')}">${ico('x')}</button><div class="dc__lb-track" data-dc-lbtrack>${gallery.map((u) => `<figure><img src="${esc(u)}" alt="" loading="lazy" decoding="async"></figure>`).join('')}</div><span class="dc__lb-n" data-dc-lbn></span></div>` : ''}
     <div class="dc__toast" data-dc-toast role="status" aria-live="polite"></div>
   </article>`;
 
@@ -383,19 +444,19 @@ export function renderDigital(host, d, opts = {}) {
   card.classList.toggle('dc--narrow', hw < 360); card.classList.toggle('dc--xs', hw < 290);
   const link = url || (typeof location !== 'undefined' ? location.href.split('#')[0] : '');
   const qrMini = card.querySelector('[data-dc-qrmini]');
-  if (opts.qr) qrMini.innerHTML = opts.qr(link); else card.querySelector('.dc__qrcard').remove();
+  if (opts.qr) qrMini.innerHTML = opts.qr(link); else qrMini.remove();
   const buzz = () => { try { navigator.vibrate?.(8); } catch (e) { /* nič */ } };
   // pomer strán podľa skutočného obrázka (ak sa formát líši od údaja v návrhu)
   const fimg = card.querySelector('.dc__face--f img');
   const fixAr = () => { if (!fimg.naturalWidth) return; const r = fimg.naturalWidth / fimg.naturalHeight; if (Math.abs(r - sz.w / sz.h) > 0.04) { card.style.setProperty('--d-ar', String(r)); card.querySelector('.dc__stage').classList.toggle('is-sq', r < 1.2); } };
   if (fimg) { if (fimg.complete) fixAr(); else fimg.addEventListener('load', fixAr, { once: true }); }
-  card.querySelector('[data-dc-flip]').addEventListener('click', () => { card.classList.toggle('dc--flipped'); buzz(); });
+  card.querySelector('[data-dc-flip]').addEventListener('click', () => { card.classList.toggle('dc--flipped'); card.classList.add('dc--touched'); buzz(); });
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // postupné odkrývanie sekcií + spodná lišta, keď hlavné tlačidlo odíde z obrazovky
   const scroller = (() => { for (let el = host; el && el !== document.body; el = el.parentElement) { const o = getComputedStyle(el).overflowY; if (/(auto|scroll)/.test(o) && el.scrollHeight > el.clientHeight + 4) return el; } return null; })();
   if ('IntersectionObserver' in window) {
-    if (!reduce) {
+    if (!reduce && !opts.static) {
       card.classList.add('dc--rv');
       const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -6% 0px' });
       card.querySelectorAll('.dc__sec, .dc__foot').forEach((s) => io.observe(s));
@@ -417,7 +478,7 @@ export function renderDigital(host, d, opts = {}) {
   }
 
   const toastEl = card.querySelector('[data-dc-toast]');
-  const toast = (msg) => { toastEl.textContent = msg; toastEl.classList.add('on'); clearTimeout(toastEl._t); toastEl._t = setTimeout(() => toastEl.classList.remove('on'), 3200); };
+  const toast = (msg) => { toastEl.textContent = msg; toastEl.classList.add('on'); clearTimeout(toastEl._t); toastEl._t = setTimeout(() => toastEl.classList.remove('on'), 3600); };
   card.querySelectorAll('[data-dc-save]').forEach((saveBtn) => {
     const saveLabel = saveBtn.querySelector('span').textContent;
     saveBtn.addEventListener('click', async () => {
@@ -426,9 +487,9 @@ export function renderDigital(host, d, opts = {}) {
       await downloadVCard(f, link, { socials: d.socials, bio: dg.bio, whatsapp: wa, photoSrc: d.photo || d.logo || null });
       saveBtn.classList.remove('busy'); saveBtn.classList.add('ok');
       saveBtn.querySelector('i').innerHTML = ico('check');
-      saveBtn.querySelector('span').textContent = t('Kontakt je stiahnutý', 'Kontakt je stažený');
-      toast(t('Otvorte stiahnutý kontakt a ťuknite na „Uložiť“.', 'Otevřete stažený kontakt a ťukněte na „Uložit“.'));
-      setTimeout(() => { saveBtn.classList.remove('ok'); saveBtn.querySelector('i').innerHTML = ico('userplus'); saveBtn.querySelector('span').textContent = saveLabel; }, 4500);
+      saveBtn.querySelector('span').textContent = t('Kontakt je pripravený', 'Kontakt je připravený');
+      toast(/iP(hone|ad|od)/.test(navigator.userAgent) ? t('Ťuknite na „Vytvoriť nový kontakt“ a je to.', 'Ťukněte na „Vytvořit nový kontakt“ a je to.') : t('Otvorte stiahnutý kontakt a ťuknite na „Uložiť“.', 'Otevřete stažený kontakt a ťukněte na „Uložit“.'));
+      setTimeout(() => { saveBtn.classList.remove('ok'); saveBtn.querySelector('i').innerHTML = ico('userplus'); saveBtn.querySelector('span').textContent = saveLabel; }, 5000);
     });
   });
   const copy = async () => { try { await navigator.clipboard.writeText(link); toast(t('Odkaz je skopírovaný', 'Odkaz je zkopírovaný')); buzz(); } catch (e) { toast(link); } };
@@ -465,6 +526,22 @@ export function renderDigital(host, d, opts = {}) {
   });
   card.querySelectorAll('[data-dc-qr]').forEach((b) => b.addEventListener('click', showQR));
   full.addEventListener('click', (e) => { if (e.target === full || e.target.closest('[data-dc-qrclose]')) hideQR(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (!full.hidden) hideQR(); if (!sheet.hidden) closeSheet(); } });
+  // galéria na celú obrazovku (posúvanie prstom)
+  const lb = card.querySelector('[data-dc-lb]');
+  let hideLB = () => {};
+  if (lb) {
+    const tr = lb.querySelector('[data-dc-lbtrack]'), nEl = lb.querySelector('[data-dc-lbn]'), N = gallery.length;
+    const upd = () => { nEl.textContent = `${Math.round(tr.scrollLeft / Math.max(1, tr.clientWidth)) + 1} / ${N}`; };
+    tr.addEventListener('scroll', upd, { passive: true });
+    const showLB = (i) => { lb.hidden = false; requestAnimationFrame(() => { tr.scrollLeft = i * tr.clientWidth; upd(); lb.classList.add('on'); }); lb.querySelector('[data-dc-lbclose]').focus({ preventScroll: true }); buzz(); };
+    hideLB = () => { lb.classList.remove('on'); setTimeout(() => { lb.hidden = true; }, 220); };
+    card.querySelectorAll('[data-dc-gal]').forEach((b) => b.addEventListener('click', () => showLB(+b.dataset.dcGal)));
+    lb.addEventListener('click', (e) => { if (e.target.closest('[data-dc-lbclose]') || e.target === lb) hideLB(); });
+    lb.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') tr.scrollBy({ left: tr.clientWidth, behavior: 'smooth' }); if (e.key === 'ArrowLeft') tr.scrollBy({ left: -tr.clientWidth, behavior: 'smooth' }); });
+  }
+  // jeden poslucháč klávesnice na hostiteľa (náhľad sa prekresľuje často)
+  if (host._dcKey) document.removeEventListener('keydown', host._dcKey);
+  host._dcKey = (e) => { if (e.key === 'Escape') { if (!full.hidden) hideQR(); if (!sheet.hidden) closeSheet(); if (lb && !lb.hidden) hideLB(); } };
+  document.addEventListener('keydown', host._dcKey);
   return card;
 }

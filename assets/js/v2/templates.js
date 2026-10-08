@@ -6,6 +6,7 @@ import { proTemplates } from './tpl-pro.js';
 import { richTemplates } from './tpl-rich.js';
 import { luxTemplates } from './tpl-lux.js';
 import { neoTemplates } from './tpl-neo.js';
+import { xTemplates, xBackExtras } from './tpl-x.js';
 
 // ---------- pomocníci ----------
 const T = (text, o = {}) => ({ type: 'text', text, ...o });
@@ -199,6 +200,11 @@ Object.assign(TEMPLATES, richTemplates({ T, R, C, Ln, P, QR, IMG, I, MONO, logoO
 Object.assign(TEMPLATES, luxTemplates({ T, R, C, Ln, P, QR, IMG, I, MONO, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, seeded, smooth, SCRIPT }));
 Object.assign(TEMPLATES, proTemplates({ T, R, C, Ln, P, QR, IMG, MONO, contacts, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, topoPaths, seeded, smooth, SCRIPT }));
 Object.assign(TEMPLATES, neoTemplates({ T, R, C, Ln, P, QR, IMG, I, MONO, contacts, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, topoPaths, wavesPath, blobPath, seeded, smooth, SCRIPT }));
+for (const [id, ex] of Object.entries(xBackExtras({ T, R, C, Ln, P, QR, IMG, I, MONO, contacts, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, topoPaths, seeded, smooth, SCRIPT }))) {
+  const t = TEMPLATES[id]; if (!t) continue; const base = t.back;
+  t.back = (c) => { const r = base(c); r.objs = [...(ex.under ? ex.under(c) : []), ...r.objs, ...(ex.over ? ex.over(c) : [])]; return r; };
+}
+Object.assign(TEMPLATES, xTemplates({ T, R, C, Ln, P, QR, IMG, I, MONO, contacts, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, topoPaths, wavesPath, blobPath, seeded, smooth, SCRIPT }));
 
 // ---------- zadné strany na výber ----------
 export const BACKS = {

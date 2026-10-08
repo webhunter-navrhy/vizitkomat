@@ -1,6 +1,7 @@
 // Stránka Digitálna vizitka: živá ukážka v hero (s menom návštevníka), interaktívna ukážka odborov a galéria štýlov.
 import { newDesign, slugify, tr } from './model.js';
 import { templateDefaults } from './templates.js';
+import { personaFields } from './personas.js';
 import { renderDigital } from './digital.js';
 import { qrSVG, absUrl, debounce, session } from '../util.js';
 
@@ -16,7 +17,7 @@ const DEMOS = {
       bio: tr('Pomáham rodinám predať byt za férovú cenu a bez stresu. 12 rokov v Bratislave.', 'Pomáhám rodinám prodat byt za férovou cenu a bez stresu. 12 let v Praze.'),
       services: tr('Predaj bytov a domov – 2,5 % z ceny\nOcenenie nehnuteľnosti – zadarmo\nPrenájom', 'Prodej bytů a domů – 2,5 % z ceny\nOcenění nemovitosti – zdarma\nPronájem'),
       hours: tr('Po – Pi: 8:00 – 18:00\nSo: po dohode', 'Po – Pá: 8:00 – 18:00\nSo: po domluvě'),
-      booking: 'https://calendly.com/', bookingLabel: tr('Dohodnúť obhliadku', 'Domluvit prohlídku'), reviews: 'https://www.google.com/maps',
+      booking: 'https://calendly.com/', bookingLabel: tr('Dohodnúť obhliadku', 'Domluvit prohlídku'), reviews: 'https://www.google.com/maps', rating: tr('4,9 · 86 recenzií na Google', '4,9 · 86 recenzí na Googlu'),
     },
     socials: { instagram: 'https://instagram.com/', linkedin: 'https://linkedin.com/' },
   },
@@ -27,7 +28,7 @@ const DEMOS = {
       bio: tr('Gélové nechty, ktoré vydržia. Pracujem len s prémiovou kozmetikou a s časom na vás.', 'Gelové nehty, které vydrží. Pracuji jen s prémiovou kosmetikou a s časem na vás.'),
       services: tr('Gélové nechty – od 35 €\nManikúra – 20 €\nNail art – od 5 €', 'Gelové nehty – od 790 Kč\nManikúra – 450 Kč\nNail art – od 100 Kč'),
       hours: tr('Po – Pi: 9:00 – 19:00\nSo: 9:00 – 13:00\nNe: zatvorené', 'Po – Pá: 9:00 – 19:00\nSo: 9:00 – 13:00\nNe: zavřeno'),
-      booking: 'https://reservio.com/', reviews: 'https://www.google.com/maps',
+      booking: 'https://reservio.com/', reviews: 'https://www.google.com/maps', rating: tr('5,0 · 212 recenzií na Google', '5,0 · 212 recenzí na Googlu'),
     },
     socials: { instagram: 'https://instagram.com/', tiktok: 'https://tiktok.com/', facebook: 'https://facebook.com/' },
   },
@@ -38,7 +39,7 @@ const DEMOS = {
       bio: tr('Výberová káva z malých pražiarní, domáce koláče a raňajky celý deň.', 'Výběrová káva z malých pražíren, domácí koláče a snídaně celý den.'),
       services: tr('Espresso – 2,20 €\nFlat white – 3,40 €\nDomáci koláč – 3,50 €', 'Espresso – 55 Kč\nFlat white – 85 Kč\nDomácí koláč – 89 Kč'),
       hours: tr('Po – Pi: 7:30 – 18:00\nSo – Ne: 9:00 – 17:00', 'Po – Pá: 7:30 – 18:00\nSo – Ne: 9:00 – 17:00'),
-      reviews: 'https://www.google.com/maps', links: tr('Menu | https://zrnko.sk/menu\nRozvoz cez Wolt | https://wolt.com', 'Menu | https://zrnko.cz/menu\nRozvoz přes Wolt | https://wolt.com'),
+      reviews: 'https://www.google.com/maps', rating: tr('4,8 · 340 recenzií na Google', '4,8 · 340 recenzí na Googlu'), links: tr('Menu | https://zrnko.sk/menu\nRozvoz cez Wolt | https://wolt.com', 'Menu | https://zrnko.cz/menu\nRozvoz přes Wolt | https://wolt.com'),
     },
     socials: { instagram: 'https://instagram.com/', facebook: 'https://facebook.com/' },
   },
@@ -60,7 +61,7 @@ const DEMOS = {
       bio: tr('Servis všetkých značiek, pneuservis a príprava na STK. Cenu poviem vopred, nie až pri platení.', 'Servis všech značek, pneuservis a příprava na STK. Cenu řeknu předem, ne až při placení.'),
       services: tr('Výmena oleja – od 39 €\nPrezutie pneumatík – 30 €\nDiagnostika – 25 €\nPríprava na STK – 35 €', 'Výměna oleje – od 890 Kč\nPřezutí pneumatik – 690 Kč\nDiagnostika – 590 Kč\nPříprava na STK – 790 Kč'),
       hours: tr('Po – Pi: 7:00 – 17:00\nSo: 8:00 – 12:00', 'Po – Pá: 7:00 – 17:00\nSo: 8:00 – 12:00'),
-      booking: 'https://reservio.com/', bookingLabel: tr('Objednať auto do servisu', 'Objednat auto do servisu'), reviews: 'https://www.google.com/maps',
+      booking: 'https://reservio.com/', bookingLabel: tr('Objednať auto do servisu', 'Objednat auto do servisu'), reviews: 'https://www.google.com/maps', rating: tr('4,7 · 158 recenzií na Google', '4,7 · 158 recenzí na Googlu'),
     },
     socials: { facebook: 'https://facebook.com/' },
   },
@@ -76,6 +77,14 @@ const DEMOS = {
     socials: { instagram: 'https://instagram.com/' },
   },
 };
+// ďalšie štýly do galérie (ukážkové osoby zhodné s náhľadmi vizitiek)
+const EXTRA = {
+  elektro: { tpl: 'iskra', p: 'elektro', digital: { bio: tr('Elektroinštalácie, revízie a smart domácnosť. Prídem do 48 hodín.', 'Elektroinstalace, revize a chytrá domácnost. Přijedu do 48 hodin.'), services: tr('Revízia elektroinštalácie – od 90 €\nMontáž svietidiel – od 25 €\nWallbox pre elektroauto – na mieru', 'Revize elektroinstalace – od 2 200 Kč\nMontáž svítidel – od 590 Kč\nWallbox pro elektroauto – na míru'), hours: tr('Po – Pi: 7:00 – 17:00', 'Po – Pá: 7:00 – 17:00'), booking: 'https://calendly.com/', bookingLabel: tr('Objednať výjazd', 'Objednat výjezd') }, socials: { facebook: 'https://facebook.com/' } },
+  cukrar: { tpl: 'glazura', p: 'cukrar', digital: { bio: tr('Torty na mieru, makróny a dezerty na svadby. Pečieme z masla, nie z margarínu.', 'Dorty na míru, makronky a dezerty na svatby. Pečeme z másla, ne z margarínu.'), services: tr('Torta na mieru – od 45 €\nMakróny 12 ks – 18 €\nSvadobný stôl – na mieru', 'Dort na míru – od 1 090 Kč\nMakronky 12 ks – 420 Kč\nSvatební stůl – na míru'), hours: tr('Ut – So: 9:00 – 18:00\nNe: 10:00 – 16:00', 'Út – So: 9:00 – 18:00\nNe: 10:00 – 16:00'), rating: tr('5,0 · 97 recenzií', '5,0 · 97 recenzí'), reviews: 'https://www.google.com/maps' }, socials: { instagram: 'https://instagram.com/', facebook: 'https://facebook.com/' } },
+  startup: { tpl: 'orbit', p: 'startup', digital: { bio: tr('Budujeme softvér, ktorý firmám šetrí desiatky hodín mesačne. Hľadáme partnerov aj ľudí do tímu.', 'Stavíme software, který firmám šetří desítky hodin měsíčně. Hledáme partnery i lidi do týmu.'), links: tr('Demo produktu | https://nodo.sk/demo\nKariéra | https://nodo.sk/kariera', 'Demo produktu | https://nodo.cz/demo\nKariéra | https://nodo.cz/kariera'), booking: 'https://calendly.com/', bookingLabel: tr('Dohodnúť 20 min hovor', 'Domluvit 20min hovor') }, socials: { linkedin: 'https://linkedin.com/' } },
+  fitness: { tpl: 'sila', p: 'fitness', digital: { bio: tr('Osobné tréningy a plány na mieru. Výsledky, ktoré vidno po 6 týždňoch.', 'Osobní tréninky a plány na míru. Výsledky, které jsou vidět po 6 týdnech.'), services: tr('Osobný tréning – 30 €\nBalík 10 tréningov – 270 €\nJedálniček – 49 €', 'Osobní trénink – 690 Kč\nBalíček 10 tréninků – 6 200 Kč\nJídelníček – 1 190 Kč'), hours: tr('Po – Pi: 6:00 – 21:00\nSo: 8:00 – 14:00', 'Po – Pá: 6:00 – 21:00\nSo: 8:00 – 14:00'), booking: 'https://reservio.com/', bookingLabel: tr('Rezervovať tréning', 'Rezervovat trénink') }, socials: { instagram: 'https://instagram.com/', tiktok: 'https://tiktok.com/' } },
+};
+for (const [k, x] of Object.entries(EXTRA)) { const f = personaFields(x.p); DEMOS[k] = { tpl: x.tpl, f: { ...f, address: f.address }, digital: x.digital, socials: x.socials }; }
 const design = (k) => { const x = DEMOS[k]; const d = newDesign({ tpl: x.tpl, ...templateDefaults(x.tpl) }); d.f = { ...d.f, ...x.f }; d.digital = { ...x.digital }; d.socials = { ...x.socials }; d.slug = slugify(x.f.name); return d; };
 
 // hero: vizitka s menom návštevníka
@@ -108,7 +117,13 @@ const th = $('[data-dgl-themes]');
 if (th) {
   const io2 = new IntersectionObserver((es) => {
     if (!es[0].isIntersecting) return; io2.disconnect();
-    th.querySelectorAll('[data-k]').forEach((el) => { const k = el.dataset.k, x = DEMOS[k]; renderDigital(el.querySelector('.dcard-host'), design(k), { url, qr: (u) => qrSVG(u), static: true, front: VK.pre[`tpl-${x.tpl}-f`], back: VK.pre[`tpl-${x.tpl}-b`] }); });
+    th.querySelectorAll('[data-k]').forEach((el) => { const k = el.dataset.k, x = DEMOS[k]; if (!x) { el.remove(); return; } renderDigital(el.querySelector('.dcard-host'), design(k), { url, qr: (u) => qrSVG(u), static: true, front: VK.pre[`tpl-${x.tpl}-f`], back: VK.pre[`tpl-${x.tpl}-b`] }); });
+    // nekonečný pás: kópia položiek (bez čítačky), ak to pohyb dovolí
+    const track = th.querySelector('[data-dgl-track]');
+    if (track && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      [...track.children].forEach((el) => { const c = el.cloneNode(true); c.setAttribute('aria-hidden', 'true'); track.append(c); });
+      th.classList.add('is-marq');
+    }
   }, { rootMargin: '300px' });
   io2.observe(th);
 }

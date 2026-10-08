@@ -71,9 +71,11 @@
     </div>
   </div>
   <div class="dgl-th__row" data-dgl-themes>
-    {% for k, lab in [('kvety', L('Kvetinárstvo', 'Květinářství')), ('makler', L('Realitný maklér', 'Realitní makléř')), ('auto', L('Autoservis', 'Autoservis')), ('nechty', L('Nechtové štúdio', 'Nehtové studio')), ('zubar', L('Zubárka', 'Zubařka'))] %}
+    <div class="dgl-th__track" data-dgl-track>
+    {% for k, lab in [('kvety', L('Kvetinárstvo', 'Květinářství')), ('makler', L('Realitný maklér', 'Realitní makléř')), ('elektro', L('Elektrikár', 'Elektrikář')), ('auto', L('Autoservis', 'Autoservis')), ('cukrar', L('Cukráreň', 'Cukrárna')), ('nechty', L('Nechtové štúdio', 'Nehtové studio')), ('startup', L('Startup', 'Startup')), ('zubar', L('Zubárka', 'Zubařka')), ('fitness', L('Osobný tréner', 'Osobní trenér'))] %}
     <figure class="dgl-th__it" data-k="{{ k }}"><div class="phone"><div class="phone__screen"><div class="phone__island"></div><div class="dcard-host"></div></div></div><figcaption>{{ lab }}</figcaption></figure>
     {% endfor %}
+    </div>
   </div>
 </section>
 

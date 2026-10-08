@@ -95,40 +95,6 @@ export function neoTemplates(h) {
       },
     },
 
-    // ------------------------------------------------------------ LETTERPRESS – slepá ražba na bavlnenom papieri
-    letterpress: {
-      name: 'Letterpress', fonts: 'tenor', pal: 'krieda', tags: ['architekt', 'dizajn', 'foto', 'umelec', 'konzultant', 'firma', 'minimal', 'elegantne', 'ciste', 'jemne'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = light(pal.bg) ? pal.bg : '#F2EEE7', ink = dark(pal.ink) ? pal.ink : '#1F1D1A', acc = pal.accent;
-        const cx = c.sq ? W / 2 : m + 12, cy = c.sq ? 17 : H / 2, r = c.sq ? 10 : 12;
-        const o = [paper(c, 0.7)];
-        // vyrazená pečať
-        o.push(C(cx + 0.12, cy + 0.12, r, { stroke: '#FFFFFF', sw: 0.5, opacity: 0.9 }), C(cx - 0.06, cy - 0.06, r, { stroke: mix(bg, '#000000', 0.22), sw: 0.42 }), C(cx, cy, r, { stroke: mix(bg, '#000000', 0.18), sw: 0.42 }));
-        o.push(C(cx, cy, r - 2.4, { stroke: mix(bg, '#000000', 0.12), sw: 0.12 }));
-        o.push(...ringText(brand(c).toLocaleUpperCase() + ' · ' + (city(c) || f.role || '').toLocaleUpperCase(), cx, cy, r - 1.2, -170, -10, { size: 1.7, color: mix(bg, '#000000', 0.32), w: 500 }));
-        o.push(...deboss(mono(c), { x: cx, y: cy + 1, ox: 'center', oy: 'center', size: r * 0.82, font: 'd', ls: 0.04, color: mix(bg, '#000000', 0.2) }, bg));
-        if (c.sq) {
-          o.push(T(bare(f.name).toLocaleUpperCase() || f.name, { field: 'name', x: W / 2, y: 33, ox: 'center', oy: 'center', size: 2.6, font: 'd', ls: 0.22, color: ink, fit: W - 2 * m }));
-          o.push(T(f.role, { field: 'role', x: W / 2, y: 36.6, ox: 'center', oy: 'center', size: 1.8, font: 't', color: acc, fit: W - 2 * m }));
-          o.push(...centerLines(c, W / 2, H - m, { color: mix(ink, bg, 0.3), fit: W - 2 * m, size: 1.75, lh: 2.6 }));
-        } else {
-          const x = cx + r + 6, mw = W - x - m;
-          o.push(T((bare(f.name) || f.name).toLocaleUpperCase(), { field: 'name', x, y: m + 4.2, oy: 'bottom', size: 2.9, font: 'd', ls: 0.2, color: ink, fit: mw }));
-          o.push(T(f.role, { field: 'role', x, y: m + 5.6, size: 1.85, font: 't', w: 500, color: acc, fit: mw }));
-          o.push(...rows(c, { x, yb: H - m, keys: ['phone', 'email', 'web', 'address'], color: mix(ink, bg, 0.22), fit: mw, size: 1.8, lh: 2.75 }));
-        }
-        return { bg: { color: bg }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const fl = dark(pal.accent) || luminance(pal.accent) < 0.4 ? pal.accent : '#2F3A4A';
-        return { bg: { color: fl }, objs: [
-          paper(c, 0.35),
-          ...deboss(brand(c), { field: 'company', x: W / 2, y: H / 2 - 1, ox: 'center', oy: 'center', size: c.sq ? 5 : 6.4, font: 'd', ls: 0.04, fit: W - 2 * m - 4, color: mix(fl, '#000000', 0.28) }, fl),
-          ...deboss((f.web || '').toLocaleUpperCase(), { field: 'web', x: W / 2, y: H - m - 0.4, ox: 'center', oy: 'bottom', size: 1.75, font: 't', w: 600, ls: 0.34, fit: W - 2 * m, color: mix(fl, '#000000', 0.28) }, fl),
-        ] };
-      },
-    },
-
     // ------------------------------------------------------------ PERLA – perlový náhrdelník na koži
     perla: {
       name: tr('Perla', 'Perla'), fonts: 'cinzel', pal: 'onyx', tags: ['luxus', 'sperky', 'beauty', 'reality', 'pravnik', 'hotel', 'moda', 'luxusne', 'tmave', 'minimal', 'elegantne'],
@@ -200,38 +166,6 @@ export function neoTemplates(h) {
         }
         o.push(T((f.tagline || '').toLocaleUpperCase(), { field: 'tagline', x: W / 2, y: H - 4.7, ox: 'center', oy: 'center', size: 1.7, font: 't', w: 600, ls: 0.26, color: cr, fit: W - 12 }));
         return { bg: { color: cr }, objs: o };
-      },
-    },
-
-    // ------------------------------------------------------------ MUSE – dúha z oblúkov
-    muse: {
-      name: 'Muse', fonts: 'dmserif', pal: 'periwinkle', tags: ['kozmetika', 'beauty', 'lekar', 'estetika', 'wellness', 'terapeut', 'kouc', 'dizajn', 'jemne', 'elegantne', 'moderne', 'zenske'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = pal.bg, wh = luminance(bg) > 0.55 ? inkOn(bg, pal) : '#FFFFFF', acc = pal.accent, so = light(pal.soft) ? pal.soft : '#F6F4EF';
-        const cx = c.sq ? W / 2 : W * 0.8, cy = H + 1, R0 = c.sq ? 24 : 27;
-        const cols = [mix(bg, acc, 0.35), so, mix(bg, '#FFFFFF', 0.45), acc, mix(bg, acc, 0.15), so];
-        const o = [];
-        cols.forEach((col, i) => { const r = R0 - i * (R0 / 6.2); o.push(P(semi(cx, cy, r), { fill: col })); });
-        o.push(C(cx, cy - R0 - 4, 1.1, { fill: acc }));
-        if (c.sq) {
-          o.push(T(brand(c), { field: 'company', x: W / 2, y: 13, ox: 'center', oy: 'center', size: 4.6, font: 'd', color: wh, fit: W - 2 * m }));
-          o.push(T(f.tagline || f.role || '', { field: 'tagline', x: W / 2, y: 17.4, ox: 'center', oy: 'center', size: 1.9, font: 'd', it: true, color: acc, fit: W - 2 * m }));
-        } else {
-          o.push(T(brand(c), { field: 'company', x: m, y: H * 0.46, oy: 'bottom', size: 6, font: 'd', color: wh, fit: W * 0.56, lh: 0.95 }));
-          o.push(T(f.tagline || f.role || '', { field: 'tagline', x: m, y: H * 0.46 + 1.2, size: 2.1, font: 'd', it: true, color: acc, fit: W * 0.5 }));
-          o.push(Ln(m, H - m - 1, m + 8, H - m - 1, wh, 0.25));
-        }
-        return { bg: { color: bg }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const so = light(pal.soft) ? pal.soft : '#F6F4EF', acc = pal.accent, bg = pal.bg;
-        const o = [paper(c, 0.4)];
-        const ax = c.sq ? W - m - 4 : W - m - 6, ay = m + 7;
-        [7, 5.4, 3.8].forEach((r, i) => o.push(P(semi(ax, ay, r, false), { stroke: [bg, acc, mix(bg, acc, 0.4)][i], sw: 1.1 })));
-        o.push(T(f.name, { field: 'name', x: m, y: m + 5, oy: 'bottom', size: c.sq ? 3.8 : 4.6, font: 'd', color: acc, fit: c.sq ? W - 2 * m - 14 : W * 0.6 }));
-        o.push(T(f.role, { field: 'role', x: m, y: m + 6.2, size: 2, font: 'd', it: true, color: mix(acc, so, 0.35), fit: W * 0.6 }));
-        o.push(...iconRows(c, c.sq ? ['phone', 'email', 'web'] : ['phone', 'email', 'web', 'address'], { x: m, y: c.sq ? H * 0.58 : H * 0.5, lh: 3.3, r: 1.15, circle: bg, icon: acc, color: '#2A2F45', size: 1.9, fit: W - 2 * m - 5 }));
-        return { bg: { color: so }, objs: o };
       },
     },
 
@@ -324,60 +258,6 @@ export function neoTemplates(h) {
           o.push(...rows(c, { x, yb: H - m, keys: ['phone', 'email', 'web', 'address'], color: navy, fit: mw, size: 1.8, lh: 2.75 }));
         }
         return { bg: { color: iv }, objs: o };
-      },
-    },
-
-    // ------------------------------------------------------------ STUDIO (hrastar) – veľká tlmená iniciála a citát na rube
-    hrastar: {
-      name: 'Studio', fonts: 'caslon', pal: 'krieda', tags: ['dizajn', 'agentura', 'architekt', 'foto', 'konzultant', 'pravnik', 'firma', 'minimal', 'elegantne', 'ciste', 'serioze'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = light(pal.bg) ? pal.bg : '#F7F4EE', ink = dark(pal.ink) ? pal.ink : '#1A1A18', acc = pal.accent;
-        const o = [paper(c, 0.45)];
-        o.push(T((first(c) || brand(c)).slice(0, 1).toLocaleUpperCase(), { x: W + 1.5, y: H + (c.sq ? 9 : 12), ox: 'right', oy: 'bottom', size: c.sq ? 50 : 62, font: 'd', it: true, color: mix(ink, bg, 0.9) }));
-        o.push(T((f.company || city(c) || '').toLocaleUpperCase(), { field: 'company', x: m, y: m, size: 1.75, font: 't', w: 600, ls: 0.28, color: ink, fit: W * 0.6 }));
-        o.push(Ln(m, m + 3.4, c.sq ? W - m : W * 0.42, m + 3.4, ink, 0.1));
-        const ny = c.sq ? H * 0.56 : H * 0.6;
-        o.push(T(f.name, { field: 'name', x: m - 0.3, y: ny, oy: 'bottom', size: c.sq ? 4.6 : 5.6, font: 'd', color: ink, fit: W - 2 * m - 6, ls: -0.01 }));
-        o.push(T(f.role, { field: 'role', x: m, y: ny + 1.1, size: 2.1, font: 'd', it: true, color: acc, fit: W - 2 * m - 6 }));
-        o.push(...(c.sq ? rows(c, { x: m, yb: H - m, keys: ['phone', 'email'], color: mix(ink, bg, 0.2), fit: W - 2 * m, size: 1.75, lh: 2.6 })
-          : [T([f.phone, f.email, f.web].filter((v) => v && v.trim()).join('   ·   '), { x: m, y: H - m, oy: 'bottom', size: 1.8, font: 't', color: mix(ink, bg, 0.2), fit: W - 2 * m, ls: 0.02 })]));
-        return { bg: { color: bg }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const ink = dark(pal.ink) ? pal.ink : '#1A1A18', acc = pal.accent, wh = '#F4F0E8';
-        const q = f.tagline || brand(c);
-        return { bg: { color: ink }, objs: [
-          T('“', { x: m - 1, y: m - 2.2, size: 16, font: 'd', color: acc }),
-          T(q, { field: f.tagline ? 'tagline' : 'company', x: m, y: H * 0.56, oy: 'bottom', size: c.sq ? 4.2 : 5.2, font: 'd', it: true, color: wh, fit: W - 2 * m, ls: -0.01 }),
-          Ln(m, H - m - 3.6, m + 8, H - m - 3.6, acc, 0.3),
-          T((f.web || brand(c)).toLocaleUpperCase(), { field: f.web ? 'web' : 'company', x: m, y: H - m, oy: 'bottom', size: 1.7, font: 't', w: 600, ls: 0.3, color: mix(wh, ink, 0.3), fit: W - 2 * m }),
-        ] };
-      },
-    },
-
-    // ------------------------------------------------------------ ORGANIC – veľké listy monstery
-    organic: {
-      name: 'Organic', fonts: 'poppins', pal: 'mint', tags: ['eko', 'bio', 'farma', 'zahrady', 'kvety', 'wellness', 'joga', 'kozmetika', 'kaviaren', 'prirodne', 'jemne', 'ciste', 'minimal'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = pal.bg, ink = inkOn(bg, pal, '#14231F', '#F3F1EA');
-        const t1 = mix(bg, ink, 0.22), t2 = mix(bg, ink, 0.38), t3 = mix(bg, '#FFFFFF', 0.35);
-        const o = [];
-        const big = (x, y, a, L, col) => { const w = L * 0.42; o.push(P(leaf(x, y, a, L, w), { fill: col })); const dx = Math.cos(a), dy = Math.sin(a); o.push(Ln(x, y, x + dx * L * 0.92, y + dy * L * 0.92, t3, 0.18, { opacity: 0.7 })); for (let k = 1; k < 6; k++) { const t = k / 6.3, px = x + dx * L * t, py = y + dy * L * t; for (const s of [1, -1]) { const b = a + s * 0.95; o.push(Ln(px, py, px + Math.cos(b) * w * 0.8 * (1 - t * 0.5), py + Math.sin(b) * w * 0.8 * (1 - t * 0.5), t3, 0.12, { opacity: 0.6 })); } } };
-        big(W + 3, H + 3, rad(-150), c.sq ? 30 : 34, t1); big(W + 2, H + 4, rad(-115), c.sq ? 26 : 30, t2); big(W + 4, H * 0.3, rad(-170), 18, t1);
-        o.push(P(leaf(W * 0.66, H + 3, rad(-80), 16, 4.6), { fill: t3, opacity: 0.6 }));
-        const mw = c.sq ? W - 2 * m : W * 0.52;
-        o.push(T(f.name, { field: 'name', x: m, y: m + 5, oy: 'bottom', size: 4.4, font: 'd', w: 600, color: ink, fit: mw, ls: -0.02 }));
-        o.push(T(f.role, { field: 'role', x: m, y: m + 6.2, size: 2, font: 't', color: mix(ink, bg, 0.3), fit: mw }));
-        o.push(...rows(c, { x: m, yb: H - m, keys: c.sq ? ['phone', 'email'] : ['phone', 'email', 'web'], icons: true, lcolor: ink, color: ink, fit: mw, size: 1.85, lh: 2.85 }));
-        return { bg: { color: bg }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const ink = dark(pal.ink) ? pal.ink : '#14231F', dg = mix(ink, pal.bg, 0.12), cr = '#EEF3EC';
-        const o = []; const r = seeded(brand(c) + 'org');
-        for (let i = 0; i < 14; i++) { const x = r() * W, y = r() * H; if (Math.abs(x - W / 2) < 22 && Math.abs(y - H / 2) < 9) continue; o.push(P(leaf(x, y, r() * Math.PI * 2, 5 + r() * 6, 1.6 + r() * 1.4), { fill: mix(dg, pal.bg, 0.12 + r() * 0.12) })); }
-        o.push(T(brand(c), { field: 'company', x: W / 2, y: H / 2 - 0.5, ox: 'center', oy: 'bottom', size: c.sq ? 4.4 : 5.4, font: 'd', w: 600, color: cr, fit: W - 2 * m - 6, ls: -0.02 }));
-        o.push(T(f.tagline || f.web || '', { field: f.tagline ? 'tagline' : 'web', x: W / 2, y: H / 2 + 1.2, ox: 'center', size: 1.9, font: 't', color: mix(cr, dg, 0.25), fit: W - 2 * m - 6 }));
-        return { bg: { color: dg }, objs: o };
       },
     },
 
@@ -553,143 +433,6 @@ export function neoTemplates(h) {
       },
     },
 
-    // ------------------------------------------------------------ TICHÁ – mesiac a kruhy na vode
-    ticha: {
-      name: tr('Tichá', 'Tichá'), fonts: 'tenor', pal: 'taupe', emblem: 'moon-stars', tags: ['architekt', 'dizajn', 'terapeut', 'psycholog', 'kouc', 'kozmetika', 'foto', 'minimal', 'jemne', 'elegantne', 'prirodne'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = pal.bg, ink = inkOn(bg, pal, '#2E2622', '#F3EEE8'), lt = mix(bg, '#FFFFFF', 0.55);
-        const cx = W / 2, cy = c.sq ? H * 0.38 : H * 0.4, r = c.sq ? 8 : 8.5;
-        const o = [];
-        for (let k = 1; k <= 5; k++) o.push(P(oval(cx, cy + r + 4.5, r * (1 + k * 0.55), 1.3 + k * 0.55), { stroke: lt, sw: 0.12, opacity: 1 - k * 0.15 }));
-        o.push(C(cx, cy, r, { fill: { grad: [lt, mix(bg, '#FFFFFF', 0.25)], angle: 120 } }));
-        o.push(C(cx + r * 0.38, cy - r * 0.15, r * 0.86, { fill: bg, opacity: 0.55 }));
-        o.push(T(brand(c).toLocaleUpperCase(), { field: 'company', x: W / 2, y: c.sq ? H * 0.72 : H * 0.76, ox: 'center', oy: 'center', size: c.sq ? 2.6 : 3, font: 'd', ls: 0.4, color: ink, fit: W - 2 * m - 4 }));
-        o.push(T(f.tagline || '', { field: 'tagline', x: W / 2, y: c.sq ? H * 0.72 + 3.8 : H * 0.76 + 3.8, ox: 'center', oy: 'center', size: 1.8, font: 't', it: true, color: mix(ink, bg, 0.3), fit: W - 2 * m - 6 }));
-        return { bg: { color: { grad: [mix(bg, '#FFFFFF', 0.2), bg, mix(bg, ink, 0.12)], angle: 90 }, art: tex(c, 'akvarel-bez'), artOpacity: 0.35, artBlend: 'multiply' }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const dk = dark(pal.ink) ? mix(pal.ink, pal.bg, 0.12) : dark(pal.bg) ? mix(pal.bg, '#FFFFFF', 0.06) : '#3A322C', lt = light(pal.bg) ? mix(pal.bg, '#FFFFFF', 0.4) : '#EFE8DF';
-        return { bg: { color: dk }, objs: [
-          C(W / 2, m + 4, 2.4, { fill: lt }), C(W / 2 + 1, m + 3.6, 2.1, { fill: dk }),
-          T(f.name, { field: 'name', x: W / 2, y: H * 0.42, ox: 'center', oy: 'center', size: c.sq ? 3.2 : 3.6, font: 'd', ls: 0.06, color: lt, fit: W - 2 * m }),
-          T((f.role || '').toLocaleUpperCase(), { field: 'role', x: W / 2, y: H * 0.42 + 3.6, ox: 'center', oy: 'center', size: 1.7, font: 't', w: 500, ls: 0.3, color: mix(lt, dk, 0.35), fit: W - 2 * m }),
-          ...centerLines(c, W / 2, H - m, { color: lt, fit: W - 2 * m, size: 1.8, lh: 2.8 }),
-        ] };
-      },
-    },
-
-    // ------------------------------------------------------------ OBRYS – obrysová iniciála cez celú plochu
-    obrys: {
-      name: tr('Obrys', 'Obrys'), fonts: 'dmserif', pal: 'sneh', tags: ['architekt', 'dizajn', 'umelec', 'foto', 'galeria', 'moda', 'minimal', 'odvazne', 'elegantne', 'moderne'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = light(pal.bg) ? mix(pal.bg, '#F3EFE8', 0.6) : '#F6F3EE', ink = dark(pal.ink) ? pal.ink : '#111111', acc = pal.accent;
-        const mk = mono(c);
-        const o = [paper(c, 0.35)];
-        o.push(T(mk, { x: W + (c.sq ? 3 : 6), y: c.sq ? H * 0.74 : H + 9, ox: 'right', oy: 'bottom', size: c.sq ? 30 : 46, font: 'd', color: 'none', stroke: ink, sw: 0.13, ls: -0.04 }));
-        o.push(R(m, m, 2.2, 2.2, acc));
-        o.push(T(f.name, { field: 'name', x: m - 0.2, y: m + 9, oy: 'bottom', size: c.sq ? 4.2 : 5, font: 'd', color: ink, fit: c.sq ? W - 2 * m : W * 0.42 }));
-        o.push(T(f.role, { field: 'role', x: m, y: m + 10.2, size: 2, font: 'd', it: true, color: mix(ink, bg, 0.35), fit: W * 0.6 }));
-        o.push(...rows(c, { x: m, yb: H - m, keys: c.sq ? ['phone', 'email'] : ['phone', 'email', 'web'], color: ink, fit: W * 0.5, size: 1.8, lh: 2.75 }));
-        return { bg: { color: bg }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const ink = dark(pal.ink) ? pal.ink : '#111111', acc = pal.accent, wh = '#F6F3EE';
-        return { bg: { color: ink }, objs: [
-          T(brand(c), { field: 'company', x: W / 2, y: H / 2, ox: 'center', oy: 'center', size: c.sq ? 8 : 11, font: 'd', color: 'none', stroke: wh, sw: 0.14, fit: W - 2 * m, ls: -0.02 }),
-          R(W / 2 - 1.1, H - m - 6, 2.2, 2.2, acc),
-          T((f.web || '').toLocaleUpperCase(), { field: 'web', x: W / 2, y: H - m, ox: 'center', oy: 'bottom', size: 1.7, font: 't', w: 500, ls: 0.3, color: mix(wh, ink, 0.3), fit: W - 2 * m }),
-        ] };
-      },
-    },
-
-    // ------------------------------------------------------------ FIGLIA – olivová ratolesť
-    figlia: {
-      name: 'Figlia', fonts: 'caslon', pal: 'salvia', emblem: 'leaf', tags: ['restauracia', 'kaviaren', 'pekaren', 'vino', 'bistro', 'kvety', 'obchod', 'remeslo', 'elegantne', 'prirodne', 'klasicky', 'teple'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = luminance(pal.bg) > 0.33 ? pal.bg : '#E8ECE3', ink = inkOn(bg, pal, '#1F2A22'), acc = pal.accent, olive = mix(acc, '#1F2A22', 0.45);
-        const o = [paper(c, 0.45)];
-        const branch = (x, y, len, ang, s) => {
-          const a = rad(ang), ex = x + Math.cos(a) * len, ey = y + Math.sin(a) * len, cx = (x + ex) / 2 - Math.sin(a) * len * 0.12, cy = (y + ey) / 2 + Math.cos(a) * len * 0.12;
-          o.push(P(`M ${f2(x)} ${f2(y)} Q ${f2(cx)} ${f2(cy)} ${f2(ex)} ${f2(ey)}`, { stroke: ink, sw: 0.34 }));
-          for (let i = 1; i <= 11; i++) {
-            const t = i / 12, px = (1 - t) * (1 - t) * x + 2 * (1 - t) * t * cx + t * t * ex, py = (1 - t) * (1 - t) * y + 2 * (1 - t) * t * cy + t * t * ey, sd = i % 2 ? 1 : -1;
-            o.push(P(leaf(px, py, a + sd * 0.62, s * (1 - t * 0.35), s * 0.3), { fill: i % 3 ? acc : mix(acc, ink, 0.35) }));
-            if (i % 3 === 1) { const ox2 = px + Math.cos(a - sd * 1.2) * 1.6, oy2 = py + Math.sin(a - sd * 1.2) * 1.6; o.push(Ln(px, py, ox2, oy2, ink, 0.16), P(oval(ox2 + 0.3, oy2 + 1.2, 1.25, 1.7, a), { fill: olive }), C(ox2 - 0.1, oy2 + 0.7, 0.35, { fill: '#FFFFFF', opacity: 0.45 })); }
-          }
-        };
-        if (c.sq) branch(W * 0.12, H * 0.4, W * 0.8, -14, 6); else { branch(W * 0.46, H + 3, W * 0.62, -34, 7.6); branch(W + 3, H * 0.12, W * 0.3, 165, 5.4); }
-        const tx = c.sq ? W / 2 : m, al = c.sq ? 'center' : 'left', mw = c.sq ? W - 2 * m : W * 0.5;
-        o.push(T('EST. ' + (city(c) || '').toLocaleUpperCase(), { field: 'address', x: tx, y: c.sq ? H * 0.52 : m + 1.2, ox: al, oy: 'center', size: 1.7, font: 't', w: 600, ls: 0.34, color: acc, fit: mw }));
-        o.push(T(brand(c), { field: 'company', x: tx, y: c.sq ? H * 0.66 : H * 0.42, ox: al, oy: 'center', size: c.sq ? 4.4 : 5.4, font: 'd', color: ink, fit: mw }));
-        o.push(T(f.tagline || '', { field: 'tagline', x: tx, y: c.sq ? H * 0.66 + 4.4 : H * 0.42 + 4.8, ox: al, oy: 'center', size: 2, font: 'd', it: true, color: mix(ink, bg, 0.3), fit: mw }));
-        return { bg: { color: bg }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const cr = '#F7F3EA', ink = dark(pal.ink) ? pal.ink : '#1F2A22', acc = pal.accent;
-        const cx = c.sq ? W / 2 : m + 10, cy = c.sq ? 15 : H / 2;
-        const o = [paper(c, 0.5), ...wreath(cx, cy + 0.5, 8.6, acc, { leaves: 9, size: 2.8 })];
-        o.push(logoOr(c, cx, cy, 9, 9, { tint: ink }, MONO(c, { x: cx, y: cy, ox: 'center', oy: 'center', size: 6, it: true, color: ink })));
-        const x = c.sq ? m : m + 24, mw = W - x - m;
-        o.push(T(f.name, { field: 'name', x, y: c.sq ? 31 : m + 4.6, oy: 'bottom', size: c.sq ? 3.2 : 3.8, font: 'd', color: ink, fit: mw }));
-        o.push(T(f.role, { field: 'role', x, y: (c.sq ? 31 : m + 4.6) + 1, size: 1.9, font: 'd', it: true, color: acc, fit: mw }));
-        o.push(...rows(c, { x, yb: H - m, keys: c.sq ? ['phone', 'email'] : ['phone', 'email', 'web', 'address'], color: ink, fit: mw, size: 1.8, lh: 2.75 }));
-        return { bg: { color: cr }, objs: o };
-      },
-    },
-
-    // ------------------------------------------------------------ MAITLAND – monogram v bielom kruhu
-    maitland: {
-      name: 'Maitland', fonts: 'dmserif', pal: 'mint', tags: ['pravnik', 'konzultant', 'financie', 'reality', 'architekt', 'firma', 'kaviaren', 'vydavatel', 'elegantne', 'serioze', 'ciste', 'moderne'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = pal.bg, ink = inkOn(bg, pal, '#14231F', '#FBFAF6'), wh = '#FBFAF6';
-        const cx = c.sq ? W / 2 : W * 0.76, cy = c.sq ? H * 0.36 : H / 2, r = c.sq ? 12 : 17;
-        const o = [];
-        o.push(C(cx, cy, r + 2.2, { stroke: wh, sw: 0.14, opacity: 0.8 }), C(cx, cy, r, { fill: wh }));
-        o.push(logoOr(c, cx, cy, r * 1.2, r * 1.2, { tint: ink }, MONO(c, { x: cx, y: cy + 0.4, ox: 'center', oy: 'center', size: r * 0.82, color: ink, ls: -0.02 })));
-                const tx = c.sq ? W / 2 : m, al = c.sq ? 'center' : 'left', mw = c.sq ? W - 2 * m : W * 0.46;
-        o.push(T(f.name, { field: 'name', x: tx, y: c.sq ? H * 0.74 : H * 0.5, ox: al, oy: 'bottom', size: c.sq ? 3.6 : 4.6, font: 'd', color: ink, fit: mw }));
-        o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x: tx, y: (c.sq ? H * 0.74 : H * 0.5) + 1.3, ox: al, size: 1.7, font: 't', w: 600, ls: 0.24, color: mix(ink, bg, 0.3), fit: mw }));
-        if (!c.sq) o.push(Ln(m, H - m - 1, m + 10, H - m - 1, ink, 0.25));
-        return { bg: { color: bg }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const ink = dark(pal.ink) ? pal.ink : '#14231F', bg = pal.bg, wh = '#FBFAF6';
-        return { bg: { color: ink }, objs: [
-          C(W + 4, -4, 16, { fill: bg, opacity: 0.16 }), C(W + 4, -4, 10, { fill: bg, opacity: 0.2 }),
-          T(brand(c), { field: 'company', x: m, y: m + 4.4, oy: 'bottom', size: c.sq ? 3.4 : 4, font: 'd', color: wh, fit: W - 2 * m - 12 }),
-          T(f.tagline || '', { field: 'tagline', x: m, y: m + 5.6, size: 1.9, font: 'd', it: true, color: bg, fit: W - 2 * m - 12 }),
-          ...rows(c, { x: m, yb: H - m, keys: c.sq ? ['phone', 'email', 'web'] : ['phone', 'email', 'web', 'address'], color: wh, labels: true, lcolor: bg, fit: W - 2 * m, size: 1.8, lh: 2.75 }),
-        ] };
-      },
-    },
-
-    // ------------------------------------------------------------ MINIMAL – ťah štetca (ensō)
-    minimal: {
-      name: 'Minimal', fonts: 'fraunces', pal: 'salvia', tags: ['terapeut', 'psycholog', 'joga', 'wellness', 'kouc', 'umelec', 'architekt', 'jemne', 'minimal', 'osobne', 'prirodne', 'elegantne', 'moderne'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = pal.bg, ink = inkOn(bg, pal, '#1F2A22', '#F1F0EA'), acc = pal.accent;
-        const cx = c.sq ? W / 2 : W * 0.74, cy = c.sq ? H * 0.36 : H / 2, r = c.sq ? 10 : 12.5;
-        const o = [paper(c, 0.5)];
-        const enso = (rr, a0, a1, sw, op, wob) => { const pts = []; for (let i = 0; i <= 40; i++) { const t = i / 40, a = rad(a0 + (a1 - a0) * t); const q = rr * (1 + Math.sin(t * 9 + wob) * 0.012); pts.push([cx + Math.cos(a) * q, cy + Math.sin(a) * q]); } o.push(P(smooth(pts), { stroke: acc, sw, opacity: op })); };
-        enso(r, -70, 245, 1.5, 0.92, 0); enso(r + 0.5, -60, 200, 0.8, 0.6, 1.3); enso(r - 0.45, -40, 238, 0.6, 0.55, 2.1); enso(r + 0.9, 30, 150, 0.35, 0.4, 0.4);
-        const tx = c.sq ? W / 2 : m, al = c.sq ? 'center' : 'left', mw = c.sq ? W - 2 * m : W * 0.5;
-        o.push(T(f.name, { field: 'name', x: tx, y: c.sq ? H * 0.72 : H * 0.46, ox: al, oy: 'bottom', size: c.sq ? 3.8 : 4.6, font: 'd', color: ink, fit: mw }));
-        o.push(T(f.role, { field: 'role', x: tx, y: (c.sq ? H * 0.72 : H * 0.46) + 1.1, ox: al, size: 2.1, font: 'd', it: true, color: acc, fit: mw }));
-        if (c.sq) o.push(...centerLines(c, W / 2, H - m, { color: mix(ink, bg, 0.3), fit: W - 2 * m, size: 1.75, lh: 2.6 }));
-        else o.push(...rows(c, { x: m, yb: H - m, color: mix(ink, bg, 0.25), fit: mw, size: 1.8, lh: 2.75 }));
-        return { bg: { color: bg }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const ink = dark(pal.ink) ? pal.ink : '#1F2A22', fg = mix(pal.bg, '#FFFFFF', 0.3), acc = pal.accent;
-        const o = []; const cx = W / 2, cy = H * 0.36, r = 4;
-        const pts = []; for (let i = 0; i <= 30; i++) { const a = rad(-70 + 315 * (i / 30)); pts.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]); }
-        o.push(P(smooth(pts), { stroke: mix(acc, '#FFFFFF', 0.25), sw: 0.7 }));
-        o.push(T(brand(c), { field: 'company', x: W / 2, y: H * 0.64, ox: 'center', oy: 'center', size: c.sq ? 3.4 : 3.8, font: 'd', color: fg, fit: W - 2 * m - 6 }));
-        o.push(T(f.tagline || f.web || '', { field: f.tagline ? 'tagline' : 'web', x: W / 2, y: H * 0.64 + 4.2, ox: 'center', oy: 'center', size: 1.9, font: 'd', it: true, color: mix(fg, ink, 0.35), fit: W - 2 * m - 6 }));
-        return { bg: { color: ink }, objs: o };
-      },
-    },
-
     // ------------------------------------------------------------ ALDER – pôdorys na tmavozelenej
     alder: {
       name: 'Alder', fonts: 'poppins', pal: 'smaragd', tags: ['firma', 'architekt', 'konzultant', 'it', 'reality', 'financie', 'agentura', 'moderne', 'ciste', 'serioze', 'minimal', 'tmave'],
@@ -786,33 +529,6 @@ export function neoTemplates(h) {
         o.push(T(f.name, { field: 'name', x, y: c.sq ? H * 0.5 : m + 4.4, oy: 'bottom', size: 3.8, font: 'd', w: 600, color: wh, fit: mw, ls: -0.02 }));
         o.push(T(f.role, { field: 'role', x, y: (c.sq ? H * 0.5 : m + 4.4) + 1, size: 1.9, font: 't', w: 500, color: ink, fit: mw }));
         o.push(...rows(c, { x, yb: H - m, keys: c.sq ? ['phone', 'email'] : ['phone', 'email', 'web', 'address'], color: wh, fit: mw, size: 1.8, lh: 2.75, weight: 500 }));
-        return { bg: { color: acc }, objs: o };
-      },
-    },
-
-    // ------------------------------------------------------------ KONTRAST – štvrťkruhy, dve farby
-    kontrast: {
-      name: tr('Kontrast', 'Kontrast'), fonts: 'poppins', pal: 'merlot', tags: ['dizajn', 'agentura', 'kreativ', 'it', 'marketing', 'studio', 'hudba', 'odvazne', 'moderne', 'farebne', 'mlade'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = pal.bg, cr = inkOn(bg, pal, '#1D1A19', '#F7EFE6'), acc = pal.accent;
-        const qr = c.sq ? 26 : 32, k = 0.5523 * qr;
-        const o = [];
-        o.push(P(`M ${f2(W + 2)} ${f2(H + 2 - qr)} C ${f2(W + 2 - k)} ${f2(H + 2 - qr)} ${f2(W + 2 - qr)} ${f2(H + 2 - k)} ${f2(W + 2 - qr)} ${f2(H + 2)} L ${f2(W + 2)} ${f2(H + 2)} Z`, { fill: acc }));
-        o.push(C(W + 2 - qr, H + 2 - qr, c.sq ? 5 : 6, { fill: cr }));
-        o.push(C(W - m - 3, m + 3, 1.6, { stroke: cr, sw: 0.25 }));
-        const mw = c.sq ? W - 2 * m : W * 0.55;
-        o.push(T(brand(c), { field: 'company', x: m - 0.3, y: m + 7, oy: 'bottom', size: c.sq ? 6 : 7.6, font: 'd', w: 700, color: cr, fit: mw, ls: -0.04 }));
-        o.push(T(f.tagline || f.role || '', { field: f.tagline ? 'tagline' : 'role', x: m, y: m + 8.4, size: 2, font: 't', w: 500, color: acc, fit: mw }));
-        return { bg: { color: bg }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const bg = pal.bg, acc = pal.accent, cr = light(pal.ink) ? pal.ink : '#F7EFE6';
-        const qr = 14, k = 0.5523 * qr;
-        const o = [P(`M -2 ${f2(-2 + qr)} C ${f2(-2 + k)} ${f2(-2 + qr)} ${f2(-2 + qr)} ${f2(-2 + k)} ${f2(-2 + qr)} -2 L -2 -2 Z`, { fill: bg })];
-        const x = c.sq ? m : W * 0.38, mw = W - x - m, ty = c.sq ? 20 : m + 4.4;
-        o.push(T(f.name, { field: 'name', x, y: ty, oy: 'bottom', size: 3.8, font: 'd', w: 700, color: bg, fit: mw, ls: -0.02 }));
-        o.push(T(f.role, { field: 'role', x, y: ty + 1.2, size: 1.9, font: 't', w: 500, color: mix(bg, acc, 0.3), fit: mw }));
-        o.push(...rows(c, { x, yb: H - m, keys: c.sq ? ['phone', 'email'] : ['phone', 'email', 'web', 'address'], color: bg, fit: mw, size: 1.8, lh: 2.75, weight: 500 }));
         return { bg: { color: acc }, objs: o };
       },
     },
@@ -999,62 +715,6 @@ export function neoTemplates(h) {
       },
     },
 
-    // ------------------------------------------------------------ SWISS – mriežka, blok a obrovská iniciála
-    swiss: {
-      name: 'Swiss', fonts: 'inter', pal: 'sneh', tags: ['it', 'firma', 'uctovnictvo', 'financie', 'architekt', 'dizajn', 'marketing', 'startup', 'moderne', 'ciste', 'serioze', 'minimal', 'elegantne'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = light(pal.bg) ? mix(pal.bg, '#F2F0EB', 0.5) : '#F4F2EE', ink = dark(pal.ink) ? pal.ink : '#111111', acc = pal.accent;
-        const o = [];
-        for (let i = 1; i < 4; i++) o.push(Ln(W * i / 4, -2, W * i / 4, H + 2, ink, 0.06, { opacity: 0.35 }));
-        const bw = c.sq ? W * 0.5 : W * 0.25, bh = c.sq ? H * 0.42 : H * 0.62;
-        o.push(R(W - bw, -2, bw + 2, bh + 2, acc));
-        o.push(T(mono(c).slice(0, 1).toLocaleLowerCase(), { x: W - bw + 1, y: bh + 3.2, oy: 'bottom', size: bh * 1.15, font: 'd', w: 700, color: '#FFFFFF', ls: -0.05 }));
-        const mw = W - bw - 2 * m;
-        o.push(T(f.name, { field: 'name', x: m - 0.3, y: m - 0.6, size: c.sq ? 3.6 : 5, font: 'd', w: 700, color: ink, fit: c.sq ? mw : mw + 4, ls: -0.035 }));
-        o.push(T(f.role, { field: 'role', x: m, y: m + (c.sq ? 4.4 : 6), size: 2.1, font: 't', w: 500, color: acc, fit: mw }));
-        if (c.sq) o.push(...rows(c, { x: m, yb: H - m, keys: ['phone', 'email', 'web'], labels: true, color: ink, fit: W - 2 * m, size: 1.8, lh: 2.75 }));
-        else { const ks = ['phone', 'email', 'web', 'address'].filter((k) => has(c, k)); o.push(...rows(c, { x: m, yb: H - m, keys: ks.slice(0, 2), labels: true, color: ink, fit: W / 2 - m - 2, size: 1.8, lh: 2.75 }), ...rows(c, { x: W / 2 + 0.5, yb: H - m, keys: ks.slice(2), labels: true, color: ink, fit: W / 2 - m - 1, size: 1.8, lh: 2.75 })); }
-        return { bg: { color: bg }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const ink = dark(pal.ink) ? pal.ink : '#111111', acc = pal.accent, wh = '#FFFFFF';
-        return { bg: { color: ink }, objs: [
-          C(W * 0.82, H * 0.3, c.sq ? 18 : 22, { fill: acc }),
-          logoOr(c, m, m, 26, 12, { ax: 'left', ay: 'top', tint: wh }, null),
-          T(brand(c), { field: 'company', x: m - 0.3, y: H - m - 3, oy: 'bottom', size: c.sq ? 4.4 : 5.6, font: 'd', w: 700, color: wh, fit: W - 2 * m, ls: -0.035 }),
-          T((f.web || '').toLocaleLowerCase(), { field: 'web', x: m, y: H - m, oy: 'bottom', size: 1.85, font: 't', w: 500, color: mix(wh, ink, 0.3), fit: W - 2 * m }),
-        ] };
-      },
-    },
-
-    // ------------------------------------------------------------ TVARY – vystrihované tvary (Matisse)
-    tvary: {
-      name: 'Tvary', fonts: 'grotesk', pal: 'sneh', tags: ['kreativ', 'dizajn', 'marketing', 'agentura', 'hudba', 'event', 'foto', 'odvazne', 'moderne', 'hrave'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const bg = light(pal.bg) ? mix(pal.bg, '#F6EFE4', 0.7) : '#F6EFE4', ink = dark(pal.ink) ? pal.ink : '#111111', acc = pal.accent;
-        const blue = '#2F5D8C', mus = '#E5AE2E', r = seeded(brand(c) + 'mt');
-        const o = [paper(c, 0.4)];
-        o.push(P(blobPath(-3, H * 0.95, H * 0.52, r, 8), { fill: blue }));
-        o.push(P(leaf(-2, H * 0.62, rad(-28), c.sq ? 22 : 28, c.sq ? 6 : 8), { fill: acc }));
-        o.push(P(leaf(W * 0.08, H + 2, rad(-62), c.sq ? 14 : 18, 4), { fill: ink }));
-        o.push(C(W * 0.2, H * 0.16, c.sq ? 4 : 5, { fill: mus }));
-        if (!c.sq) o.push(P(blobPath(W + 3, -2, 9, r, 6), { fill: mix(acc, '#F6EFE4', 0.45) }), C(W * 0.9, H * 0.84, 1.4, { fill: blue }));
-        for (let i = 0; i < 4; i++) o.push(C(W * 0.46 + i * 3, H * 0.66, 0.9, { fill: ink }));
-        const x = W - m, mw = c.sq ? W * 0.6 : W * 0.5;
-        o.push(T(f.name, { field: 'name', x, y: H * 0.46, ox: 'right', oy: 'bottom', size: c.sq ? 3.6 : 4.4, font: 'd', w: 600, color: ink, fit: mw, ls: -0.02 }));
-        o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x, y: H * 0.46 + 1, ox: 'right', size: 1.7, font: 't', w: 500, ls: 0.22, color: acc, fit: mw }));
-        return { bg: { color: bg }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const ink = dark(pal.ink) ? pal.ink : '#111111', acc = pal.accent, wh = '#F6EFE4', r = seeded(brand(c) + 'tb');
-        return { bg: { color: ink }, objs: [
-          P(blobPath(W + 2, H * 0.15, H * 0.42, r), { fill: acc }), P(blobPath(W * 0.72, H + 5, H * 0.3, r), { fill: '#2F5D8C' }), C(W * 0.62, H * 0.24, 1.6, { fill: '#E5AE2E' }),
-          T(brand(c), { field: 'company', x: m, y: m + 4.4, oy: 'bottom', size: c.sq ? 3.6 : 4.4, font: 'd', w: 600, color: wh, fit: W * 0.55, ls: -0.02 }),
-          ...rows(c, { x: m, yb: H - m, keys: ['phone', 'email', 'web', 'address'], color: wh, fit: W * 0.55, size: 1.8, lh: 2.75 }),
-        ] };
-      },
-    },
-
     // ------------------------------------------------------------ STOH – ozvena názvu (obrysy)
     stoh: {
       name: tr('Stoh', 'Stoh'), fonts: 'josefin', pal: 'cervena', tags: ['marketing', 'agentura', 'moda', 'butik', 'kreativ', 'event', 'hudba', 'odvazne', 'moderne', 'farebne'],
@@ -1188,31 +848,6 @@ export function neoTemplates(h) {
           T(brand(c), { field: 'company', x: m, y: m + 6.2, size: 1.9, font: 't', w: 600, color: acc, fit: W - 2 * m - 16 }),
           ...rows(c, { x: m, yb: H - m, keys: c.sq ? ['phone', 'email'] : ['phone', 'email', 'web'], color: ink, fit: W - 2 * m, size: 1.85, lh: 2.8, weight: 500 }),
         ] };
-      },
-    },
-
-    // ------------------------------------------------------------ CROP – orezané obrie meno s tieňom
-    crop: {
-      name: 'Crop', fonts: 'syne', pal: 'koral', tags: ['kreativ', 'marketing', 'foto', 'hudba', 'event', 'sport', 'fitness', 'barber', 'odvazne', 'hrave', 'moderne', 'mlade'],
-      front(c) {
-        const { W, H, f, pal, m } = c; const acc = pal.accent, fg = '#FFFFFF', ink = dark(pal.ink) ? pal.ink : '#1D1A19';
-        const word = (first(c) || f.name || brand(c)).trim(), sz = c.sq ? 20 : 24;
-        const o = [paper(c, 0.25)];
-        o.push(T(word, { x: m - 0.6, y: H + (c.sq ? 3.4 : 4.2) - 1.2, oy: 'bottom', size: sz, font: 'd', w: 800, color: 'none', stroke: ink, sw: 0.16, ls: -0.05, fit: W * 1.12 }));
-        o.push(T(word, { field: 'name', part: 0, x: m - 1.6, y: H + (c.sq ? 3.4 : 4.2), oy: 'bottom', size: sz, font: 'd', w: 800, color: fg, ls: -0.05, fit: W * 1.12 }));
-        o.push(T(f.role, { field: 'role', x: m, y: m, size: 1.9, font: 't', w: 700, upper: true, ls: 0.16, color: ink, fit: W * 0.5 }));
-        o.push(R(m, m + 3.4, 6, 0.5, ink));
-        o.push(...contacts(c, { x: W - m, yb: m + 2 + 2.8 * 2, align: 'right', keys: ['phone', 'email', 'web'], size: 1.75, lh: 2.8, color: ink, w: 600, fit: W * 0.45 }));
-        return { bg: { color: acc }, objs: o };
-      },
-      back(c) {
-        const { W, H, f, pal, m } = c; const acc = pal.accent, ink = dark(pal.ink) ? pal.ink : '#1D1A19', bg = light(pal.bg) ? pal.bg : '#FFF5EF';
-        const word = (first(c) || f.name || '').toLocaleUpperCase();
-        const o = [];
-        for (let i = 0; i < 3; i++) o.push(T(`${word} ${word} ${word}`, { x: -6 + i * 7, y: H - 2 + i * 0 - (2 - i) * 6.2, oy: 'bottom', size: 6, font: 'd', w: 800, color: 'none', stroke: mix(acc, bg, 0.3), sw: 0.12, ls: -0.02 }));
-        o.push(T(f.name, { field: 'name', x: m, y: m + 4.4, oy: 'bottom', size: 4.2, font: 'd', w: 800, color: ink, fit: W - 2 * m, ls: -0.03 }));
-        o.push(T(brand(c), { field: 'company', x: m, y: m + 5.6, size: 1.9, font: 't', w: 700, color: acc, fit: W - 2 * m }));
-        return { bg: { color: bg }, objs: o };
       },
     },
 

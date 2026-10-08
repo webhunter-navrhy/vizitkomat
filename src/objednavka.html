@@ -9,7 +9,11 @@
   <div class="empty" data-none hidden>
     <span class="sticker">{{ L('hmm', 'hmm') }}</span>
     <h1 class="h-m">{{ L('Objednávku sme nenašli.', 'Objednávku jsme nenašli.') }}</h1>
-    <p>{{ L('Skontrolujte odkaz z e-mailu alebo nám napíšte na', 'Zkontrolujte odkaz z e-mailu nebo nám napište na') }} <a href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a>.</p>
+    <p>{{ L('Odkaz na stav objednávky nájdete v potvrdzovacom e-maile. Ak ho neviete nájsť, napíšte nám číslo objednávky a pošleme ho znova.', 'Odkaz na stav objednávky najdete v potvrzovacím e-mailu. Pokud ho nemůžete najít, napište nám číslo objednávky a pošleme ho znovu.') }}</p>
+    <div class="empty__acts">
+      <a class="btn btn--lg" href="mailto:info@vizitkomat.eu?subject={{ L('Stav objednávky', 'Stav objednávky') }}">{{ L('Napísať nám', 'Napsat nám') }} <span class="ar">→</span></a>
+      <a class="btn btn--w btn--lg" href="{{ link('tvorba') }}?rezim=ai">{{ L('Navrhnúť novú vizitku', 'Navrhnout novou vizitku') }}</a>
+    </div>
   </div>
   <div data-mine hidden></div>
   <div class="trk__grid" data-ok hidden>

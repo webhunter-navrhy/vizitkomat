@@ -50,6 +50,12 @@
         </ol>
       </div>
     </div>
+    <ul class="vside__ct" data-vct></ul>
+    <div class="vside__act">
+      <button class="vside__btn vside__btn--p" data-vsave type="button">{{ 'Stáhnout kontakt' if lang == 'cz' else 'Stiahnuť kontakt' }}</button>
+      <button class="vside__btn" data-vcopy type="button">{{ 'Kopírovat odkaz' if lang == 'cz' else 'Kopírovať odkaz' }}</button>
+    </div>
+    <p class="vside__by">{{ 'Vytvořeno na' if lang == 'cz' else 'Vytvorené na' }} <a href="https://vizitkomat.eu/{{ 'cz/digitalni-vizitka/' if lang == 'cz' else 'digitalna-vizitka/' }}?ref=v-desk">vizitkomat.eu</a></p>
   </aside>
   <main class="vpage" id="card"></main>
 </div>
@@ -59,7 +65,7 @@
 <script type="module">
   import { newDesign } from '{{ R }}assets/js/v2/model.js';
   import { templateDefaults } from '{{ R }}assets/js/v2/templates.js';
-  import { renderDigital } from '{{ R }}assets/js/v2/digital.js';
+  import { renderDigital, downloadVCard } from '{{ R }}assets/js/v2/digital.js';
   import { qrSVG } from '{{ R }}assets/js/util.js';
   const card = JSON.parse(document.getElementById('data').textContent);
   const d = card.design || newDesign({ tpl: card.tpl, ...templateDefaults(card.tpl) });
@@ -70,13 +76,19 @@
   // počítač: QR na naskenovanie vedľa vizitky + pozadie vo farbách značky
   const cs = getComputedStyle(el), v = (k) => cs.getPropertyValue(k).trim();
   const root = document.documentElement.style;
-  [['--v-ink', '--d-ink'], ['--v-bg', '--d-bg'], ['--v-acc', '--d-acc'], ['--v-acc-t', '--d-acc-t'], ['--v-cover', '--d-cover'], ['--v-muted', '--d-muted'], ['--v-fd', '--d-fd'], ['--v-dw', '--d-dw'], ['--v-ft', '--d-ft'], ['--v-line', '--d-line']].forEach(([a, b]) => root.setProperty(a, v(b)));
+  [['--v-ink', '--d-ink'], ['--v-bg', '--d-bg'], ['--v-acc', '--d-acc'], ['--v-acc-t', '--d-acc-t'], ['--v-cover', '--d-cover'], ['--v-muted', '--d-muted'], ['--v-fd', '--d-fd'], ['--v-dw', '--d-dw'], ['--v-ft', '--d-ft'], ['--v-line', '--d-line'], ['--v-btn', '--d-btn'], ['--v-btn-fg', '--d-btn-fg']].forEach(([a, b]) => root.setProperty(a, v(b)));
   document.documentElement.classList.add('vready');
   const side = document.querySelector('[data-vside]');
   if (side) {
     side.querySelector('[data-vqr]').innerHTML = qrSVG(url);
     side.querySelector('[data-vname]').textContent = (d.f && (d.f.name || d.f.company)) || '';
     side.querySelector('[data-vrole]').textContent = [d.f?.role, d.f?.company !== d.f?.name && d.f?.company].filter(Boolean).join(' · ');
+    const f = d.f || {}, tel = (f.phone || '').replace(/[^\d+]/g, '');
+    const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    side.querySelector('[data-vct]').innerHTML = [tel && ['tel:' + tel, f.phone], f.email && ['mailto:' + f.email, f.email], f.web && [(/^https?:/.test(f.web) ? '' : 'https://') + f.web, f.web.replace(/^https?:\/\//, '')]].filter(Boolean).map(([h, v]) => `<li><a href="${esc(h)}"${/^https/.test(h) ? ' target="_blank" rel="noopener"' : ''}>${esc(v)}</a></li>`).join('');
+    side.querySelector('[data-vsave]').addEventListener('click', () => downloadVCard(f, url, { socials: d.socials, bio: d.digital?.bio, photoSrc: d.photo || d.logo || null }));
+    const cp = side.querySelector('[data-vcopy]');
+    cp.addEventListener('click', async () => { try { await navigator.clipboard.writeText(url); const o = cp.textContent; cp.textContent = '{{ 'Zkopírováno ✓' if lang == 'cz' else 'Skopírované ✓' }}'; setTimeout(() => { cp.textContent = o; }, 1800); } catch (e) { /* nič */ } });
     side.hidden = false;
   }
 </script>
