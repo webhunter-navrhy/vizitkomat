@@ -15,7 +15,7 @@
     <h2 class="h-m">{{ L('Košík je zatiaľ prázdny.', 'Košík je zatím prázdný.') }}</h2>
     <p>{{ L('AI grafik čaká na vaše zadanie. Prvé návrhy máte za pár sekúnd.', 'AI grafik čeká na vaše zadání. První návrhy máte za pár sekund.') }}</p>
     <a class="btn btn--c btn--lg" href="{{ link('tvorba') }}?rezim=ai">{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a>
-    <p class="empty__alt">{{ L('Alebo', 'Nebo') }} <a class="link" href="{{ link('tvorba') }}?rezim=sablony">{{ L('si vyberte zo 98 šablón', 'si vyberte z 98 šablon') }}</a> · <a class="link" href="{{ link('vlastny') }}">{{ L('nahrajte vlastný návrh', 'nahrajte vlastní návrh') }}</a></p>
+    <p class="empty__alt">{{ L('Alebo', 'Nebo') }} <a class="link" href="{{ link('tvorba') }}?rezim=sablony">{{ L('si vyberte zo ' ~ tpl_count ~ ' šablón', 'si vyberte z ' ~ tpl_count ~ ' šablon') }}</a> · <a class="link" href="{{ link('vlastny') }}">{{ L('nahrajte vlastný návrh', 'nahrajte vlastní návrh') }}</a></p>
     <a class="link" href="{{ link('objednavka') }}" data-mine-link hidden>{{ L('Moje objednávky', 'Moje objednávky') }} →</a>
   </div>
 

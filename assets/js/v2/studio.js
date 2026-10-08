@@ -193,7 +193,7 @@ $$('[data-ai-more] [data-r]').forEach((b) => b.addEventListener('click', () => {
 $('[data-ai-change]').addEventListener('click', () => { const f = $('[data-ask-re]'); f.hidden = !f.hidden; $('[data-ask-re-in]').value = st.lastPrompt; $('[data-ask-re-in]').focus(); });
 $('[data-ask-re]').addEventListener('submit', (e) => { e.preventDefault(); const v = $('[data-ask-re-in]').value.trim(); if (v.length > 2) runAI(v); });
 
-let tplTok = 0, tplIO = null;
+let tplTok = 0, tplIO = null, tplIds = [];
 const IND = {
   beauty: ['beauty', 'kozmetika', 'salon', 'kader', 'nechty', 'barber', 'masaz', 'tetovanie', 'tattoo'],
   gastro: ['kaviaren', 'gastro', 'restauracia', 'bistro', 'pekaren', 'cukraren', 'bar', 'vino', 'vinarstvo', 'pivovar', 'caj'],
@@ -203,7 +203,7 @@ const IND = {
   pravo: ['pravnik', 'advokat', 'financie', 'uctovnictvo', 'poistenie', 'konzultant', 'poradenstvo', 'dane', 'mzdy'],
   kreativ: ['foto', 'dizajn', 'kreativ', 'it', 'marketing', 'agentura', 'hudba', 'umelec', 'startup'],
 };
-const RICH = ['kytice', 'klas', 'etiketa', 'lotos', 'vykres', 'erb', 'britva', 'glazura', 'vows', 'iskra', 'objektiv', 'prazirna', 'arkada', 'stavitel', 'neon', 'eukalyptus', 'garaz', 'atrament', 'cisto', 'bilancia', 'orbit', 'dusa', 'sila', 'hrastar', 'ticha', 'minimal', 'muse', 'maitland', 'organic', 'chmel', 'hvezdy', 'panorama', 'letokruhy', 'dortik', 'glow', 'saloon', 'builders', 'cafe', 'samet', 'venec', 'deco', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'odznak', 'medic', 'konfety', 'ruzovezlato', 'akvarelsalvia'];
+const RICH = ['kytice', 'klas', 'etiketa', 'lotos', 'vykres', 'erb', 'britva', 'glazura', 'vows', 'iskra', 'objektiv', 'prazirna', 'arkada', 'stavitel', 'neon', 'eukalyptus', 'garaz', 'atrament', 'cisto', 'bilancia', 'orbit', 'dusa', 'sila', 'hrastar', 'ticha', 'minimal', 'muse', 'maitland', 'organic', 'chmel', 'hvezdy', 'panorama', 'letokruhy', 'dortik', 'glow', 'saloon', 'builders', 'cafe', 'samet', 'venec', 'deco', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'odznak', 'medic', 'konfety', 'ruzovezlato', 'akvarelsalvia', 'labka', 'volant', 'zahrada', 'tehla', 'valcek', 'komin', 'naprstok', 'svetlo', 'vinyl', 'lingua', 'tabula', 'vila', 'penzion', 'menu', 'forno', 'filter', 'vinoteka', 'kniha', 'pivonka', 'dotyk', 'serum', 'apoteka', 'prstene', 'duha', 'brazda', 'gatsby', 'wabi', 'riso', 'opal', 'herbar'];
 // ukážkový obor šablóny, s menom zákazníka
 function personaFor(id, nm) {
   const pk = TPL_PERSONA[id] || 'arch', p = PERSONAS[pk], f = personaFields(pk);
@@ -246,7 +246,8 @@ async function showTemplates() {
     .sort((a, b) => (RICH.includes(b) - RICH.includes(a)));
   $('[data-tpl-count]').textContent = ids.length;
   const box = $('[data-tpls]'); ++tplTok;
-  box.innerHTML = ids.length ? ids.map((id) => `<button data-tpl="${id}"><img alt="" loading="lazy">${RICH.includes(id) ? `<em>${tr('Ilustrovaná', 'Ilustrovaná')}</em>` : ''}<span>${TEMPLATES[id].name}</span></button>`).join('')
+  tplIds = ids;
+  box.innerHTML = ids.length ? ids.map((id) => `<div class="tcell"><button data-tpl="${id}"><img alt="" loading="lazy">${RICH.includes(id) ? `<em>${tr('Ilustrovaná', 'Ilustrovaná')}</em>` : ''}<span>${TEMPLATES[id].name}</span></button><button class="tzoom" type="button" data-zoom="${id}" aria-label="${tr('Náhľad šablóny', 'Náhled šablony')} ${TEMPLATES[id].name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></button></div>`).join('')
     : `<p class="tgrid__none">${tr('Takú kombináciu nemáme. Skúste iný štýl.', 'Takovou kombinaci nemáme. Zkuste jiný styl.')}</p>`;
   tplIO?.disconnect();
   tplIO = new IntersectionObserver((ents) => ents.forEach((e) => { if (e.isIntersecting) { tplIO.unobserve(e.target); tplRender(e.target.dataset.tpl, box); } }), { rootMargin: '300px' });
@@ -257,6 +258,7 @@ $('[data-tpl-name]').addEventListener('input', reTpl);
 $('[data-filt]').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; $$('[data-filt] button').forEach((x) => x.classList.toggle('on', x === b)); showTemplates(); });
 $('[data-ind]').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; $$('[data-ind] button').forEach((x) => x.classList.toggle('on', x === b)); showTemplates(); });
 $('[data-tpls]').addEventListener('click', async (e) => {
+  const z = e.target.closest('[data-zoom]'); if (z) { openTpv(z.dataset.zoom); return; }
   const b = e.target.closest('[data-tpl]'); if (!b) return;
   const id = b.dataset.tpl, prev = st.loaded ? ed.design : null;
   const nm = $('[data-tpl-name]').value.trim();
@@ -265,6 +267,48 @@ $('[data-tpls]').addEventListener('click', async (e) => {
   await loadDesign(newDesign({ tpl: id, ...templateDefaults(id), f: f0, emblem: prev?.emblem || pf.emblem, logo: prev?.logo || null, mark: prev?.mark || null, photo: prev?.photo || null, socials: prev?.socials || {}, digital: prev?.digital || {} }));
   go('edit');
 });
+
+/* náhľad šablóny: predná a zadná strana vo veľkom, listovanie a „Použiť“ */
+const tpv = { dlg: $('[data-tpv]'), id: null, tok: 0 };
+async function openTpv(id) {
+  const D = tpv.dlg; if (!D || !TEMPLATES[id]) return;
+  tpv.id = id; const tok = ++tpv.tok;
+  const pk = TPL_PERSONA[id], role = PERSONAS[pk]?.role;
+  $('[data-tpv-name]', D).textContent = TEMPLATES[id].name;
+  $('[data-tpv-tag]', D).textContent = [RICH.includes(id) && tr('Ilustrovaná', 'Ilustrovaná'), role && tr('ukážka: ', 'ukázka: ') + role.toLowerCase()].filter(Boolean).join(' · ');
+  const i = tplIds.indexOf(id);
+  $('[data-tpv-pos]', D).textContent = i >= 0 ? `${i + 1} / ${tplIds.length}` : '';
+  tpvSide('f');
+  const f = tplFields(id), [im1, im2] = [$('[data-tpv-f]', D), $('[data-tpv-b]', D)];
+  D.classList.add('is-busy');
+  if (!f && VK.pre['tpl-' + id + '-f']) { im1.src = VK.pre['tpl-' + id + '-f']; im2.src = VK.pre['tpl-' + id + '-b'] || ''; }
+  if (!D.open) D.showModal();
+  if (f) {
+    const prev = st.loaded ? ed.design : null;
+    const dd = newDesign({ tpl: id, ...templateDefaults(id), f, logo: prev?.logo || null, mark: prev?.mark || null, emblem: prev?.emblem || personaFor(id).emblem });
+    const [a, b] = await Promise.all([thumb(dd, 'front', 1000), thumb(dd, 'back', 1000)]);
+    if (tok !== tpv.tok) return;
+    im1.src = a; im2.src = b;
+  }
+  D.classList.remove('is-busy');
+}
+function tpvSide(side) {
+  const D = tpv.dlg;
+  D.classList.toggle('is-back', side === 'b');
+  $$('[data-tpv-side]', D).forEach((b) => b.setAttribute('aria-pressed', b.dataset.tpvSide === side));
+}
+function tpvStep(d) { const i = tplIds.indexOf(tpv.id); if (i < 0 || !tplIds.length) return; openTpv(tplIds[(i + d + tplIds.length) % tplIds.length]); }
+if (tpv.dlg) {
+  tpv.dlg.addEventListener('click', (e) => {
+    if (e.target === tpv.dlg || e.target.closest('[data-tpv-x]')) { tpv.dlg.close(); return; }
+    const sd = e.target.closest('[data-tpv-side]'); if (sd) { tpvSide(sd.dataset.tpvSide); return; }
+    if (e.target.closest('[data-tpv-flip]')) { tpvSide(tpv.dlg.classList.contains('is-back') ? 'f' : 'b'); return; }
+    if (e.target.closest('[data-tpv-prev]')) { tpvStep(-1); return; }
+    if (e.target.closest('[data-tpv-next]')) { tpvStep(1); return; }
+    if (e.target.closest('[data-tpv-use]')) { const id = tpv.id; tpv.dlg.close(); $(`[data-tpls] [data-tpl="${id}"]`)?.click(); }
+  });
+  tpv.dlg.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') tpvStep(1); if (e.key === 'ArrowLeft') tpvStep(-1); });
+}
 
 /* =========================================================
    3. ÚPRAVY
@@ -666,6 +710,17 @@ const persist = debounce(() => { if (ed && st.loaded) store.set(SAVE, { ...ed.ex
   }
   if (params.get('pokracovat') && st.saved?.d) { $('[data-resume-go]').click(); return; }
   const rez = params.get('rezim');
+  // z odborových stránok: ?odbor=beauty predvyberie filter, ?sablona=kytice otvorí šablónu rovno v editore
+  const odbor = params.get('odbor');
+  if (odbor && IND[odbor]) $$('[data-ind] button').forEach((x) => x.classList.toggle('on', x.dataset.i === odbor));
+  const sab = params.get('sablona');
+  if (sab && TEMPLATES[sab]) {
+    const pf = personaFor(sab);
+    await loadDesign(newDesign({ tpl: sab, ...templateDefaults(sab), f: pf.f, emblem: pf.emblem }));
+    st.mode = 'tpl'; st.reached.add('choose'); go('edit');
+    toast(tr('Prepíšte ukážkové údaje na svoje, stačí kliknúť do vizitky.', 'Přepište ukázkové údaje na své, stačí kliknout do vizitky.'));
+    return;
+  }
   if (rez === 'ai' && params.get('prompt')) runAI(params.get('prompt'));
   else if (rez === 'sablony') showTemplates();
   else if (rez === 'logo') { await loadDesign(newDesign({ tpl: 'swiss', ...templateDefaults('swiss') })); st.reached.add('choose'); openTab('logo'); go('edit'); toast(tr('Nahrajte logo, farby vizitky sa mu prispôsobia.', 'Nahrajte logo, barvy vizitky se mu přizpůsobí.')); }

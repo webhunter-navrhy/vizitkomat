@@ -14,6 +14,21 @@ from jinja2 import Environment, FileSystemLoader
 ROOT = pathlib.Path(__file__).parent
 SRC = ROOT / 'src'
 PRICES = json.loads((ROOT / '_data' / 'prices.json').read_text())
+OBORY = json.loads((ROOT / '_data' / 'obory.json').read_text())
+
+
+def template_names():
+    """Názvy šablón z JS (neskoršie súbory prepisujú skoršie, rovnako ako registrácia v templates.js)."""
+    import re
+    names = {}
+    order = ['templates.js', 'tpl-pro.js', 'tpl-rich.js', 'tpl-lux.js', 'tpl-neo.js', 'tpl-x.js']
+    files = [ROOT / 'assets/js/v2' / f for f in order] + sorted(p for p in (ROOT / 'assets/js/v2').glob('tpl-*.js') if p.name not in order)
+    for fp in files:
+        if fp.exists():
+            for m in re.finditer(r"(\w+):\s*\{\s*\n\s*name:\s*(?:tr\('([^']*)',\s*'([^']*)'\)|'([^']*)')", fp.read_text()):
+                sk = m.group(2) or m.group(4)
+                names[m.group(1)] = {'sk': sk, 'cz': m.group(3) or sk}
+    return names
 
 # stránka: (šablóna, SK cesta, CZ cesta)
 PAGES = [
@@ -27,6 +42,7 @@ PAGES = [
     ('gdpr.html', 'ochrana-osobnych-udajov/', 'ochrana-osobnich-udaju/'),
     ('kontakt.html', 'kontakt/', 'kontakt/'),
     ('objednavka.html', 'objednavka/', 'objednavka/'),
+    ('obory.html', 'vizitky-podla-odboru/', 'vizitky-podle-oboru/'),
     ('404.html', '404.html', None),
 ]
 LANGS = {'sk': '', 'cz': 'cz/'}
@@ -60,21 +76,26 @@ def main():
         if p.is_file() and p.suffix in ('.css', '.js'):
             versions[str(p.relative_to(ROOT))] = asset_hash(p.relative_to(ROOT))
 
+    pages = [(tpl, sk, cz, tpl.replace('.html', ''), None) for tpl, sk, cz in PAGES]
+    pages += [('obor.html', o['sk']['slug'] + '/', o['cz']['slug'] + '/', 'obor-' + o['key'], o) for o in OBORY]
+
     def urls_for(lang):
         out = {}
-        for tpl, sk, cz in PAGES:
+        for tpl, sk, cz, key, _o in pages:
             path = sk if lang == 'sk' else cz
             if path is None:
                 continue
-            out[tpl.replace('.html', '')] = LANGS[lang] + path
+            out[key] = LANGS[lang] + path
         return out
 
+    TPLN = template_names()
+    TPL_COUNT = len(list((ROOT / 'assets/pre/sk').glob('tpl-*-f.jpg'))) or len(TPLN)
     written = []
     for lang, prefix in LANGS.items():
         U = urls_for(lang)
         other = 'cz' if lang == 'sk' else 'sk'
         UO = urls_for(other)
-        for tpl, sk, cz in PAGES:
+        for tpl, sk, cz, key, obor in pages:
             path = sk if lang == 'sk' else cz
             if path is None:
                 continue
@@ -82,7 +103,8 @@ def main():
             out = ROOT / out_rel if out_rel.endswith('.html') else ROOT / out_rel / 'index.html'
             depth = out.relative_to(ROOT).as_posix().count('/')
             R = '../' * depth or './'
-            key = tpl.replace('.html', '')
+            if tpl == '404.html':  # 404 sa zobrazuje na ľubovoľnej adrese, relatívne cesty by nefungovali
+                R = PUBLIC
 
             def L(sk_text, cz_text=None, _lang=lang):
                 return sk_text if _lang == 'sk' or cz_text is None else cz_text
@@ -106,6 +128,9 @@ def main():
                 alt_canonical=SITE + UO.get(key, ''),
                 site=SITE, public=PUBLIC, production=PRODUCTION, importmap=importmap,
                 org_json=json.dumps(ORG, ensure_ascii=False),
+                obory=OBORY, obor=obor, O=(obor[lang] if obor else None),
+                tname=lambda i, _l=lang: TPLN.get(i, {}).get(_l, i.capitalize()),
+                tpl_count=TPL_COUNT,
             )
             html = env.get_template(tpl).render(**ctx)
             out.parent.mkdir(parents=True, exist_ok=True)

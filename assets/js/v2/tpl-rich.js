@@ -99,7 +99,10 @@ export function ornaments(h) {
     const t = String(o.text || ''), size = o.size || 2.2, up = t === t.toLocaleUpperCase();
     const w = t.length * size * ((up ? 0.68 : 0.52) + o.ls);
     if (w <= o.fit) return o;
-    return { ...o, ls: Math.max(0, Math.min(o.ls, o.fit / (t.length * size) - (up ? 0.68 : 0.52))) };
+    const ls = Math.max(0, Math.min(o.ls, o.fit / (t.length * size) - (up ? 0.68 : 0.52)));
+    // dlhá pozícia/slogan veľkými písmenami, ktorá sa nezmestí ani v minimálnej veľkosti: radšej bežné písmo
+    if (up && (o.field === 'role' || o.field === 'tagline') && t.length * 1.6 * (0.68 + ls) > o.fit) { const low = t.toLocaleLowerCase(); return { ...o, text: low.charAt(0).toLocaleUpperCase() + low.slice(1), ls: Math.min(ls, 0.04) }; }
+    return { ...o, ls };
   });
   const tidy = (set) => { for (const t of Object.values(set)) for (const side of ['front', 'back']) { const fn = t[side]; t[side] = (c) => { const r = fn(c); r.objs = tidyObjs(r.objs.filter(Boolean)); return r; }; } return set; };
   /** Znak odboru (alebo logo zákazníka) */
@@ -127,6 +130,7 @@ export function ornaments(h) {
 export function richTemplates(h) {
   const { T, R, C, Ln, P, QR, IMG, I, MONO, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, seeded, smooth, SCRIPT } = h;
   const { FOIL, MET, oval, f2, first, brand, has, leaf, sprig, wreath, divider, decoFrame, fan, waveFill, arcText, ringText, tidy, emblem, iconRows, arch, tex, confetti } = ornaments(h);
+  const rad = (d) => (d * Math.PI) / 180;
   return tidy({
     glow: {
       name: 'Glow', fonts: 'playfair', pal: 'rosegold', emblem: 'flower-lotus', tags: ['beauty', 'kozmetika', 'salon', 'kader', 'nechty', 'wellness', 'masaz', 'svadba', 'elegantne', 'jemne', 'zenske', 'luxusne'],
@@ -273,8 +277,8 @@ export function richTemplates(h) {
         const { W, H, f, pal, m } = c; const g = FOIL(pal), qs = 13;
         return { bg: { color: '#141414', art: tex(c, 'samet'), artOpacity: 0.9 }, objs: [
           R(-2, -2, W + 4, H + 4, '#000000', { opacity: 0.5 }),
-          T((bare(f.name) || f.name).toLocaleUpperCase(), { field: 'name', x: m, y: m + 3, oy: 'bottom', size: 3.4, font: 'd', w: 600, ls: 0.1, color: g, fit: W * 0.6 }),
-          T((f.role || '').toLocaleUpperCase(), { field: 'role', x: m, y: m + 4.2, size: 1.6, font: 'd', ls: 0.26, color: g, fit: W * 0.6 }),
+          T((bare(f.name) || f.name).toLocaleUpperCase(), { field: 'name', x: m, y: m + 3, oy: 'bottom', size: 3.4, font: 'd', w: 600, ls: 0.1, color: g, fit: c.sq ? W - 2 * m - qs - 2.5 : W * 0.6 }),
+          T((f.role || '').toLocaleUpperCase(), { field: 'role', x: m, y: c.sq ? m + qs + 4.6 : m + 4.2, size: 1.6, font: 'd', ls: 0.26, color: g, fit: c.sq ? W - 2 * m : W * 0.6 }),
           R(W - m - qs - 0.6, m - 0.6, qs + 1.2, qs + 1.2, '#F2EEE6'), QR(W - m - qs, m, qs, '#141414'),
           T(tr('NAPÍŠTE MI', 'NAPIŠTE MI'), { x: W - m - qs / 2, y: m + qs + 2, ox: 'center', oy: 'center', size: 1.4, font: 'd', ls: 0.2, color: g }),
           T(brand(c).toLocaleUpperCase(), { field: 'company', x: m, y: H * 0.6, oy: 'bottom', size: 2.6, font: 'd', w: 600, ls: 0.14, color: g, fit: W * 0.6 }),
@@ -406,25 +410,40 @@ export function richTemplates(h) {
     boho: {
       name: 'Boho', fonts: 'playfair', pal: 'terakota', emblem: 'sun-horizon', tags: ['joga', 'wellness', 'kozmetika', 'kvety', 'butik', 'kaviaren', 'foto', 'svadba', 'terapeut', 'prirodne', 'teple', 'hrave', 'zenske'],
       front(c) {
-        const { W, H, f } = c; const sand = '#EADBC8', terra = '#C2643F', clay = '#9C4A2F', ochre = '#D9A15B', ink = '#3A2318'; const ax = W * 0.68;
-        return { bg: { color: sand }, objs: [
-          P(arch(ax - 15, H + 3, 30, H * 0.45 - 15), { fill: mix(terra, sand, 0.55) }),
-          P(arch(ax - 10, H + 3, 20, H * 0.6 - 10), { fill: terra }),
-          C(ax, H * 0.36, 4.2, { fill: ochre }),
-          P(`M ${ax - 22} ${H + 3} Q ${ax - 8} ${H * 0.72} ${ax + 4} ${H * 0.86} Q ${ax + 16} ${H * 0.96} ${ax + 26} ${H * 0.78} L ${ax + 26} ${H + 3} Z`, { fill: clay }),
-          T(first(c), { field: 'name', part: 0, x: W * 0.06, y: H * 0.44, oy: 'center', size: 9, font: SCRIPT, color: ink, fit: W * 0.5 }),
-          T((f.role || '').toLocaleUpperCase(), { field: 'role', x: W * 0.07, y: H * 0.62, size: 1.6, font: 't', w: 600, ls: 0.3, color: clay, fit: W * 0.42 }),
-        ] };
+        const { W, H, f, m } = c; const sand = '#EADBC8', terra = '#C2643F', clay = '#9C4A2F', ochre = '#D9A15B', blush = '#E6B49A', ink = '#3A2318', sage = '#8C9473';
+        const o = [IMG(tex(c, 'papier'), -2.5, -2.5, W + 5, H + 5, { role: 'art', blend: 'multiply', opacity: 0.45 })];
+        // dúha z oblúkov, slnko s lúčmi, duny a sušené vetvičky
+        const cx = c.sq ? W / 2 : W * 0.72, base = c.sq ? H * 0.56 : H + 0.5, r0 = c.sq ? 15 : 19;
+        o.push(C(cx, base - r0 * 0.95, r0 * 0.28, { fill: ochre }));
+        for (let i = 0; i < 12; i++) { const a = rad(-180 + i * 16.4 + 8); const r1 = r0 * 0.36, r2 = r0 * 0.5; o.push(Ln(cx + Math.cos(a) * r1, base - r0 * 0.95 + Math.sin(a) * r1, cx + Math.cos(a) * r2, base - r0 * 0.95 + Math.sin(a) * r2, ochre, 0.3)); }
+        const bands = [[r0, blush], [r0 - 3.2, terra], [r0 - 6.4, clay], [r0 - 9.6, sand]];
+        for (const [r, col] of bands) o.push(P(arch(cx - r, base, r * 2, base - r), { fill: col }));
+        o.push(P(arch(cx - (r0 - 12.8), base, (r0 - 12.8) * 2, base - (r0 - 12.8)), { fill: mix(ochre, sand, 0.4) }));
+        o.push(P(`M ${f2(cx - r0 - 12)} ${f2(base + 1)} Q ${f2(cx - r0 * 0.6)} ${f2(base - 6.5)} ${f2(cx - 2)} ${f2(base - 2)} Q ${f2(cx + r0 * 0.6)} ${f2(base + 1.5)} ${f2(cx + r0 + 12)} ${f2(base - 4.5)} L ${f2(cx + r0 + 12)} ${f2(base + 3)} L ${f2(cx - r0 - 12)} ${f2(base + 3)} Z`, { fill: mix(clay, ink, 0.25) }));
+        o.push(...sprig(cx - r0 - 1.5, base - 1, c.sq ? 10 : 13, -80, { color: sage, leaves: 7, size: 2.2 }), ...sprig(cx + r0 + 1.5, base - 1, c.sq ? 9 : 11, -100, { color: mix(sage, ink, 0.2), leaves: 6, size: 2 }));
+        if (c.sq) {
+          o.push(T(first(c), { field: 'name', part: 0, x: W / 2, y: H * 0.72, ox: 'center', oy: 'center', size: 8, font: SCRIPT, color: ink, fit: W - 2 * m }));
+          o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x: W / 2, y: H * 0.84, ox: 'center', oy: 'center', size: 1.7, font: 't', w: 600, ls: 0.3, color: clay, fit: W - 2 * m }));
+        } else {
+          const mw = W * 0.4;
+          o.push(T(first(c), { field: 'name', part: 0, x: m - 0.5, y: H * 0.4, oy: 'center', size: 10, font: SCRIPT, color: ink, fit: mw }));
+          o.push(T((bare(f.name) || f.name).toLocaleUpperCase(), { field: 'name', x: m, y: H * 0.6, oy: 'center', size: 2.1, font: 'd', ls: 0.28, color: ink, fit: mw }));
+          o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x: m, y: H * 0.6 + 3.2, oy: 'center', size: 1.7, font: 't', w: 600, ls: 0.3, color: clay, fit: mw }));
+          o.push(Ln(m, H - m - 0.8, m + 7, H - m - 0.8, terra, 0.3), C(m + 8.3, H - m - 0.8, 0.45, { fill: ochre }));
+        }
+        return { bg: { color: sand }, objs: o };
       },
       back(c) {
-        const { W, H, f, m } = c; const terra = '#C2643F', ochre = '#D9A15B', ink = '#3A2318';
-        return { bg: { color: terra }, objs: [
-          P(arch(W - 26, H + 3, 22, H * 0.42), { fill: mix(terra, '#FFF4EA', 0.18) }), P(arch(W - 22, H + 3, 14, H * 0.58), { fill: mix(terra, '#000000', 0.12) }),
-          C(W - 15, H * 0.5, 3.2, { fill: ochre }),
-          T(f.name, { field: 'name', x: m, y: m + 3.4, oy: 'bottom', size: 3.6, font: 'd', color: '#FFF4EA', fit: W * 0.6 }),
-          T(brand(c), { field: 'company', x: m, y: m + 4.4, size: 2, font: 'd', it: true, color: '#F6D9C2', fit: W * 0.6 }),
-          ...iconRows(c, ['phone', 'email', 'web', 'address'], { x: m, y: H * 0.5, lh: 3.2, r: 1.1, circle: '#FFF4EA', icon: terra, color: '#FFF4EA', size: 1.9, fit: W * 0.52 }),
-        ] };
+        const { W, H, f, m } = c; const terra = '#C2643F', ochre = '#D9A15B', clay = '#9C4A2F', cr = '#FFF4EA', blush = '#E6B49A';
+        const o = [IMG(tex(c, 'papier'), -2.5, -2.5, W + 5, H + 5, { role: 'art', blend: 'multiply', opacity: 0.3 })];
+        const cx = c.sq ? W - 9 : W - 17, base = H + 0.5, r0 = c.sq ? 12 : 16;
+        for (const [r, col] of [[r0, mix(terra, cr, 0.22)], [r0 - 3, blush], [r0 - 6, mix(terra, '#000000', 0.12)], [r0 - 9, ochre]]) if (r > 0) o.push(P(arch(cx - r, base, r * 2, base - r), { fill: col }));
+        o.push(C(cx, base - r0 - 4.6, 2.2, { fill: ochre }));
+        const mw = c.sq ? W - 2 * m : W * 0.56;
+        o.push(T(f.name, { field: 'name', x: m, y: m + 3.6, oy: 'bottom', size: c.sq ? 3.2 : 3.8, font: 'd', color: cr, fit: mw }));
+        o.push(T(brand(c), { field: 'company', x: m, y: m + 4.6, size: 2, font: 'd', it: true, color: '#F6D9C2', fit: mw }));
+        o.push(...iconRows(c, c.sq ? ['phone', 'email', 'web'] : ['phone', 'email', 'web', 'address'], { x: m, y: c.sq ? H * 0.56 : H * 0.5, lh: 3.2, r: 1.1, circle: cr, icon: terra, color: cr, size: 1.9, fit: mw - 4 }));
+        return { bg: { color: terra }, objs: o };
       },
     },
 
@@ -491,14 +510,21 @@ export function richTemplates(h) {
         ] };
       },
       back(c) {
-        const { W, H, f, m } = c; const ink = '#1E1B3A';
-        return { bg: { color: '#2F6BFF' }, objs: [
-          ...confetti(W, H, f.name + 'b', ['#FFD23F', '#FF8FB1', '#FFFFFF']).map((o) => ({ ...o, opacity: 0.5 })),
-          R(m - 1, m - 1, W - 2 * m + 2, H - 2 * m + 2, '#FFFFFF', { rx: 3 }),
-          T(f.name, { field: 'name', x: m + 3, y: m + 5, oy: 'bottom', size: 3.6, font: 'd', w: 800, color: ink, fit: W - 2 * m - 6 }),
-          T(f.role || '', { field: 'role', x: m + 3, y: m + 6, size: 2.1, font: 'd', w: 500, color: '#FF5A1F', fit: W - 2 * m - 6 }),
-          ...iconRows(c, ['phone', 'email', 'web'], { x: m + 3, y: H * 0.58, lh: 3.3, r: 1.15, circle: '#2F6BFF', color: ink, size: 1.95, fit: W - 2 * m - 12 }),
-        ] };
+        const { W, H, f, m } = c; const ink = '#1E1B3A', blue = '#2F6BFF';
+        const cx = m - 1.5, cy = m - 1.5, cw = W - 2 * cx, ch = H - 2 * cy;
+        const o = [...confetti(W, H, f.name + 'b', ['#FFD23F', '#FF8FB1', '#FFFFFF', '#18A058'], [[cx, cy, cx + cw, cy + ch]])];
+        o.push(R(cx + 0.6, cy + 0.9, cw, ch, '#0B2A8F', { rx: 3, opacity: 0.45 }), R(cx, cy, cw, ch, '#FFFFFF', { rx: 3 }));
+        o.push(R(cx + 1.2, cy + 1.2, cw - 2.4, ch - 2.4, null, { rx: 2.2, stroke: '#FFD23F', sw: 0.2, dash: [0.8, 0.8] }));
+        // balóniky v rohu
+        const bx = cx + cw - (c.sq ? 7 : 8.5), by = cy + (c.sq ? 9 : 9.5);
+        const balloon = (x, y, r, col) => [P(`M ${f2(x)} ${f2(y + r * 1.15)} Q ${f2(x - r * 0.4)} ${f2(y + r * 2.4)} ${f2(x + r * 0.2)} ${f2(y + r * 3.6)}`, { stroke: ink, sw: 0.1, opacity: 0.6 }), P(oval(x, y, r, r * 1.18), { fill: col }), P(`M ${f2(x - 0.5)} ${f2(y + r * 1.32)} L ${f2(x + 0.5)} ${f2(y + r * 1.32)} L ${f2(x)} ${f2(y + r * 1.12)} Z`, { fill: col }), P(oval(x - r * 0.35, y - r * 0.45, r * 0.22, r * 0.36, -0.4), { fill: '#FFFFFF', opacity: 0.55 })];
+        o.push(...balloon(bx - 3, by + 1, 2.4, '#FF8FB1'), ...balloon(bx + 2.6, by + 0.4, 2.6, '#FFD23F'), ...balloon(bx, by - 2.6, 2.9, blue));
+        const mw = c.sq ? cw - 16 : cw - 20;
+        o.push(T(f.name, { field: 'name', x: cx + 3.5, y: cy + 7, oy: 'bottom', size: c.sq ? 3.2 : 3.6, font: 'd', w: 800, color: ink, fit: mw }));
+        o.push(T(f.role || '', { field: 'role', x: cx + 3.5, y: cy + 8.1, size: 2, font: 'd', w: 500, color: '#FF5A1F', fit: mw }));
+        if (!c.sq) { o.push(Ln(cx + 3.5, cy + 13.6, cx + 14, cy + 13.6, '#FFD23F', 0.4)); o.push(T(brand(c), { field: 'company', x: cx + 3.5, y: cy + 15.2, size: 2.2, font: 'd', w: 700, color: blue, fit: mw })); }
+        o.push(...iconRows(c, c.sq ? ['phone', 'email'] : ['phone', 'email', 'web'], { x: cx + 3.5, y: c.sq ? H * 0.62 : H * 0.56, lh: 3.3, r: 1.15, circle: blue, color: ink, size: 1.95, fit: cw - 12 }));
+        return { bg: { color: blue }, objs: o };
       },
     },
 
@@ -507,7 +533,7 @@ export function richTemplates(h) {
       front(c) {
         const { W, H, f } = c; const r = 'foil:rose';
         return { bg: { color: '#F8EEEA' }, objs: [
-          IMG(c.root + 'assets/tex/blob-ruza.png', W * 0.15, -10, W * 0.7, H + 20, { role: 'art', blend: 'multiply', opacity: 0.55 }),
+          IMG(c.root + 'assets/tex/blob-ruza.png', -W * 0.12, -12, W * 1.24, H + 24, { role: 'art', blend: 'multiply', opacity: 0.55 }),
           ...sprig(2, H - 4, 18, -30, { color: r, leaves: 6, size: 3.2 }), ...sprig(W - 2, 4, 18, 150, { color: r, leaves: 6, size: 3.2 }),
           T(first(c), { field: 'name', part: 0, x: W / 2, y: H * 0.45, ox: 'center', oy: 'center', size: 12, font: SCRIPT, color: r, fit: W - 26 }),
           T((bare(f.name) || f.name).toLocaleUpperCase(), { field: 'name', x: W / 2, y: H * 0.67, ox: 'center', oy: 'center', size: 2.4, font: 'd', ls: 0.36, color: '#5A3E3A', fit: W - 26 }),
@@ -515,13 +541,15 @@ export function richTemplates(h) {
         ] };
       },
       back(c) {
-        const { W, H, f, m } = c; const r = 'foil:rose', dark = '#2E2626';
-        return { bg: { color: dark }, objs: [
-          emblem(c, W / 2, m + 4, 6.4, r),
-          T(brand(c), { field: 'company', x: W / 2, y: H * 0.43, ox: 'center', oy: 'center', size: 5, font: 'd', color: '#E9B8A6', fit: W - 20 }),
-          ...divider(W / 2, H * 0.55, 26, r),
-          ...[[f.phone, f.email].filter(Boolean).join('   ·   '), [f.web, f.address].filter(Boolean).join('   ·   ')].map((t, i) => T(t, { x: W / 2, y: H * 0.68 + i * 3.1, ox: 'center', oy: 'center', size: 1.85, font: 't', color: '#E9D6D0', fit: W - 16 })),
-        ] };
+        const { W, H, f, m } = c; const r = 'foil:rose', dark = '#2E2626', soft = '#E9B8A6';
+        const o = [IMG(tex(c, 'samet'), -2.5, -2.5, W + 5, H + 5, { role: 'art', blend: 'multiply', opacity: 0.5 })];
+        o.push(R(3.2, 3.2, W - 6.4, H - 6.4, null, { stroke: r, sw: 0.16 }), R(4.1, 4.1, W - 8.2, H - 8.2, null, { stroke: r, sw: 0.07, opacity: 0.6 }));
+        o.push(...sprig(4.4, H - 4.4, c.sq ? 10 : 13, -40, { color: r, leaves: 6, size: 2.4 }), ...sprig(W - 4.4, 4.4, c.sq ? 10 : 13, 140, { color: r, leaves: 6, size: 2.4 }));
+        o.push(emblem(c, W / 2, m + 4.2, 6.4, r));
+        o.push(T(brand(c), { field: 'company', x: W / 2, y: H * 0.45, ox: 'center', oy: 'center', size: c.sq ? 4.2 : 5, font: 'd', color: soft, fit: W - 22 }));
+        o.push(...divider(W / 2, H * 0.57, 26, r));
+        o.push(...[[f.phone, f.email].filter(Boolean).join('   ·   '), [f.web, f.address].filter(Boolean).join('   ·   ')].filter(Boolean).map((t, i) => T(t, { x: W / 2, y: H * 0.69 + i * 3.1, ox: 'center', oy: 'center', size: 1.85, font: 't', color: '#E9D6D0', fit: W - 16 })));
+        return { bg: { color: dark }, objs: o };
       },
     },
 

@@ -49,7 +49,7 @@
         <button class="way way--tpl" data-start-tpl>
           <div class="way__thumbs" data-way-thumbs><img alt="" src="{{ pre['tpl-glow-f'] }}" width="640" height="368"><img alt="" src="{{ pre['tpl-saloon-f'] }}" width="640" height="368"><img alt="" src="{{ pre['tpl-cafe-f'] }}" width="640" height="368"></div>
           <h2>{{ L('Vyberiem si šablónu', 'Vyberu si šablonu') }}</h2>
-          <p>{{ L('98 šablón, každú hneď uvidíte s vaším menom.', '98 šablon, každou hned uvidíte se svým jménem.') }}</p>
+          <p>{{ L(tpl_count ~ ' šablón, každú hneď uvidíte s vaším menom.', tpl_count ~ ' šablon, každou hned uvidíte se svým jménem.') }}</p>
           <span class="link">{{ L('Prezrieť šablóny', 'Prohlédnout šablony') }} →</span>
         </button>
         <a class="way way--file" href="{{ link('vlastny') }}">
@@ -329,6 +329,20 @@ So: po domluvě') }}"></textarea></label>
     </div>
   </section>
 </div>
+<dialog class="dlg tpv" data-tpv aria-labelledby="tpv-h">
+  <div class="dlg__in">
+    <button class="dlg__x" type="button" data-tpv-x aria-label="{{ L('Zavrieť', 'Zavřít') }}">×</button>
+    <p class="tpv__tag"><span data-tpv-tag></span><span data-tpv-pos></span></p>
+    <h2 id="tpv-h" data-tpv-name></h2>
+    <button class="tpv__stage" type="button" data-tpv-flip aria-label="{{ L('Otočiť vizitku', 'Otočit vizitku') }}"><span class="tpv__card"><img alt="" data-tpv-f><img alt="" data-tpv-b></span></button>
+    <div class="tpv__bar">
+      <div class="seg seg--s tpv__sides"><button type="button" data-tpv-side="f" aria-pressed="true">{{ L('Predná', 'Přední') }}</button><button type="button" data-tpv-side="b" aria-pressed="false">{{ L('Zadná', 'Zadní') }}</button></div>
+      <div class="tpv__nav"><button type="button" data-tpv-prev aria-label="{{ L('Predchádzajúca šablóna', 'Předchozí šablona') }}">←</button><button type="button" data-tpv-next aria-label="{{ L('Ďalšia šablóna', 'Další šablona') }}">→</button></div>
+    </div>
+    <button class="btn btn--c btn--lg tpv__use" type="button" data-tpv-use>{{ L('Použiť túto šablónu', 'Použít tuto šablonu') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
+    <small class="dlg__fine">{{ L('Texty, farby aj písmo zmeníte v editore. Ukážkové údaje nahradíte svojimi.', 'Texty, barvy i písmo změníte v editoru. Ukázkové údaje nahradíte svými.') }}</small>
+  </div>
+</dialog>
 <dialog class="dlg" data-save-dlg>
   <form class="dlg__in" data-save-form novalidate>
     <button class="dlg__x" type="button" data-save-x aria-label="{{ L('Zavrieť', 'Zavřít') }}">×</button>

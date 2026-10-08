@@ -646,16 +646,40 @@ export function luxTemplates(h) {
     dortik: {
       name: tr('Tortička', 'Dortík'), fonts: 'abril', pal: 'pastel', emblem: 'cake', tags: ['cukraren', 'pekaren', 'kaviaren', 'gastro', 'event', 'oslavy', 'deti', 'butik', 'hrave', 'farebne', 'jemne', 'zenske', 'mlade'],
       front(c) {
-        const { W, H, f, pal } = c; const pink = light(pal.bg) ? pal.bg : '#F9C9DA', cr = '#FFF7F0', ink = dark(pal.ink) ? pal.ink : '#3A1E2A', acc = pal.accent || '#E2557A', dots = [];
-        for (let x = 1.5; x < W; x += 3) dots.push(C(x, H * 0.8 + 2.6, 0.45, { fill: acc }));
-        return { bg: { color: pink }, objs: [
-          scallop(W, H * 0.8, 1.5, cr), ...dots,
-          C(W / 2, H * 0.3, 7.6, { fill: cr }), C(W / 2, H * 0.3, 6.6, { stroke: acc, sw: 0.25 }),
-          ...ticks(W / 2, H * 0.3, 8.6, 9.4, 24, cr, 0.4),
-          logoOr(c, W / 2, H * 0.3, 10, 10, { tint: acc }, emblem(c, W / 2, H * 0.3, 8.2, acc)),
-          T(brand(c), { field: 'company', x: W / 2, y: H * 0.6, ox: 'center', oy: 'center', size: 5.6, font: 'd', color: ink, fit: W - 18 }),
-          T(f.tagline || '', { field: 'tagline', x: W / 2, y: H * 0.89, ox: 'center', oy: 'center', size: 1.9, font: 't', w: 600, color: acc, fit: W - 24 }),
-        ] };
+        const { W, H, f, pal, m } = c; const pink = light(pal.bg) ? pal.bg : '#F9C9DA', cr = '#FFF7F0', ink = dark(pal.ink) ? pal.ink : '#3A1E2A', acc = pal.accent || '#E2557A', dots = [];
+        const sy = c.sq ? H * 0.84 : H * 0.8;
+        for (let x = 1.5; x < W; x += 3) dots.push(C(x, sy + 2.6, 0.45, { fill: acc }));
+        const o = [scallop(W, sy, 1.5, cr), ...dots];
+        // poschodová torta na podnose: poleva, sviečky, čerešne
+        const k = c.sq ? 0.86 : 0.88, cx = W / 2, base = c.sq ? H * 0.47 : H * 0.52;
+        o.push(P(oval(cx, base + 0.8 * k, 15 * k, 1.5 * k), { fill: mix(acc, '#000000', 0.15), opacity: 0.25 }));
+        o.push(P(oval(cx, base, 14 * k, 1.4 * k), { fill: cr }), R(cx - 1.4 * k, base, 2.8 * k, 2.6 * k, cr), P(oval(cx, base + 2.6 * k, 4 * k, 0.8 * k), { fill: cr }));
+        const tiers = [[24, 5.4, mix(pink, '#FFFFFF', 0.55)], [17, 4.8, mix(acc, pink, 0.55)], [10.5, 4.2, cr]];
+        let y = base;
+        tiers.forEach(([w, h, col], i) => {
+          w *= k; h *= k; const x0 = cx - w / 2; y -= h;
+          o.push(R(x0, y, w, h, col, { rx: 0.5 }));
+          o.push(R(x0, y + h - 0.6 * k, w, 0.6 * k, mix(col, '#000000', 0.08)));
+          // poleva s kvapkami
+          const ic = i === 1 ? cr : mix(acc, '#FFFFFF', 0.25); let d = `M ${f2(x0)} ${f2(y)} L ${f2(x0 + w)} ${f2(y)} L ${f2(x0 + w)} ${f2(y + 1.1 * k)}`;
+          const n = Math.max(3, Math.round(w / 2.6));
+          for (let j = n; j > 0; j--) { const xa = x0 + (w * j) / n, xb = x0 + (w * (j - 1)) / n, l = (1.1 + ((j * 7 + i * 3) % 4) * 0.55) * k; d += ` C ${f2(xa - (xa - xb) * 0.2)} ${f2(y + l + 0.6 * k)} ${f2(xb + (xa - xb) * 0.2)} ${f2(y + l + 0.6 * k)} ${f2(xb)} ${f2(y + 1.1 * k)}`; }
+          o.push(P(d + ' Z', { fill: ic }));
+          for (let j = 0; j < Math.round(w / 3); j++) o.push(C(x0 + 1.4 * k + j * 3 * k, y + h * 0.66, 0.32 * k, { fill: i === 1 ? cr : acc, opacity: 0.85 }));
+        });
+        // sviečky a čerešne
+        for (const dx of [-2.6, 0, 2.6]) {
+          const x = cx + dx * k, ch = (dx ? 3 : 3.8) * k;
+          o.push(R(x - 0.35 * k, y - ch, 0.7 * k, ch, dx ? '#FFFFFF' : '#FFD23F'), Ln(x - 0.35 * k, y - ch * 0.4, x + 0.35 * k, y - ch * 0.6, acc, 0.16));
+          o.push(P(`M ${f2(x)} ${f2(y - ch - 2.3 * k)} C ${f2(x + 0.9 * k)} ${f2(y - ch - 1.2 * k)} ${f2(x + 0.6 * k)} ${f2(y - ch - 0.1 * k)} ${f2(x)} ${f2(y - ch - 0.1 * k)} C ${f2(x - 0.6 * k)} ${f2(y - ch - 0.1 * k)} ${f2(x - 0.9 * k)} ${f2(y - ch - 1.2 * k)} ${f2(x)} ${f2(y - ch - 2.3 * k)} Z`, { fill: '#FFB020' }));
+          o.push(C(x, y - ch - 0.9 * k, 0.32 * k, { fill: '#FFF2B0' }));
+        }
+        for (const dx of [-4.2, 4.2]) o.push(C(cx + dx * k, y - 0.4 * k, 0.9 * k, { fill: '#D6264B' }), Ln(cx + dx * k, y - 1.2 * k, cx + dx * k + 0.7 * k, y - 2.4 * k, '#3F6B3A', 0.16));
+        const r = seeded(brand(c) + 'dk'), cols = [acc, '#FFFFFF', '#FFD23F', '#7FC8C2'];
+        for (let i = 0; i < 26; i++) { const x = r() * W, yy = r() * (sy - 4); if (Math.abs(x - cx) < 15 * k && yy > y - 8 && yy < base + 3) continue; if (yy > base + 1 && Math.abs(x - cx) < W * 0.38) continue; o.push(R(x, yy, 1.3, 0.42, cols[i % 4], { rx: 0.2, rot: r() * 180 })); }
+        o.push(T(brand(c), { field: 'company', x: cx, y: c.sq ? H * 0.635 : H * 0.665, ox: 'center', oy: 'center', size: c.sq ? 4.4 : 5.4, font: 'd', color: ink, fit: W - 18 }));
+        o.push(T(f.tagline || '', { field: 'tagline', x: cx, y: c.sq ? H * 0.735 : H * 0.745 + 0.4, ox: 'center', oy: 'center', size: 1.8, font: 't', w: 600, color: acc, fit: W - 24 }));
+        return { bg: { color: pink }, objs: o };
       },
       back(c) {
         const { W, H, f, pal, m } = c; const pink = light(pal.bg) ? pal.bg : '#F9C9DA', cr = '#FFF7F0', ink = dark(pal.ink) ? pal.ink : '#3A1E2A', acc = pal.accent || '#E2557A', dots = [];

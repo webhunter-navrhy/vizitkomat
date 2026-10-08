@@ -184,13 +184,20 @@ export function neoTemplates(h) {
         return { bg: { color: bg }, objs: o };
       },
       back(c) {
-        const { W, H, f, pal, m } = c; const acc = pal.accent, bg = dark(acc) || luminance(acc) < 0.35 ? acc : '#1F6E6A', wh = '#FFFFFF';
+        const { W, H, f, pal, m } = c; const acc = pal.accent, bg = dark(acc) || luminance(acc) < 0.35 ? acc : '#1F6E6A', wh = '#FFFFFF', lt = mix(bg, '#FFFFFF', 0.22), sand = '#F3E3C3';
         const o = [];
-        for (let k = 0; k < 7; k++) { const pts = []; for (let x = W * 0.45; x <= W + 4; x += 3) pts.push([x, -2 + k * 2.4 + Math.sin(x / 16 * Math.PI * 2 + k * 0.5) * 0.9]); o.push(P(smooth(pts), { stroke: wh, sw: 0.12, opacity: 0.25 })); }
-        o.push(T(f.name, { field: 'name', x: c.sq ? W / 2 : m, y: H * 0.42, ox: c.sq ? 'center' : 'left', oy: 'bottom', size: 4.6, font: 'd', it: true, color: wh, fit: W - 2 * m }));
-        o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x: c.sq ? W / 2 : m, y: H * 0.42 + 1.2, ox: c.sq ? 'center' : 'left', size: 1.7, font: 't', w: 600, ls: 0.26, color: mix(wh, bg, 0.2), fit: W - 2 * m }));
-        if (c.sq) o.push(...centerLines(c, W / 2, H - m, { color: wh, fit: W - 2 * m, size: 1.75, lh: 2.6 }));
-        else o.push(...rows(c, { x: m, yb: H - m, color: wh, fit: W - 2 * m, size: 1.85, lh: 2.8 }));
+        const wy = c.sq ? H * 0.8 : H * 0.8;
+        o.push(...waveFill(W, H, wy - 2.4, 1.1, 22, 2.1, lt), ...waveFill(W, H, wy, 1.3, 20, 0.6, mix(bg, '#000000', 0.18)));
+        for (let k = 0; k < 3; k++) { const pts = []; for (let x = -4; x <= W + 4; x += 20 / 6) pts.push([x, wy + 2.4 + k * 2.6 + Math.sin(x / 20 * Math.PI * 2 + 0.6 + k * 0.7) * 0.8]); o.push(P(smooth(pts), { stroke: wh, sw: 0.1, opacity: 0.28 })); }
+        // medailón so znakom (slnko nad morom)
+        const r = c.sq ? 6.5 : 8, cx = c.sq ? W / 2 : W - m - r, cy = c.sq ? m + r : H * 0.4;
+        o.push(C(cx, cy, r, { fill: sand }), C(cx, cy, r + 1, { stroke: sand, sw: 0.14, opacity: 0.8 }));
+        o.push(emblem(c, cx, cy, r * 1.05, bg));
+        const x = c.sq ? W / 2 : m, al = c.sq ? 'center' : 'left', mw = c.sq ? W - 2 * m : W - 2 * m - 2 * r - 6, ny = c.sq ? H * 0.5 : H * 0.36;
+        o.push(T(f.name, { field: 'name', x, y: ny, ox: al, oy: 'bottom', size: c.sq ? 4 : 4.6, font: 'd', it: true, color: wh, fit: mw }));
+        o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x, y: ny + 1.2, ox: al, size: 1.7, font: 't', w: 600, ls: 0.26, color: sand, fit: mw }));
+        if (c.sq) o.push(...centerLines(c, W / 2, wy - 3.4, { color: wh, fit: W - 2 * m, size: 1.75, lh: 2.6 }));
+        else o.push(...rows(c, { x: m, yb: wy - 3.6, color: wh, fit: mw, size: 1.85, lh: 2.8 }));
         return { bg: { color: bg }, objs: o };
       },
     },
@@ -289,15 +296,28 @@ export function neoTemplates(h) {
         return { bg: { color: bg }, objs: o };
       },
       back(c) {
-        const { W, H, f, pal, m } = c; const acc = luminance(pal.accent) < 0.45 ? pal.accent : '#B4532A', cr = '#FBF1E6';
-        const o = [];
-        const x = c.sq ? W - 11 : W - 14, b = H + 1, s = c.sq ? 2.2 : 3.2;
-        o.push(P(`M ${f2(x - 1.2 * s)} ${f2(b - 12 * s)} L ${f2(x + 1.2 * s)} ${f2(b - 12 * s)} C ${f2(x + 1.1 * s)} ${f2(b - 9.5 * s)} ${f2(x + 4.6 * s)} ${f2(b - 8 * s)} ${f2(x + 4.4 * s)} ${f2(b - 3.6 * s)} C ${f2(x + 4.2 * s)} ${f2(b - 1 * s)} ${f2(x + 2.6 * s)} ${f2(b)} ${f2(x + 2.2 * s)} ${f2(b)} L ${f2(x - 2.2 * s)} ${f2(b)} C ${f2(x - 2.6 * s)} ${f2(b)} ${f2(x - 4.2 * s)} ${f2(b - 1 * s)} ${f2(x - 4.4 * s)} ${f2(b - 3.6 * s)} C ${f2(x - 4.6 * s)} ${f2(b - 8 * s)} ${f2(x - 1.1 * s)} ${f2(b - 9.5 * s)} ${f2(x - 1.2 * s)} ${f2(b - 12 * s)} Z`, { stroke: cr, sw: 0.25, opacity: 0.6 }));
-        for (let k = 1; k <= 4; k++) o.push(Ln(x - 4.4 * s + 0.3, b - k * 2.2 * s, x + 4.4 * s - 0.3, b - k * 2.2 * s, cr, 0.12, { opacity: 0.35 }));
-        const mw = c.sq ? W - 2 * m : W * 0.58;
-        o.push(T(f.name, { field: 'name', x: m, y: m + 4.6, oy: 'bottom', size: 4, font: 'd', w: 500, color: cr, fit: mw, ls: -0.02 }));
-        o.push(T(f.role, { field: 'role', x: m, y: m + 5.8, size: 1.9, font: 't', color: mix(cr, acc, 0.25), fit: mw }));
-        o.push(...rows(c, { x: m, yb: H - m, keys: c.sq ? ['phone', 'email', 'web'] : ['phone', 'email', 'web', 'address'], color: cr, fit: c.sq ? W * 0.62 : mw, size: 1.8, lh: 2.75 }));
+        const { W, H, f, pal, m } = c; const acc = luminance(pal.accent) < 0.45 ? pal.accent : '#B4532A', cr = '#FBF1E6', sand = '#E7C9A6', dk = mix(acc, '#1A0E08', 0.55);
+        const o = [paper(c, 0.3)];
+        // zátišie na poličke: slnko, fľaša, váza s vetvičkou, miska
+        const s = c.sq ? 0.78 : 1, sx = c.sq ? W / 2 : W * 0.74, shelf = c.sq ? H * 0.5 : H * 0.78;
+        o.push(C(sx + 2 * s, shelf - 15 * s, 8.5 * s, { fill: mix(acc, cr, 0.28) }));
+        const vase = (x, b, k, col) => P(`M ${f2(x - 1.2 * k)} ${f2(b - 12 * k)} L ${f2(x + 1.2 * k)} ${f2(b - 12 * k)} C ${f2(x + 1.1 * k)} ${f2(b - 9.5 * k)} ${f2(x + 4.6 * k)} ${f2(b - 8 * k)} ${f2(x + 4.4 * k)} ${f2(b - 3.6 * k)} C ${f2(x + 4.2 * k)} ${f2(b - 1 * k)} ${f2(x + 2.6 * k)} ${f2(b)} ${f2(x + 2.2 * k)} ${f2(b)} L ${f2(x - 2.2 * k)} ${f2(b)} C ${f2(x - 2.6 * k)} ${f2(b)} ${f2(x - 4.2 * k)} ${f2(b - 1 * k)} ${f2(x - 4.4 * k)} ${f2(b - 3.6 * k)} C ${f2(x - 4.6 * k)} ${f2(b - 8 * k)} ${f2(x - 1.1 * k)} ${f2(b - 9.5 * k)} ${f2(x - 1.2 * k)} ${f2(b - 12 * k)} Z`, { fill: col });
+        const bottle = (x, b, k, col) => P(`M ${f2(x - 0.7 * k)} ${f2(b - 15 * k)} L ${f2(x + 0.7 * k)} ${f2(b - 15 * k)} L ${f2(x + 0.7 * k)} ${f2(b - 9 * k)} C ${f2(x + 2.8 * k)} ${f2(b - 8 * k)} ${f2(x + 2.8 * k)} ${f2(b - 6 * k)} ${f2(x + 2.8 * k)} ${f2(b - 5 * k)} L ${f2(x + 2.8 * k)} ${f2(b)} L ${f2(x - 2.8 * k)} ${f2(b)} L ${f2(x - 2.8 * k)} ${f2(b - 5 * k)} C ${f2(x - 2.8 * k)} ${f2(b - 6 * k)} ${f2(x - 2.8 * k)} ${f2(b - 8 * k)} ${f2(x - 0.7 * k)} ${f2(b - 9 * k)} Z`, { fill: col });
+        const bowl = (x, b, k, col) => P(`M ${f2(x - 5 * k)} ${f2(b - 3.4 * k)} L ${f2(x + 5 * k)} ${f2(b - 3.4 * k)} C ${f2(x + 4.6 * k)} ${f2(b - 0.4 * k)} ${f2(x + 2.4 * k)} ${f2(b)} ${f2(x)} ${f2(b)} C ${f2(x - 2.4 * k)} ${f2(b)} ${f2(x - 4.6 * k)} ${f2(b - 0.4 * k)} ${f2(x - 5 * k)} ${f2(b - 3.4 * k)} Z`, { fill: col });
+        o.push(...sprig(sx + 0.2, shelf - 12.4 * s, 9 * s, -100, { color: dk, leaves: 6, size: 2 * s }), ...sprig(sx, shelf - 12.4 * s, 7 * s, -62, { color: dk, leaves: 5, size: 1.7 * s }));
+        o.push(bottle(sx - 8.6 * s, shelf, s, dk), vase(sx, shelf, s * 1.05, cr), bowl(sx + 9.6 * s, shelf, s, sand));
+        for (let k = 1; k <= 3; k++) o.push(Ln(sx - 3.6 * s, shelf - k * 2.6 * s, sx + 3.6 * s, shelf - k * 2.6 * s, acc, 0.12, { opacity: 0.45 }));
+        o.push(R(c.sq ? m : W * 0.5, shelf, c.sq ? W - 2 * m : W * 0.5 + 2, 0.5, cr, { opacity: 0.85 }));
+        if (c.sq) {
+          o.push(T(f.name, { field: 'name', x: W / 2, y: H * 0.66, ox: 'center', oy: 'bottom', size: 3.6, font: 'd', w: 500, color: cr, fit: W - 2 * m }));
+          o.push(T(f.role, { field: 'role', x: W / 2, y: H * 0.66 + 1, ox: 'center', size: 1.85, font: 't', color: sand, fit: W - 2 * m }));
+          o.push(...centerLines(c, W / 2, H - m, { color: cr, fit: W - 2 * m, size: 1.75, lh: 2.6 }));
+        } else {
+          const mw = W * 0.46;
+          o.push(T(f.name, { field: 'name', x: m, y: m + 4.6, oy: 'bottom', size: 4.2, font: 'd', w: 500, color: cr, fit: mw, ls: -0.02 }));
+          o.push(T(f.role, { field: 'role', x: m, y: m + 5.8, size: 1.9, font: 't', color: sand, fit: mw }));
+          o.push(...rows(c, { x: m, yb: H - m, keys: ['phone', 'email', 'web', 'address'], color: cr, fit: mw, size: 1.8, lh: 2.75 }));
+        }
         return { bg: { color: acc }, objs: o };
       },
     },
@@ -306,33 +326,39 @@ export function neoTemplates(h) {
     groom: {
       name: tr('Monogram stĺpec', 'Monogram sloupec'), fonts: 'italiana', pal: 'taupe', tags: ['svadba', 'beauty', 'kozmetika', 'foto', 'butik', 'dizajn', 'umelec', 'elegantne', 'jemne', 'minimal', 'luxusne'],
       front(c) {
-        const { W, H, f, pal, m } = c; const bg = luminance(pal.bg) > 0.33 ? pal.bg : '#D8CCC0', ink = inkOn(bg, pal, '#2E2622'), acc = pal.accent, lt = mix(bg, '#FFFFFF', 0.45);
-        const ox = c.sq ? W / 2 : m + 9, oy = c.sq ? 16 : H / 2, rx = c.sq ? 7 : 7.2, ry = c.sq ? 10 : 15;
-        const mk = mono(c), L1 = mk[0] || '', L2 = mk[1] || '';
+        const { W, H, f, pal, m } = c; const bg = luminance(pal.bg) > 0.33 ? pal.bg : '#D8CCC0', ink = inkOn(bg, pal, '#2E2622'), acc = pal.accent, lt = mix(bg, '#FFFFFF', 0.5), g = G(pal), met = pal.foil ? MET(pal) : acc;
+        const aw = c.sq ? 15 : 17, ax = c.sq ? W / 2 - aw / 2 : m + 1, top = c.sq ? 6.4 : 7, base = c.sq ? 28.5 : H - 4.5, cx = ax + aw / 2;
         const o = [paper(c, 0.35)];
-        o.push(P(oval(ox, oy, rx, ry), { fill: lt }), P(oval(ox, oy, rx + 0.9, ry + 0.9), { stroke: acc, sw: 0.14 }));
-        if (c.sq) o.push(T(mk, { x: ox, y: oy, ox: 'center', oy: 'center', size: 7, font: 'd', color: ink, ls: 0.04 }));
+        // oblúkový panel s rámom a monogramom
+        o.push(P(arch(ax + 0.6, base + 0.8, aw, top + 0.8), { fill: '#000000', opacity: 0.08 }));
+        o.push(P(arch(ax, base, aw, top), { fill: lt }), P(arch(ax + 1.1, base - 1.1, aw - 2.2, top + 1.1), { stroke: met, sw: 0.14 }), P(arch(ax - 0.9, base + 0.9, aw + 1.8, top - 0.9), { stroke: met, sw: 0.1, opacity: 0.6 }));
+        const mk = mono(c), my = c.sq ? 17.5 : top + (base - top) * 0.52;
+        if (c.sq) o.push(T(mk, { x: cx, y: my, ox: 'center', oy: 'center', size: 6.4, font: 'd', color: ink, ls: 0.04 }));
         else {
-          o.push(T(L1, { x: ox, y: oy - 5.4, ox: 'center', oy: 'center', size: 7, font: 'd', color: ink }));
-          o.push(P(`M ${f2(ox)} ${f2(oy - 0.9)} L ${f2(ox + 0.9)} ${f2(oy)} L ${f2(ox)} ${f2(oy + 0.9)} L ${f2(ox - 0.9)} ${f2(oy)} Z`, { fill: acc }));
-          o.push(T(L2, { x: ox, y: oy + 5.4, ox: 'center', oy: 'center', size: 7, font: 'd', color: ink }));
+          o.push(T(mk[0] || '', { x: cx, y: my - 5.6, ox: 'center', oy: 'center', size: 7.2, font: 'd', color: ink }));
+          o.push(Ln(cx - 3.2, my, cx - 1.3, my, met, 0.14), Ln(cx + 1.3, my, cx + 3.2, my, met, 0.14));
+          o.push(P(`M ${f2(cx)} ${f2(my - 0.9)} L ${f2(cx + 0.9)} ${f2(my)} L ${f2(cx)} ${f2(my + 0.9)} L ${f2(cx - 0.9)} ${f2(my)} Z`, { fill: g }));
+          o.push(T(mk[1] || '', { x: cx, y: my + 5.6, ox: 'center', oy: 'center', size: 7.2, font: 'd', color: ink }));
         }
-        o.push(...sprig(ox, oy - ry - 0.4, 6, -60, { color: acc, leaves: 5, size: 1.6 }), ...sprig(ox, oy - ry - 0.4, 6, -120, { color: acc, leaves: 5, size: 1.6 }));
-        const x = c.sq ? W / 2 : W * 0.62, al = 'center';
-        o.push(T(first(c), { field: 'name', part: 0, x, y: c.sq ? 34 : H * 0.42, ox: al, oy: 'center', size: c.sq ? 8 : 10, font: SCRIPT, color: acc, fit: c.sq ? W - 2 * m : W * 0.5 }));
-        o.push(T((bare(f.name) || f.name).toLocaleUpperCase(), { field: 'name', x, y: c.sq ? 41 : H * 0.62, ox: al, oy: 'center', size: 2.4, font: 'd', ls: 0.3, color: ink, fit: c.sq ? W - 2 * m : W * 0.52 }));
-        o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x, y: c.sq ? 44.6 : H * 0.62 + 3.6, ox: al, oy: 'center', size: 1.7, font: 't', w: 600, ls: 0.26, color: mix(ink, bg, 0.35), fit: c.sq ? W - 2 * m : W * 0.5 }));
+        o.push(...sprig(cx - 0.4, top + 0.6, 5.6, -150, { color: acc, leaves: 5, size: 1.5 }), ...sprig(cx + 0.4, top + 0.6, 5.6, -30, { color: acc, leaves: 5, size: 1.5 }), C(cx, top - 0.2, 0.55, { fill: g }));
+        const x = c.sq ? W / 2 : (ax + aw + W - m) / 2 + 1, mw = c.sq ? W - 2 * m : W - m - ax - aw - 5;
+        o.push(T(first(c), { field: 'name', part: 0, x, y: c.sq ? 36 : H * 0.42, ox: 'center', oy: 'center', size: c.sq ? 8 : 11, font: SCRIPT, color: acc, fit: mw }));
+        o.push(T((bare(f.name) || f.name).toLocaleUpperCase(), { field: 'name', x, y: c.sq ? 42.6 : H * 0.63, ox: 'center', oy: 'center', size: c.sq ? 2.1 : 2.4, font: 'd', ls: 0.3, color: ink, fit: mw }));
+        if (!c.sq) o.push(...divider(x, H * 0.63 + 3, 14, met));
+        o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x, y: c.sq ? 46 : H * 0.63 + 6, ox: 'center', oy: 'center', size: 1.7, font: 't', w: 600, ls: 0.26, color: mix(ink, bg, 0.35), fit: mw }));
         return { bg: { color: bg }, objs: o };
       },
       back(c) {
-        const { W, H, f, pal, m } = c; const so = light(pal.soft) ? pal.soft : '#EFE8E1', ink = dark(pal.ink) ? pal.ink : '#2E2622', acc = pal.accent;
-        return { bg: { color: so }, objs: [
-          paper(c, 0.45),
-          ...sprig(3, 3, 10, 35, { color: mix(acc, so, 0.3), leaves: 6, size: 2 }), ...sprig(W - 3, H - 3, 10, 215, { color: mix(acc, so, 0.3), leaves: 6, size: 2 }),
-          T(brand(c).toLocaleUpperCase(), { field: 'company', x: W / 2, y: H * 0.3, ox: 'center', oy: 'center', size: c.sq ? 2.8 : 3.2, font: 'd', ls: 0.26, color: ink, fit: W - 2 * m - 6 }),
-          ...divider(W / 2, H * 0.3 + 4, 18, acc),
-          ...contacts(c, { x: W / 2, yb: H - m - (c.sq ? 2 : 1), align: 'center', keys: ['phone', 'email', 'web'], size: 1.9, lh: 2.95, color: ink, fit: W - 2 * m - 6 }),
-        ] };
+        const { W, H, f, pal, m } = c; const so = light(pal.soft) ? pal.soft : '#EFE8E1', ink = dark(pal.ink) ? pal.ink : '#2E2622', acc = pal.accent, g = G(pal), met = pal.foil ? MET(pal) : acc;
+        const o = [paper(c, 0.45)];
+        o.push(R(3.2, 3.2, W - 6.4, H - 6.4, null, { stroke: met, sw: 0.12 }), R(4, 4, W - 8, H - 8, null, { stroke: met, sw: 0.06, opacity: 0.6 }));
+        const cy = c.sq ? H * 0.3 : H * 0.36, rx = c.sq ? 5.2 : 4.8, ry = c.sq ? 6.6 : 6.2;
+        o.push(...wreath(W / 2, cy + 0.4, ry + 1.6, mix(acc, so, 0.15), { leaves: 9, size: 2.2, gap: 70 }));
+        o.push(P(oval(W / 2, cy, rx, ry), { fill: mix(so, '#FFFFFF', 0.55) }), P(oval(W / 2, cy, rx, ry), { stroke: met, sw: 0.14 }));
+        o.push(logoOr(c, W / 2, cy, rx * 1.5, ry * 1.2, { tint: ink }, MONO(c, { x: W / 2, y: cy + 0.2, ox: 'center', oy: 'center', size: 4.6, color: ink, ls: 0.04 })));
+        o.push(T(brand(c).toLocaleUpperCase(), { field: 'company', x: W / 2, y: c.sq ? H * 0.56 : H * 0.62, ox: 'center', oy: 'center', size: c.sq ? 2.4 : 2.6, font: 'd', ls: 0.26, color: ink, fit: W - 2 * m - 6 }));
+        o.push(...centerLines(c, W / 2, H - m - (c.sq ? 1.6 : 0.6), { color: mix(ink, so, 0.15), fit: W - 2 * m - 6, size: 1.8, lh: 2.7 }));
+        return { bg: { color: so }, objs: o };
       },
     },
 
@@ -513,12 +539,21 @@ export function neoTemplates(h) {
       name: tr('Bodka', 'Tečka'), fonts: 'poppins', pal: 'koral', tags: ['it', 'startup', 'agentura', 'marketing', 'dizajn', 'konzultant', 'firma', 'moderne', 'minimal', 'odvazne', 'ciste'],
       front(c) {
         const { W, H, f, pal, m } = c; const bg = light(pal.bg) ? pal.bg : '#FFF5EF', ink = dark(pal.ink) ? pal.ink : '#1D1A19', acc = pal.accent;
-        const o = []; const st = 2.6, fx = W + 2, fy = H + 2, maxD = Math.hypot(W, H) * 0.62;
-        for (let y = st / 2; y < H + st; y += st) for (let x = st / 2; x < W + st; x += st) { const d = Math.hypot(x - fx, y - fy) / maxD; const r = (1 - d) * st * 0.48; if (r > 0.12) o.push(C(x, y, r, { fill: acc })); }
-        o.push(C(m + 1.1, m + 1.1, 1.1, { fill: acc }));
-        const mw = c.sq ? W - 2 * m : W * 0.55;
-        o.push(T(brand(c).toLocaleLowerCase(), { field: 'company', x: m - 0.3, y: c.sq ? H * 0.42 : H * 0.5, oy: 'bottom', size: c.sq ? 6 : 7.4, font: 'd', w: 600, color: ink, fit: mw, ls: -0.04 }));
-        o.push(T(f.tagline || '', { field: 'tagline', x: m, y: (c.sq ? H * 0.42 : H * 0.5) + 1, size: 1.9, font: 't', color: mix(ink, bg, 0.35), fit: mw }));
+        const o = [paper(c, 0.25)];
+        // rastrová guľa: bodky rastú od svetla k tieňu, okolo slabnúca žiara
+        const R0 = c.sq ? 12.5 : 16.5, sx = c.sq ? W / 2 : W - m - R0 + 0.5, sy = c.sq ? H * 0.36 : H / 2, lx = sx - R0 * 0.42, ly = sy - R0 * 0.42, st = c.sq ? 1.45 : 1.6;
+        for (let y = sy - R0 - 6; y < sy + R0 + 6; y += st) for (let x = sx - R0 - 6; x < sx + R0 + 6; x += st) {
+          const dc = Math.hypot(x - sx, y - sy);
+          if (dc <= R0) { const t = Math.min(1, Math.hypot(x - lx, y - ly) / (R0 * 1.75)); const r = st * (0.1 + 0.42 * t); o.push(C(x, y, r, { fill: acc })); }
+          else if (dc < R0 + 5.5) { const r = st * 0.16 * (1 - (dc - R0) / 5.5); if (r > 0.07) o.push(C(x, y, r, { fill: acc, opacity: 0.55 })); }
+        }
+        o.push(P(oval(sx, sy, R0 + 3.4, (R0 + 3.4) * 0.3, -0.32), { stroke: ink, sw: 0.14 }));
+        const sa = -0.32, ra = R0 + 3.4; o.push(C(sx - ra * Math.cos(sa), sy - ra * Math.sin(sa), 1, { fill: ink }), C(sx + ra * Math.cos(sa) * 0.98, sy + ra * Math.sin(sa) * 0.98, 0.45, { fill: acc }));
+        o.push(C(m + 1, m + 1, 1, { fill: acc }));
+        const mw = c.sq ? W - 2 * m : W - 2 * m - R0 * 2 - 2, by = c.sq ? H * 0.74 : H * 0.53;
+        o.push(T(brand(c).toLocaleLowerCase(), { field: 'company', x: c.sq ? W / 2 : m - 0.3, y: by, ox: c.sq ? 'center' : 'left', oy: 'bottom', size: c.sq ? 6 : 7.6, font: 'd', w: 600, color: ink, fit: mw, ls: -0.04 }));
+        o.push(T(f.tagline || '', { field: 'tagline', x: c.sq ? W / 2 : m, y: by + 1.1, ox: c.sq ? 'center' : 'left', size: 1.9, font: 't', color: mix(ink, bg, 0.35), fit: mw }));
+        if (!c.sq && (f.web || '').trim()) { o.push(C(m + 0.6, H - m - 0.75, 0.6, { fill: acc })); o.push(T(f.web, { field: 'web', x: m + 2.2, y: H - m, oy: 'bottom', size: 1.85, font: 't', w: 600, color: ink, fit: mw - 3, ls: 0.02 })); }
         return { bg: { color: bg }, objs: o };
       },
       back(c) {
@@ -552,15 +587,20 @@ export function neoTemplates(h) {
         const { W, H, f, pal, m } = c; const so = light(pal.soft) ? pal.soft : '#E1D4C0', ink = dark(pal.ink) ? pal.ink : '#2A2119', acc = pal.accent;
         const o = [paper(c, 0.5)];
         if (c.sq) {
-          o.push(emblem(c, W / 2, m + 4, 5, acc));
-          o.push(T(f.name, { field: 'name', x: W / 2, y: 22, ox: 'center', oy: 'center', size: 3.4, font: 'd', color: ink, fit: W - 2 * m }));
-          o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x: W / 2, y: 25.8, ox: 'center', oy: 'center', size: 1.7, font: 't', w: 600, ls: 0.2, color: acc, fit: W - 2 * m }));
+          o.push(P(oval(W / 2, 13, 13, 9), { stroke: acc, sw: 0.28 }), P(oval(W / 2, 13, 11.8, 7.8), { stroke: acc, sw: 0.1 }));
+          o.push(emblem(c, W / 2, 13, 6, acc));
+          o.push(T(f.name, { field: 'name', x: W / 2, y: 28, ox: 'center', oy: 'center', size: 3.4, font: 'd', color: ink, fit: W - 2 * m }));
+          o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x: W / 2, y: 31.8, ox: 'center', oy: 'center', size: 1.7, font: 't', w: 600, ls: 0.2, color: acc, fit: W - 2 * m }));
           o.push(...centerLines(c, W / 2, H - m, { color: ink, fit: W - 2 * m, size: 1.75, lh: 2.6 }));
         } else {
-          const dx = W * 0.46;
-          o.push(emblem(c, m + 3, m + 3, 5, acc));
-          o.push(T(f.name, { field: 'name', x: m, y: H * 0.62, oy: 'bottom', size: 4, font: 'd', color: ink, fit: dx - m - 4 }));
-          o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x: m, y: H * 0.62 + 1.2, size: 1.7, font: 't', w: 600, ls: 0.18, color: acc, fit: dx - m - 4 }));
+          const dx = W * 0.47;
+          // pečiatka: ovál so znakom a textom po obvode
+          const ox = m + 13, oy = H * 0.36, rx = 10.5, ry = 7.5;
+          o.push(P(oval(ox, oy, rx, ry), { stroke: acc, sw: 0.28 }), P(oval(ox, oy, rx - 1.1, ry - 1.1), { stroke: acc, sw: 0.1 }));
+          o.push(emblem(c, ox, oy, 6.4, acc));
+          o.push(C(ox - rx - 1.6, oy, 0.4, { fill: acc }), C(ox + rx + 1.6, oy, 0.4, { fill: acc }));
+          o.push(T(f.name, { field: 'name', x: m, y: H * 0.74, oy: 'bottom', size: 3.8, font: 'd', color: ink, fit: dx - m - 4 }));
+          o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x: m, y: H * 0.74 + 1.2, size: 1.7, font: 't', w: 600, ls: 0.18, color: acc, fit: dx - m - 4 }));
           o.push(Ln(dx, m, dx, H - m, acc, 0.14), C(dx, m, 0.4, { fill: acc }), C(dx, H - m, 0.4, { fill: acc }));
           o.push(...iconRows(c, ['phone', 'email', 'web', 'address'], { x: dx + 4.5, y: H / 2 - 4.8, lh: 3.2, r: 1.1, circle: acc, icon: so, color: ink, size: 1.85, fit: W - dx - 4.5 - m - 4 }));
         }
@@ -628,14 +668,23 @@ export function neoTemplates(h) {
         return { bg: { color: bg }, objs: o };
       },
       back(c) {
-        const { W, H, f, pal, m } = c; const acc = pal.accent, fg = '#FFF6EE';
-        const rnd = seeded(f.name + 'b'); const pts = [[-4, H * 0.66]]; for (let i = 1; i < 7; i++) pts.push([W * (i / 7) + (rnd() - 0.5) * 5, H * (0.5 + (i % 2 ? -0.12 : 0.1))]); pts.push([W + 4, H * 0.4]);
-        return { bg: { color: acc }, objs: [
-          paper(c, 0.3),
-          P(smooth(pts), { stroke: fg, sw: 0.3, opacity: 0.8 }),
-          T(brand(c), { field: 'company', x: m, y: m + 5, oy: 'bottom', size: c.sq ? 4 : 5, font: 'd', it: true, color: fg, fit: W - 2 * m }),
-          T((f.web || '').toLocaleUpperCase(), { field: 'web', x: W - m, y: H - m, ox: 'right', oy: 'bottom', size: 1.7, font: 't', w: 600, ls: 0.26, color: fg, fit: W - 2 * m }),
-        ] };
+        const { W, H, f, pal, m } = c; const acc = pal.accent, fg = '#FFF6EE', dk = mix(acc, '#000000', 0.3);
+        const o = [paper(c, 0.3)];
+        // jedna súvislá linka: kvet vo váze nakreslený jedným ťahom
+        const s = c.sq ? 0.8 : 1, bx = c.sq ? W * 0.72 : W * 0.76, by = H + 0.5;
+        o.push(C(bx + 2 * s, H * 0.36, 9 * s, { fill: mix(acc, '#FFFFFF', 0.14) }));
+        const pts = [[bx - 4.5 * s, by], [bx - 4 * s, by - 6 * s], [bx - 2 * s, by - 9 * s], [bx, by - 9.4 * s], [bx + 2 * s, by - 9 * s], [bx + 4 * s, by - 6 * s], [bx + 4.5 * s, by], ];
+        o.push(P(smooth(pts), { stroke: fg, sw: 0.3 }));
+        const st = [[bx, by - 9.4 * s], [bx - 0.8 * s, by - 16 * s], [bx + 1.2 * s, by - 24 * s], [bx, by - 31 * s]];
+        o.push(P(smooth(st), { stroke: fg, sw: 0.26 }));
+        o.push(P(leaf(bx - 0.4 * s, by - 15 * s, rad(-160), 8 * s, 2 * s), { stroke: fg, sw: 0.22 }), P(leaf(bx + 0.8 * s, by - 21 * s, rad(-25), 8 * s, 2.1 * s), { stroke: fg, sw: 0.22 }));
+        for (let i = 0; i < 6; i++) { const a = rad(-90 + i * 60); o.push(P(leaf(bx, by - 33.4 * s, a, 3.6 * s, 1.4 * s), { stroke: fg, sw: 0.2 })); }
+        o.push(C(bx, by - 33.4 * s, 0.9 * s, { fill: dk }));
+        const mw = c.sq ? W - 2 * m : W * 0.55;
+        o.push(T(brand(c), { field: 'company', x: m, y: m + 5, oy: 'bottom', size: c.sq ? 4 : 5, font: 'd', it: true, color: fg, fit: mw }));
+        o.push(T(f.tagline || '', { field: 'tagline', x: m, y: m + 6.4, size: 1.85, font: 'd', it: true, color: mix(fg, acc, 0.25), fit: mw }));
+        o.push(T((f.web || '').toLocaleUpperCase(), { field: 'web', x: m, y: H - m, oy: 'bottom', size: 1.7, font: 't', w: 600, ls: 0.26, color: fg, fit: mw }));
+        return { bg: { color: acc }, objs: o };
       },
     },
 
@@ -703,15 +752,30 @@ export function neoTemplates(h) {
         return { bg: { color: bg }, objs: o };
       },
       back(c) {
-        const { W, H, f, pal, m } = c; const wall = dark(pal.ink) ? mix(pal.ink, pal.accent, 0.15) : '#2A2622', ink = '#1A1A18', pl = '#F7F3EA', gold = MET(pal);
-        const pw = c.sq ? W - 12 : W - 22, ph = c.sq ? H - 14 : H - 16, px = (W - pw) / 2, py = (H - ph) / 2;
-        return { bg: { color: wall }, objs: [
-          R(px + 0.6, py + 1, pw, ph, '#000000', { opacity: 0.35 }), R(px, py, pw, ph, pl), R(px + 1, py + 1, pw - 2, ph - 2, null, { stroke: gold, sw: 0.12 }),
-          C(px + 2.2, py + 2.2, 0.35, { fill: gold }), C(px + pw - 2.2, py + 2.2, 0.35, { fill: gold }), C(px + 2.2, py + ph - 2.2, 0.35, { fill: gold }), C(px + pw - 2.2, py + ph - 2.2, 0.35, { fill: gold }),
-          T(brand(c), { field: 'company', x: W / 2, y: py + 5.4, ox: 'center', oy: 'center', size: 3, font: 'd', ls: 0.1, color: ink, fit: pw - 8 }),
-          T(f.tagline || '', { field: 'tagline', x: W / 2, y: py + 8.6, ox: 'center', oy: 'center', size: 1.7, font: 't', it: true, color: '#6B6560', fit: pw - 8 }),
-          ...centerLines(c, W / 2, py + ph - 3.2, { color: ink, fit: pw - 8, size: 1.75, lh: 2.6 }),
-        ] };
+        const { W, H, f, pal, m } = c; const wall = dark(pal.ink) ? mix(pal.ink, pal.accent, 0.15) : '#2A2622', ink = '#1A1A18', pl = '#F7F3EA', gold = MET(pal), acc = pal.accent;
+        const o = [];
+        // stena galérie: lišta, dva zavesené obrazy a štítok s kontaktmi
+        o.push(R(-2, -2, W + 4, H + 4, { grad: [mix(wall, '#FFFFFF', 0.06), wall, mix(wall, '#000000', 0.25)], angle: 90 }));
+        o.push(C(W * (c.sq ? 0.5 : 0.3), -6, c.sq ? 30 : 26, { fill: { grad: ['rgba(255,240,214,0.22)', 'rgba(255,240,214,0)'], radial: true } }));
+        const rail = 2.6; o.push(Ln(-2, rail, W + 2, rail, gold, 0.16));
+        const frame = (x, y, w, h, art) => {
+          o.push(Ln(x + w / 2, rail, x + w * 0.22, y, gold, 0.07), Ln(x + w / 2, rail, x + w * 0.78, y, gold, 0.07));
+          o.push(R(x + 0.5, y + 0.9, w, h, '#000000', { opacity: 0.4 }), R(x, y, w, h, gold), R(x + 0.5, y + 0.5, w - 1, h - 1, '#FBF9F4'));
+          const ix = x + w * 0.18, iy = y + h * 0.18, iw = w * 0.64, ih = h * 0.64; o.push(R(ix, iy, iw, ih, mix(acc, pl, 0.82))); art(ix, iy, iw, ih);
+        };
+        if (!c.sq) {
+          frame(m - 0.5, 8.5, 13, 17, (x, y, w, h) => { o.push(P(arch(x + w * 0.22, y + h, w * 0.56, y + h * 0.22), { fill: acc })); o.push(C(x + w * 0.5, y + h * 0.36, w * 0.12, { fill: '#F4D9A6' })); });
+          frame(m + 15, 12, 11, 11, (x, y, w, h) => { o.push(C(x + w / 2, y + h / 2, w * 0.3, { fill: mix(acc, ink, 0.45) })); o.push(C(x + w * 0.62, y + h * 0.4, w * 0.16, { fill: '#F4D9A6' })); });
+          o.push(T((bare(f.name) || f.name).toLocaleUpperCase(), { field: 'name', x: m, y: H - m - 3.2, oy: 'bottom', size: 2.2, font: 'd', ls: 0.22, color: pl, fit: 30 }));
+          o.push(T((f.role || '').toLocaleUpperCase(), { field: 'role', x: m, y: H - m, oy: 'bottom', size: 1.7, font: 't', w: 600, ls: 0.24, color: gold, fit: 30 }));
+        }
+        const pw = c.sq ? W - 12 : W * 0.5, ph = c.sq ? H - 16 : H - 15, px = c.sq ? (W - pw) / 2 : W - m - pw + 1, py = c.sq ? 8 : (H - ph) / 2 + 1.4;
+        o.push(R(px + 0.6, py + 1, pw, ph, '#000000', { opacity: 0.4 }), R(px, py, pw, ph, pl), R(px + 1, py + 1, pw - 2, ph - 2, null, { stroke: gold, sw: 0.12 }));
+        for (const [qx, qy] of [[2.2, 2.2], [pw - 2.2, 2.2], [2.2, ph - 2.2], [pw - 2.2, ph - 2.2]]) o.push(C(px + qx, py + qy, 0.35, { fill: gold }));
+        o.push(T(brand(c), { field: 'company', x: px + pw / 2, y: py + 5.2, ox: 'center', oy: 'center', size: 2.9, font: 'd', ls: 0.08, color: ink, fit: pw - 7 }));
+        o.push(T(f.tagline || '', { field: 'tagline', x: px + pw / 2, y: py + 8.4, ox: 'center', oy: 'center', size: 1.7, font: 't', it: true, color: '#6B6560', fit: pw - 7 }));
+        o.push(...contacts(c, { x: px + pw / 2, yb: py + ph - 2.8, align: 'center', keys: ['phone', 'email', 'web'], size: 1.75, lh: 2.55, color: ink, fit: pw - 6 }));
+        return { bg: { color: wall }, objs: o };
       },
     },
 
@@ -985,14 +1049,25 @@ export function neoTemplates(h) {
         return { bg: { color: bg }, objs: o };
       },
       back(c) {
-        const { W, H, f, pal, m } = c; const cr = '#FBF1E6', tc = luminance(pal.bg) < 0.45 ? pal.bg : luminance(pal.accent) < 0.45 ? pal.accent : '#C35F3A', aw = 12, ax = W / 2 - aw / 2, top = m, base = H * 0.52;
-        return { bg: { color: cr }, objs: [
-          paper(c, 0.45),
-          P(arch(ax, base, aw, top), { fill: tc }), C(W / 2, top + (base - top) * 0.6, aw * 0.22, { fill: '#F6C9A0' }),
-          R(ax, top + (base - top) * 0.68, aw, (base - top) * 0.32, '#2F5E6B'),
-          T(brand(c), { field: 'company', x: W / 2, y: H * 0.68, ox: 'center', oy: 'center', size: c.sq ? 3.6 : 4.2, font: 'd', color: tc, fit: W - 2 * m - 6 }),
-          T(f.tagline || '', { field: 'tagline', x: W / 2, y: H * 0.68 + 4.2, ox: 'center', oy: 'center', size: 1.9, font: 'd', it: true, color: mix(tc, cr, 0.3), fit: W - 2 * m - 6 }),
-        ] };
+        const { W, H, f, pal, m } = c; const cr = '#FBF1E6', tc = luminance(pal.bg) < 0.45 ? pal.bg : luminance(pal.accent) < 0.45 ? pal.accent : '#C35F3A', sea = '#2F5E6B';
+        const o = [paper(c, 0.45)];
+        // veľké oblúkové okno so západom slnka nad morom
+        const aw = c.sq ? 20 : 22, ax = c.sq ? W / 2 - aw / 2 : m - 0.5, top = c.sq ? 4 : 4, base = c.sq ? H * 0.56 : H - 4;
+        o.push(P(arch(ax - 1.4, base + 1.4, aw + 2.8, top - 1.4), { fill: tc }));
+        o.push(P(arch(ax, base, aw, top), { fill: { grad: ['#F6C9A0', '#F8E3C8', '#FBEFE0'], angle: 90 } }));
+        const hz = top + (base - top) * 0.6;
+        o.push(C(ax + aw * 0.5, hz, aw * 0.22, { fill: '#F2A97A' }), C(ax + aw * 0.5, hz, aw * 0.3, { fill: '#F2A97A', opacity: 0.25 }));
+        o.push(R(ax, hz, aw, base - hz, { grad: [mix('#F8E3C8', sea, 0.7), sea], angle: 90 }));
+        for (let k = 1; k <= 4; k++) o.push(Ln(ax + aw * (0.18 + k * 0.05), hz + k * 1.5, ax + aw * (0.82 - k * 0.05), hz + k * 1.5, '#FFFFFF', 0.12, { opacity: 0.5 }));
+        o.push(P(`M ${f2(ax + aw)} ${f2(hz + 0.3)} Q ${f2(ax + aw * 0.78)} ${f2(hz - 3.2)} ${f2(ax + aw * 0.56)} ${f2(hz + 0.3)} Z`, { fill: mix(tc, '#2A1A12', 0.3) }));
+        for (const [bx2, by2, k] of [[0.3, 0.3, 1], [0.44, 0.23, 0.75]]) { const bx = ax + aw * bx2, by = top + (base - top) * by2; o.push(P(`M ${f2(bx - 1.1 * k)} ${f2(by)} Q ${f2(bx - 0.55 * k)} ${f2(by - 0.7 * k)} ${f2(bx)} ${f2(by)} Q ${f2(bx + 0.55 * k)} ${f2(by - 0.7 * k)} ${f2(bx + 1.1 * k)} ${f2(by)}`, { stroke: '#7A4A35', sw: 0.14 })); }
+        o.push(R(ax - 2.2, base, aw + 4.4, 1.3, mix(tc, '#2A1A12', 0.2)));
+        const x = c.sq ? W / 2 : (ax + aw + W - m) / 2 + 1, mw = c.sq ? W - 2 * m : W - m - ax - aw - 6, al = 'center';
+        o.push(T(brand(c), { field: 'company', x, y: c.sq ? H * 0.71 : H * 0.42, ox: al, oy: 'center', size: c.sq ? 3.6 : 4.4, font: 'd', color: tc, fit: mw }));
+        o.push(T(f.tagline || '', { field: 'tagline', x, y: (c.sq ? H * 0.71 : H * 0.42) + 4.2, ox: al, oy: 'center', size: 1.9, font: 'd', it: true, color: mix(tc, cr, 0.3), fit: mw }));
+        if (!c.sq) o.push(...divider(x, H * 0.42 + 8, 14, tc));
+        o.push(T((f.web || '').toLocaleUpperCase(), { field: 'web', x, y: H - m, ox: al, oy: 'bottom', size: 1.7, font: 't', w: 600, ls: 0.24, color: tc, fit: mw }));
+        return { bg: { color: cr }, objs: o };
       },
     },
 
@@ -1011,14 +1086,18 @@ export function neoTemplates(h) {
         ] };
       },
       back(c) {
-        const { W, H, f, pal, m } = c; const ol = dark(pal.bg) || luminance(pal.bg) < 0.3 ? pal.bg : '#4B5340', cr = light(pal.soft) ? pal.soft : '#EFE9DD', met = pal.foil ? MET(pal) : pal.accent;
-        return { bg: { color: cr }, objs: [
-          paper(c, 0.5),
-          ...sprig(-1, H + 1, 16, -58, { color: met, leaves: 8, size: 3 }), ...sprig(W + 1, -1, 16, 122, { color: met, leaves: 8, size: 3 }),
-          T(f.name.toLocaleUpperCase(), { field: 'name', x: W / 2, y: H * 0.36, ox: 'center', oy: 'center', size: c.sq ? 2.6 : 3, font: 'd', ls: 0.18, color: ol, fit: W - 2 * m - 6 }),
-          T(f.role || '', { field: 'role', x: W / 2, y: H * 0.36 + 3.6, ox: 'center', oy: 'center', size: 1.9, font: 't', it: true, color: met, fit: W - 2 * m - 6 }),
-          ...contacts(c, { x: W / 2, yb: H - m - 1, align: 'center', keys: ['phone', 'email', 'web'], size: 1.85, lh: 2.8, color: ol, fit: W - 2 * m - 10 }),
-        ] };
+        const { W, H, f, pal, m } = c; const ol = dark(pal.bg) || luminance(pal.bg) < 0.3 ? pal.bg : '#4B5340', cr = light(pal.soft) ? pal.soft : '#EFE9DD', met = pal.foil ? MET(pal) : pal.accent, g = G(pal);
+        const o = [paper(c, 0.5)];
+        o.push(R(3.2, 3.2, W - 6.4, H - 6.4, null, { stroke: met, sw: 0.14 }));
+        o.push(...sprig(-1, H + 1, 16, -58, { color: mix(met, cr, 0.25), leaves: 8, size: 3 }), ...sprig(W + 1, -1, 16, 122, { color: mix(met, cr, 0.25), leaves: 8, size: 3 }));
+        const cy = c.sq ? 12.5 : 11, r = c.sq ? 5 : 4.6;
+        o.push(...wreath(W / 2, cy + 0.3, r, met, { leaves: 8, size: 1.5, gap: 60 }));
+        o.push(logoOr(c, W / 2, cy, r * 1.2, r * 1.2, { tint: g }, MONO(c, { x: W / 2, y: cy + 0.2, ox: 'center', oy: 'center', size: r * 0.72, color: g, ls: 0.04 })));
+        const ny = c.sq ? H * 0.48 : H * 0.48;
+        o.push(T(f.name.toLocaleUpperCase(), { field: 'name', x: W / 2, y: ny, ox: 'center', oy: 'center', size: c.sq ? 2.5 : 2.9, font: 'd', ls: 0.18, color: ol, fit: W - 2 * m - 8 }));
+        o.push(T(f.role || '', { field: 'role', x: W / 2, y: ny + 3.4, ox: 'center', oy: 'center', size: 1.9, font: 't', it: true, color: met, fit: W - 2 * m - 8 }));
+        o.push(...centerLines(c, W / 2, H - m - 0.6, { color: ol, fit: W - 2 * m - 10, size: 1.8, lh: 2.7 }));
+        return { bg: { color: cr }, objs: o };
       },
     },
 
@@ -1196,7 +1275,7 @@ export function neoTemplates(h) {
     pruhy: {
       name: tr('Pruhy', 'Pruhy'), fonts: 'abril', pal: 'cokolada', tags: ['kozmetika', 'beauty', 'salon', 'kaviaren', 'cukraren', 'butik', 'moda', 'retro', 'hrave', 'odvazne', 'teple', 'zenske'],
       front(c) {
-        const { W, H, f, pal, m } = c; const bg = pal.bg, pink = '#F2A7B8', cr = '#FFF4EC', sw = 3.2, o = [];
+        const { W, H, f, pal, m } = c; const bg = luminance(pal.bg) < 0.3 ? pal.bg : (dark(pal.ink) ? pal.ink : '#3B2A24'), pink = '#F2A7B8', cr = '#FFF4EC', sw = 3.2, o = [];
         for (let x = -2, i = 0; x < W + 2; x += sw, i++) if (i % 2) o.push(R(x, -2, sw, H + 4, mix(bg, '#000000', 0.25)));
         const r = seeded(brand(c) + 'spr'), cols = [pink, '#FFFFFF', '#F2C14E', '#7FC8C2'];
         const lw = c.sq ? W - 10 : W * 0.66, lh = c.sq ? 22 : 20, lx = (W - lw) / 2, ly = (H - lh) / 2;
@@ -1209,14 +1288,20 @@ export function neoTemplates(h) {
         return { bg: { color: bg }, objs: o };
       },
       back(c) {
-        const { W, H, f, pal, m } = c; const pink = '#F2A7B8', qs = 12, ink = light(pal.ink) ? pal.ink : '#F2E8DE';
+        const { W, H, f, pal, m } = c; const pink = '#F2A7B8', qs = 12, cr = '#FFF4EC', bg = luminance(pal.bg) < 0.3 ? pal.bg : (dark(pal.ink) ? pal.ink : '#3B2A24'), ink = light(pal.ink) ? pal.ink : '#F2E8DE';
         const o = [];
-        for (let x = -2, i = 0; x < W + 2; x += 3.2, i++) if (i % 2) o.push(R(x, -2, 3.2, 7.2, pink, { opacity: 0.9 }));
-        o.push(R(-2, 5, W + 4, 0.4, pink));
-        o.push(T(brand(c).toLocaleLowerCase(), { field: 'company', x: m, y: m + 9.6, oy: 'bottom', size: 4.6, font: 'd', color: pink, fit: W - 2 * m }));
-        if (!c.sq) o.push(R(W - m - qs - 0.6, H - m - qs - 0.6, qs + 1.2, qs + 1.2, '#FFFFFF'), { type: 'qr', x: W - m - qs, y: H - m - qs, s: qs, color: pal.bg });
+        for (let x = -2, i = 0; x < W + 2; x += 3.2, i++) o.push(R(x, -2, 3.2, 7.2, i % 2 ? pink : cr));
+        // zúbkovaný okraj markízy
+        let d = ''; for (let x = -1.6; x < W + 2; x += 3.2) d += `M ${f2(x)} ${f2(5.2)} C ${f2(x)} ${f2(7.2)} ${f2(x + 3.2)} ${f2(7.2)} ${f2(x + 3.2)} ${f2(5.2)} Z `;
+        o.push(P(d, { fill: pink }), R(-2, 4.6, W + 4, 0.7, pink));
+        const r = seeded(brand(c) + 'pb'), cols = [pink, '#FFFFFF', '#F2C14E', '#7FC8C2'];
+        const avoid = (x, y) => (y < 9) || (x < W * 0.62 && y > H * 0.42) || (!c.sq && x > W - m - qs - 3 && y > H - m - qs - 3) || (x < W * 0.7 && y > 9 && y < 20);
+        for (let i = 0; i < 120; i++) { const x = r() * W, y = r() * H; if (avoid(x, y)) continue; o.push(R(x, y, 1.6, 0.5, cols[i % 4], { rx: 0.25, rot: r() * 180 })); }
+        o.push(T(brand(c).toLocaleLowerCase(), { field: 'company', x: m, y: m + 10, oy: 'bottom', size: 4.8, font: 'd', color: pink, fit: c.sq ? W - 2 * m : W * 0.62 }));
+        o.push(T((f.tagline || '').toLocaleUpperCase(), { field: 'tagline', x: m, y: m + 11.4, size: 1.6, font: 't', w: 600, ls: 0.14, color: mix(ink, bg, 0.3), fit: c.sq ? W - 2 * m : W * 0.6 }));
+        if (!c.sq) o.push(R(W - m - qs - 0.9, H - m - qs - 0.9, qs + 1.8, qs + 1.8, cr, { rx: 0.6 }), { type: 'qr', x: W - m - qs, y: H - m - qs, s: qs, color: bg });
         o.push(...contacts(c, { x: m, yb: H - m, keys: ['phone', 'email', 'address'], size: 1.95, lh: 2.95, color: ink, fit: c.sq ? W - 2 * m : W - 2 * m - qs - 4 }));
-        return { bg: { color: pal.bg }, objs: o };
+        return { bg: { color: bg }, objs: o };
       },
     },
   });

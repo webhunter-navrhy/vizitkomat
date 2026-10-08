@@ -140,14 +140,17 @@
 <!-- ===== ŠABLÓNY ===== -->
 <section class="tpls" data-nav="coral">
   <div class="wrap tpls__head">
-    <h2 class="h-l rv">{{ L('98 šablón.', '98 šablon.') }} <span class="tpls__y">{{ L('Tisíce kombinácií.', 'Tisíce kombinací.') }}</span></h2>
+    <h2 class="h-l rv">{{ L(tpl_count ~ ' šablón.', tpl_count ~ ' šablon.') }} <span class="tpls__y">{{ L('Tisíce kombinácií.', 'Tisíce kombinací.') }}</span></h2>
     <p class="lead rv">{{ L('Navrhnuté podľa najobľúbenejších vizitiek na Pintereste. Tu s ukážkovými firmami, v editore hneď s vaším menom.', 'Navržené podle nejoblíbenějších vizitek na Pinterestu. Tady s ukázkovými firmami, v editoru hned s vaším jménem.') }}</p>
   </div>
   <div class="tpls__rows" data-tpl-rows>
     <div class="tpls__row"><div class="tpls__track" data-row="0"></div></div>
     <div class="tpls__row tpls__row--rev"><div class="tpls__track" data-row="1"></div></div>
   </div>
-  <div class="wrap"><a class="btn btn--w btn--lg rv" href="{{ link('tvorba') }}?rezim=sablony">{{ L('Pozrieť všetky šablóny', 'Prohlédnout všechny šablony') }} <span class="ar">→</span></a></div>
+  <div class="wrap tpls__foot">
+    <a class="btn btn--w btn--lg rv" href="{{ link('tvorba') }}?rezim=sablony">{{ L('Pozrieť všetky šablóny', 'Prohlédnout všechny šablony') }} <span class="ar">→</span></a>
+    <nav class="tpls__ind rv" aria-label="{{ L('Vizitky podľa odboru', 'Vizitky podle oboru') }}"><span>{{ L('Podľa odboru:', 'Podle oboru:') }}</span>{% for o in obory %}<a href="{{ link('obor-' ~ o.key) }}">{{ o[lang].name }}</a>{% endfor %}</nav>
+  </div>
 </section>
 
 <!-- ===== DIGITÁL ===== -->
@@ -181,6 +184,32 @@
   </div>
 </section>
 
+<!-- ===== PAPIER ===== -->
+<section class="paper2" data-nav="cream">
+  <div class="wrap">
+    <div class="paper2__head">
+      <h2 class="h-l rv">{{ L('Papier,', 'Papír,') }} <span class="hl-b">{{ L('ktorý cítiť.', 'který je cítit.') }}</span></h2>
+      <p class="lead rv">{{ L('Vizitku si ľudia najprv ohmatajú, až potom prečítajú. Preto tlačíme na hrubý papier a obojstranne už v základnej cene.', 'Vizitku si lidé nejdřív ohmatají, až potom přečtou. Proto tiskneme na silný papír a oboustranně už v základní ceně.') }}</p>
+    </div>
+    <div class="paper2__grid">
+      {% for key, img, name, sub, desc, price in [
+        ('matny', 'tpl-etiketa-f', L('Matný 350 g', 'Matný 350 g'), L('v základnej cene', 'v základní ceně'), L('Pevný, jemne zrnitý papier bez lesku. Dobre sa naň píše perom a nezanecháva odtlačky.', 'Pevný, jemně zrnitý papír bez lesku. Dobře se na něj píše perem a nezanechává otisky.'), prices.papers.matny['250']),
+        ('soft', 'tpl-noirgold-f', L('Soft-touch', 'Soft-touch'), L('najobľúbenejší', 'nejoblíbenější'), L('Zamatová laminácia, ktorá je na dotyk ako broskyňa. Farby pôsobia hlbšie a vizitka vydrží viac.', 'Sametová laminace, která je na dotek jako broskev. Barvy působí hlouběji a vizitka vydrží víc.'), prices.papers.matny['250'] + prices.finishes.soft['250']),
+        ('triplex', 'tpl-kytice-f', 'Triplex 720 g', L('luxusný', 'luxusní'), L('Tri vrstvy papiera s farebným jadrom. Dvakrát hrubší ako bežná vizitka, na hrane vidno farebný prúžok.', 'Tři vrstvy papíru s barevným jádrem. Dvakrát silnější než běžná vizitka, na hraně je vidět barevný proužek.'), prices.papers.triplex['250'])] %}
+      <article class="sw sw--{{ key }} rv">
+        <div class="sw__stage" aria-hidden="true"><div class="sw__card"><img alt="" src="{{ pre[img] }}" loading="lazy" width="500" height="278"></div></div>
+        <div class="sw__txt">
+          <p class="sw__sub">{{ sub }}</p>
+          <h3>{{ name }}</h3>
+          <p>{{ desc }}</p>
+          <p class="sw__p">{{ '{:,}'.format(price).replace(',', ' ') }} {{ prices.symbol }} <small>/ 250 {{ L('ks', 'ks') }}</small></p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
 <!-- ===== CENA ===== -->
 <section class="price" data-nav="cream">
   <div class="wrap">
@@ -203,6 +232,27 @@
       {% endfor %}
     </div>
     <p class="price__more rv"><a class="link" href="{{ link('cennik') }}">{{ L('Celý cenník: soft-touch, Triplex, zaoblené rohy', 'Celý ceník: soft-touch, Triplex, zaoblené rohy') }} →</a></p>
+  </div>
+</section>
+
+<!-- ===== BEZ RIZIKA ===== -->
+<section class="safe" data-nav="ink">
+  <div class="wrap">
+    <div class="safe__head">
+      <h2 class="h-l rv">{{ L('Najprv návrh.', 'Nejdřív návrh.') }} <span class="hl">{{ L('Platba až potom.', 'Platba až potom.') }}</span></h2>
+      <p class="lead rv">{{ L('Objednávka je nezáväzná, kým návrh neskontroluje človek a vy ho neschválite. Žiadna karta, žiadna registrácia.', 'Objednávka je nezávazná, dokud návrh nezkontroluje člověk a vy ho neschválíte. Žádná karta, žádná registrace.') }}</p>
+    </div>
+    <ol class="safe__steps">
+      <li class="rv"><span>1</span><b>{{ L('Objednáte bez platby', 'Objednáte bez platby') }}</b><small>{{ L('Stačí meno, e-mail a adresa doručenia.', 'Stačí jméno, e-mail a adresa doručení.') }}</small></li>
+      <li class="rv"><span>2</span><b>{{ L('Skontroluje to človek', 'Zkontroluje to člověk') }}</b><small>{{ L('Do jedného pracovného dňa. Ak treba niečo upraviť, napíšeme vám.', 'Do jednoho pracovního dne. Pokud je potřeba něco upravit, napíšeme vám.') }}</small></li>
+      <li class="rv"><span>3</span><b>{{ L('Zaplatíte QR kódom', 'Zaplatíte QR kódem') }}</b><small>{{ L('Bankovým prevodom, naskenujete v aplikácii banky.', 'Bankovním převodem, naskenujete v aplikaci banky.') }}</small></li>
+      <li class="rv"><span>4</span><b>{{ L('Vytlačíme a pošleme', 'Vytiskneme a pošleme') }}</b><small>{{ L('Kuriér DPD, číslo zásielky dostanete e-mailom.', 'Kurýr DPD, číslo zásilky dostanete e-mailem.') }}</small></li>
+    </ol>
+    <div class="safe__promise">
+      <div class="rv"><b>{{ L('Chyba tlače? Vytlačíme znova.', 'Chyba tisku? Vytiskneme znovu.') }}</b><p>{{ L('Zadarmo. Stačí poslať fotku e-mailom.', 'Zdarma. Stačí poslat fotku e-mailem.') }}</p></div>
+      <div class="rv"><b>{{ L('Stav objednávky online', 'Stav objednávky online') }}</b><p>{{ L('Každý krok vidíte na vlastnej stránke objednávky.', 'Každý krok vidíte na vlastní stránce objednávky.') }}</p></div>
+      <div class="rv"><b>{{ L('Skutočná firma', 'Skutečná firma') }}</b><p>webhunter s.r.o., IČO 29498511, {{ L('Praha', 'Praha') }}. {{ L('Faktúru dostanete e-mailom.', 'Fakturu dostanete e-mailem.') }}</p></div>
+    </div>
   </div>
 </section>
 

@@ -7,6 +7,7 @@ import { richTemplates } from './tpl-rich.js';
 import { luxTemplates } from './tpl-lux.js';
 import { neoTemplates } from './tpl-neo.js';
 import { xTemplates, xBackExtras } from './tpl-x.js';
+import { yTemplates } from './tpl-y.js';
 
 // ---------- pomocníci ----------
 const T = (text, o = {}) => ({ type: 'text', text, ...o });
@@ -21,7 +22,7 @@ const ARC = (text, x, y, r, o = {}) => ({ type: 'arctext', text, x, y, r, ...o }
 
 const ICON_FOR = { phone: 'phone', email: 'mail', web: 'globe', address: 'map-pin' };
 const LABEL = { phone: 'T', email: 'E', web: 'W', address: 'A' };
-const TITLES = /^(ing|mgr|mudr|judr|phdr|mvdr|bc|rndr|paeddr|doc|prof|dr|mba|phd|csc)\.?,?$/i;
+const TITLES = /^(ing|mgr|mudr|judr|phdr|pharmdr|mvdr|bc|rndr|paeddr|doc|prof|dr|mba|phd|csc)\.?,?$/i;
 /** Meno bez titulov (pre monogram) */
 const bare = (n = '') => n.split(/\s+/).filter((w) => w && !TITLES.test(w)).join(' ');
 /** Monogram: iniciály osoby, inak firmy */
@@ -205,6 +206,7 @@ for (const [id, ex] of Object.entries(xBackExtras({ T, R, C, Ln, P, QR, IMG, I, 
   t.back = (c) => { const r = base(c); r.objs = [...(ex.under ? ex.under(c) : []), ...r.objs, ...(ex.over ? ex.over(c) : [])]; return r; };
 }
 Object.assign(TEMPLATES, xTemplates({ T, R, C, Ln, P, QR, IMG, I, MONO, contacts, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, topoPaths, wavesPath, blobPath, seeded, smooth, SCRIPT }));
+Object.assign(TEMPLATES, yTemplates({ T, R, C, Ln, P, QR, IMG, I, MONO, contacts, logoOr, mono, bare, city, splitName, mix, readable, luminance, tr, topoPaths, wavesPath, blobPath, seeded, smooth, SCRIPT }));
 
 // ---------- zadné strany na výber ----------
 export const BACKS = {

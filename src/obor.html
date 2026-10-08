@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}{{ O.title }}{% endblock %}
+{% block description %}{{ O.desc }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ A('assets/css/obor.css') }}">
+<script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': O.faq | map('faqld') | list} | tojson }}</script>
+<script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [
+  {'@type': 'ListItem', 'position': 1, 'name': 'Vizitkomat', 'item': site + ('' if lang == 'sk' else 'cz/')},
+  {'@type': 'ListItem', 'position': 2, 'name': L('Vizitky podľa odboru', 'Vizitky podle oboru'), 'item': site + ('' if lang == 'sk' else 'cz/') + L('vizitky-podla-odboru/', 'vizitky-podle-oboru/')},
+  {'@type': 'ListItem', 'position': 3, 'name': O.name, 'item': canonical}]} | tojson }}</script>
+{% endblock %}
+{% block main %}
+{% set T = obor.tpls %}
+<section class="ob-hero" data-nav="blue">
+  <div class="wrap ob-hero__grid">
+    <div class="ob-hero__copy">
+      <nav class="ob-crumbs" aria-label="{{ L('Omrvinky', 'Drobečková navigace') }}"><a href="{{ link('obory') }}">{{ L('Vizitky podľa odboru', 'Vizitky podle oboru') }}</a><span aria-hidden="true">/</span><span>{{ O.name }}</span></nav>
+      <h1 class="ob-h1">{{ O.h1a }} <span class="hl">{{ O.h1b }}</span></h1>
+      <p class="lead ob-lead">{{ O.intro }}</p>
+      <form class="aibox ob-ai" action="{{ link('tvorba') }}" method="get">
+        <input type="hidden" name="rezim" value="ai">
+        <input name="prompt" maxlength="300" value="{{ O.prompt }}" aria-label="{{ L('Popis pre AI grafika', 'Popis pro AI grafika') }}">
+        <button class="btn btn--c" type="submit">{{ L('Navrhni mi vizitky', 'Navrhni mi vizitky') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
+      </form>
+      <p class="ob-note">{{ L('Upravte vetu podľa seba. AI grafik pripraví tri návrhy za pár sekúnd, platíte až po kontrole.', 'Upravte větu podle sebe. AI grafik připraví tři návrhy za pár vteřin, platíte až po kontrole.') }}</p>
+      <ul class="ob-trust">
+        <li><b>{{ L('od', 'od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }}</b> {{ L('za 100 ks', 'za 100 ks') }}</li>
+        <li>{{ L('Doprava zdarma', 'Doprava zdarma') }}</li>
+        <li>{{ L('Digitálna vizitka zadarmo', 'Digitální vizitka zdarma') }}</li>
+      </ul>
+    </div>
+    <div class="ob-fan" aria-hidden="true">
+      {% for t in T[:3] %}<img alt="" src="{{ pre['tpl-' ~ t ~ '-f'] }}" width="500" height="278"{% if not loop.first %} loading="lazy"{% endif %}>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="ob-tpl" data-nav="cream">
+  <div class="wrap">
+    <div class="ob-head">
+      <h2 class="h-l rv">{{ L('Šablóny pre', 'Šablony pro') }} <span class="hl-c">{{ O.h1b }}</span></h2>
+      <p class="rv">{{ L('Ukážky sú s vymyslenými firmami. Kliknite na šablónu a v editore ju hneď prepíšete na svoje údaje, farby a písmo zmeníte jedným ťuknutím.', 'Ukázky jsou s vymyšlenými firmami. Klikněte na šablonu a v editoru ji hned přepíšete na své údaje, barvy a písmo změníte jedním ťuknutím.') }}</p>
+    </div>
+    <div class="ob-grid">
+      {% for t in T %}
+      <a class="ob-card rv" href="{{ link('tvorba') }}?rezim=sablony&amp;sablona={{ t }}">
+        <span class="ob-card__stack"><img class="ob-card__b" alt="" src="{{ pre['tpl-' ~ t ~ '-b'] }}" loading="lazy" decoding="async" width="500" height="278"><img class="ob-card__f" alt="{{ L('Šablóna', 'Šablona') }} {{ tname(t) }}" src="{{ pre['tpl-' ~ t ~ '-f'] }}" loading="lazy" decoding="async" width="500" height="278"></span>
+        <span class="ob-card__cap"><b>{{ tname(t) }}</b><i>{{ L('Použiť', 'Použít') }} →</i></span>
+      </a>
+      {% endfor %}
+    </div>
+    <p class="ob-all rv"><a class="btn btn--b" href="{{ link('tvorba') }}?rezim=sablony&amp;odbor={{ obor.ind }}">{{ L('Všetky šablóny pre tento odbor', 'Všechny šablony pro tento obor') }} <span class="ar">→</span></a></p>
+  </div>
+</section>
+
+<section class="ob-tips" data-nav="ink">
+  <div class="wrap">
+    <h2 class="h-l rv">{{ L('Čo dať', 'Co dát') }} <span class="hl">{{ L('na vizitku', 'na vizitku') }}</span></h2>
+    <ol class="ob-tips__list">
+      {% for tip in O.tips %}<li class="rv"><span class="ob-tips__n">0{{ loop.index }}</span><p>{{ tip }}</p></li>{% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="ob-dig" data-nav="cream">
+  <div class="wrap ob-dig__grid">
+    <div class="rv">
+      <h2 class="h-m">{{ L('K tlačeným vizitkám', 'K tištěným vizitkám') }} <span class="hl-b">{{ L('digitálna zadarmo', 'digitální zdarma') }}</span></h2>
+      <p>{{ L('Vlastná adresa, QR kód na zadnej strane a tlačidlo, ktoré vás uloží do kontaktov. Hodiny, služby s cenami aj odkazy zmeníte kedykoľvek bez novej tlače.', 'Vlastní adresa, QR kód na zadní straně a tlačítko, které vás uloží do kontaktů. Otevírací dobu, služby s cenami i odkazy změníte kdykoli bez nového tisku.') }}</p>
+      <a class="link" href="{{ link('digitalna') }}">{{ L('Ako vyzerá digitálna vizitka', 'Jak vypadá digitální vizitka') }} →</a>
+    </div>
+    <div class="ob-price rv">
+      {% for q in [100, 250, 500] %}
+      <a href="{{ link('tvorba') }}?rezim=ai&amp;ks={{ q }}&amp;prompt={{ O.prompt | urlencode }}"><span>{{ q }} {{ L('ks', 'ks') }}</span><b>{{ '{:,}'.format(prices.papers.matny[q|string]).replace(',', ' ') }} {{ prices.symbol }}</b><small>{{ ('%.2f' % (prices.papers.matny[q|string] / q)) | replace('.', ',') }} {{ prices.symbol }} / {{ L('kus', 'kus') }}</small></a>
+      {% endfor %}
+      <p>{{ L('Matný papier 350 g, obojstranná tlač, kontrola dát človekom a doprava v cene.', 'Matný papír 350 g, oboustranný tisk, kontrola dat člověkem a doprava v ceně.') }} <a href="{{ link('cennik') }}">{{ L('Celý cenník', 'Celý ceník') }}</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="ob-faq" data-nav="cream">
+  <div class="wrap ob-faq__grid">
+    <h2 class="h-l rv">{{ L('Otázky', 'Otázky') }}</h2>
+    <div class="ob-faq__list">
+      {% for q, ans in O.faq %}<details class="rv"><summary>{{ q }}</summary><p>{{ ans }}</p></details>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="ob-more" data-nav="cream">
+  <div class="wrap">
+    <h2 class="h-m">{{ L('Ďalšie odbory', 'Další obory') }}</h2>
+    <div class="ob-chips">
+      {% for o in obory if o.key != obor.key %}<a href="{{ link('obor-' ~ o.key) }}">{{ o[lang].name }}</a>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="ob-final" data-nav="blue">
+  <div class="wrap ob-final__in">
+    <h2 class="h-l">{{ L('Vaša vizitka je', 'Vaše vizitka je') }} <span class="hl">{{ L('2 minúty', '2 minuty') }}</span> {{ L('odtiaľto.', 'odsud.') }}</h2>
+    <a class="btn btn--y btn--lg" href="{{ link('tvorba') }}?rezim=ai&amp;prompt={{ O.prompt | urlencode }}">{{ L('Spustiť AI grafika', 'Spustit AI grafika') }} <span class="ar">→</span></a>
+  </div>
+</section>
+{% endblock %}

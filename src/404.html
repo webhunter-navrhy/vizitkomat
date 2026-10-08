@@ -1,13 +1,23 @@
 {% extends 'base.html' %}
 {% block title %}Stránka sa nenašla | Vizitkomat{% endblock %}
 {% block description %}Táto stránka neexistuje.{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">{% endblock %}
 {% block main %}
-<section data-nav="blue" style="min-height:100svh;background:var(--cobalt);color:#fff;display:grid;align-content:center;padding:var(--nav-h) 0 4rem">
-  <div class="wrap" style="display:grid;gap:1.6rem;justify-items:start">
-    <span class="sticker">404</span>
-    <h1 class="h-xl">Táto vizitka <span class="hl">sa stratila.</span></h1>
-    <p class="lead">Stránka neexistuje alebo sa presunula. / Stránka neexistuje nebo se přesunula.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn btn--y" href="/">Späť na úvod</a><a class="btn btn--w" href="/cz/">Česká verze</a></div>
+<section class="nf" data-nav="blue">
+  <div class="wrap nf__grid">
+    <div class="nf__copy">
+      <span class="sticker">404</span>
+      <h1 class="h-xl">Táto vizitka <span class="hl">sa stratila.</span></h1>
+      <p class="lead">Stránka neexistuje alebo sa presunula. Skúste niektorú z týchto:<br><span class="nf__cz">Stránka neexistuje nebo se přesunula.</span></p>
+      <nav class="nf__links" aria-label="Rýchle odkazy">
+        <a href="{{ link('tvorba') }}?rezim=ai"><b>AI grafik</b><small>Navrhne vizitku z jednej vety</small></a>
+        <a href="{{ link('tvorba') }}?rezim=sablony"><b>Šablóny</b><small>Vyberte si z galérie</small></a>
+        <a href="{{ link('obory') }}"><b>Podľa odboru</b><small>Kaderníci, makléri, remeselníci…</small></a>
+        <a href="{{ link('cennik') }}"><b>Cenník</b><small>Ceny s dopravou zdarma</small></a>
+      </nav>
+      <div class="nf__btns"><a class="btn btn--y" href="{{ link('index') }}">Späť na úvod <span class="ar">→</span></a><a class="btn btn--w" href="{{ public }}cz/">Česká verze</a></div>
+    </div>
+    <div class="nf__fan" aria-hidden="true">{% for t in ['hvezdy', 'glow', 'garaz'] %}<img alt="" src="{{ pre['tpl-' ~ t ~ '-f'] }}" width="500" height="278">{% endfor %}</div>
   </div>
 </section>
 {% endblock %}

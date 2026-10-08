@@ -1,0 +1,873 @@
+[
+  {
+    "key": "kadernici",
+    "ind": "beauty",
+    "tpls": [
+      "arkada",
+      "saloon",
+      "britva",
+      "odznak",
+      "groom",
+      "maison",
+      "mramor",
+      "stoh"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-kadernikov",
+      "name": "Kaderníci a barberi",
+      "h1a": "Vizitky pre",
+      "h1b": "kaderníkov a barberov",
+      "title": "Vizitky pre kaderníkov a barberov – návrh od AI grafika",
+      "desc": "Vizitky pre kaderníctva, barbershopy a salóny. Elegantné aj vintage šablóny, objednávkový QR kód a digitálna vizitka zadarmo.",
+      "intro": "Vizitka v salóne často slúži ako kartička na ďalší termín. Preto má byť krásna, pevná a mať na zadnej strane miesto na dátum alebo QR kód na online rezerváciu.",
+      "tips": [
+        "Na zadnú stranu dajte QR kód na rezerváciu, klientky sa objednajú samy aj o polnoci.",
+        "Instagram je pre salón dôležitejší ako web, uveďte ho na vizitke.",
+        "Soft-touch povrch pôsobí luxusne a dobre sa drží v ruke, hodí sa k prémiovým službám."
+      ],
+      "prompt": "Kaderníctvo v Trnave, elegantné, svetlé farby a jemné zlato",
+      "faq": [
+        [
+          "Dá sa na vizitku dať objednávkový QR kód?",
+          "Áno. Do digitálnej vizitky vložíte odkaz na váš rezervačný systém a QR kód na zadnej strane ju otvorí. Klient si potom vyberie termín sám."
+        ],
+        [
+          "Ktorý papier je najlepší pre salón?",
+          "Najčastejšie volený je soft-touch so zamatovým povrchom. Ak chcete niečo výnimočné, Triplex 720 g má farebnú hranu a je výrazne hrubší."
+        ],
+        [
+          "Môžem dať na vizitku cenník služieb?",
+          "Na papier odporúčame len hlavné služby. Celý cenník dáte do digitálnej vizitky, kde ho kedykoľvek zmeníte bez novej tlače."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-kadernice",
+      "name": "Kadeřnice a barbeři",
+      "h1a": "Vizitky pro",
+      "h1b": "kadeřnice a barbery",
+      "title": "Vizitky pro kadeřnice a barbery – návrh od AI grafika",
+      "desc": "Vizitky pro kadeřnictví, barbershopy a salony. Elegantní i vintage šablony, objednávkový QR kód a digitální vizitka zdarma.",
+      "intro": "Vizitka v salonu často slouží jako kartička na další termín. Proto má být krásná, pevná a mít na zadní straně místo na datum nebo QR kód na online rezervaci.",
+      "tips": [
+        "Na zadní stranu dejte QR kód na rezervaci, klientky se objednají samy i o půlnoci.",
+        "Instagram je pro salon důležitější než web, uveďte ho na vizitce.",
+        "Soft-touch povrch působí luxusně a dobře se drží v ruce, hodí se k prémiovým službám."
+      ],
+      "prompt": "Kadeřnictví v Brně, elegantní, světlé barvy a jemné zlato",
+      "faq": [
+        [
+          "Dá se na vizitku dát objednávkový QR kód?",
+          "Ano. Do digitální vizitky vložíte odkaz na váš rezervační systém a QR kód na zadní straně ji otevře. Klient si pak vybere termín sám."
+        ],
+        [
+          "Který papír je nejlepší pro salon?",
+          "Nejčastěji volený je soft-touch se sametovým povrchem. Pokud chcete něco výjimečného, Triplex 720 g má barevnou hranu a je výrazně silnější."
+        ],
+        [
+          "Mohu dát na vizitku ceník služeb?",
+          "Na papír doporučujeme jen hlavní služby. Celý ceník dáte do digitální vizitky, kde ho kdykoli změníte bez nového tisku."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "kozmetika",
+    "ind": "beauty",
+    "tpls": [
+      "serum",
+      "opal",
+      "glow",
+      "mramorzlato",
+      "ruzovezlato",
+      "lina",
+      "olivia",
+      "perla",
+      "podpis"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-kozmetiku-a-nechty",
+      "name": "Kozmetika a nechty",
+      "h1a": "Vizitky pre",
+      "h1b": "kozmetičky a nechtové štúdiá",
+      "title": "Vizitky pre kozmetické a nechtové štúdiá – AI grafik",
+      "desc": "Jemné, ružovo-zlaté a mramorové vizitky pre kozmetiku, nechtový dizajn a lash štúdiá. S digitálnou vizitkou a QR rezerváciou.",
+      "intro": "V kozmetike rozhoduje prvý dojem a detail. Vizitka s jemnou ružovozlatou fóliou alebo mramorom povie o kvalite vašej práce skôr, ako klientka uvidí výsledok.",
+      "tips": [
+        "Ružové zlato a mramor patria k najobľúbenejším štýlom v beauty odbore.",
+        "Pridajte QR kód na Instagram alebo galériu prác, klientky chcú vidieť výsledky.",
+        "Malý štvorcový formát 55 × 55 mm pôsobí moderne a ľahko sa vojde do peňaženky."
+      ],
+      "prompt": "Nechtové štúdio Nika v Bratislave, jemné ružové zlato, minimalistické",
+      "faq": [
+        [
+          "Je ružové zlato na vizitke skutočná fólia?",
+          "Na vizitke ho tlačíme ako metalický vzhľad s jemným prechodom. Pôsobí ako fólia, len bez príplatku za razbu."
+        ],
+        [
+          "Môžem pridať galériu svojich prác?",
+          "Áno, do digitálnej vizitky nahráte fotky prác. QR kód na tlačenej vizitke ju otvorí jedným ťuknutím."
+        ],
+        [
+          "Aký formát odporúčate?",
+          "Klasický 90 × 50 mm je najpraktickejší. Štvorec 55 × 55 mm je výrazný a v beauty odbore veľmi obľúbený."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-kosmetiku-a-nehty",
+      "name": "Kosmetika a nehty",
+      "h1a": "Vizitky pro",
+      "h1b": "kosmetičky a nehtová studia",
+      "title": "Vizitky pro kosmetická a nehtová studia – AI grafik",
+      "desc": "Jemné, růžovo-zlaté a mramorové vizitky pro kosmetiku, nehtový design a lash studia. S digitální vizitkou a QR rezervací.",
+      "intro": "V kosmetice rozhoduje první dojem a detail. Vizitka s jemnou růžovozlatou fólií nebo mramorem řekne o kvalitě vaší práce dřív, než klientka uvidí výsledek.",
+      "tips": [
+        "Růžové zlato a mramor patří k nejoblíbenějším stylům v beauty oboru.",
+        "Přidejte QR kód na Instagram nebo galerii prací, klientky chtějí vidět výsledky.",
+        "Malý čtvercový formát 55 × 55 mm působí moderně a snadno se vejde do peněženky."
+      ],
+      "prompt": "Nehtové studio Nika v Praze, jemné růžové zlato, minimalistické",
+      "faq": [
+        [
+          "Je růžové zlato na vizitce skutečná fólie?",
+          "Na vizitce ho tiskneme jako metalický vzhled s jemným přechodem. Působí jako fólie, jen bez příplatku za ražbu."
+        ],
+        [
+          "Mohu přidat galerii svých prací?",
+          "Ano, do digitální vizitky nahrajete fotky prací. QR kód na tištěné vizitce ji otevře jedním ťuknutím."
+        ],
+        [
+          "Jaký formát doporučujete?",
+          "Klasický 90 × 50 mm je nejpraktičtější. Čtverec 55 × 55 mm je výrazný a v beauty oboru velmi oblíbený."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "makleri",
+    "ind": "reality",
+    "tpls": [
+      "vila",
+      "gatsby",
+      "noirgold",
+      "panorama",
+      "builders",
+      "samet",
+      "topo"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-realitnych-maklerov",
+      "name": "Realitní makléri",
+      "h1a": "Vizitky pre",
+      "h1b": "realitných maklérov",
+      "title": "Vizitky pre realitných maklérov – luxusné šablóny a QR kontakt",
+      "desc": "Luxusné vizitky pre realitných maklérov a kancelárie. Tmavé so zlatom, panorámy miest, digitálna vizitka s ponukami a kontaktom do mobilu.",
+      "intro": "Maklér odovzdá vizitku pri každej obhliadke. Musí pôsobiť dôveryhodne a draho, a zároveň klientovi uľahčiť, aby si vás uložil do telefónu skôr, ako zavolá konkurencii.",
+      "tips": [
+        "Tmavá vizitka so zlatom patrí v realitách k najsilnejším voľbám, pôsobí prémiovo.",
+        "QR kód s „Uložiť do kontaktov“ je pre makléra zlato, klient vás má v mobile hneď pri obhliadke.",
+        "Pre celú kanceláriu objednáte rovnaký dizajn pre viac kolegov v jednom košíku."
+      ],
+      "prompt": "Realitný maklér v Žiline, luxusne, tmavé so zlatom",
+      "faq": [
+        [
+          "Dá sa objednať rovnaká vizitka pre celú kanceláriu?",
+          "Áno. V košíku pridáte kolegov tlačidlom „+ Kolega“, každý dostane rovnaký dizajn so svojím menom a kontaktom."
+        ],
+        [
+          "Môžem v digitálnej vizitke ukázať aktuálne ponuky?",
+          "Áno, pridáte odkazy na ponuky, web kancelárie aj tlačidlo na dohodnutie obhliadky."
+        ],
+        [
+          "Ktorý papier vyberajú makléri?",
+          "Najčastejšie soft-touch, ktorý je príjemný na dotyk a nepúšťa odtlačky. Pre top segment Triplex 720 g s farebnou hranou."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-realitni-maklere",
+      "name": "Realitní makléři",
+      "h1a": "Vizitky pro",
+      "h1b": "realitní makléře",
+      "title": "Vizitky pro realitní makléře – luxusní šablony a QR kontakt",
+      "desc": "Luxusní vizitky pro realitní makléře a kanceláře. Tmavé se zlatem, panoramata měst, digitální vizitka s nabídkami a kontaktem do mobilu.",
+      "intro": "Makléř předá vizitku při každé prohlídce. Musí působit důvěryhodně a draze, a zároveň klientovi usnadnit, aby si vás uložil do telefonu dřív, než zavolá konkurenci.",
+      "tips": [
+        "Tmavá vizitka se zlatem patří v realitách k nejsilnějším volbám, působí prémiově.",
+        "QR kód s „Uložit do kontaktů“ je pro makléře zlato, klient vás má v mobilu hned při prohlídce.",
+        "Pro celou kancelář objednáte stejný design pro více kolegů v jednom košíku."
+      ],
+      "prompt": "Realitní makléř v Plzni, luxusně, tmavé se zlatem",
+      "faq": [
+        [
+          "Dá se objednat stejná vizitka pro celou kancelář?",
+          "Ano. V košíku přidáte kolegy tlačítkem „+ Kolega“, každý dostane stejný design se svým jménem a kontaktem."
+        ],
+        [
+          "Mohu v digitální vizitce ukázat aktuální nabídky?",
+          "Ano, přidáte odkazy na nabídky, web kanceláře i tlačítko na domluvení prohlídky."
+        ],
+        [
+          "Který papír vybírají makléři?",
+          "Nejčastěji soft-touch, který je příjemný na dotek a nedrží otisky. Pro top segment Triplex 720 g s barevnou hranou."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "remeselnici",
+    "ind": "remeslo",
+    "tpls": [
+      "tehla",
+      "valcek",
+      "komin",
+      "letokruhy",
+      "iskra",
+      "garaz",
+      "stavitel",
+      "morton",
+      "vrstevnice",
+      "cisto"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-remeselnikov",
+      "name": "Remeselníci a služby",
+      "h1a": "Vizitky pre",
+      "h1b": "remeselníkov a služby",
+      "title": "Vizitky pre remeselníkov, stolárov, elektrikárov a autoservisy",
+      "desc": "Poctivé vizitky pre stolárov, elektrikárov, inštalatérov, autoservisy, stavebné firmy a upratovanie. Výrazné, čitateľné, s telefónom na prvý pohľad.",
+      "intro": "Remeselníka si ľudia odkladajú na chladničku alebo do šuplíka a vytiahnu ho, keď niečo pokazí. Vizitka musí vydržať, byť čitateľná a telefón na nej musí byť to najväčšie.",
+      "tips": [
+        "Telefón dajte výrazne, väčšina zákazníkov remeselníkovi volá, nepíše.",
+        "Pevný matný papier 350 g znesie aj montérky, pre extra odolnosť zvoľte lamináciu.",
+        "Na zadnú stranu napíšte, čo všetko robíte, napríklad „rekonštrukcie, elektroinštalácie, revízie“."
+      ],
+      "prompt": "Elektrikár v Nitre, spoľahlivo a výrazne, tmavomodrá a žltá",
+      "faq": [
+        [
+          "Je vizitka odolná, keď ju nosím v aute?",
+          "Matný papier 350 g je pevný. Ak ju nosíte v montérkach alebo v aute, odporúčame lamináciu, ktorá ju chráni pred vlhkosťou a odreninami."
+        ],
+        [
+          "Môžem na vizitku dať logo svojej firmy?",
+          "Áno, logo nahráte v editore a farby vizitky sa mu prispôsobia. Bez loga vám AI grafik pripraví znak podľa odboru."
+        ],
+        [
+          "Dá sa objednať aj magnetka na chladničku?",
+          "Magnetky zatiaľ nerobíme. Tlačené vizitky s digitálnou verziou v telefóne však zákazník nestratí ani pri sťahovaní."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-remeslniky",
+      "name": "Řemeslníci a služby",
+      "h1a": "Vizitky pro",
+      "h1b": "řemeslníky a služby",
+      "title": "Vizitky pro řemeslníky, truhláře, elektrikáře a autoservisy",
+      "desc": "Poctivé vizitky pro truhláře, elektrikáře, instalatéry, autoservisy, stavební firmy a úklid. Výrazné, čitelné, s telefonem na první pohled.",
+      "intro": "Řemeslníka si lidé odkládají na lednici nebo do šuplíku a vytáhnou ho, když se něco pokazí. Vizitka musí vydržet, být čitelná a telefon na ní musí být to největší.",
+      "tips": [
+        "Telefon dejte výrazně, většina zákazníků řemeslníkovi volá, nepíše.",
+        "Pevný matný papír 350 g snese i montérky, pro extra odolnost zvolte laminaci.",
+        "Na zadní stranu napište, co všechno děláte, například „rekonstrukce, elektroinstalace, revize“."
+      ],
+      "prompt": "Elektrikář v Ostravě, spolehlivě a výrazně, tmavě modrá a žlutá",
+      "faq": [
+        [
+          "Je vizitka odolná, když ji nosím v autě?",
+          "Matný papír 350 g je pevný. Pokud ji nosíte v montérkách nebo v autě, doporučujeme laminaci, která ji chrání před vlhkostí a oděrem."
+        ],
+        [
+          "Mohu na vizitku dát logo své firmy?",
+          "Ano, logo nahrajete v editoru a barvy vizitky se mu přizpůsobí. Bez loga vám AI grafik připraví znak podle oboru."
+        ],
+        [
+          "Dá se objednat i magnetka na lednici?",
+          "Magnetky zatím neděláme. Tištěné vizitky s digitální verzí v telefonu však zákazník neztratí ani při stěhování."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "lekari",
+    "ind": "zdravie",
+    "tpls": [
+      "dotyk",
+      "apoteka",
+      "labka",
+      "medic",
+      "vlnyluxe",
+      "muse",
+      "dusa",
+      "hvezdy",
+      "wabi"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-lekarov-a-terapeutov",
+      "name": "Lekári a terapeuti",
+      "h1a": "Vizitky pre",
+      "h1b": "lekárov a terapeutov",
+      "title": "Vizitky pre lekárov, zubárov, psychológov a terapeutov",
+      "desc": "Čisté a dôveryhodné vizitky pre ambulancie, zubné kliniky, psychológov a terapeutov. Ordinačné hodiny a objednávanie v digitálnej vizitke.",
+      "intro": "Pacient potrebuje na vizitke nájsť dve veci: ako sa objednať a kedy máte otvorené. Pokojný, čistý dizajn zároveň buduje dôveru ešte pred prvou návštevou.",
+      "tips": [
+        "Ordinačné hodiny dajte do digitálnej vizitky, keď sa zmenia, nemusíte nič tlačiť.",
+        "Titul píšte pri mene, napríklad MUDr. alebo Mgr., AI grafik ho zachová.",
+        "Svetlé farby, modrá a zelená pôsobia pokojne a profesionálne."
+      ],
+      "prompt": "Zubná ambulancia v Prešove, čisté a pokojné, tyrkysová",
+      "faq": [
+        [
+          "Môžu byť na vizitke ordinačné hodiny?",
+          "Áno. Na tlačenú vizitku ich dáte stručne a v digitálnej vizitke sú podrobne, aj so štítkom „Teraz otvorené“."
+        ],
+        [
+          "Dá sa objednávať cez vizitku?",
+          "Áno, v digitálnej vizitke je tlačidlo na objednanie, ktoré vedie na váš objednávkový systém alebo telefón."
+        ],
+        [
+          "Ako písať titul na vizitku?",
+          "Pred meno, napríklad MUDr. Anna Kráľová. Monogram aj e-mail si AI grafik odvodí bez titulu."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-lekare-a-terapeuty",
+      "name": "Lékaři a terapeuti",
+      "h1a": "Vizitky pro",
+      "h1b": "lékaře a terapeuty",
+      "title": "Vizitky pro lékaře, zubaře, psychology a terapeuty",
+      "desc": "Čisté a důvěryhodné vizitky pro ordinace, zubní kliniky, psychology a terapeuty. Ordinační hodiny a objednávání v digitální vizitce.",
+      "intro": "Pacient potřebuje na vizitce najít dvě věci: jak se objednat a kdy máte otevřeno. Klidný, čistý design zároveň buduje důvěru ještě před první návštěvou.",
+      "tips": [
+        "Ordinační hodiny dejte do digitální vizitky, když se změní, nemusíte nic tisknout.",
+        "Titul pište u jména, například MUDr. nebo Mgr., AI grafik ho zachová.",
+        "Světlé barvy, modrá a zelená působí klidně a profesionálně."
+      ],
+      "prompt": "Zubní ordinace v Hradci Králové, čisté a klidné, tyrkysová",
+      "faq": [
+        [
+          "Mohou být na vizitce ordinační hodiny?",
+          "Ano. Na tištěnou vizitku je dáte stručně a v digitální vizitce jsou podrobně, i se štítkem „Teď otevřeno“."
+        ],
+        [
+          "Dá se objednávat přes vizitku?",
+          "Ano, v digitální vizitce je tlačítko na objednání, které vede na váš objednávkový systém nebo telefon."
+        ],
+        [
+          "Jak psát titul na vizitku?",
+          "Před jméno, například MUDr. Anna Králová. Monogram i e-mail si AI grafik odvodí bez titulu."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "gastro",
+    "ind": "gastro",
+    "tpls": [
+      "menu",
+      "forno",
+      "filter",
+      "prazirna",
+      "cafe",
+      "klas",
+      "chmel",
+      "etiketa",
+      "dortik",
+      "glazura"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-kaviarne-a-restauracie",
+      "name": "Kaviarne a gastro",
+      "h1a": "Vizitky pre",
+      "h1b": "kaviarne, pekárne a vinárstva",
+      "title": "Vizitky pre kaviarne, reštaurácie, pekárne a vinárstva",
+      "desc": "Ilustrované vizitky pre kaviarne, pražiarne, pekárne, cukrárne, pivovary a vinárstva. Vernostná kartička, menu a mapa v digitálnej vizitke.",
+      "intro": "V gastre vizitka putuje s účtom, leží pri pokladni a robí z hosťa stálého zákazníka. Ilustrácia kávového zrna, klasu alebo hrozna povie, čo robíte, ešte pred prečítaním mena.",
+      "tips": [
+        "Ilustrované šablóny so znakom odboru sú v gastre najobľúbenejšie, pôsobia remeselne.",
+        "Na zadnú stranu dajte mapu alebo QR kód na menu a otváracie hodiny.",
+        "Väčšie množstvo (500 ks a viac) vyjde najlacnejšie na kus, vizitky v kaviarni miznú rýchlo."
+      ],
+      "prompt": "Kaviareň a pražiareň v Banskej Štiavnici, remeselne, hnedá a krémová",
+      "faq": [
+        [
+          "Dá sa vizitka použiť ako vernostná kartička?",
+          "Áno, na zadnú stranu môžete dať políčka na pečiatky. V editore ich pridáte ako tvary a text."
+        ],
+        [
+          "Ukáže digitálna vizitka menu?",
+          "Áno, služby a ceny sa v digitálnej vizitke zobrazia ako jedálny lístok. Zmeníte ich kedykoľvek bez tlače."
+        ],
+        [
+          "Koľko kusov odporúčate pre prevádzku?",
+          "Pre kaviareň či bistro zvyčajne 500 ks. Cena za kus je výrazne nižšia ako pri 100 ks."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-kavarny-a-restaurace",
+      "name": "Kavárny a gastro",
+      "h1a": "Vizitky pro",
+      "h1b": "kavárny, pekárny a vinařství",
+      "title": "Vizitky pro kavárny, restaurace, pekárny a vinařství",
+      "desc": "Ilustrované vizitky pro kavárny, pražírny, pekárny, cukrárny, pivovary a vinařství. Věrnostní kartička, menu a mapa v digitální vizitce.",
+      "intro": "V gastru vizitka putuje s účtem, leží u pokladny a dělá z hosta stálého zákazníka. Ilustrace kávového zrna, klasu nebo hroznu řekne, co děláte, ještě před přečtením jména.",
+      "tips": [
+        "Ilustrované šablony se znakem oboru jsou v gastru nejoblíbenější, působí řemeslně.",
+        "Na zadní stranu dejte mapu nebo QR kód na menu a otevírací dobu.",
+        "Větší množství (500 ks a víc) vyjde nejlevněji na kus, vizitky v kavárně mizí rychle."
+      ],
+      "prompt": "Kavárna a pražírna v Českém Krumlově, řemeslně, hnědá a krémová",
+      "faq": [
+        [
+          "Dá se vizitka použít jako věrnostní kartička?",
+          "Ano, na zadní stranu můžete dát políčka na razítka. V editoru je přidáte jako tvary a text."
+        ],
+        [
+          "Ukáže digitální vizitka menu?",
+          "Ano, služby a ceny se v digitální vizitce zobrazí jako jídelní lístek. Změníte je kdykoli bez tisku."
+        ],
+        [
+          "Kolik kusů doporučujete pro provozovnu?",
+          "Pro kavárnu či bistro obvykle 500 ks. Cena za kus je výrazně nižší než u 100 ks."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "pravo",
+    "ind": "pravo",
+    "tpls": [
+      "paragraf",
+      "erb",
+      "deco",
+      "luxury",
+      "monogram",
+      "ar",
+      "bilancia",
+      "maitland",
+      "split"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-advokatov-a-uctovnikov",
+      "name": "Advokáti a účtovníci",
+      "h1a": "Vizitky pre",
+      "h1b": "advokátov a účtovníkov",
+      "title": "Vizitky pre advokátov, notárov, účtovníkov a poradcov",
+      "desc": "Reprezentatívne vizitky pre advokátske kancelárie, účtovníkov, daňových a finančných poradcov. Erby, monogramy, zlatá fólia a Triplex.",
+      "intro": "Klient advokáta či účtovníka sa rozhoduje podľa dôvery. Vizitka s erbom, monogramom alebo striedmou typografiou na hrubom papieri povie, že s vašimi vecami narábate starostlivo.",
+      "tips": [
+        "Monogram alebo erb pôsobí tradične a dôveryhodne, AI grafik ho pripraví z vašich iniciál.",
+        "Triplex 720 g je najhrubší papier, ktorý ponúkame, v práve a financiách robí silný dojem.",
+        "Pri spoločnosti uveďte celý názov kancelárie a IČO môžete dať na zadnú stranu."
+      ],
+      "prompt": "Advokátska kancelária v Bratislave, tradične a dôveryhodne, tmavozelená a zlatá",
+      "faq": [
+        [
+          "Dá sa vizitka objednať na firmu s IČO?",
+          "Áno, v košíku vyplníte IČO a údaje firmy sa doplnia z registra. Faktúru pošleme e-mailom."
+        ],
+        [
+          "Ktorý štýl vyberajú advokáti?",
+          "Najčastejšie erb alebo monogram v tmavozelenej, námorníckej modrej alebo čiernej so zlatom."
+        ],
+        [
+          "Môžu mať všetci partneri rovnaký dizajn?",
+          "Áno, v košíku pridáte kolegov a každý dostane rovnaký dizajn so svojím menom a funkciou."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-advokaty-a-ucetni",
+      "name": "Advokáti a účetní",
+      "h1a": "Vizitky pro",
+      "h1b": "advokáty a účetní",
+      "title": "Vizitky pro advokáty, notáře, účetní a poradce",
+      "desc": "Reprezentativní vizitky pro advokátní kanceláře, účetní, daňové a finanční poradce. Erby, monogramy, zlatá fólie a Triplex.",
+      "intro": "Klient advokáta či účetní se rozhoduje podle důvěry. Vizitka s erbem, monogramem nebo střídmou typografií na silném papíře řekne, že s vašimi věcmi zacházíte pečlivě.",
+      "tips": [
+        "Monogram nebo erb působí tradičně a důvěryhodně, AI grafik ho připraví z vašich iniciál.",
+        "Triplex 720 g je nejsilnější papír, který nabízíme, v právu a financích dělá silný dojem.",
+        "U společnosti uveďte celý název kanceláře a IČO můžete dát na zadní stranu."
+      ],
+      "prompt": "Advokátní kancelář v Praze, tradičně a důvěryhodně, tmavě zelená a zlatá",
+      "faq": [
+        [
+          "Dá se vizitka objednat na firmu s IČO?",
+          "Ano, v košíku vyplníte IČO a údaje firmy se doplní z registru. Fakturu pošleme e-mailem."
+        ],
+        [
+          "Který styl vybírají advokáti?",
+          "Nejčastěji erb nebo monogram v tmavě zelené, námořnické modré nebo černé se zlatem."
+        ],
+        [
+          "Mohou mít všichni partneři stejný design?",
+          "Ano, v košíku přidáte kolegy a každý dostane stejný design se svým jménem a funkcí."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "foto",
+    "ind": "kreativ",
+    "tpls": [
+      "svetlo",
+      "riso",
+      "objektiv",
+      "vows",
+      "galeria",
+      "letterpress",
+      "ostraka",
+      "foto",
+      "vlny"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-fotografov",
+      "name": "Fotografi",
+      "h1a": "Vizitky pre",
+      "h1b": "fotografov",
+      "title": "Vizitky pre fotografov – svadobných, portrétnych aj produktových",
+      "desc": "Vizitky pre fotografov a videografov. Objektív, polaroidy, minimalistická typografia a portfólio v digitálnej vizitke cez QR kód.",
+      "intro": "Fotograf predáva oko pre detail. Vizitka má byť kus vašej estetiky a na jedno ťuknutie otvoriť portfólio, pretože bez ukážok sa nikto nerozhodne.",
+      "tips": [
+        "QR kód na portfólio je pre fotografa nutnosť, ukážky predávajú viac ako slová.",
+        "Minimalistický dizajn nechá vyniknúť vaše fotky v digitálnej vizitke.",
+        "Svadobní fotografi často volia jemnú kaligrafiu a krémový papier."
+      ],
+      "prompt": "Svadobná fotografka v Piešťanoch, jemne a romanticky, krémová a čierna",
+      "faq": [
+        [
+          "Môžem do digitálnej vizitky dať portfólio?",
+          "Áno, nahráte galériu fotiek, ktorá sa otvorí na celú obrazovku, a pridáte odkaz na web či Instagram."
+        ],
+        [
+          "Dá sa na vizitku dať vlastná fotka?",
+          "Áno, v editore nahráte vlastnú fotku na prednú alebo zadnú stranu. Web skontroluje, či má dosť vysoké rozlíšenie na tlač."
+        ],
+        [
+          "Ktorý štýl je pre fotografa najlepší?",
+          "Čistý a striedmy, ktorý nekonkuruje vašim fotkám. Svadobní fotografi radi volia kaligrafiu."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-fotografy",
+      "name": "Fotografové",
+      "h1a": "Vizitky pro",
+      "h1b": "fotografy",
+      "title": "Vizitky pro fotografy – svatební, portrétní i produktové",
+      "desc": "Vizitky pro fotografy a videografy. Objektiv, polaroidy, minimalistická typografie a portfolio v digitální vizitce přes QR kód.",
+      "intro": "Fotograf prodává oko pro detail. Vizitka má být kus vaší estetiky a na jedno ťuknutí otevřít portfolio, protože bez ukázek se nikdo nerozhodne.",
+      "tips": [
+        "QR kód na portfolio je pro fotografa nutnost, ukázky prodávají víc než slova.",
+        "Minimalistický design nechá vyniknout vaše fotky v digitální vizitce.",
+        "Svatební fotografové často volí jemnou kaligrafii a krémový papír."
+      ],
+      "prompt": "Svatební fotografka v Českém Krumlově, jemně a romanticky, krémová a černá",
+      "faq": [
+        [
+          "Mohu do digitální vizitky dát portfolio?",
+          "Ano, nahrajete galerii fotek, která se otevře na celou obrazovku, a přidáte odkaz na web či Instagram."
+        ],
+        [
+          "Dá se na vizitku dát vlastní fotka?",
+          "Ano, v editoru nahrajete vlastní fotku na přední nebo zadní stranu. Web zkontroluje, jestli má dost vysoké rozlišení pro tisk."
+        ],
+        [
+          "Který styl je pro fotografa nejlepší?",
+          "Čistý a střídmý, který nekonkuruje vašim fotkám. Svatební fotografové rádi volí kaligrafii."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "fitness",
+    "ind": "zdravie",
+    "tpls": [
+      "sila",
+      "lotos",
+      "boho",
+      "ticha",
+      "oblouk",
+      "minimal"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-trenerov-a-jogu",
+      "name": "Tréneri a jóga",
+      "h1a": "Vizitky pre",
+      "h1b": "trénerov, jógu a wellness",
+      "title": "Vizitky pre osobných trénerov, lektorov jógy a wellness",
+      "desc": "Energické aj pokojné vizitky pre osobných trénerov, lektorov jógy, pilates a wellness štúdiá. Rozvrh a rezervácia v digitálnej vizitke.",
+      "intro": "Tréner predáva energiu, lektorka jógy pokoj. Vizitka má mať rovnakú náladu ako vaša hodina a jedným QR kódom ukázať rozvrh a voľné termíny.",
+      "tips": [
+        "Rozvrh hodín dajte do digitálnej vizitky, keď ho zmeníte, platí hneď.",
+        "Pre jógu fungujú zemité farby a jemné tvary, pre fitness výrazný kontrast a veľké písmo.",
+        "Pridajte odkaz na rezerváciu, klienti si hodinu zarezervujú bez telefonovania."
+      ],
+      "prompt": "Osobný tréner v Košiciach, energicky, čierna a neónovo zelená",
+      "faq": [
+        [
+          "Môžem ukázať rozvrh hodín?",
+          "Áno, v digitálnej vizitke vyplníte otváracie hodiny a rozvrh. Klient uvidí aj, či máte práve otvorené."
+        ],
+        [
+          "Dá sa pridať rezervácia hodín?",
+          "Áno, tlačidlo rezervácie vedie na váš rezervačný systém, napríklad Reservio alebo vlastný web."
+        ],
+        [
+          "Je vizitka vhodná aj pre štúdio s viacerými lektormi?",
+          "Áno, v košíku pridáte kolegov a každý lektor dostane vlastnú vizitku v jednotnom dizajne."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-trenery-a-jogu",
+      "name": "Trenéři a jóga",
+      "h1a": "Vizitky pro",
+      "h1b": "trenéry, jógu a wellness",
+      "title": "Vizitky pro osobní trenéry, lektory jógy a wellness",
+      "desc": "Energické i klidné vizitky pro osobní trenéry, lektory jógy, pilates a wellness studia. Rozvrh a rezervace v digitální vizitce.",
+      "intro": "Trenér prodává energii, lektorka jógy klid. Vizitka má mít stejnou náladu jako vaše hodina a jedním QR kódem ukázat rozvrh a volné termíny.",
+      "tips": [
+        "Rozvrh hodin dejte do digitální vizitky, když ho změníte, platí hned.",
+        "Pro jógu fungují zemité barvy a jemné tvary, pro fitness výrazný kontrast a velké písmo.",
+        "Přidejte odkaz na rezervaci, klienti si hodinu zarezervují bez telefonování."
+      ],
+      "prompt": "Osobní trenér v Brně, energicky, černá a neonově zelená",
+      "faq": [
+        [
+          "Mohu ukázat rozvrh hodin?",
+          "Ano, v digitální vizitce vyplníte otevírací dobu a rozvrh. Klient uvidí i to, jestli máte právě otevřeno."
+        ],
+        [
+          "Dá se přidat rezervace hodin?",
+          "Ano, tlačítko rezervace vede na váš rezervační systém, například Reservio nebo vlastní web."
+        ],
+        [
+          "Je vizitka vhodná i pro studio s více lektory?",
+          "Ano, v košíku přidáte kolegy a každý lektor dostane vlastní vizitku v jednotném designu."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "architekti",
+    "ind": "reality",
+    "tpls": [
+      "axon",
+      "brut",
+      "vykres",
+      "hrastar",
+      "alder",
+      "obrys",
+      "casa",
+      "linka",
+      "editorial"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-architektov-a-dizajnerov",
+      "name": "Architekti a dizajnéri",
+      "h1a": "Vizitky pre",
+      "h1b": "architektov a dizajnérov interiérov",
+      "title": "Vizitky pre architektov a dizajnérov interiérov",
+      "desc": "Architektonické vizitky s výkresom, pôdorysom, mriežkou a editoriálnou typografiou. Pre architektov, dizajnérov interiérov a ateliéry.",
+      "intro": "Architekt na vizitke ukazuje cit pre proporcie. Čistá mriežka, technický výkres alebo pôdorys povie viac ako slogan a premyslená typografia je samozrejmosť.",
+      "tips": [
+        "Technický výkres či pôdorys na zadnej strane je jednoduchý a nezabudnuteľný motív.",
+        "Dajte priestor bielej ploche, prázdne miesto je v architektúre luxus.",
+        "Formát 85 × 55 mm má klasické európske proporcie, ktoré architekti obľubujú."
+      ],
+      "prompt": "Architektka interiérov v Bratislave, čisto a moderne, tmavomodrá a biela",
+      "faq": [
+        [
+          "Môžem dať na vizitku vlastný výkres alebo vizualizáciu?",
+          "Áno, v editore nahráte obrázok na zadnú stranu. Odporúčame čiernobiely výkres s dostatočným rozlíšením."
+        ],
+        [
+          "Ktorý formát odporúčate?",
+          "Klasiku 90 × 50 mm alebo európske 85 × 55 mm, ktoré má o niečo vyššie proporcie."
+        ],
+        [
+          "Dá sa ukázať portfólio projektov?",
+          "Áno, v digitálnej vizitke nahráte galériu realizácií a odkaz na web ateliéru."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-architekty-a-designery",
+      "name": "Architekti a designéři",
+      "h1a": "Vizitky pro",
+      "h1b": "architekty a designéry interiérů",
+      "title": "Vizitky pro architekty a designéry interiérů",
+      "desc": "Architektonické vizitky s výkresem, půdorysem, mřížkou a editoriální typografií. Pro architekty, designéry interiérů a ateliéry.",
+      "intro": "Architekt na vizitce ukazuje cit pro proporce. Čistá mřížka, technický výkres nebo půdorys řekne víc než slogan a promyšlená typografie je samozřejmost.",
+      "tips": [
+        "Technický výkres či půdorys na zadní straně je jednoduchý a nezapomenutelný motiv.",
+        "Dejte prostor bílé ploše, prázdné místo je v architektuře luxus.",
+        "Formát 85 × 55 mm má klasické evropské proporce, které architekti mají rádi."
+      ],
+      "prompt": "Architektka interiérů v Praze, čistě a moderně, tmavě modrá a bílá",
+      "faq": [
+        [
+          "Mohu dát na vizitku vlastní výkres nebo vizualizaci?",
+          "Ano, v editoru nahrajete obrázek na zadní stranu. Doporučujeme černobílý výkres s dostatečným rozlišením."
+        ],
+        [
+          "Který formát doporučujete?",
+          "Klasiku 90 × 50 mm nebo evropské 85 × 55 mm, které má o něco vyšší proporce."
+        ],
+        [
+          "Dá se ukázat portfolio projektů?",
+          "Ano, v digitální vizitce nahrajete galerii realizací a odkaz na web ateliéru."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "kvety",
+    "ind": "beauty",
+    "tpls": [
+      "pivonka",
+      "prstene",
+      "herbar",
+      "kytice",
+      "vetvicka",
+      "akvarelsalvia",
+      "organic",
+      "velora",
+      "botanika",
+      "eukalyptus"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-kvetinarstva-a-svadby",
+      "name": "Kvetinárstva a svadby",
+      "h1a": "Vizitky pre",
+      "h1b": "kvetinárstva a svadobné služby",
+      "title": "Vizitky pre kvetinárstva, floristov a svadobné služby",
+      "desc": "Akvarelové a botanické vizitky pre kvetinárstva, floristov, svadobné agentúry a dekoratérov. Kreslené kytice, vetvičky a jemné farby.",
+      "intro": "Kvetinárstvo predáva emóciu. Kreslená kytica alebo akvarelová vetvička na vizitke voňia ešte pred tým, ako zákazník vojde do obchodu, a skvele sa hodí ako visačka ku kytici.",
+      "tips": [
+        "Vizitku pribaľte ku každej kytici, je to najlacnejšia reklama u ďalšieho príjemcu.",
+        "Akvarelové a botanické motívy vyzerajú najlepšie na matnom papieri bez laminácie.",
+        "Na zadnú stranu dajte QR kód na objednávku kytice alebo svadobnú konzultáciu."
+      ],
+      "prompt": "Kvetinárstvo Levanduľa v Nitre, jemne a prírodne, šalviová zelená",
+      "faq": [
+        [
+          "Dá sa vizitka použiť ako visačka ku kytici?",
+          "Áno, mnohé kvetinárstva ju pribaľujú ku kyticiam. Štvorec 55 × 55 mm sa na to hodí najviac."
+        ],
+        [
+          "Sú ilustrácie kytíc originálne?",
+          "Áno, kytice a vetvičky sú kreslené ako súčasť šablón a farby sa prispôsobia vašej palete."
+        ],
+        [
+          "Môžem pridať svadobné balíčky?",
+          "Áno, v digitálnej vizitke vypíšete balíčky a ceny ako ponuku a pridáte tlačidlo na konzultáciu."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-kvetinarstvi-a-svatby",
+      "name": "Květinářství a svatby",
+      "h1a": "Vizitky pro",
+      "h1b": "květinářství a svatební služby",
+      "title": "Vizitky pro květinářství, floristy a svatební služby",
+      "desc": "Akvarelové a botanické vizitky pro květinářství, floristy, svatební agentury a dekoratéry. Kreslené kytice, větvičky a jemné barvy.",
+      "intro": "Květinářství prodává emoci. Kreslená kytice nebo akvarelová větvička na vizitce voní ještě předtím, než zákazník vejde do obchodu, a skvěle se hodí jako visačka ke kytici.",
+      "tips": [
+        "Vizitku přibalte ke každé kytici, je to nejlevnější reklama u dalšího příjemce.",
+        "Akvarelové a botanické motivy vypadají nejlépe na matném papíře bez laminace.",
+        "Na zadní stranu dejte QR kód na objednávku kytice nebo svatební konzultaci."
+      ],
+      "prompt": "Květinářství Levandule v Brně, jemně a přírodně, šalvějová zelená",
+      "faq": [
+        [
+          "Dá se vizitka použít jako visačka ke kytici?",
+          "Ano, mnoho květinářství ji přibaluje ke kyticím. Čtverec 55 × 55 mm se na to hodí nejvíc."
+        ],
+        [
+          "Jsou ilustrace kytic originální?",
+          "Ano, kytice a větvičky jsou kreslené jako součást šablon a barvy se přizpůsobí vaší paletě."
+        ],
+        [
+          "Mohu přidat svatební balíčky?",
+          "Ano, v digitální vizitce vypíšete balíčky a ceny jako nabídku a přidáte tlačítko na konzultaci."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "it",
+    "ind": "kreativ",
+    "tpls": [
+      "riso",
+      "orbit",
+      "neon",
+      "swiss",
+      "bodka",
+      "kontrast",
+      "crop"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-it-a-startupy",
+      "name": "IT a startupy",
+      "h1a": "Vizitky pre",
+      "h1b": "IT, startupy a agentúry",
+      "title": "Vizitky pre programátorov, IT firmy, startupy a agentúry",
+      "desc": "Moderné vizitky pre programátorov, IT firmy, startupy a marketingové agentúry. Neón, gradienty, švajčiarska typografia a QR na LinkedIn.",
+      "intro": "V IT a startupoch vizitka odovzdaná na konferencii rozhoduje o tom, či si vás niekto zapamätá. Odvážny dizajn a QR kód na LinkedIn spravia prácu za vás.",
+      "tips": [
+        "QR kód na LinkedIn alebo GitHub je praktickejší ako dlhá URL.",
+        "Tmavé vizitky s neónom či gradientom sú na konferenciách nezabudnuteľné.",
+        "Na meetupy a veľtrhy sa oplatí väčšie množstvo, 500 ks má najnižšiu cenu za kus."
+      ],
+      "prompt": "Programátor z Košíc, firma Bitlab, moderne, tmavo a hravo",
+      "faq": [
+        [
+          "Môžem dať na vizitku odkaz na LinkedIn alebo GitHub?",
+          "Áno, v digitálnej vizitke pridáte siete a odkazy. QR kód na tlačenej vizitke otvorí všetko naraz."
+        ],
+        [
+          "Dá sa objednať pre celý tím?",
+          "Áno, v košíku pridáte kolegov a každý dostane rovnaký dizajn so svojím menom a pozíciou."
+        ],
+        [
+          "Máte aj vizitky bez zbytočných ozdôb?",
+          "Áno, švajčiarske a typografické šablóny sú striedme a čisté. Filter „Moderné“ ich ukáže všetky."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-it-a-startupy",
+      "name": "IT a startupy",
+      "h1a": "Vizitky pro",
+      "h1b": "IT, startupy a agentury",
+      "title": "Vizitky pro programátory, IT firmy, startupy a agentury",
+      "desc": "Moderní vizitky pro programátory, IT firmy, startupy a marketingové agentury. Neon, gradienty, švýcarská typografie a QR na LinkedIn.",
+      "intro": "V IT a startupech vizitka předaná na konferenci rozhoduje o tom, jestli si vás někdo zapamatuje. Odvážný design a QR kód na LinkedIn udělají práci za vás.",
+      "tips": [
+        "QR kód na LinkedIn nebo GitHub je praktičtější než dlouhá URL.",
+        "Tmavé vizitky s neonem či gradientem jsou na konferencích nezapomenutelné.",
+        "Na meetupy a veletrhy se vyplatí větší množství, 500 ks má nejnižší cenu za kus."
+      ],
+      "prompt": "Programátor z Ostravy, firma Bitlab, moderně, tmavě a hravě",
+      "faq": [
+        [
+          "Mohu dát na vizitku odkaz na LinkedIn nebo GitHub?",
+          "Ano, v digitální vizitce přidáte sítě a odkazy. QR kód na tištěné vizitce otevře všechno najednou."
+        ],
+        [
+          "Dá se objednat pro celý tým?",
+          "Ano, v košíku přidáte kolegy a každý dostane stejný design se svým jménem a pozicí."
+        ],
+        [
+          "Máte i vizitky bez zbytečných ozdob?",
+          "Ano, švýcarské a typografické šablony jsou střídmé a čisté. Filtr „Moderní“ je ukáže všechny."
+        ]
+      ]
+    }
+  }
+]
