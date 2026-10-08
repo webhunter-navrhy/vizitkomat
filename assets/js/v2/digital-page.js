@@ -1,4 +1,4 @@
-// Stránka Digitálna vizitka: živá ukážka v hero (s menom návštevníka) + interaktívna ukážka troch odborov.
+// Stránka Digitálna vizitka: živá ukážka v hero (s menom návštevníka), interaktívna ukážka odborov a galéria štýlov.
 import { newDesign, slugify, tr } from './model.js';
 import { templateDefaults } from './templates.js';
 import { renderDigital } from './digital.js';
@@ -42,6 +42,39 @@ const DEMOS = {
     },
     socials: { instagram: 'https://instagram.com/', facebook: 'https://facebook.com/' },
   },
+  kvety: {
+    tpl: 'kytice',
+    f: { name: tr('Mária Horváthová', 'Marie Horváthová'), role: tr('Kvetinárka', 'Květinářka'), company: tr('Levanduľa', 'Levandule'), tagline: tr('Kvety, ktoré hovoria za vás.', 'Květiny, které mluví za vás.'), email: `maria@levandula.${tld}`, web: `levandula.${tld}`, phone: tr('+421 905 123 456', '+420 605 123 456'), address: tr('Štefánikova 12, Nitra', 'Velké náměstí 12, Hradec Králové') },
+    digital: {
+      bio: tr('Viažem kytice na svadby, oslavy aj obyčajný utorok. Kvety beriem od slovenských pestovateľov.', 'Vážu kytice na svatby, oslavy i obyčejné úterý. Květiny beru od českých pěstitelů.'),
+      services: tr('Svadobná kytica – od 65 €\nNarodeninová kytica – od 25 €\nVýzdoba podujatí – na mieru\nPredplatné kvetov – 39 €/mes.', 'Svatební kytice – od 1 590 Kč\nNarozeninová kytice – od 590 Kč\nVýzdoba akcí – na míru\nPředplatné květin – 890 Kč/měs.'),
+      hours: tr('Po – Pi: 8:00 – 18:00\nSo: 8:00 – 12:00\nNe: zatvorené', 'Po – Pá: 8:00 – 18:00\nSo: 8:00 – 12:00\nNe: zavřeno'),
+      reviews: 'https://www.google.com/maps', links: tr('Svadobný katalóg | https://levandula.sk/svadby', 'Svatební katalog | https://levandule.cz/svatby'),
+    },
+    socials: { instagram: 'https://instagram.com/', facebook: 'https://facebook.com/' },
+  },
+  auto: {
+    tpl: 'garaz',
+    f: { name: tr('Peter Kolár', 'Petr Kolář'), role: tr('Automechanik', 'Automechanik'), company: tr('Autoservis Kolár', 'Autoservis Kolář'), tagline: tr('Opravené poctivo a načas.', 'Opraveno poctivě a včas.'), email: `peter@autoservis-kolar.${tld}`, web: `autoservis-kolar.${tld}`, phone: tr('+421 905 123 456', '+420 605 123 456'), address: tr('Priemyselná 5, Trenčín', 'Průmyslová 5, Kolín') },
+    digital: {
+      bio: tr('Servis všetkých značiek, pneuservis a príprava na STK. Cenu poviem vopred, nie až pri platení.', 'Servis všech značek, pneuservis a příprava na STK. Cenu řeknu předem, ne až při placení.'),
+      services: tr('Výmena oleja – od 39 €\nPrezutie pneumatík – 30 €\nDiagnostika – 25 €\nPríprava na STK – 35 €', 'Výměna oleje – od 890 Kč\nPřezutí pneumatik – 690 Kč\nDiagnostika – 590 Kč\nPříprava na STK – 790 Kč'),
+      hours: tr('Po – Pi: 7:00 – 17:00\nSo: 8:00 – 12:00', 'Po – Pá: 7:00 – 17:00\nSo: 8:00 – 12:00'),
+      booking: 'https://reservio.com/', bookingLabel: tr('Objednať auto do servisu', 'Objednat auto do servisu'), reviews: 'https://www.google.com/maps',
+    },
+    socials: { facebook: 'https://facebook.com/' },
+  },
+  zubar: {
+    tpl: 'medic',
+    f: { name: tr('MUDr. Anna Kráľová', 'MUDr. Anna Králová'), role: tr('Zubná lekárka', 'Zubní lékařka'), company: tr('Dentál Úsmev', 'Dentál Úsměv'), tagline: tr('Úsmev bez obáv.', 'Úsměv bez obav.'), email: `ordinacia@dentalusmev.${tld}`, web: `dentalusmev.${tld}`, phone: tr('+421 905 123 456', '+420 605 123 456'), address: tr('Hlavná 40, Prešov', 'Pernštýnská 40, Pardubice') },
+    digital: {
+      bio: tr('Bezbolestné ošetrenie, dentálna hygiena a estetika. Prijímame nových pacientov aj deti.', 'Bezbolestné ošetření, dentální hygiena a estetika. Přijímáme nové pacienty i děti.'),
+      services: tr('Preventívna prehliadka – 30 €\nDentálna hygiena – 55 €\nBielenie zubov – od 190 €', 'Preventivní prohlídka – 600 Kč\nDentální hygiena – 1 200 Kč\nBělení zubů – od 4 500 Kč'),
+      hours: tr('Po – Št: 7:30 – 16:00\nPi: 7:30 – 13:00', 'Po – Čt: 7:30 – 16:00\nPá: 7:30 – 13:00'),
+      booking: 'https://reservio.com/', bookingLabel: tr('Objednať sa online', 'Objednat se online'), reviews: 'https://www.google.com/maps',
+    },
+    socials: { instagram: 'https://instagram.com/' },
+  },
 };
 const design = (k) => { const x = DEMOS[k]; const d = newDesign({ tpl: x.tpl, ...templateDefaults(x.tpl) }); d.f = { ...d.f, ...x.f }; d.digital = { ...x.digital }; d.socials = { ...x.socials }; d.slug = slugify(x.f.name); return d; };
 
@@ -57,7 +90,7 @@ $('[data-dg-form]').addEventListener('submit', (e) => {
   location.href = VK.links.tvorba + '?druh=digital&rezim=texty';
 });
 
-// interaktívna ukážka troch odborov
+// interaktívna ukážka odborov
 const box = $('[data-dgl-phone]');
 const show = (k) => {
   const x = DEMOS[k];
@@ -69,3 +102,13 @@ let shown = false;
 const io = new IntersectionObserver((es) => { if (es[0].isIntersecting && !shown) { shown = true; show('makler'); io.disconnect(); } }, { rootMargin: '400px' });
 io.observe(box);
 $('[data-dgl-tabs]').addEventListener('click', (e) => { const b = e.target.closest('[data-p]'); if (b) show(b.dataset.p); });
+
+// galéria štýlov: rovnaká vizitka, iná značka
+const th = $('[data-dgl-themes]');
+if (th) {
+  const io2 = new IntersectionObserver((es) => {
+    if (!es[0].isIntersecting) return; io2.disconnect();
+    th.querySelectorAll('[data-k]').forEach((el) => { const k = el.dataset.k, x = DEMOS[k]; renderDigital(el.querySelector('.dcard-host'), design(k), { url, qr: (u) => qrSVG(u), static: true, front: VK.pre[`tpl-${x.tpl}-f`], back: VK.pre[`tpl-${x.tpl}-b`] }); });
+  }, { rootMargin: '300px' });
+  io2.observe(th);
+}

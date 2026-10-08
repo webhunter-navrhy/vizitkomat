@@ -73,7 +73,14 @@ async function fillOf(c, fallback, scaleMm = 55) {
   const s = (scaleMm * K) / im.width;
   return new (F().Pattern)({ source: im, repeat: 'repeat', patternTransform: [s, 0, 0, s, 0, 0] });
 }
-export const paint = (c, fallback) => (isFoil(c) ? foilGrad(c) : (c || fallback));
+/** Prechod: { grad: [farby…], angle: stupne } alebo { grad, radial: true, cx, cy, r } (v pomere k objektu) */
+function gradOf(c) {
+  const st = c.grad.map((col, i) => ({ offset: c.stops ? c.stops[i] : i / Math.max(1, c.grad.length - 1), color: col }));
+  if (c.radial) return new (F().Gradient)({ type: 'radial', gradientUnits: 'percentage', coords: { x1: c.cx ?? 0.5, y1: c.cy ?? 0.5, r1: 0, x2: c.cx ?? 0.5, y2: c.cy ?? 0.5, r2: c.r ?? 0.5 }, colorStops: st });
+  const a = ((c.angle ?? 90) * Math.PI) / 180, dx = Math.cos(a) / 2, dy = Math.sin(a) / 2;
+  return new (F().Gradient)({ type: 'linear', gradientUnits: 'percentage', coords: { x1: 0.5 - dx, y1: 0.5 - dy, x2: 0.5 + dx, y2: 0.5 + dy }, colorStops: st });
+}
+export const paint = (c, fallback) => (isFoil(c) ? foilGrad(c) : c && typeof c === 'object' && c.grad ? gradOf(c) : (c || fallback));
 
 // ---------- prevody ----------
 const px = (mm) => (mm + BLEED) * K;
@@ -153,7 +160,7 @@ export async function toFabric(o, lay, ctx = {}) {
       obj = new fab.IText(textValue(o), {
         left: px(o.x), top: px(o.y), originX: o.ox || 'left', originY: o.oy || 'top',
         fontFamily: ft.family, fontWeight: ft.weight, fontStyle: o.it ? 'italic' : 'normal',
-        fontSize: len(Math.max(o.size || 2.2, MIN_TXT)), fill: String(textValue(o)).trim() ? ((o.size || 2.2) < 5.5 ? paint(o.color, lay.pal.ink) : await fillOf(o.color, lay.pal.ink, Math.max(110, (o.size || 2.2) * 22))) : (isFoil(o.color) ? (FOILS[o.color.slice(5)] || FOILS.gold)[1] : (o.color || lay.pal.ink)), charSpacing: (o.ls || 0) * 1000,
+        fontSize: len(Math.max(o.size || 2.2, MIN_TXT)), stroke: o.stroke ? paint(o.stroke) : null, strokeWidth: o.stroke ? len(o.sw || 0.12) : 0, paintFirst: o.stroke && o.color !== 'none' ? 'stroke' : 'fill', fill: o.color === 'none' ? 'transparent' : String(textValue(o)).trim() ? ((o.size || 2.2) < 14 ? paint(o.color, lay.pal.ink) : await fillOf(o.color, lay.pal.ink, Math.max(110, (o.size || 2.2) * 22))) : (isFoil(o.color) ? (FOILS[o.color.slice(5)] || FOILS.gold)[1] : (o.color || lay.pal.ink)), charSpacing: (o.ls || 0) * 1000,
         textAlign: o.ox === 'right' ? 'right' : o.ox === 'center' ? 'center' : 'left',
         lineHeight: o.lh || 1.12, opacity: o.opacity ?? 1, objectCaching: false,
       });
@@ -224,11 +231,11 @@ export async function bgObjects(lay) {
   const fab = F();
   const S = { w: lay.W + 2 * BLEED, h: lay.H + 2 * BLEED };
   const out = [];
-  const base = new fab.Rect({ left: 0, top: 0, width: len(S.w), height: len(S.h), fill: lay.bg.color || '#FFFFFF', selectable: false, evented: false });
+  const base = new fab.Rect({ left: 0, top: 0, width: len(S.w), height: len(S.h), fill: paint(lay.bg.color, '#FFFFFF'), selectable: false, evented: false });
   base.data = { bg: true, kind: 'bg' };
   out.push(base);
   if (lay.bg.artSrc) {
-    const img = await imageObj(lay.bg.artSrc, -BLEED, -BLEED, S.w, S.h, { fit: 'cover', opacity: lay.bg.artOpacity ?? 1 });
+    const img = await imageObj(lay.bg.artSrc, -BLEED, -BLEED, S.w, S.h, { fit: 'cover', opacity: lay.bg.artOpacity ?? 1, blend: lay.bg.artBlend });
     if (img) { img.set({ selectable: false, evented: false }); img.data = { bg: true, kind: 'bgart' }; out.push(img); }
   }
   return out;

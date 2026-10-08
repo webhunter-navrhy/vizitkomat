@@ -18,30 +18,37 @@
 <meta property="og:type" content="profile">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="../../assets/css/dcard.css?v=1c2e0bf3">
+<link rel="stylesheet" href="../../assets/css/dcard.css?v=a7526bad">
 <style>
   html, body { margin: 0; min-height: 100%; background: #0E0E10; }
   .vpage { width: 100%; max-width: 480px; margin: 0 auto; min-height: 100svh; }
   @media (min-width: 560px) {
-    body { padding: 32px 0; background: radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, #0E0E10 82%, #fff), #0E0E10 70%); }
-    .vpage { min-height: auto; border-radius: 34px; overflow: clip; box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 40px 90px -36px rgba(0,0,0,.6); }
-    .vpage .dc__bar { border-radius: 0 0 34px 34px; }
+    body { padding: 40px 0; background: radial-gradient(55% 45% at 78% 8%, color-mix(in srgb, var(--v-acc, #0E0E10) 26%, transparent), transparent 70%), radial-gradient(45% 40% at 10% 95%, color-mix(in srgb, var(--v-acc, #0E0E10) 14%, transparent), transparent 70%), var(--v-cover, #0E0E10); background-attachment: fixed; }
+    .vpage { min-height: auto; border-radius: 36px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--v-ink, #fff) 10%, transparent), 0 50px 100px -40px rgba(0,0,0,.55), 0 20px 40px -24px rgba(0,0,0,.35); }
+    .vpage > .dc { border-radius: 36px; }
+    .vpage .dc__cover { border-radius: 36px 36px 0 0; }
   }
 </style>
-<script type="importmap">{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/", "../../assets/js/icons.js": "../../assets/js/icons.js?v=3ad8a754", "../../assets/js/util.js": "../../assets/js/util.js?v=57558278", "../../assets/js/card-engine.js": "../../assets/js/card-engine.js?v=cdc4f98a", "../../assets/js/ai-engine.js": "../../assets/js/ai-engine.js?v=7be34394", "../../assets/js/admin.js": "../../assets/js/admin.js?v=5d0faa85", "../../assets/js/logo.js": "../../assets/js/logo.js?v=14fdfc37", "../../assets/js/v2/objednavka.js": "../../assets/js/v2/objednavka.js?v=0791fbc9", "../../assets/js/v2/ai.js": "../../assets/js/v2/ai.js?v=870beb05", "../../assets/js/v2/tpl-rich.js": "../../assets/js/v2/tpl-rich.js?v=10a1bb7f", "../../assets/js/v2/tpl-pro.js": "../../assets/js/v2/tpl-pro.js?v=93a0c554", "../../assets/js/v2/kosik.js": "../../assets/js/v2/kosik.js?v=1f12122b", "../../assets/js/v2/vlastny.js": "../../assets/js/v2/vlastny.js?v=0e232fa8", "../../assets/js/v2/personas.js": "../../assets/js/v2/personas.js?v=71d167b3", "../../assets/js/v2/three-cards.js": "../../assets/js/v2/three-cards.js?v=3039c6fd", "../../assets/js/v2/digital-page.js": "../../assets/js/v2/digital-page.js?v=55d362ff", "../../assets/js/v2/store.js": "../../assets/js/v2/store.js?v=5d55d845", "../../assets/js/v2/mark.js": "../../assets/js/v2/mark.js?v=fcb0870f", "../../assets/js/v2/render.js": "../../assets/js/v2/render.js?v=67cfb4f8", "../../assets/js/v2/emblems.js": "../../assets/js/v2/emblems.js?v=6c0939e0", "../../assets/js/v2/home.js": "../../assets/js/v2/home.js?v=59674d74", "../../assets/js/v2/studio.js": "../../assets/js/v2/studio.js?v=6a827bbd", "../../assets/js/v2/editor.js": "../../assets/js/v2/editor.js?v=572e789e", "../../assets/js/v2/digital.js": "../../assets/js/v2/digital.js?v=10ad08a3", "../../assets/js/v2/tpl-lux.js": "../../assets/js/v2/tpl-lux.js?v=4360ed2f", "../../assets/js/v2/site.js": "../../assets/js/v2/site.js?v=ad99ede2", "../../assets/js/v2/templates.js": "../../assets/js/v2/templates.js?v=b8925c3e", "../../assets/js/v2/model.js": "../../assets/js/v2/model.js?v=cce4e269"}}</script>
+<script type="importmap">{"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/", "../../assets/js/icons.js": "../../assets/js/icons.js?v=3ad8a754", "../../assets/js/util.js": "../../assets/js/util.js?v=57558278", "../../assets/js/card-engine.js": "../../assets/js/card-engine.js?v=cdc4f98a", "../../assets/js/ai-engine.js": "../../assets/js/ai-engine.js?v=7be34394", "../../assets/js/admin.js": "../../assets/js/admin.js?v=5d0faa85", "../../assets/js/logo.js": "../../assets/js/logo.js?v=14fdfc37", "../../assets/js/v2/objednavka.js": "../../assets/js/v2/objednavka.js?v=0791fbc9", "../../assets/js/v2/ai.js": "../../assets/js/v2/ai.js?v=870beb05", "../../assets/js/v2/tpl-rich.js": "../../assets/js/v2/tpl-rich.js?v=9c06c183", "../../assets/js/v2/tpl-pro.js": "../../assets/js/v2/tpl-pro.js?v=92e46b1b", "../../assets/js/v2/kosik.js": "../../assets/js/v2/kosik.js?v=1f12122b", "../../assets/js/v2/vlastny.js": "../../assets/js/v2/vlastny.js?v=0e232fa8", "../../assets/js/v2/personas.js": "../../assets/js/v2/personas.js?v=71d167b3", "../../assets/js/v2/three-cards.js": "../../assets/js/v2/three-cards.js?v=3039c6fd", "../../assets/js/v2/tpl-neo.js": "../../assets/js/v2/tpl-neo.js?v=dff5258c", "../../assets/js/v2/digital-page.js": "../../assets/js/v2/digital-page.js?v=1a254786", "../../assets/js/v2/store.js": "../../assets/js/v2/store.js?v=5d55d845", "../../assets/js/v2/mark.js": "../../assets/js/v2/mark.js?v=fcb0870f", "../../assets/js/v2/render.js": "../../assets/js/v2/render.js?v=c9263709", "../../assets/js/v2/emblems.js": "../../assets/js/v2/emblems.js?v=6c0939e0", "../../assets/js/v2/home.js": "../../assets/js/v2/home.js?v=7780cfe1", "../../assets/js/v2/studio.js": "../../assets/js/v2/studio.js?v=6a827bbd", "../../assets/js/v2/editor.js": "../../assets/js/v2/editor.js?v=572e789e", "../../assets/js/v2/digital.js": "../../assets/js/v2/digital.js?v=3312568e", "../../assets/js/v2/tpl-lux.js": "../../assets/js/v2/tpl-lux.js?v=4360ed2f", "../../assets/js/v2/site.js": "../../assets/js/v2/site.js?v=ad99ede2", "../../assets/js/v2/templates.js": "../../assets/js/v2/templates.js?v=f2c57fe9", "../../assets/js/v2/model.js": "../../assets/js/v2/model.js?v=cce4e269"}}</script>
 <script>window.VK = { lang: 'sk', links: {} };</script>
 </head>
 <body>
 <div class="vwrap">
   <aside class="vside" data-vside hidden>
-    <div class="vside__qr" data-vqr></div>
+    <p class="vside__k">Digitálna vizitka</p>
     <h2 data-vname></h2>
-    <p>Naskenujte QR kód telefónom a uložte si kontakt jedným ťuknutím.</p>
-    <ol class="vside__steps">
-      <li><b>1</b>Otvorte fotoaparát</li>
-      <li><b>2</b>Namierte na kód</li>
-      <li><b>3</b>Ťuknite na „Uložiť do kontaktov“</li>
-    </ol>
+    <p class="vside__role" data-vrole></p>
+    <div class="vside__qrrow">
+      <div class="vside__qr" data-vqr></div>
+      <div>
+        <b>Uložte si kontakt do telefónu</b>
+        <ol class="vside__steps">
+          <li><i>1</i>Otvorte fotoaparát</li>
+          <li><i>2</i>Namierte na kód</li>
+          <li><i>3</i>Ťuknite na „Uložiť do kontaktov“</li>
+        </ol>
+      </div>
+    </div>
   </aside>
   <main class="vpage" id="card"></main>
 </div>
@@ -49,26 +56,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script type="application/json" id="data">{"slug": "demo", "demo": true, "lang": "sk", "tpl": "noirgold", "front": "assets/pre/sk/tpl-noirgold-f.jpg", "back": "assets/pre/sk/tpl-noirgold-b.jpg", "f": {"name": "Martin Kováč", "role": "Realitný maklér", "company": "Domov Reality", "phone": "+421 905 123 456", "email": "martin@domovreality.sk", "web": "domovreality.sk", "address": "Panská 14, Bratislava", "tagline": "Kľúče odovzdávam osobne."}, "socials": {"instagram": "https://instagram.com/", "linkedin": "https://linkedin.com/", "facebook": "https://facebook.com/"}, "digital": {"bio": "Pomáham rodinám predať byt za férovú cenu a bez stresu. 12 rokov v Bratislave, stovky odovzdaných kľúčov.", "services": "Predaj bytov a domov – 2,5 % z ceny\nOcenenie nehnuteľnosti – zadarmo\nPrenájom – 1 nájom\nHypotéka na kľúč", "hours": "Po – Pi: 8:00 – 18:00\nSo: po dohode\nNe: zatvorené", "booking": "https://calendly.com/", "bookingLabel": "Dohodnúť obhliadku", "reviews": "https://www.google.com/maps", "links": "Aktuálne ponuky | https://domovreality.sk/ponuky\nAko prebieha predaj | https://domovreality.sk/postup"}}</script>
 <script type="module">
-  import { newDesign, FONTS, FONT_CSS } from '../../assets/js/v2/model.js';
+  import { newDesign } from '../../assets/js/v2/model.js';
   import { templateDefaults } from '../../assets/js/v2/templates.js';
   import { renderDigital } from '../../assets/js/v2/digital.js';
   import { qrSVG } from '../../assets/js/util.js';
   const card = JSON.parse(document.getElementById('data').textContent);
   const d = card.design || newDesign({ tpl: card.tpl, ...templateDefaults(card.tpl) });
   if (!card.design) { d.f = card.f; d.socials = card.socials || {}; d.digital = card.digital || {}; }
-  // len písma tejto vizitky
-  const fp = FONTS[d.fonts] || {};
-  const fams = FONT_CSS.split('?')[1].split('&').filter((x) => x.startsWith('family=') && [fp.display, fp.text].some((n) => n && x.startsWith('family=' + n.replace(/ /g, '+') + (x.includes(':') ? ':' : ''))));
-  if (fams.length) { const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?' + fams.join('&') + '&display=swap'; document.head.append(l); }
   const url = location.href.split('#')[0].split('?')[0];
   d.slug = d.slug || card.slug;
   const el = renderDigital(document.getElementById('card'), d, { url, qr: (u) => qrSVG(u), heading: 'h1', ref: 'v-' + (card.slug || 'v'), front: card.front ? '../../' + card.front : null, back: card.back ? '../../' + card.back : null });
-  // počítač: QR na naskenovanie vedľa vizitky
+  // počítač: QR na naskenovanie vedľa vizitky + pozadie vo farbách značky
+  const cs = getComputedStyle(el), v = (k) => cs.getPropertyValue(k).trim();
+  const root = document.documentElement.style;
+  [['--v-ink', '--d-ink'], ['--v-bg', '--d-bg'], ['--v-acc', '--d-acc'], ['--v-acc-t', '--d-acc-t'], ['--v-cover', '--d-cover'], ['--v-muted', '--d-muted'], ['--v-fd', '--d-fd'], ['--v-dw', '--d-dw'], ['--v-ft', '--d-ft'], ['--v-line', '--d-line']].forEach(([a, b]) => root.setProperty(a, v(b)));
+  document.documentElement.classList.add('vready');
   const side = document.querySelector('[data-vside]');
   if (side) {
-    document.documentElement.style.setProperty('--v-ink', getComputedStyle(el).getPropertyValue('--d-ink') || '#111');
     side.querySelector('[data-vqr]').innerHTML = qrSVG(url);
     side.querySelector('[data-vname]').textContent = (d.f && (d.f.name || d.f.company)) || '';
+    side.querySelector('[data-vrole]').textContent = [d.f?.role, d.f?.company !== d.f?.name && d.f?.company].filter(Boolean).join(' · ');
     side.hidden = false;
   }
 </script>

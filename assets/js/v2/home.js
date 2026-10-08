@@ -4,6 +4,7 @@ import { TEMPLATES, templateDefaults } from './templates.js';
 import { snapshot } from './render.js';
 import { askAI } from './ai.js';
 import { renderDigital } from './digital.js';
+import { TPL_PERSONA, personaLabel } from './personas.js';
 import { qrSVG, addWorkdays, fmtDay, session, absUrl } from '../util.js';
 
 const VK = window.VK;
@@ -119,11 +120,16 @@ lazy($('.real'), async () => {
 lazy($('.tpls'), () => {
   // ilustrované šablóny ako prvé
   const RICH = ['kytice', 'klas', 'etiketa', 'lotos', 'vykres', 'erb', 'objektiv', 'prazirna', 'arkada', 'stavitel', 'neon', 'eukalyptus', 'garaz', 'chmel', 'hvezdy', 'panorama', 'letokruhy', 'dortik', 'glow', 'saloon', 'builders', 'cafe', 'samet', 'venec', 'deco', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'odznak', 'medic', 'konfety', 'ruzovezlato', 'akvarelsalvia'];
-  const ids = [...RICH, ...Object.keys(TEMPLATES).filter((id) => !RICH.includes(id))].filter((id) => TEMPLATES[id]).slice(0, 36);
+  const ids = [...RICH, ...Object.keys(TEMPLATES).filter((id) => !RICH.includes(id))].filter((id) => TEMPLATES[id]).slice(0, 24);
   const rows = [ids.filter((_, i) => i % 2 === 0), ids.filter((_, i) => i % 2 === 1)];
+  const TILT = [-2.5, 1.8, -1.2, 2.6, -1.9, 1.1];
   for (const [ri, list] of rows.entries()) {
     const items = [...list, ...list];
-    $(`[data-row="${ri}"]`).innerHTML = items.map((id, k) => `<a class="tc tc--photo" href="${VK.links.tvorba}?rezim=sablony" data-t="${id}"${k >= list.length ? ' aria-hidden="true" tabindex="-1"' : ''}><span>${TEMPLATES[id].name}</span><img alt="${TEMPLATES[id].name}" src="${VK.pre['tpl-' + id + '-m'] || VK.pre['tpl-' + id + '-f'] || ''}" loading="lazy"></a>`).join('');
+    $(`[data-row="${ri}"]`).innerHTML = items.map((id, k) => {
+      const t = TEMPLATES[id], f = VK.pre['tpl-' + id + '-f'] || '', b = VK.pre['tpl-' + id + '-b'] || '';
+      const dup = k >= list.length ? ' aria-hidden="true" tabindex="-1"' : '';
+      return `<a class="tc2" href="${VK.links.tvorba}?rezim=sablony" data-t="${id}" style="--r:${TILT[(k + ri * 3) % TILT.length]}deg"${dup}><span class="tc2__stack">${b ? `<img class="tc2__b" alt="" src="${b}" loading="lazy" decoding="async">` : ''}<img class="tc2__f" alt="${t.name}" src="${f}" loading="lazy" decoding="async"></span><span class="tc2__cap"><b>${t.name}</b><i>${personaLabel(TPL_PERSONA[id] || 'arch')}</i></span></a>`;
+    }).join('');
   }
 }, '600px');
 $('[data-tpl-rows]')?.addEventListener('click', (e) => {

@@ -22,15 +22,15 @@ async () => {
   const out = {};
   let seed = 0;
   const shot = async (name, d, w, mock = 0) => {
-    out[name + '-f'] = await photo(await snapshot(d, 'front', w, 'image/png'), { quality: 0.86 });
-    out[name + '-b'] = await photo(await snapshot(d, 'back', w, 'image/png'), { quality: 0.86 });
+    out[name + '-f'] = await photo(await snapshot(d, 'front', w, 'image/png'), { quality: 0.8 });
+    out[name + '-b'] = await photo(await snapshot(d, 'back', w, 'image/png'), { quality: 0.8 });
     if (mock) out[name + '-m'] = await mockup(out[name + '-f'], out[name + '-b'], { width: mock, seed: seed++, quality: 0.82 });
   };
   // šablóny
   for (const id of Object.keys(TEMPLATES)) {
     const pk = TPL_PERSONA[id] || 'arch';
     const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: null, emblem: emblemFor(PERSONAS[pk].icon, PERSONAS[pk].role) });
-    await shot('tpl-' + id, d, 720, 760);
+    await shot('tpl-' + id, d, 1000, 1100);
   }
   // hero
   // hero: živá ukážka (6 odborov, predná aj zadná strana)
@@ -54,7 +54,7 @@ async () => {
       if (!TEMPLATES[c.template]) continue;
       const art = c.art.mode === 'file' ? location.origin + '/assets/ai/' + c.art.file : c.art.mode === 'library' ? c.art.key : null;
       const d = newDesign({ tpl: c.template, fonts: c.fonts || TEMPLATES[c.template].fonts, pal: { label: 'AI', ...c.palette }, art, f, mark: null, emblem: emblemFor(ICON[s.key], s.fields.role) });
-      await shot(`show-${s.key}-${i}`, d, 900, 1000);
+      await shot(`show-${s.key}-${i}`, d, 1000, 1100);
     }
   }
   // krok 2

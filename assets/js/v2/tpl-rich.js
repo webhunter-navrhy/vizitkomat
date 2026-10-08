@@ -532,7 +532,9 @@ export function richTemplates(h) {
         return { bg: { color: '#F6F5F0' }, objs: [
           IMG(c.root + 'assets/tex/blob-bez.png', W * 0.4, -14, W * 0.75, H + 26, { role: 'art', blend: 'multiply', opacity: 0.75 }),
           IMG(c.root + 'assets/tex/blob-sivy.png', W * 0.55, H * 0.2, W * 0.55, H * 0.9, { role: 'art', blend: 'multiply', opacity: 0.5 }),
-          emblem(c, W * 0.74, H * 0.42, 13, ink),
+          C(W * 0.74, H * 0.42, 10.5, { stroke: g, sw: 0.18 }),
+          ...sprig(W * 0.74 - 6, H * 0.42 + 9, 12, -150, { color: '#6E8B76', leaves: 7, size: 2.6 }), ...sprig(W * 0.74 + 6, H * 0.42 + 9, 12, -30, { color: '#6E8B76', leaves: 7, size: 2.6 }),
+          emblem(c, W * 0.74, H * 0.42, 12, ink),
           T(brand(c), { field: 'company', x: c.m + 1, y: H * 0.5, oy: 'bottom', size: 5, font: 'd', color: ink, fit: W * 0.5 }),
           T(f.tagline || f.role || '', { field: 'tagline', x: c.m + 1.5, y: H * 0.5 + 1.6, size: 3, font: SCRIPT, color: '#6E8B76', fit: W * 0.45 }),
           Ln(c.m + 1, H * 0.74, c.m + 14, H * 0.74, g, 0.16),
