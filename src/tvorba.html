@@ -22,7 +22,7 @@
   <!-- ===== 1. ZAČIATOK ===== -->
   <section class="st1" data-pane="start">
     <div class="wrap">
-      <h1 class="h-l st1__h">{{ L('Ako chcete', 'Jak chcete') }} <span class="hl-c">{{ L('začať?', 'začít?') }}</span></h1>
+      <h1 class="h-l st1__h" tabindex="-1">{{ L('Ako chcete', 'Jak chcete') }} <span class="hl-c">{{ L('začať?', 'začít?') }}</span></h1>
       <div class="resume" data-resume hidden>
         <img alt="" data-resume-img>
         <div><b>{{ L('Máte rozpracovanú vizitku', 'Máte rozpracovanou vizitku') }}</b><span>{{ L('Pokračujte tam, kde ste skončili.', 'Pokračujte tam, kde jste skončili.') }}</span></div>
@@ -37,12 +37,20 @@
             <textarea data-ask-start-in aria-label="{{ L('Čím sa živíte?', 'Čím se živíte?') }}" rows="2" maxlength="400" placeholder="{{ L('Napr. Som Jana, kaderníčka v Trnave, chcem niečo jemné', 'Např. Jsem Jana, kadeřnice v Brně, chci něco jemného') }}"></textarea>
             <button class="btn btn--y" type="submit">{{ L('Navrhni', 'Navrhni') }} <span class="ar">→</span></button>
           </form>
+          <div class="sense" data-sense aria-live="polite">
+            <span data-sense-k="job"><i aria-hidden="true"></i>{{ L('Čím sa živíte', 'Čím se živíte') }}</span>
+            <span data-sense-k="city"><i aria-hidden="true"></i>{{ L('Mesto', 'Město') }}</span>
+            <span data-sense-k="style"><i aria-hidden="true"></i>{{ L('Štýl', 'Styl') }}</span>
+            <small data-sense-tip>{{ L('Stačí jedna veta. Čím viac toho napíšete, tým presnejšie návrhy.', 'Stačí jedna věta. Čím víc toho napíšete, tím přesnější návrhy.') }}</small>
+          </div>
           <div class="chips" data-chips>
             <button data-p="{{ L('Som kaderníčka v Trnave, chcem niečo jemné a elegantné', 'Jsem kadeřnice v Brně, chci něco jemného a elegantního') }}">{{ L('Kaderníčka', 'Kadeřnice') }}</button>
             <button data-p="{{ L('Pekáreň v Banskej Bystrici, poctivo a tradične', 'Pekárna v Olomouci, poctivě a tradičně') }}">{{ L('Pekáreň', 'Pekárna') }}</button>
             <button data-p="{{ L('Realitný maklér v Bratislave, prémiovo', 'Realitní makléř v Praze, prémiově') }}">{{ L('Maklér', 'Makléř') }}</button>
             <button data-p="{{ L('Elektrikár z Prešova, výrazne a čitateľne', 'Elektrikář z Ostravy, výrazně a čitelně') }}">{{ L('Elektrikár', 'Elektrikář') }}</button>
             <button data-p="{{ L('Zubná ambulancia v Žiline, sviežo a dôveryhodne', 'Zubní ordinace v Brně, svěže a důvěryhodně') }}">{{ L('Zubár', 'Zubař') }}</button>
+            <button data-p="{{ L('Kaviareň v Košiciach, útulne a moderne', 'Kavárna v Ostravě, útulně a moderně') }}">{{ L('Kaviareň', 'Kavárna') }}</button>
+            <button data-p="{{ L('Advokátska kancelária v Bratislave, seriózne a luxusne', 'Advokátní kancelář v Praze, seriózně a luxusně') }}">{{ L('Advokát', 'Advokát') }}</button>
           </div>
           <p class="way__note">{{ L('Zadanie spracuje AI od Googlu. Stačí odbor, mesto a štýl, citlivé údaje doň nepíšte.', 'Zadání zpracuje AI od Googlu. Stačí obor, město a styl, citlivé údaje do něj nepište.') }} <a href="{{ link('gdpr') }}">{{ L('Viac', 'Více') }}</a></p>
         </article>
@@ -59,6 +67,14 @@
           <span class="link">{{ L('Nahrať súbor', 'Nahrát soubor') }} →</span>
         </a>
       </div>
+      <div class="insp" data-insp>
+        <div class="insp__h"><h2>{{ L('Alebo začnite obľúbenou šablónou', 'Nebo začněte oblíbenou šablonou') }}</h2><button class="link" type="button" data-start-tpl2>{{ L('Všetkých ' ~ tpl_count, 'Všech ' ~ tpl_count) }} →</button></div>
+        <div class="insp__row">
+          {% for id, nm in [('kytice', L('Kytica', 'Kytice')), ('etiketa', 'Etiketa'), ('erb', 'Erb'), ('vows', L('Áno', 'Ano')), ('chmel', 'Chmeľ'), ('glazura', L('Glazúra', 'Glazura')), ('iskra', 'Iskra'), ('noirgold', 'Noir & zlato')] %}
+          <button class="insp__c" type="button" data-insp-t="{{ id }}" style="--r:{{ [-2.5, 1.5, -1, 2, -1.8, 1.2, -1.4, 2.2][loop.index0] }}deg"><img alt="" src="{{ pre['tpl-' ~ id ~ '-f'] }}" loading="lazy" width="500" height="278"><span>{{ nm }}</span></button>
+          {% endfor %}
+        </div>
+      </div>
     </div>
   </section>
 
@@ -67,7 +83,12 @@
     <div class="wrap">
       <div class="ai" data-ai-box>
         <div class="ai__prompt"><span class="ai__me" data-ai-me></span><button class="link" data-ai-change>{{ L('Zmeniť zadanie', 'Změnit zadání') }}</button></div>
-        <div class="ai__load" data-ai-load hidden><span class="dots"><i></i><i></i><i></i></span><b data-ai-step></b><small>{{ L('Trvá to zvyčajne 5 až 10 sekúnd', 'Trvá to obvykle 5 až 10 sekund') }}</small><div class="skel"><i></i><i></i><i></i></div></div>
+        <div class="ai__load" data-ai-load hidden>
+          <div class="ai__lh"><span class="dots"><i></i><i></i><i></i></span><b data-ai-step></b><small>{{ L('Trvá to zvyčajne 5 až 10 sekúnd', 'Trvá to obvykle 5 až 10 sekund') }}</small></div>
+          <div class="ai__bar" aria-hidden="true"><i data-ai-bar></i></div>
+          <ol class="ai__steps" data-ai-steps></ol>
+          <div class="skel" aria-hidden="true">{% for d in [L('Klasický', 'Klasický'), L('Moderný', 'Moderní'), L('Kreatívny', 'Kreativní')] %}<i><b></b><b></b><em>{{ d }}</em></i>{% endfor %}</div>
+        </div>
         <p class="ai__intro" data-ai-intro></p>
         <form class="mine4" data-mine hidden autocomplete="on">
           <b class="mine4__h">{{ L('Doplňte svoje údaje', 'Doplňte své údaje') }} <small>{{ L('a uvidíte ich na všetkých návrhoch', 'a uvidíte je na všech návrzích') }}</small></b>
@@ -232,7 +253,21 @@ So: po domluvě') }}"></textarea></label>
     <div class="ed-stage" data-stage>
       <div class="ed-top">
         <div class="seg" data-sides><button class="on" data-side="front">{{ L('Predná', 'Přední') }}</button><button data-side="back">{{ L('Zadná', 'Zadní') }}</button></div>
-        <div class="ed-hist"><button class="tb" data-undo disabled title="{{ L('Späť', 'Zpět') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 7 4.5 11.5 9 16"/><path d="M5 11.5h9.5a5 5 0 0 1 0 10H11"/></svg></button><button class="tb" data-redo disabled title="{{ L('Vpred', 'Vpřed') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 7l4.5 4.5L15 16"/><path d="M19 11.5H9.5a5 5 0 0 0 0 10H13"/></svg></button></div>
+        <span class="ed-saved" data-saved aria-live="polite"><i aria-hidden="true"></i><span data-saved-t>{{ L('Uložené v prehliadači', 'Uloženo v prohlížeči') }}</span></span>
+        <div class="ed-tools">
+        <div class="ed-zoom" role="group" aria-label="{{ L('Priblíženie', 'Přiblížení') }}"><button class="tb tb--s" data-zoom-out title="{{ L('Oddialiť', 'Oddálit') }} (⌘ −)" aria-label="{{ L('Oddialiť', 'Oddálit') }}">−</button><button class="tb tb--z" data-zoom-fit title="{{ L('Prispôsobiť', 'Přizpůsobit') }} (⌘ 0)" data-zoom-v>100 %</button><button class="tb tb--s" data-zoom-in title="{{ L('Priblížiť', 'Přiblížit') }} (⌘ +)" aria-label="{{ L('Priblížiť', 'Přiblížit') }}">+</button></div>
+        <div class="ed-hist"><button class="tb" data-undo disabled title="{{ L('Späť', 'Zpět') }} (⌘ Z)" aria-label="{{ L('Späť', 'Zpět') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 7 4.5 11.5 9 16"/><path d="M5 11.5h9.5a5 5 0 0 1 0 10H11"/></svg></button><button class="tb" data-redo disabled title="{{ L('Vpred', 'Vpřed') }} (⌘ ⇧ Z)" aria-label="{{ L('Vpred', 'Vpřed') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 7l4.5 4.5L15 16"/><path d="M19 11.5H9.5a5 5 0 0 0 0 10H13"/></svg></button></div>
+        <div class="ed-keys"><button class="tb tb--s" data-keys aria-expanded="false" title="{{ L('Klávesové skratky', 'Klávesové zkratky') }}" aria-label="{{ L('Klávesové skratky', 'Klávesové zkratky') }}">?</button>
+          <div class="pop ed-keys__pop" data-keys-pop>
+            <b>{{ L('Skratky', 'Zkratky') }}</b>
+            <p><kbd>{{ L('Dvojklik', 'Dvojklik') }}</kbd>{{ L('upraviť text', 'upravit text') }}</p>
+            <p><kbd>⌘ Z</kbd>{{ L('späť', 'zpět') }} · <kbd>⌘ ⇧ Z</kbd>{{ L('vpred', 'vpřed') }}</p>
+            <p><kbd>⌘ D</kbd>{{ L('duplikovať', 'duplikovat') }} · <kbd>Del</kbd>{{ L('zmazať', 'smazat') }}</p>
+            <p><kbd>← ↑ → ↓</kbd>{{ L('posun', 'posun') }} · <kbd>⇧</kbd>{{ L('väčší krok', 'větší krok') }}</p>
+            <p><kbd>⌘ +</kbd> <kbd>⌘ −</kbd> <kbd>⌘ 0</kbd>{{ L('priblíženie', 'přiblížení') }}</p>
+            <p><kbd>Alt</kbd>{{ L('pri ťahaní vypne prichytávanie', 'při tažení vypne přichytávání') }}</p>
+          </div></div>
+        </div>
       </div>
       <div class="ctx" data-ctx hidden>
         <div class="ctx__g" data-ctx-text>
@@ -259,6 +294,7 @@ So: po domluvě') }}"></textarea></label>
         </div>
       </div>
       <div class="ed-canvas" data-host><canvas data-canvas></canvas></div>
+      <div class="coach" data-coach hidden role="note"><b>{{ L('Upravujte priamo vo vizitke', 'Upravujte přímo ve vizitce') }}</b><span>{{ L('Kliknite na text a píšte. Prvky chyťte a posuňte, vodítka ich zarovnajú.', 'Klikněte na text a pište. Prvky chyťte a posuňte, vodítka je zarovnají.') }}</span><button type="button" data-coach-x>{{ L('Rozumiem', 'Rozumím') }}</button></div>
       <div class="ed-foot">
         <button class="link" data-back-choose>← {{ L('Iný návrh', 'Jiný návrh') }}</button>
         <button class="link ed-save" data-save-open>{{ L('Uložiť na neskôr', 'Uložit na později') }}</button>
@@ -292,7 +328,7 @@ So: po domluvě') }}"></textarea></label>
         <img alt="" data-thumb-front hidden><img alt="" data-thumb-back hidden>
       </div>
       <div class="st4__opts">
-        <h2 class="h-m">{{ L('Vyberte si', 'Vyberte si') }}</h2>
+        <h2 class="h-m" tabindex="-1" data-focus>{{ L('Vyberte si', 'Vyberte si') }}</h2>
         <h3>{{ L('Čo chcete', 'Co chcete') }}</h3>
         <div class="kinds" data-kind>
           <button class="kind on" data-v="bundle"><b>{{ L('Tlačené + digitálna', 'Tištěné + digitální') }}</b><small>{{ L('digitálna zadarmo', 'digitální zdarma') }}</small></button>
@@ -318,16 +354,23 @@ So: po domluvě') }}"></textarea></label>
           </details>
         </div>
         <div class="sum">
+          <ul class="sum__lines" data-sum-lines></ul>
           <div class="sum__p"><span>{{ L('Spolu', 'Celkem') }}</span><b data-sum>—</b></div>
           <p class="sum__m" data-sum-m></p>
           <p class="sum__d" data-sum-d></p>
           <button class="btn btn--c btn--lg sum__cta" data-add-cart>{{ L('Objednať', 'Objednat') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
           <button class="link sum__save" data-save-open>{{ L('Ešte nie? Pošlite si návrh e-mailom', 'Ještě ne? Pošlete si návrh e-mailem') }}</button>
+          <ul class="sum__trust">
+            <li><b>{{ L('Platíte až po kontrole', 'Platíte až po kontrole') }}</b>{{ L('návrh pozrie človek', 'návrh zkontroluje člověk') }}</li>
+            <li><b>{{ L('QR platba', 'QR platba') }}</b>{{ L('bez karty a registrácie', 'bez karty a registrace') }}</li>
+            <li><b>{{ L('Chyba tlače?', 'Chyba tisku?') }}</b>{{ L('vytlačíme znova', 'vytiskneme znovu') }}</li>
+          </ul>
           <p class="sum__vat">{{ L('Nie sme platcami DPH, cena je konečná. Doprava zadarmo.', 'Nejsme plátci DPH, cena je konečná. Doprava zdarma.') }}</p>
         </div>
       </div>
     </div>
   </section>
+  <div class="obar" data-obar hidden><div><b data-obar-p>—</b><small data-obar-m></small></div><button class="btn btn--c" type="button" data-obar-go>{{ L('Objednať', 'Objednat') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button></div>
 </div>
 <dialog class="dlg tpv" data-tpv aria-labelledby="tpv-h">
   <div class="dlg__in">

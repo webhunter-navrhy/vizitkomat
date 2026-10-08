@@ -78,6 +78,9 @@ $$('[data-od]').forEach((lab) => {
   ['dragenter', 'dragover'].forEach((ev) => lab.addEventListener(ev, (e) => { e.preventDefault(); lab.classList.add('over'); }));
   ['dragleave', 'drop'].forEach((ev) => lab.addEventListener(ev, (e) => { e.preventDefault(); lab.classList.remove('over'); }));
   lab.addEventListener('drop', (e) => { const f = e.dataTransfer.files[0]; if (f) go(f); });
+  // ovládanie klávesnicou (skrytý input nie je fokusovateľný)
+  lab.tabIndex = 0; lab.setAttribute('role', 'button');
+  lab.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
 });
 $('[data-backopt]').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.back = b.dataset.v; $$('[data-backopt] button').forEach((x) => x.classList.toggle('on', x === b)); paintChecks(); });
 $('[data-size]').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; st.size = b.dataset.v; $$('[data-size] button').forEach((x) => x.classList.toggle('on', x === b)); const S = SIZES[st.size]; $('[data-spec]').textContent = `${S.w + 4} × ${S.h + 4} mm`; paintChecks(); });

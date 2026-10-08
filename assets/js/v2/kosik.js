@@ -71,8 +71,9 @@ async function paint() {
       <b class="it__p">${money(itemPrice(c))}</b></li>`;
   }).join('');
   const total = items.reduce((s, it) => s + itemPrice(it.config), 0);
-  $('[data-lines]').innerHTML = items.map((it) => `<p><span>${esc(it.title)} <i>${it.kind === 'digital' ? tr('digitálna', 'digitální') : it.config.qty + ' ' + tr('ks', 'ks')}</i></span><span>${money(itemPrice(it.config))}</span></p>`).join('') + `<p><span>${tr('Doprava', 'Doprava')}</span><span>${tr('zadarmo', 'zdarma')}</span></p>`;
+  $('[data-lines]').innerHTML = items.map((it) => `<p class="co__ln">${it.thumb ? `<img src="${it.thumb}" alt="">` : '<i class="co__ph"></i>'}<span><b>${esc(it.title)}</b><i>${it.kind === 'digital' ? tr('digitálna vizitka', 'digitální vizitka') : it.config.qty + ' ' + tr('ks', 'ks')}</i></span><span>${money(itemPrice(it.config))}</span></p>`).join('') + `<p class="co__ship"><span>${tr('Doprava DPD', 'Doprava DPD')}</span><span>${tr('zadarmo', 'zdarma')}</span></p>`;
   $('[data-total]').textContent = money(total);
+  $('[data-bar-total]').textContent = money(total);
   const dig = items.every((i) => i.kind === 'digital');
   $('[data-ship-fs]').hidden = dig;
   $$('[data-ship-fs] [required]').forEach((i) => { i.required = !dig; });
@@ -104,7 +105,7 @@ $('[data-ico]').addEventListener('input', (e) => {
   const v = e.target.value.replace(/\s/g, ''), st = $('[data-ico-st]'), f = $('[data-checkout]');
   if (!/^\d{8}$/.test(v)) return;
   icoT = setTimeout(async () => {
-    st.textContent = tr('hľadám…', 'hledám…');
+    st.textContent = tr('hľadám…', 'hledám…'); st.dataset.s = 'load';
     try {
       const land = f.country?.value === 'SK' ? 'sk' : 'cz';
       const r = await fetch(`${VK.orderEndpoint.replace(/\/order$/, '')}/firma?ico=${v}&land=${land}`);
@@ -113,27 +114,55 @@ $('[data-ico]').addEventListener('input', (e) => {
       f.company.value = j.company || f.company.value;
       if (j.dic && f.dic && !f.dic.value) f.dic.value = j.dic;
       if (!f.street.value && j.street) { f.street.value = j.street; f.city.value = j.city; f.zip.value = j.zip; if (f.country && j.country) f.country.value = j.country; }
-      st.textContent = tr('✓ doplnené z registra', '✓ doplněno z ARES');
-    } catch (x) { st.textContent = tr('firmu sme nenašli, vyplňte ručne', 'firmu jsme nenašli, vyplňte ručně'); }
+      st.textContent = tr('doplnené z registra', 'doplněno z ARES'); st.dataset.s = 'ok';
+      ['company', 'dic', 'street', 'city', 'zip'].forEach((k) => { const el = f[k]; if (el?.value) { el.closest('.fl')?.classList.remove('filled'); void el.offsetWidth; el.closest('.fl')?.classList.add('filled'); check(el); } });
+    } catch (x) { st.textContent = tr('firmu sme nenašli, vyplňte ručne', 'firmu jsme nenašli, vyplňte ručně'); st.dataset.s = 'err'; }
   }, 300);
 });
 document.addEventListener('change', async (e) => { const s = e.target.closest('[data-qty]'); if (s) { await store.cartUpdate(s.dataset.qty, { config: { qty: +s.value } }); paint(); } });
 $('[data-company-toggle]').addEventListener('change', (e) => { $('[data-company]').hidden = !e.target.checked; });
+
+/* ---------- priebežná kontrola polí ---------- */
+const RULES = {
+  name: [(v) => v.trim().split(/\s+/).length >= 2 && v.trim().length >= 4, tr('Napíšte meno aj priezvisko.', 'Napište jméno i příjmení.')],
+  email: [(v) => /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(v.trim()), tr('Skontrolujte e-mail, napr. jana@firma.sk', 'Zkontrolujte e-mail, např. jana@firma.cz')],
+  phone: [(v) => v.replace(/\D/g, '').length >= 9, tr('Telefón pre kuriéra, aspoň 9 číslic.', 'Telefon pro kurýra, aspoň 9 číslic.')],
+  street: [(v) => /\p{L}/u.test(v) && /\d/.test(v), tr('Ulica aj číslo domu, napr. Panská 14', 'Ulice i číslo domu, např. Panská 14')],
+  city: [(v) => v.trim().length >= 2, tr('Doplňte mesto.', 'Doplňte město.')],
+  zip: [(v) => /^\d{3}\s?\d{2}$/.test(v.trim()), tr('PSČ má 5 číslic, napr. 811 01', 'PSČ má 5 číslic, např. 110 00')],
+};
+function check(el, strict = false) {
+  const r = RULES[el.name], fl = el.closest('.fl'); if (!r || !fl) return true;
+  const v = el.value, ok = r[0](v);
+  let msg = fl.querySelector('.fl__msg');
+  if (!msg) { msg = document.createElement('small'); msg.className = 'fl__msg'; msg.id = 'm-' + el.name; fl.append(msg); el.setAttribute('aria-describedby', msg.id); }
+  fl.classList.toggle('ok', ok && !!v.trim());
+  const bad = !ok && (strict || !!v.trim());
+  fl.classList.toggle('bad', bad); el.setAttribute('aria-invalid', bad ? 'true' : 'false');
+  msg.textContent = bad ? (v.trim() ? r[1] : tr('Toto pole je povinné.', 'Toto pole je povinné.')) : '';
+  return ok;
+}
+$('[data-checkout]').addEventListener('focusout', (e) => { if (RULES[e.target.name]) check(e.target); });
+$('[data-checkout]').addEventListener('input', (e) => { const fl = e.target.closest('.fl'); if (RULES[e.target.name] && (fl?.classList.contains('bad') || fl?.classList.contains('ok'))) check(e.target); });
+// mobilná lišta so sumou, keď súhrn nie je vidieť
+const bar = $('[data-bar]');
+new IntersectionObserver((es) => { bar.classList.toggle('on', !es[0].isIntersecting && !$('[data-full]').hidden); }, { rootMargin: '0px 0px -40px 0px' }).observe($('.co__sum'));
 
 (async function prefill() {
   await paint();
   const f = $('[data-checkout]'), d = items[0]?.design?.f || {};
   let saved = null; try { saved = JSON.parse(localStorage.getItem('vk2-checkout') || 'null'); } catch (x) { /* nič */ }
   const vals = { name: d.name, email: d.email, phone: d.phone, ...(saved || {}) };
-  for (const [k, v] of Object.entries(vals)) if (f[k] && v && !f[k].value && f[k].type !== 'checkbox') f[k].value = v;
+  for (const [k, v] of Object.entries(vals)) if (f[k] && v && !f[k].value && f[k].type !== 'checkbox') { f[k].value = v; check(f[k]); }
 })();
 
 $('[data-checkout]').addEventListener('submit', async (e) => {
   e.preventDefault();
   const f = e.currentTarget, err = $('[data-err]');
-  const bad = [...f.querySelectorAll('[required]')].filter((i) => !i.closest('[hidden]') && (i.type === 'checkbox' ? !i.checked : !i.value.trim() || (i.type === 'email' && !/^\S+@\S+\.\S+$/.test(i.value))));
-  $$('.fl.bad', f).forEach((x) => x.classList.remove('bad'));
-  bad.forEach((i) => i.closest('.fl')?.classList.add('bad'));
+  const bad = [...f.querySelectorAll('[required]')].filter((i) => !i.closest('[hidden]') && (i.type === 'checkbox' ? !i.checked : !i.value.trim() || (RULES[i.name] && !check(i, true))));
+  bad.forEach((i) => { if (i.type !== 'checkbox') check(i, true); });
+  f.querySelector('.chk--terms')?.classList.toggle('bad', !f.terms.checked);
+  if (bad.length) { const first = bad.find((i) => i.type !== 'checkbox') || bad[0]; first.focus({ preventScroll: true }); first.closest('fieldset, .co__sum')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
   if (bad.length) { err.hidden = false; err.textContent = bad.length === 1 && bad[0].name === 'terms' ? tr('Potvrďte, prosím, súhlas s podmienkami.', 'Potvrďte prosím souhlas s podmínkami.') : tr('Doplňte, prosím, zvýraznené polia.', 'Doplňte prosím zvýrazněná pole.'); bad[0].focus(); return; }
   err.hidden = true;
   const data = Object.fromEntries(new FormData(f).entries());
@@ -164,7 +193,7 @@ $('[data-checkout]').addEventListener('submit', async (e) => {
       return;
     }
   }
-  $('[data-full]').hidden = true; $('.cart__head').hidden = true; $('[data-done]').hidden = false;
+  $('[data-full]').hidden = true; $('.cart__head').hidden = true; $('[data-done]').hidden = false; bar.classList.remove('on');
   $('[data-done-num]').textContent = tr('Objednávka ', 'Objednávka ') + order.number;
   $('[data-done-img]').src = items[0]?.thumb || '';
   $('[data-done-date]').textContent = `${tr('Odhadom', 'Odhadem')} ${fmtDay(arrival(items))}`;

@@ -58,6 +58,7 @@ window.VK = {
       <a href="{{ link('tvorba') }}"{% if page == 'tvorba' %} aria-current="page"{% endif %}>{{ L('Tvorba', 'Tvorba') }}</a>
       <a href="{{ link('vlastny') }}"{% if page == 'vlastny' %} aria-current="page"{% endif %}>{{ L('Vlastný návrh', 'Vlastní návrh') }}</a>
       <a href="{{ link('digitalna') }}"{% if page == 'digitalna' %} aria-current="page"{% endif %}>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</a>
+      <a href="{{ link('obory') }}"{% if page == 'obory' or page.startswith('obor-') %} aria-current="page"{% endif %} data-wide>{{ L('Podľa odboru', 'Podle oboru') }}</a>
       <a href="{{ link('cennik') }}"{% if page == 'cennik' %} aria-current="page"{% endif %}>{{ L('Cenník', 'Ceník') }}</a>
     </nav>
     <div class="nav__end">
@@ -67,17 +68,22 @@ window.VK = {
         <span class="nav__count" data-cart-count hidden>0</span>
       </a>
       <a class="btn btn--sm btn--nav" href="{{ link('tvorba') }}">{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }}</a>
-      <button class="nav__burger" aria-label="Menu" aria-expanded="false" data-burger><span></span><span></span></button>
+      <button class="nav__burger" aria-label="Menu" aria-expanded="false" aria-controls="menu" data-burger><span></span><span></span></button>
     </div>
   </div>
-  <div class="nav__sheet" data-sheet>
-    <a href="{{ link('tvorba') }}">{{ L('Tvorba', 'Tvorba') }}</a>
-    <a href="{{ link('vlastny') }}">{{ L('Vlastný návrh', 'Vlastní návrh') }}</a>
-    <a href="{{ link('digitalna') }}">{{ L('Digitálna vizitka', 'Digitální vizitka') }}</a>
-    <a href="{{ link('obory') }}">{{ L('Podľa odboru', 'Podle oboru') }}</a>
-    <a href="{{ link('cennik') }}">{{ L('Cenník', 'Ceník') }}</a>
-    <a href="{{ link('kosik') }}">{{ L('Košík', 'Košík') }}</a>
-    <a href="{{ alt_url }}">{{ L('Česky', 'Slovensky') }}</a>
+  <div class="nav__sheet" data-sheet id="menu" aria-label="Menu">
+    <nav class="sheet__links">
+      <a href="{{ link('tvorba') }}"{% if page == 'tvorba' %} aria-current="page"{% endif %}>{{ L('Tvorba vizitky', 'Tvorba vizitky') }}</a>
+      <a href="{{ link('tvorba') }}?rezim=sablony">{{ L('Šablóny', 'Šablony') }}</a>
+      <a href="{{ link('vlastny') }}"{% if page == 'vlastny' %} aria-current="page"{% endif %}>{{ L('Vlastný návrh', 'Vlastní návrh') }}</a>
+      <a href="{{ link('digitalna') }}"{% if page == 'digitalna' %} aria-current="page"{% endif %}>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</a>
+      <a href="{{ link('obory') }}"{% if page == 'obory' or page.startswith('obor-') %} aria-current="page"{% endif %}>{{ L('Podľa odboru', 'Podle oboru') }}</a>
+      <a href="{{ link('cennik') }}"{% if page == 'cennik' %} aria-current="page"{% endif %}>{{ L('Cenník', 'Ceník') }}</a>
+    </nav>
+    <div class="sheet__foot">
+      <a class="btn btn--c btn--lg" href="{{ link('tvorba') }}?rezim=ai">{{ L('Navrhnúť vizitku s AI', 'Navrhnout vizitku s AI') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a>
+      <div class="sheet__meta"><a href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a><a class="nav__lang" href="{{ alt_url }}" hreflang="{{ 'cs' if lang == 'sk' else 'sk' }}" aria-label="{{ L('Česká verzia', 'Slovenská verze') }}"><span{% if lang == 'sk' %} class="on"{% endif %}><b>SK</b></span><span{% if lang == 'cz' %} class="on"{% endif %}><b>CZ</b></span></a></div>
+    </div>
   </div>
 </header>
 {% endblock %}
@@ -88,10 +94,17 @@ window.VK = {
 
 {% block footer %}
 <footer class="foot" data-nav="ink">
+  <ul class="foot__trust">
+    <li><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg></i><b>{{ L('Kontrola človekom', 'Kontrola člověkem') }}</b><span>{{ L('každý návrh pred tlačou', 'každý návrh před tiskem') }}</span></li>
+    <li><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg></i><b>{{ L('QR platba až potom', 'QR platba až potom') }}</b><span>{{ L('bez karty a bez zálohy', 'bez karty a bez zálohy') }}</span></li>
+    <li><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg></i><b>{{ L('Doprava zadarmo', 'Doprava zdarma') }}</b><span>{{ L('kuriér DPD na Slovensko aj do Česka', 'kurýr DPD po Česku i na Slovensko') }}</span></li>
+    <li><i aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10l8-6 8 6v10"/><path d="M9 20v-6h6v6"/></svg></i><b>{{ L('Skutočná firma', 'Skutečná firma') }}</b><span>webhunter s.r.o. · IČO 29498511</span></li>
+  </ul>
   <div class="foot__in">
     <div class="foot__brand">
       <a class="brand" href="{{ link('index') }}"><span class="brand__dot"></span>vizitkomat</a>
       <p>{{ L('Vizitky na papieri aj v telefóne. Navrhne ich AI grafik, upravíte ich ako v Canve, vytlačíme a doručíme.', 'Vizitky na papíře i v telefonu. Navrhne je AI grafik, upravíte je jako v Canvě, vytiskneme a doručíme.') }}</p>
+      <a class="btn btn--y btn--sm foot__cta" href="{{ link('tvorba') }}?rezim=ai">{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }} <span class="ar">→</span></a>
     </div>
     <div class="foot__col">
       <p class="foot__h">{{ L('Tvorba', 'Tvorba') }}</p>

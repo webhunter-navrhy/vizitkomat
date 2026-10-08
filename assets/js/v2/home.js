@@ -1,16 +1,16 @@
 // Homepage v2 (Pop)
 import { newDesign, FONTS, PALETTES, SIZES, tr, CZ } from './model.js';
-import { TEMPLATES, templateDefaults } from './templates.js';
-import { snapshot } from './render.js';
-import { askAI } from './ai.js';
-import { renderDigital } from './digital.js';
-import { TPL_PERSONA, personaLabel } from './personas.js';
+// ťažké moduly (šablóny, renderer, AI, digitálna vizitka) načítame až keď ich treba
+const tplMod = () => import('./templates.js');
 import { qrSVG, addWorkdays, fmtDay, session, absUrl, deliveryDays } from '../util.js';
 
 const VK = window.VK;
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const DEMO = absUrl(VK.links.demo);
+// Fabric.js načítame až keď ho treba (AI naživo), stránka sa tak načíta rýchlejšie
+let fabricP = null;
+const loadFabric = () => fabricP ||= (window.fabric ? Promise.resolve() : new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js'; sc.onload = res; sc.onerror = rej; document.head.append(sc); }));
 const lazy = (el, fn, margin = '400px') => { if (!el) return; const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { io.disconnect(); fn(); } }, { rootMargin: margin }); io.observe(el); };
 
 /* ---------- hero: živá ukážka (zadanie → vizitka) ---------- */
@@ -21,6 +21,7 @@ const vis = $('[data-hero-vis]');
   const typeEl = $('[data-demo-type]'), tagEl = $('[data-demo-tag]'), ai = $('[data-demo-ai]'), deck = $('[data-demo-deck]');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let cur = 0, visible = true, paused = false;
+  const GLOW = ['rgba(255, 170, 190, .6)', 'rgba(255, 196, 120, .55)', 'rgba(255, 220, 160, .5)', 'rgba(255, 120, 120, .45)', 'rgba(255, 210, 63, .55)', 'rgba(120, 230, 210, .5)'];
   const layout = () => cards.forEach((c, i) => { const pos = (i - cur + N) % N; c.dataset.pos = pos < 3 ? pos : 'x'; c.classList.toggle('on', pos === 0); c.tabIndex = pos === 0 ? 0 : -1; });
   layout(); ai.classList.add('done');
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -35,6 +36,8 @@ const vis = $('[data-hero-vis]');
     ai.classList.add('thinking'); await wait(1000); ai.classList.remove('thinking');
     c.style.transition = 'none'; c.dataset.pos = 'in'; void c.offsetWidth; c.style.transition = '';
     cur = next; layout(); tagEl.textContent = c.dataset.t; ai.classList.add('done');
+    deck.style.setProperty('--glow', GLOW[next % GLOW.length]);
+    c.classList.remove('mat'); deck.classList.remove('spark'); void c.offsetWidth; c.classList.add('mat'); deck.classList.add('spark'); setTimeout(() => { c.classList.remove('mat'); deck.classList.remove('spark'); }, 1500);
     await wait(3400);
   }
   if (!reduce) (async () => { await wait(2600); for (;;) { if (active()) await step(); else await wait(400); } })();
@@ -57,7 +60,7 @@ const vis = $('[data-hero-vis]');
 
 /* ---------- hero: AI naživo ---------- */
 const STEPS = [tr('Čítam zadanie…', 'Čtu zadání…'), tr('Vyberám rozloženie…', 'Vybírám rozložení…'), tr('Ladím farby a písmo…', 'Ladím barvy a písmo…'), tr('Píšem slogan…', 'Píšu slogan…'), tr('Kreslím grafiku…', 'Kreslím grafiku…')];
-let designs = [];
+let designs = [], snapshot = null;
 async function heroAI(prompt) {
   vis.classList.add('running');
   const run = $('[data-ai-run]'); run.hidden = false;
@@ -65,6 +68,8 @@ async function heroAI(prompt) {
   let i = 0; $('[data-ai-step]').textContent = STEPS[0];
   const t = setInterval(() => { i = Math.min(i + 1, STEPS.length - 1); $('[data-ai-step]').textContent = STEPS[i]; }, 1300);
   if (matchMedia('(max-width: 1060px)').matches) vis.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  await loadFabric().catch(() => {});
+  const [{ askAI }, rmod] = await Promise.all([import('./ai.js'), import('./render.js')]); snapshot = rmod.snapshot;
   const r = await askAI(prompt, {}, { onArt: (idx, d) => { designs[idx] = d; paintOne(idx); } });
   clearInterval(t);
   designs = r.designs;
@@ -76,6 +81,7 @@ async function heroAI(prompt) {
 async function paintOne(i) {
   const b = $(`[data-ai-grid] [data-i="${i}"]`); if (!b) return;
   if (!designs[i].artPending) b.querySelector('.pend')?.remove();
+  if (!snapshot) snapshot = (await import('./render.js')).snapshot;
   b.querySelector('img').src = await snapshot(designs[i], 'front', 820, 'image/jpeg', 0.9);
 }
 function openDesign(i) { const d = designs[i]; if (!d) return; session('vk2-draft', { ...d, why: undefined }); location.href = VK.links.tvorba + '?rezim=ai'; }
@@ -86,17 +92,17 @@ $$('[data-ai-chips] button').forEach((b) => b.addEventListener('click', () => { 
 $('[data-aibox-final]').addEventListener('submit', (e) => { e.preventDefault(); const v = $('[data-final-in]').value.trim(); location.href = VK.links.tvorba + '?rezim=ai' + (v ? '&prompt=' + encodeURIComponent(v) : ''); });
 
 /* ---------- kroky ---------- */
-lazy($('.how'), () => {
+lazy($('.story'), () => {
   const now = new Date();
   $('[data-arrive]').textContent = new Intl.DateTimeFormat(CZ ? 'cs-CZ' : 'sk-SK', { weekday: 'long', day: 'numeric', month: 'numeric' }).format(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + deliveryDays(false)));
 });
 
 /* ---------- AI ukážky ---------- */
 lazy($('.real'), async () => {
-  const data = await fetch(VK.root + 'assets/ai/showcase.json').then((r) => r.json()).catch(() => []);
+  const [data, { TEMPLATES }] = await Promise.all([fetch(VK.root + 'assets/ai/showcase.json').then((r) => r.json()).catch(() => []), tplMod()]);
   const tabs = $('[data-real-tabs]');
   const labels = { kvety: tr('Kvetinárstvo', 'Květinářství'), vino: tr('Vinárstvo', 'Vinařství'), it: tr('Programátor', 'Programátor') };
-  const prompts = { kvety: tr('Mám kvetinárstvo Levanduľa v Nitre, chcem niečo jemné a prírodné.', 'Mám květinářství Levandule v Nitře, chci něco jemného a přírodního.'), vino: tr('Rodinné vinárstvo pod Pezinkom, tradične a s nádychom luxusu.', 'Rodinné vinařství pod Pálavou, tradičně a s nádechem luxusu.'), it: tr('Programátor z Košíc, firma Bitlab, moderne, tmavo a hravo.', 'Programátor z Ostravy, firma Bitlab, moderně, tmavě a hravě.') };
+  const prompts = { kvety: tr('Mám kvetinárstvo Levanduľa v Nitre, chcem niečo jemné a prírodné.', 'Mám květinářství Levandule v Brně, chci něco jemného a přírodního.'), vino: tr('Rodinné vinárstvo pod Pezinkom, tradične a s nádychom luxusu.', 'Rodinné vinařství pod Pálavou, tradičně a s nádechem luxusu.'), it: tr('Programátor z Košíc, firma Bitlab, moderne, tmavo a hravo.', 'Programátor z Ostravy, firma Bitlab, moderně, tmavě a hravě.') };
   tabs.innerHTML = data.map((s, i) => `<button role="tab" data-real="${i}"${i ? '' : ' class="on"'}>${labels[s.key] || s.key}</button>`).join('');
   const DIRS = [tr('Klasický', 'Klasický'), tr('Moderný', 'Moderní'), tr('Kreatívny', 'Kreativní')];
   const SCENES = ['#2A3270', '#34306E', '#2B3A6B'];
@@ -113,11 +119,13 @@ lazy($('.real'), async () => {
     });
   }
   tabs.addEventListener('click', (e) => { const b = e.target.closest('[data-real]'); if (b) show(+b.dataset.real); });
-  if (data.length) show(0);
+  // prvý príklad je vinárstvo, kvetinárstvo už ukazuje príbeh vyššie
+  if (data.length) show(Math.max(0, data.findIndex((x) => x.key === 'vino')));
 });
 
 /* ---------- šablóny ---------- */
-lazy($('.tpls'), () => {
+lazy($('.tpls'), async () => {
+  const [{ TEMPLATES }, { TPL_PERSONA, personaLabel }] = await Promise.all([tplMod(), import('./personas.js')]);
   // ilustrované šablóny ako prvé
   const RICH = ['kytice', 'klas', 'etiketa', 'lotos', 'vykres', 'erb', 'britva', 'glazura', 'vows', 'iskra', 'objektiv', 'prazirna', 'arkada', 'stavitel', 'neon', 'eukalyptus', 'garaz', 'atrament', 'cisto', 'bilancia', 'orbit', 'dusa', 'sila', 'hrastar', 'ticha', 'minimal', 'muse', 'maitland', 'organic', 'chmel', 'hvezdy', 'panorama', 'letokruhy', 'dortik', 'glow', 'saloon', 'builders', 'cafe', 'samet', 'venec', 'deco', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'odznak', 'medic', 'konfety', 'ruzovezlato', 'akvarelsalvia', 'labka', 'volant', 'zahrada', 'tehla', 'valcek', 'komin', 'naprstok', 'svetlo', 'vinyl', 'lingua', 'tabula', 'vila', 'penzion', 'menu', 'forno', 'filter', 'vinoteka', 'kniha', 'pivonka', 'dotyk', 'serum', 'apoteka', 'prstene', 'duha', 'brazda', 'gatsby', 'wabi', 'riso', 'opal', 'herbar'];
   const ids = [...RICH, ...Object.keys(TEMPLATES).filter((id) => !RICH.includes(id))].filter((id) => TEMPLATES[id]).slice(0, 24);
@@ -132,18 +140,53 @@ lazy($('.tpls'), () => {
     }).join('');
   }
 }, '600px');
-$('[data-tpl-rows]')?.addEventListener('click', (e) => {
+$('[data-tpl-rows]')?.addEventListener('click', async (e) => {
   const a = e.target.closest('[data-t]'); if (!a) return;
   e.preventDefault();
+  const { templateDefaults } = await tplMod();
   session('vk2-draft', newDesign({ tpl: a.dataset.t, ...templateDefaults(a.dataset.t) }));
   location.href = VK.links.tvorba + '?rezim=texty';
 });
 
 /* ---------- digitál ---------- */
-lazy($('.dig'), () => {
+lazy($('.dig'), async () => {
+  const [{ templateDefaults }, { renderDigital }] = await Promise.all([tplMod(), import('./digital.js')]);
   const d = newDesign({ tpl: 'noirgold', ...templateDefaults('noirgold') });
   d.f = { ...d.f, name: tr('Martin Kováč', 'Martin Kovář'), role: tr('Realitný maklér', 'Realitní makléř'), company: 'Domov Reality', tagline: tr('Kľúče odovzdávam osobne.', 'Klíče předávám osobně.'), email: tr('martin@domovreality.sk', 'martin@domovreality.cz'), web: tr('domovreality.sk', 'domovreality.cz'), phone: tr('+421 905 123 456', '+420 605 123 456') };
   d.digital = { bio: tr('Pomáham rodinám predať byt za férovú cenu a bez stresu.', 'Pomáhám rodinám prodat byt za férovou cenu a bez stresu.'), services: tr('Predaj bytov\nOcenenie\nPrenájom', 'Prodej bytů\nOcenění\nPronájem') };
   renderDigital($('[data-dig-phone]'), d, { url: DEMO, qr: (u) => qrSVG(u), front: VK.pre['tpl-noirgold-f'], back: VK.pre['tpl-noirgold-b'] });
   $('[data-dig-qr]').innerHTML = qrSVG(DEMO);
 });
+
+/* ---------- príbeh: sticky scéna podľa kroku ---------- */
+(function story() {
+  const stage = $('[data-story-stage]'); if (!stage) return;
+  const steps = $$('.story__steps li');
+  const set = (n) => { stage.dataset.step = n; steps.forEach((li) => li.classList.toggle('on', li.dataset.s === n)); };
+  set('1');
+  let io;
+  const mk = () => {
+    io?.disconnect();
+    // čiara aktivácie: v strede obrazovky, na mobile nižšie (scéna je hore)
+    const m = matchMedia('(max-width: 900px)').matches ? '-64% 0px -34% 0px' : '-48% 0px -50% 0px';
+    io = new IntersectionObserver((es) => { es.forEach((e) => { if (e.isIntersecting) set(e.target.dataset.s); }); }, { rootMargin: m });
+    steps.forEach((li) => io.observe(li));
+  };
+  mk(); matchMedia('(max-width: 900px)').addEventListener('change', mk);
+})();
+
+/* ---------- papier: náklon za kurzorom ---------- */
+if (matchMedia('(pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  $$('[data-tilt]').forEach((el) => {
+    const card = $('.sw__card', el); let raf = 0;
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      cancelAnimationFrame(raf); raf = requestAnimationFrame(() => {
+        el.classList.add('tilt');
+        card.style.setProperty('--tx', x.toFixed(3)); card.style.setProperty('--ty', y.toFixed(3));
+        card.style.setProperty('--lx', (50 + x * 90).toFixed(1) + '%'); card.style.setProperty('--ly', (40 + y * 90).toFixed(1) + '%');
+      });
+    });
+    el.addEventListener('pointerleave', () => { el.classList.remove('tilt'); card.style.setProperty('--tx', 0); card.style.setProperty('--ty', 0); });
+  });
+}

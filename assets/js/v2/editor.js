@@ -11,28 +11,57 @@ const clone = (o) => JSON.parse(JSON.stringify(o));
 export function createEditor(el, host, opts = {}) {
   const fab = F();
   // Fabric 5.3 – ticho pre neplatný textBaseline
-  const canvas = new fab.Canvas(el, { preserveObjectStacking: true, selectionColor: 'rgba(36,64,230,.08)', selectionBorderColor: '#2440E6', selectionLineWidth: 1.5, stopContextMenu: true, fireRightClick: false, targetFindTolerance: 6 });
+  const canvas = new fab.Canvas(el, { preserveObjectStacking: true, selectionColor: 'rgba(36,64,230,.08)', selectionBorderColor: '#2440E6', selectionLineWidth: 1.5, stopContextMenu: true, fireRightClick: false, targetFindTolerance: 6, controlsAboveOverlay: true });
   fab.Object.prototype.set({ borderColor: '#2440E6', cornerColor: '#FFFFFF', cornerStrokeColor: '#2440E6', cornerStyle: 'circle', cornerSize: 11, transparentCorners: false, borderScaleFactor: 1.6, padding: 4 });
   fab.Textbox.prototype.set?.({ objectCaching: false });
 
   const S = {
     d: null, side: 'front', sides: { front: null, back: null }, custom: { front: false, back: false },
-    zoom: 1, guides: true, marks: false, history: [], future: [], busy: false, listeners: {}, clip: null,
+    zoom: 1, base: 1, uz: 1, px: 0, py: 0, hover: null, guides: true, marks: false, history: [], future: [], busy: false, listeners: {}, clip: null,
   };
   const emit = (ev, x) => (S.listeners[ev] || []).forEach((fn) => fn(x));
   const size = () => SIZES[S.d.size] || SIZES['90x50'];
   const Wt = () => (size().w + 2 * BLEED) * K, Ht = () => (size().h + 2 * BLEED) * K;
 
   // ---------- veľkosť a zoom ----------
+  // plátno vypĺňa celú plochu, vizitka pláva v strede so skutočným tieňom; zoom a posun cez viewport
   function fit() {
     if (!S.d) return;
     const r = host.getBoundingClientRect();
-    const pad = opts.pad ?? 48;
-    const z = Math.max(0.2, Math.min((r.width - pad) / Wt(), (r.height - pad) / Ht(), 3));
+    const W = Math.floor(r.width), H = Math.floor(r.height);
+    if (W < 40 || H < 40) return;
+    const pad = Math.min(opts.pad ?? 48, W * 0.07, H * 0.12);
+    S.base = Math.max(0.15, Math.min((W - 2 * pad) / Wt(), (H - 2 * pad) / Ht(), 3));
+    const z = S.base * S.uz;
     S.zoom = z;
-    canvas.setDimensions({ width: Math.round(Wt() * z), height: Math.round(Ht() * z) });
-    canvas.setZoom(z);
+    // posun len keď je vizitka väčšia ako plocha
+    const mx = Math.max(0, (Wt() * z - W) / 2 + 60), my = Math.max(0, (Ht() * z - H) / 2 + 60);
+    S.px = Math.max(-mx, Math.min(mx, S.px)); S.py = Math.max(-my, Math.min(my, S.py));
+    if (canvas.width !== W || canvas.height !== H) canvas.setDimensions({ width: W, height: H });
+    canvas.setViewportTransform([z, 0, 0, z, (W - Wt() * z) / 2 + S.px, (H - Ht() * z) / 2 + S.py]);
+    applyClip();
+    canvas.getObjects().forEach((o) => o.setCoords());
     canvas.requestRenderAll();
+    emit('zoom', S.uz);
+  }
+  function zoomAt(uz, cx, cy) {
+    const r = host.getBoundingClientRect();
+    if (cx == null) { cx = r.width / 2; cy = r.height / 2; }
+    uz = Math.max(0.6, Math.min(4, uz));
+    const v = canvas.viewportTransform, sx = (cx - v[4]) / v[0], sy = (cy - v[5]) / v[3];
+    const z = S.base * uz;
+    S.uz = uz;
+    S.px = cx - sx * z - (Math.floor(r.width) - Wt() * z) / 2;
+    S.py = cy - sy * z - (Math.floor(r.height) - Ht() * z) / 2;
+    if (Math.abs(uz - 1) < 0.02) { S.uz = 1; S.px = 0; S.py = 0; }
+    fit();
+  }
+  // orez: mimo vizitky je plátno priehľadné (vidno plochu), so spadávkou len pri zobrazení orezu
+  function applyClip() {
+    const sz = size(), b = BLEED * K, rr = S.d.corners === 'round' ? 3 * K : 0;
+    const c = S.marks ? new fab.Rect({ left: 0, top: 0, width: Wt(), height: Ht() }) : new fab.Rect({ left: b, top: b, width: sz.w * K, height: sz.h * K, rx: rr, ry: rr });
+    c.excludeFromExport = true;
+    canvas.clipPath = c;
   }
   const ro = new ResizeObserver(() => fit());
   ro.observe(host);
@@ -45,20 +74,34 @@ export function createEditor(el, host, opts = {}) {
     const sz = size(), b = BLEED * K, w = sz.w * K, h = sz.h * K, r = S.d.corners === 'round' ? 3 * K : 0;
     ctx.save();
     ctx.transform(v[0], v[1], v[2], v[3], v[4], v[5]);
-    // stmavená spadávka
-    ctx.beginPath();
-    ctx.rect(0, 0, Wt(), Ht());
-    if (ctx.roundRect && r) ctx.roundRect(b, b, w, h, r); else ctx.rect(b, b, w, h);
-    ctx.fillStyle = S.marks ? 'rgba(232,70,43,0.18)' : (opts.mask || 'rgba(238,240,250,0.82)');
-    ctx.fill('evenodd');
+    // tieň pod vizitkou (len mimo nej, za ovládacími prvkami)
+    const card = () => { ctx.beginPath(); if (S.marks) ctx.rect(0, 0, Wt(), Ht()); else if (ctx.roundRect && r) ctx.roundRect(b, b, w, h, r); else ctx.rect(b, b, w, h); };
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = 'rgba(15, 20, 64, .30)'; ctx.shadowBlur = 46; ctx.shadowOffsetY = 22;
+    card(); ctx.fill();
+    ctx.shadowColor = 'rgba(15, 20, 64, .16)'; ctx.shadowBlur = 4; ctx.shadowOffsetY = 1.5;
+    card(); ctx.fill();
+    ctx.restore();
     ctx.lineWidth = 1 / S.zoom;
     if (S.marks) {
+      ctx.beginPath(); ctx.rect(0, 0, Wt(), Ht());
+      if (ctx.roundRect && r) ctx.roundRect(b, b, w, h, r); else ctx.rect(b, b, w, h);
+      ctx.fillStyle = 'rgba(232,70,43,0.18)'; ctx.fill('evenodd');
       ctx.strokeStyle = '#E8462B';
       ctx.beginPath(); if (ctx.roundRect && r) ctx.roundRect(b, b, w, h, r); else ctx.rect(b, b, w, h); ctx.stroke();
       ctx.setLineDash([5 / S.zoom, 4 / S.zoom]);
       ctx.strokeStyle = 'rgba(36,64,230,.9)';
       ctx.strokeRect(b + SAFE * K, b + SAFE * K, w - 2 * SAFE * K, h - 2 * SAFE * K);
       ctx.setLineDash([]);
+    }
+    // obrys prvku pod myšou: je zrejmé, čo sa dá chytiť a upraviť
+    const act = canvas.getActiveObject();
+    if (S.hover && S.hover !== act && S.hover.selectable && S.hover.visible && canvas.getObjects().includes(S.hover) && !(act && act.type === 'activeSelection' && act.contains(S.hover))) {
+      const br = S.hover.getBoundingRect(true, true), p = 3 / S.zoom;
+      ctx.setLineDash([4 / S.zoom, 3 / S.zoom]); ctx.strokeStyle = 'rgba(36,64,230,.85)'; ctx.lineWidth = 1.4 / S.zoom;
+      ctx.strokeRect(br.left - p, br.top - p, br.width + 2 * p, br.height + 2 * p); ctx.setLineDash([]);
     }
     if (S.guides && liveGuides.length) {
       ctx.strokeStyle = '#FF3D9A'; ctx.lineWidth = 1.2 / S.zoom;
@@ -107,6 +150,9 @@ export function createEditor(el, host, opts = {}) {
     emit('fields', { k, v: val });
     commit();
   });
+  canvas.on('mouse:over', (e) => { if (e.target && e.target.selectable) { S.hover = e.target; canvas.requestRenderAll(); emit('hover', e.target); } });
+  canvas.on('mouse:out', (e) => { if (S.hover && e.target === S.hover) { S.hover = null; canvas.requestRenderAll(); emit('hover', null); } });
+  canvas.on('mouse:down', () => { if (S.hover) { S.hover = null; } emit('interact'); });
   canvas.on('selection:created', () => emit('selection', canvas.getActiveObject()));
   canvas.on('selection:updated', () => emit('selection', canvas.getActiveObject()));
   canvas.on('selection:cleared', () => emit('selection', null));
@@ -145,7 +191,8 @@ export function createEditor(el, host, opts = {}) {
   // ---------- strany ----------
   function saveSide() {
     if (!S.d) return;
-    S.sides[S.side] = canvas.toJSON(PROPS);
+    const js = canvas.toJSON(PROPS); delete js.clipPath;
+    S.sides[S.side] = js;
   }
   let loadTok = 0;
   async function loadSide(side, fromState) {
@@ -272,7 +319,7 @@ export function createEditor(el, host, opts = {}) {
     async setArt(art) { S.d.art = art; await rebuildAll(); commit(true); },
     async setLogo(src) { S.d.logo = src; await rebuildAll(); commit(true); },
     async setSize(sz) { S.d.size = sz; await rebuildAll(); fit(); commit(true); },
-    async setCorners(c) { S.d.corners = c; canvas.requestRenderAll(); },
+    async setCorners(c) { S.d.corners = c; applyClip(); canvas.requestRenderAll(); },
     async setBack(key) { S.d.back = key; S.custom.back = false; S.sides.back = null; if (S.side === 'back') await loadSide('back'); else await api.setSide('back'); commit(true); },
     async setQR(url) {
       S.d.qrUrl = url;
@@ -372,7 +419,18 @@ export function createEditor(el, host, opts = {}) {
     paste() { if (!S.clip) return; S.clip.clone((c) => { c.set({ left: c.left + 3 * K, top: c.top + 3 * K }); canvas.add(c); canvas.setActiveObject(c); canvas.requestRenderAll(); S.custom[S.side] = true; commit(); }, PROPS); },
 
     setGuides(on) { S.guides = on; },
-    setMarks(on) { S.marks = on; canvas.requestRenderAll(); },
+    setMarks(on) { S.marks = on; applyClip(); canvas.requestRenderAll(); },
+    zoomIn() { zoomAt(S.uz * 1.25); },
+    zoomOut() { zoomAt(S.uz / 1.25); },
+    zoomFit() { S.uz = 1; S.px = 0; S.py = 0; fit(); },
+    get zoomLevel() { return S.uz; },
+    /** vyberie objekt podľa textu (napr. z kontroly pred tlačou) */
+    selectByText(t) {
+      const n = (x) => String(x || '').replace(/\s+/g, ' ').trim().toLowerCase();
+      const o = canvas.getObjects().find((x) => x.selectable && x.text && (n(x.text).includes(n(t)) || n(t).includes(n(x.text))));
+      if (o) { canvas.setActiveObject(o); canvas.requestRenderAll(); emit('selection', o); }
+      return o;
+    },
     undo, redo,
     fit,
     deselect() { canvas.discardActiveObject(); canvas.requestRenderAll(); },
@@ -391,12 +449,16 @@ export function createEditor(el, host, opts = {}) {
 
   // klávesy
   window.addEventListener('keydown', (e) => {
+    if (!host.offsetParent) return; // editor nie je na obrazovke
     const t = document.activeElement;
     if (t && /INPUT|TEXTAREA|SELECT/.test(t.tagName) && !t.closest('.canvas-container')) return;
     const o = canvas.getActiveObject();
     if (o && o.isEditing) return;
     const mod = e.metaKey || e.ctrlKey;
-    if (mod && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); }
+    if (mod && (e.key === '=' || e.key === '+')) { e.preventDefault(); api.zoomIn(); }
+    else if (mod && e.key === '-') { e.preventDefault(); api.zoomOut(); }
+    else if (mod && e.key === '0') { e.preventDefault(); api.zoomFit(); }
+    else if (mod && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); }
     else if (mod && e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); }
     else if (mod && e.key.toLowerCase() === 'd') { e.preventDefault(); api.duplicate(); }
     else if (mod && e.key.toLowerCase() === 'c') { api.copy(); }
@@ -408,6 +470,31 @@ export function createEditor(el, host, opts = {}) {
       api.nudge(e.key === 'ArrowLeft' ? -st : e.key === 'ArrowRight' ? st : 0, e.key === 'ArrowUp' ? -st : e.key === 'ArrowDown' ? st : 0);
     } else if (e.key === 'Escape') api.deselect();
   });
+
+  // Ctrl/⌘ + koliesko priblíži, pri priblížení koliesko posúva
+  host.addEventListener('wheel', (e) => {
+    if (!S.d) return;
+    const r = host.getBoundingClientRect();
+    if (e.ctrlKey || e.metaKey) { e.preventDefault(); zoomAt(S.uz * Math.exp(-e.deltaY * 0.0055), e.clientX - r.left, e.clientY - r.top); }
+    else if (S.uz > 1.01) { e.preventDefault(); S.px -= e.deltaX; S.py -= e.deltaY; fit(); }
+  }, { passive: false });
+  // dva prsty: priblíženie a posun (Fabric dostane len jednoprstové dotyky)
+  let pinch = null;
+  const tp = (e) => { const r = host.getBoundingClientRect(), [a, b] = e.touches; return { d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY), x: (a.clientX + b.clientX) / 2 - r.left, y: (a.clientY + b.clientY) / 2 - r.top }; };
+  host.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 2 || !S.d) return;
+    e.stopPropagation();
+    const p = tp(e); pinch = { ...p, uz: S.uz };
+    canvas.discardActiveObject(); canvas._currentTransform = null; canvas.requestRenderAll();
+  }, { capture: true, passive: true });
+  host.addEventListener('touchmove', (e) => {
+    if (!pinch || e.touches.length !== 2) return;
+    e.stopPropagation(); e.preventDefault();
+    const p = tp(e);
+    zoomAt(pinch.uz * (p.d / pinch.d), p.x, p.y);
+    S.px += p.x - pinch.x; S.py += p.y - pinch.y; pinch.x = p.x; pinch.y = p.y; fit();
+  }, { capture: true, passive: false });
+  host.addEventListener('touchend', (e) => { if (e.touches.length < 2) pinch = null; }, { capture: true });
 
   async function rebuildKeepSel() { await rebuild(S.side); }
   return api;

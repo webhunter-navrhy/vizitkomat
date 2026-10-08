@@ -9,6 +9,39 @@
   <div class="wrap">
     <h1 class="h-l">{{ L('Čo vidíte,', 'Co vidíte,') }} <span class="hl-c">{{ L('to zaplatíte.', 'to zaplatíte.') }}</span></h1>
     <p class="lead pr__lead">{{ L('Ceny sú konečné, nie sme platcami DPH. Zahŕňajú návrh s AI grafikom, obojstrannú tlač, kontrolu dát človekom a dopravu na Slovensko aj do Česka.', 'Ceny jsou konečné, nejsme plátci DPH. Zahrnují návrh s AI grafikem, oboustranný tisk, kontrolu dat člověkem a dopravu po Česku i na Slovensku.') }}</p>
+    <div class="cfg" data-cfg>
+      <div class="cfg__opts">
+        <div class="cfg__g"><p class="cfg__l">{{ L('Papier a povrch', 'Papír a povrch') }}</p>
+          <div class="cfg__papers" role="radiogroup" aria-label="{{ L('Papier', 'Papír') }}">
+            <button role="radio" aria-checked="true" data-k="tier" data-v="std"><i class="sw sw--std"></i><b>{{ L('Štandard', 'Standard') }}</b><small>{{ L('matný 350 g', 'matný 350 g') }}</small></button>
+            <button role="radio" aria-checked="false" data-k="tier" data-v="lam"><i class="sw sw--lam"></i><b>{{ L('Laminácia', 'Laminace') }}</b><small>{{ L('matná alebo lesklá', 'matná nebo lesklá') }}</small></button>
+            <button role="radio" aria-checked="false" data-k="tier" data-v="soft"><i class="sw sw--soft"></i><b>Soft-touch</b><small>{{ L('zamatový', 'sametový') }}</small></button>
+            <button role="radio" aria-checked="false" data-k="tier" data-v="triplex"><i class="sw sw--tri"></i><b>Triplex</b><small>{{ L('720 g, farebné jadro', '720 g, barevné jádro') }}</small></button>
+          </div>
+        </div>
+        <div class="cfg__g"><p class="cfg__l">{{ L('Počet kusov', 'Počet kusů') }}</p>
+          <div class="cfg__seg" role="radiogroup" aria-label="{{ L('Počet kusov', 'Počet kusů') }}">{% for q in prices.qty %}<button role="radio" aria-checked="{{ 'true' if q == 250 else 'false' }}" data-k="qty" data-v="{{ q }}">{{ q }}<small data-qp="{{ q }}"></small></button>{% endfor %}</div>
+        </div>
+        <div class="cfg__row">
+          <div class="cfg__g"><p class="cfg__l">{{ L('Formát', 'Formát') }}</p>
+            <div class="cfg__seg" role="radiogroup" aria-label="{{ L('Formát', 'Formát') }}"><button role="radio" aria-checked="true" data-k="size" data-v="90x50">90×50</button><button role="radio" aria-checked="false" data-k="size" data-v="85x55">85×55</button><button role="radio" aria-checked="false" data-k="size" data-v="55x55">55×55</button></div>
+          </div>
+          <div class="cfg__g"><p class="cfg__l">{{ L('Rohy', 'Rohy') }}</p>
+            <div class="cfg__seg" role="radiogroup" aria-label="{{ L('Rohy', 'Rohy') }}"><button role="radio" aria-checked="true" data-k="corners" data-v="straight">{{ L('Rovné', 'Rovné') }}</button><button role="radio" aria-checked="false" data-k="corners" data-v="round">{{ L('Zaoblené', 'Zaoblené') }}</button></div>
+          </div>
+        </div>
+        <label class="cfg__ex"><input type="checkbox" data-k="express"><span><b>{{ L('Expres', 'Expres') }}</b><small>{{ L('doručenie do ' ~ prices.days.express ~ ' pracovných dní', 'doručení do ' ~ prices.days.express ~ ' pracovních dnů') }} · +{{ prices.express }} {{ prices.symbol }}</small></span><i aria-hidden="true"></i></label>
+      </div>
+      <div class="cfg__out">
+        <div class="cfg__stage" aria-hidden="true"><div class="cfg__card" data-cfg-card><img alt="" src="{{ pre['tpl-etiketa-b'] }}" class="cfg__b"><img alt="" src="{{ pre['tpl-etiketa-f'] }}" class="cfg__f"></div></div>
+        <p class="cfg__sum" data-cfg-spec></p>
+        <p class="cfg__price"><b data-cfg-price>—</b><span data-cfg-per></span></p>
+        <p class="cfg__date" data-cfg-date></p>
+        <a class="btn btn--y btn--lg cfg__go" href="{{ link('tvorba') }}?rezim=ai" data-cfg-go>{{ L('Navrhnúť s touto cenou', 'Navrhnout s touto cenou') }} <span class="ar">→</span></a>
+        <p class="cfg__fine">{{ L('Návrh je zadarmo, platíte až po kontrole. Doprava v cene.', 'Návrh je zdarma, platíte až po kontrole. Doprava v ceně.') }}</p>
+      </div>
+    </div>
+    <h2 class="pr__h2">{{ L('Celý cenník', 'Celý ceník') }}</h2>
     <div class="pr__t" tabindex="0" role="region" aria-label="{{ L('Ceny', 'Ceny') }}">
       <table>
         <thead><tr><th>{{ L('Papier', 'Papír') }} <small>{{ L('90 × 50 mm, obojstranne', '90 × 50 mm, oboustranně') }}</small></th>{% for q in prices.qty %}<th>{{ q }} {{ L('ks', 'ks') }}</th>{% endfor %}</tr></thead>
@@ -33,3 +66,4 @@
   </div>
 </section>
 {% endblock %}
+{% block scripts %}<script type="module" src="{{ A('assets/js/v2/cennik.js') }}"></script>{% endblock %}

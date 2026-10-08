@@ -12,6 +12,7 @@ function paintNav() {
   nav.style.setProperty('--nav-bg', zone === 'blue' ? 'var(--cobalt)' : zone === 'ink' ? 'var(--ink)' : zone === 'yellow' ? 'var(--yellow)' : zone === 'coral' ? 'var(--coral)' : 'var(--cream)');
   nav.style.setProperty('--nav-fg', zone === 'blue' || zone === 'ink' || zone === 'coral' ? '#fff' : 'var(--ink)');
   nav.classList.toggle('solid', window.scrollY > 8 || document.body.dataset.solidNav === '1');
+  nav.classList.toggle('slim', window.scrollY > 120);
 }
 paintNav();
 let navRaf = 0;
@@ -19,10 +20,16 @@ window.addEventListener('scroll', () => { if (!navRaf) navRaf = requestAnimation
 window.addEventListener('resize', paintNav);
 
 const burger = document.querySelector('[data-burger]'), sheet = document.querySelector('[data-sheet]');
-burger?.addEventListener('click', () => {
-  const on = burger.getAttribute('aria-expanded') !== 'true';
+function setMenu(on) {
+  if (!burger) return;
   burger.setAttribute('aria-expanded', on); sheet.classList.toggle('on', on);
-});
+  nav.classList.toggle('menu-on', on); document.body.classList.toggle('menu-on', on);
+  if (on) sheet.querySelector('a')?.focus({ preventScroll: true });
+}
+burger?.addEventListener('click', () => setMenu(burger.getAttribute('aria-expanded') !== 'true'));
+sheet?.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && burger?.getAttribute('aria-expanded') === 'true') { setMenu(false); burger.focus(); } });
+matchMedia('(min-width: 1061px)').addEventListener('change', (e) => { if (e.matches) setMenu(false); });
 
 function paintCount(bump) {
   const n = cartCountFast();
@@ -70,12 +77,27 @@ if (!['tvorba', 'kosik', 'objednavka', 'admin', 'v_card'].includes(PAGE)) {
     setTimeout(() => el.classList.add('on'), 1200);
   });
   // lepiace tlačidlo na mobile po odscrollovaní hero
-  if (!['404', 'digitalna', 'vlastny', 'kontakt', 'podmienky', 'gdpr'].includes(PAGE)) {
+  if (!['404', 'digitalna', 'vlastny', 'kontakt', 'podmienky', 'gdpr', 'cennik'].includes(PAGE)) {
     const bar = document.createElement('a'); bar.className = 'mcta'; bar.href = window.VK.links.tvorba + '?rezim=ai';
     bar.innerHTML = `<span>${tr2('Navrhnúť vizitku', 'Navrhnout vizitku')}</span><small>${tr2('návrh zadarmo, platíte až po kontrole', 'návrh zdarma, platíte až po kontrole')}</small>`;
     document.body.append(bar);
     const hero = document.querySelector('.hero, main section'); let shown = false;
     const upd = () => { const on = window.scrollY > (hero ? hero.offsetHeight * 0.8 : 500) && (window.innerHeight + window.scrollY < document.body.scrollHeight - 420); if (on !== shown) { shown = on; bar.classList.toggle('on', on); } };
     window.addEventListener('scroll', () => requestAnimationFrame(upd), { passive: true }); upd();
+  }
+}
+
+/* ---------- právne stránky: obsah s aktívnou kapitolou ---------- */
+const legal = document.querySelector('.legal');
+if (legal) {
+  const hs = [...legal.querySelectorAll('h2')];
+  if (hs.length > 3) {
+    const toc = document.createElement('nav'); toc.className = 'legal__toc'; toc.setAttribute('aria-label', tr2('Obsah', 'Obsah'));
+    toc.innerHTML = `<p>${tr2('Obsah', 'Obsah')}</p>`;
+    hs.forEach((h, i) => { h.id ||= 'k' + (i + 1); const a = document.createElement('a'); a.href = '#' + h.id; a.textContent = h.textContent; toc.append(a); });
+    legal.classList.add('legal--toc'); legal.prepend(toc);
+    const links = [...toc.querySelectorAll('a')];
+    const spy = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) links.forEach((a) => a.classList.toggle('on', a.hash === '#' + e.target.id)); }), { rootMargin: '-20% 0px -70% 0px' });
+    hs.forEach((h) => spy.observe(h));
   }
 }
