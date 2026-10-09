@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}">
 <link rel="stylesheet" href="{{ A('assets/css/studio2.css') }}">
 <link rel="stylesheet" href="{{ A('assets/css/editor2.css') }}">
+<link rel="stylesheet" href="{{ A('assets/css/edx.css') }}">
 <link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">
 {% endblock %}
 {% block navclass %} solid{% endblock %}
@@ -141,14 +142,19 @@
   </section>
 
   <!-- ===== 3. ÚPRAVY ===== -->
-  <section class="st3" data-pane="edit">
-    <aside class="ed-side">
-      <nav class="ed-tabs" role="tablist">
-        <button role="tab" data-tab="udaje">{{ L('Údaje', 'Údaje') }}</button>
-        <button role="tab" data-tab="styl">{{ L('Farby a písmo', 'Barvy a písmo') }}</button>
-        <button role="tab" data-tab="logo">{{ L('Logo', 'Logo') }}</button>
-        <button role="tab" data-tab="viac">{{ L('Prvky', 'Prvky') }}</button>
-      </nav>
+  <section class="st3 edx" data-pane="edit">
+    <nav class="edx-rail" role="tablist" aria-label="{{ L('Nástroje', 'Nástroje') }}">
+      <button role="tab" data-tab="udaje" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><circle cx="9" cy="11" r="2.2"/><path d="M6.5 16c.6-1.6 1.6-2.4 2.5-2.4s1.9.8 2.5 2.4M14 10h4M14 13h3"/></svg><span>{{ L('Údaje', 'Údaje') }}</span></button>
+      <button role="tab" data-tab="sablony" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg><span>{{ L('Šablóny', 'Šablony') }}</span></button>
+      <button role="tab" data-tab="styl" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.9 1.8-1.9 0-.5-.2-.9-.5-1.3-.3-.3-.5-.8-.5-1.3 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.4 17 3 12 3z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10.5" cy="7" r="1.2"/><circle cx="15" cy="7.5" r="1.2"/></svg><span>{{ L('Štýl', 'Styl') }}</span></button>
+      <button role="tab" data-tab="text" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg><span>{{ L('Text', 'Text') }}</span></button>
+      <button role="tab" data-tab="prvky" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.5" cy="7.5" r="3.5"/><path d="m14 4 6 6-6 6-6-6z" transform="translate(0 4)"/><rect x="3.5" y="14" width="7" height="6.5" rx="1.2"/></svg><span>{{ L('Prvky', 'Prvky') }}</span></button>
+      <button role="tab" data-tab="logo" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg><span>{{ L('Logo', 'Logo') }}</span></button>
+      <button role="tab" data-tab="pozadie" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M3.5 15 9 10l4 4 2.5-2.5 5 5"/></svg><span>{{ L('Pozadie', 'Pozadí') }}</span></button>
+      <button role="tab" data-tab="qr" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2"/></svg><span>{{ L('QR', 'QR') }}</span></button>
+    </nav>
+    <aside class="ed-side edx-panel" data-panel>
+      <div class="edx-panel__head"><b data-panel-title></b><button type="button" class="edx-panel__x" data-panel-x aria-label="{{ L('Zavrieť panel', 'Zavřít panel') }}">×</button></div>
       <div class="ed-panels">
         <section class="pn" data-pp="udaje">
           <p class="pn__tip">{{ L('Text môžete upraviť aj priamo vo vizitke: dvakrát naň kliknite.', 'Text můžete upravit i přímo ve vizitce: dvakrát na něj klikněte.') }}</p>
@@ -196,27 +202,40 @@ So: po domluvě') }}"></textarea></label>
             <label class="fld"><span>{{ L('Ďalšie odkazy', 'Další odkazy') }} <i>{{ L('každý na riadok: Názov | URL', 'každý na řádek: Název | URL') }}</i></span><textarea data-dig="links" rows="2" maxlength="600" placeholder="{{ L('Cenník | https://…', 'Ceník | https://…') }}"></textarea></label>
           </details>
         </section>
-        <section class="pn" data-pp="styl">
+        <section class="pn" data-pp="sablony">
+          <p class="pn__lead">{{ L('Vyberte iné rozloženie. Vaše údaje ostanú, zmení sa dizajn.', 'Vyberte jiné rozložení. Vaše údaje zůstanou, změní se design.') }}</p>
           <div class="magic" data-magic>
             <button type="button" data-mg="pal"><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.9 1.8-1.9 0-.5-.2-.9-.5-1.3-.3-.3-.5-.8-.5-1.3 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.4 17 3 12 3z"/><circle cx="7.5" cy="11" r="1.3"/><circle cx="10.5" cy="7" r="1.3"/><circle cx="15" cy="7.5" r="1.3"/></svg></i><b>{{ L('Iné farby', 'Jiné barvy') }}</b></button>
             <button type="button" data-mg="font"><i aria-hidden="true" class="mg-aa">Aa</i><b>{{ L('Iné písmo', 'Jiné písmo') }}</b></button>
             <button type="button" data-mg="layout"><i aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M10 10v10"/></svg></i><b>{{ L('Iné rozloženie', 'Jiné rozložení') }}</b></button>
           </div>
-          <h3>{{ L('Farby', 'Barvy') }}</h3>
-          <div class="pals" data-pals></div>
-          <details class="more"><summary>{{ L('Vlastné farby', 'Vlastní barvy') }}</summary>
-            <div class="cpick">
-              <label><input type="color" data-c="bg"><span>{{ L('Pozadie', 'Pozadí') }}</span></label>
-              <label><input type="color" data-c="ink"><span>Text</span></label>
-              <label><input type="color" data-c="accent"><span>{{ L('Akcent', 'Akcent') }}</span></label>
-              <label><input type="color" data-c="soft"><span>{{ L('Doplnková', 'Doplňková') }}</span></label>
-            </div>
-          </details>
-          <p class="warn" data-contrast hidden>{{ L('Text a pozadie majú slabý kontrast, na papieri bude horšie čitateľný.', 'Text a pozadí mají slabý kontrast, na papíře bude hůř čitelný.') }}</p>
-          <h3>{{ L('Písmo', 'Písmo') }}</h3>
-          <div class="fonts" data-fonts></div>
+          <label class="els__q edx-q"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input data-tplq placeholder="{{ L('Hľadať šablónu: kvety, zlato, minimal…', 'Hledat šablonu: květiny, zlato, minimal…') }}" autocomplete="off"></label>
+          <div class="edx-tpls" data-tplgrid></div>
           <h3>{{ L('Zadná strana', 'Zadní strana') }}</h3>
           <div class="backs" data-backs></div>
+        </section>
+        <section class="pn" data-pp="styl">
+          <h3>{{ L('Farebné palety', 'Barevné palety') }}</h3>
+          <div class="pals" data-pals></div>
+          <h3>{{ L('Farby podľa úlohy', 'Barvy podle role') }}</h3>
+          <div class="cpick cpick--roles">
+            <label><input type="color" data-c="bg"><span>{{ L('Pozadie', 'Pozadí') }}</span></label>
+            <label><input type="color" data-c="ink"><span>Text</span></label>
+            <label><input type="color" data-c="accent"><span>{{ L('Akcent', 'Akcent') }}</span></label>
+            <label><input type="color" data-c="soft"><span>{{ L('Doplnková', 'Doplňková') }}</span></label>
+          </div>
+          <p class="warn" data-contrast hidden>{{ L('Text a pozadie majú slabý kontrast, na papieri bude horšie čitateľný.', 'Text a pozadí mají slabý kontrast, na papíře bude hůř čitelný.') }}</p>
+          <h3>{{ L('Dvojice písiem', 'Dvojice písem') }}</h3>
+          <div class="fonts" data-fonts></div>
+        </section>
+        <section class="pn" data-pp="text">
+          <p class="pn__lead" data-text-lead>{{ L('Kliknite na štýl a pridá sa nový text. Keď máte vybraný text, štýl sa použije naň.', 'Klikněte na styl a přidá se nový text. Když máte vybraný text, styl se použije na něj.') }}</p>
+          <div class="edx-tstyles" data-tstyles></div>
+          <h3>{{ L('Odporúčané dvojice písiem', 'Doporučené dvojice písem') }}</h3>
+          <div class="edx-pairs" data-pairs></div>
+        </section>
+        <section class="pn" data-pp="prvky">
+          <div class="els" data-elements></div>
         </section>
         <section class="pn" data-pp="logo">
           <h3>{{ L('Vaše logo', 'Vaše logo') }}</h3>
@@ -236,24 +255,49 @@ So: po domluvě') }}"></textarea></label>
             </form>
             <button class="link" data-mark-del hidden>{{ L('Bez znaku', 'Bez znaku') }}</button>
           </div>
-        </section>
-        <section class="pn" data-pp="viac">
-          <div class="els" data-elements></div>
+          <h3>{{ L('Vlastný obrázok alebo fotka', 'Vlastní obrázek nebo fotka') }}</h3>
+          <button class="btn btn--w btn--sm edx-up" type="button" data-img-pick><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>{{ L('Nahrať obrázok', 'Nahrát obrázek') }}</button>
           <input type="file" accept="image/*" hidden data-img-file>
-          <h3>{{ L('Grafika na pozadí', 'Grafika na pozadí') }}</h3>
+          <p class="pn__tip">{{ L('Po nahratí ho môžete orezať, odstrániť biele pozadie alebo vymeniť cez lištu nad vizitkou.', 'Po nahrání ho můžete oříznout, odstranit bílé pozadí nebo vyměnit přes lištu nad vizitkou.') }}</p>
+        </section>
+        <section class="pn" data-pp="pozadie">
+          <h3>{{ L('Farba', 'Barva') }}</h3>
+          <div class="edx-sw" data-bgcols></div>
+          <h3>{{ L('Prechody', 'Přechody') }}</h3>
+          <div class="edx-sw edx-sw--grad" data-bggrads></div>
+          <h3>{{ L('Textúra papiera', 'Textura papíru') }}</h3>
+          <div class="edx-tex" data-bgtex></div>
+          <h3>{{ L('Grafika šablóny', 'Grafika šablony') }}</h3>
           <div class="arts" data-arts></div>
-          <button class="tb tb--txt tb--full" data-marks aria-pressed="false">{{ L('Zobraziť orez a spadávku', 'Zobrazit ořez a spadávku') }}</button>
+        </section>
+        <section class="pn" data-pp="qr">
+          <div class="edx-qrcard"><div class="edx-qrcard__code" data-qr-prev></div><div><b>{{ L('QR kód vedie na vašu digitálnu vizitku', 'QR kód vede na vaši digitální vizitku') }}</b><p data-qr-url></p></div></div>
+          <div class="edx-qrbtns">
+            <button class="btn btn--w btn--sm" type="button" data-qr-add>{{ L('Pridať QR na túto stranu', 'Přidat QR na tuto stranu') }}</button>
+            <button class="btn btn--w btn--sm" type="button" data-qr-back>{{ L('Zadná strana s QR kódom', 'Zadní strana s QR kódem') }}</button>
+            <button class="link" type="button" data-qr-del>{{ L('Odstrániť QR z tejto strany', 'Odstranit QR z této strany') }}</button>
+          </div>
+          <p class="pn__tip">{{ L('Kto ho naskenuje, uloží si vás jedným ťuknutím do kontaktov. Adresu a obsah digitálnej vizitky upravíte v časti Údaje.', 'Kdo ho naskenuje, uloží si vás jedním ťuknutím do kontaktů. Adresu a obsah digitální vizitky upravíte v části Údaje.') }}</p>
+          <button class="tb tb--txt tb--full" type="button" data-goto-dig>{{ L('Upraviť digitálnu vizitku', 'Upravit digitální vizitku') }}</button>
         </section>
       </div>
     </aside>
     <div class="ed-stage" data-stage>
-      <div class="ed-top">
-        <div class="seg" data-sides><button class="on" data-side="front">{{ L('Predná', 'Přední') }}</button><button data-side="back">{{ L('Zadná', 'Zadní') }}</button></div>
-        <span class="ed-saved" data-saved aria-live="polite"><i aria-hidden="true"></i><span data-saved-t>{{ L('Uložené v prehliadači', 'Uloženo v prohlížeči') }}</span></span>
+      <div class="ed-top edx-top">
+        <div class="edx-ctx" data-ctxbar>
+          <div class="edx-hint" data-ctx-empty>
+            <span>{{ L('Kliknite na prvok vo vizitke alebo na pozadie', 'Klikněte na prvek ve vizitce nebo na pozadí') }}</span>
+            <button type="button" data-open="pozadie">{{ L('Pozadie', 'Pozadí') }}</button><button type="button" data-open="styl">{{ L('Farby a písmo', 'Barvy a písmo') }}</button><button type="button" data-open="sablony">{{ L('Rozloženie', 'Rozložení') }}</button>
+          </div>
+        </div>
         <div class="ed-tools">
+          <span class="ed-saved" data-saved aria-live="polite"><i aria-hidden="true"></i><span data-saved-t>{{ L('Uložené v prehliadači', 'Uloženo v prohlížeči') }}</span></span>
+        <div class="edx-view edx-view--top">
+          <button class="tb tb--txt edx-marks" data-marks aria-pressed="false" title="{{ L('Zobraziť orez, spadávku a bezpečnú zónu', 'Zobrazit ořez, spadávku a bezpečnou zónu') }}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/><rect x="7.5" y="7.5" width="9" height="9" stroke-dasharray="2 2"/></svg><span>{{ L('Orez', 'Ořez') }}</span></button>
         <div class="ed-zoom" role="group" aria-label="{{ L('Priblíženie', 'Přiblížení') }}"><button class="tb tb--s" data-zoom-out title="{{ L('Oddialiť', 'Oddálit') }} (⌘ −)" aria-label="{{ L('Oddialiť', 'Oddálit') }}">−</button><button class="tb tb--z" data-zoom-fit title="{{ L('Prispôsobiť', 'Přizpůsobit') }} (⌘ 0)" data-zoom-v>100 %</button><button class="tb tb--s" data-zoom-in title="{{ L('Priblížiť', 'Přiblížit') }} (⌘ +)" aria-label="{{ L('Priblížiť', 'Přiblížit') }}">+</button></div>
-        <button class="tb tb--txt ed-laybtn" data-layers-btn aria-pressed="false" title="{{ L('Vrstvy', 'Vrstvy') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><span>{{ L('Vrstvy', 'Vrstvy') }}</span></button>
+        </div>
         <div class="ed-hist"><button class="tb" data-undo disabled title="{{ L('Späť', 'Zpět') }} (⌘ Z)" aria-label="{{ L('Späť', 'Zpět') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 7 4.5 11.5 9 16"/><path d="M5 11.5h9.5a5 5 0 0 1 0 10H11"/></svg></button><button class="tb" data-redo disabled title="{{ L('Vpred', 'Vpřed') }} (⌘ ⇧ Z)" aria-label="{{ L('Vpred', 'Vpřed') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 7l4.5 4.5L15 16"/><path d="M19 11.5H9.5a5 5 0 0 0 0 10H13"/></svg></button></div>
+        <button class="tb tb--txt ed-laybtn" data-layers-btn aria-pressed="false" title="{{ L('Vrstvy', 'Vrstvy') }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><span>{{ L('Vrstvy', 'Vrstvy') }}</span></button>
         <div class="ed-keys"><button class="tb tb--s" data-keys aria-expanded="false" title="{{ L('Klávesové skratky', 'Klávesové zkratky') }}" aria-label="{{ L('Klávesové skratky', 'Klávesové zkratky') }}">?</button>
           <div class="pop ed-keys__pop" data-keys-pop>
             <b>{{ L('Skratky', 'Zkratky') }}</b>
@@ -265,6 +309,7 @@ So: po domluvě') }}"></textarea></label>
             <p><kbd>⇧ {{ L('klik', 'klik') }}</kbd>{{ L('výber viacerých', 'výběr více prvků') }} · <kbd>⌘ A</kbd>{{ L('všetko', 'vše') }}</p>
             <p><kbd>⌘ ]</kbd> <kbd>⌘ [</kbd>{{ L('dopredu / dozadu', 'dopředu / dozadu') }}</p>
             <p><kbd>⌘ B</kbd> <kbd>⌘ I</kbd>{{ L('tučné / kurzíva', 'tučné / kurzíva') }} · <kbd>⌘ ⇧ L</kbd>{{ L('zamknúť', 'zamknout') }}</p>
+            <p><kbd>⌘ G</kbd>{{ L('zoskupiť', 'seskupit') }} · <kbd>⌘ ⇧ G</kbd>{{ L('rozdeliť', 'rozdělit') }} · <kbd>{{ L('Dvojklik', 'Dvojklik') }}</kbd>{{ L('na ilustráciu ju rozdelí', 'na ilustraci ji rozdělí') }}</p>
             <p><kbd>{{ L('Pravé tlačidlo', 'Pravé tlačítko') }}</kbd>{{ L('ponuka prvku', 'nabídka prvku') }}</p>
             <p><kbd>Alt</kbd>{{ L('pri ťahaní vypne prichytávanie', 'při tažení vypne přichytávání') }}</p>
           </div></div>
@@ -276,14 +321,22 @@ So: po domluvě') }}"></textarea></label>
         <ul class="elay__list" data-lay-list></ul>
       </aside>
       <div class="ed-canvas" data-host><canvas data-canvas></canvas></div>
-      <div class="coach" data-coach hidden role="note"><b>{{ L('Upravujte priamo vo vizitke', 'Upravujte přímo ve vizitce') }}</b><span>{{ L('Kliknite na text a píšte. Prvky chyťte a posuňte, vodítka ich zarovnajú.', 'Klikněte na text a pište. Prvky chyťte a posuňte, vodítka je zarovnají.') }}</span><button type="button" data-coach-x>{{ L('Rozumiem', 'Rozumím') }}</button></div>
-      <div class="ed-foot">
-        <div class="nudge" data-nudge hidden role="status"><span>{{ L('Nemáte čas to dokončiť teraz? Pošleme vám odkaz e-mailom a vrátite sa k vizitke kedykoľvek.', 'Nemáte čas to dokončit teď? Pošleme vám odkaz e-mailem a k vizitce se vrátíte kdykoli.') }}</span><button class="btn btn--sm btn--y" type="button" data-save-open>{{ L('Poslať odkaz', 'Poslat odkaz') }}</button><button class="nudge__x" type="button" data-nudge-x aria-label="{{ L('Zavrieť', 'Zavřít') }}">×</button></div>
-        <button class="link" data-back-choose>← {{ L('Iný návrh', 'Jiný návrh') }}</button>
-        <button class="link ed-save" data-save-open>{{ L('Uložiť na neskôr', 'Uložit na později') }}</button>
-        <span class="ed-price" data-ed-price></span>
-        <button class="btn btn--c btn--lg" data-to-order>{{ L('Pokračovať k objednávke', 'Pokračovat k objednávce') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
+      <div class="edx-pages">
+        <div class="edx-pagelist" data-sides>
+          <button class="edx-page on" type="button" data-side="front"><img alt="" data-page-img="front"><span>{{ L('Predná', 'Přední') }}</span></button>
+          <button class="edx-page" type="button" data-side="back"><img alt="" data-page-img="back"><span>{{ L('Zadná', 'Zadní') }}</span></button>
+        </div>
+        <button class="edx-pf" type="button" data-pf-chip hidden><i></i><span data-pf-t></span></button>
+        <div class="edx-pfpop" data-pf-pop hidden></div>
+        <div class="ed-foot">
+          <div class="nudge" data-nudge hidden role="status"><span>{{ L('Nemáte čas to dokončiť teraz? Pošleme vám odkaz e-mailom a vrátite sa k vizitke kedykoľvek.', 'Nemáte čas to dokončit teď? Pošleme vám odkaz e-mailem a k vizitce se vrátíte kdykoli.') }}</span><button class="btn btn--sm btn--y" type="button" data-save-open>{{ L('Poslať odkaz', 'Poslat odkaz') }}</button><button class="nudge__x" type="button" data-nudge-x aria-label="{{ L('Zavrieť', 'Zavřít') }}">×</button></div>
+          <button class="link" data-back-choose>← {{ L('Iný návrh', 'Jiný návrh') }}</button>
+          <button class="link ed-save" data-save-open>{{ L('Uložiť na neskôr', 'Uložit na později') }}</button>
+          <span class="ed-price" data-ed-price></span>
+          <button class="btn btn--c btn--lg" data-to-order>{{ L('Pokračovať k objednávke', 'Pokračovat k objednávce') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
+        </div>
       </div>
+      <div class="coach" data-coach hidden role="note"><b>{{ L('Upravujte priamo vo vizitke', 'Upravujte přímo ve vizitce') }}</b><span>{{ L('Kliknite na text a píšte. Prvky chyťte a posuňte, vodítka ich zarovnajú.', 'Klikněte na text a pište. Prvky chyťte a posuňte, vodítka je zarovnají.') }}</span><button type="button" data-coach-x>{{ L('Rozumiem', 'Rozumím') }}</button></div>
     </div>
     <aside class="dgp" data-dgp hidden aria-label="{{ L('Náhľad digitálnej vizitky', 'Náhled digitální vizitky') }}">
       <div class="dgp__head"><span class="dgp__live"><i></i>{{ L('Naživo', 'Živě') }}</span><b>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</b><button class="dgp__x" type="button" data-dgp-close aria-label="{{ L('Zavrieť náhľad', 'Zavřít náhled') }}">×</button></div>

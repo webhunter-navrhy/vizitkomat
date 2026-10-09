@@ -4,6 +4,7 @@ import { TEMPLATES, BACK_KEYS, templateDefaults } from './templates.js';
 import { snapshot, loadImg, photo, mockup, inspect } from './render.js';
 import { createEditor } from './editor.js';
 import { initEdTools } from './edtools.js';
+import { initEdPanels } from './edpanels.js';
 import { askAI, makeMark, API } from './ai.js';
 import { analyzeLogo, fileToDataURL } from '../logo.js';
 import * as store from './store.js';
@@ -26,7 +27,7 @@ const st = {
   cfg: { kind: 'bundle', size: '90x50', paper: 'matny', finish: 'none', corners: 'straight', qty: 250, express: false },
   ai: [], lastPrompt: '', slugTouched: false, touched: new Set(), saved: null, logoPals: [], loaded: false,
 };
-let ed = null, tools = null;
+let ed = null, tools = null, panels = null;
 
 /* =========================================================
    KROKY
@@ -38,7 +39,7 @@ function go(step) {
   $$('[data-go]').forEach((li) => { const s = li.dataset.go; li.classList.toggle('on', s === step); li.classList.toggle('ok', s !== step && st.reached.has(s)); });
   window.scrollTo(0, 0);
   if (step === 'edit') { const c = st.cfg; $('[data-ed-price]').innerHTML = c.kind === 'digital' ? `<b>${money(VK.prices.digital)}</b>` : `${c.qty} ${tr('ks', 'ks')} <b>${money(itemPrice(c, VK.prices))}</b><small>${tr('doprava zadarmo', 'doprava zdarma')}</small>`; }
-  if (step === 'edit') ensureEditor().then(() => { ed.fit(); openTab($('[data-tab][aria-selected=true]')?.dataset.tab || 'udaje'); });
+  if (step === 'edit') ensureEditor().then(() => { ed.fit(); const cur = $('[data-tab][aria-selected=true]')?.dataset.tab; if (isPhone()) { if (cur) openTab(cur); } else openTab(cur || 'udaje'); });
   if (step === 'order') enterOrder();
   if (step === 'edit') VK.ev?.('editor'); else if (step === 'order') VK.ev?.('order_step');
   document.dispatchEvent(new Event('vk:step'));
@@ -55,6 +56,7 @@ async function ensureEditor() {
   if (ed) return ed;
   ed = createEditor($('[data-canvas]'), $('[data-host]'), { pad: 40 });
   tools = initEdTools({ ed, stage: $('[data-stage]'), getStep: () => st.step, curPal, brandColors: () => st.logoColors, shrink, onStyleChange: () => { paintPals(); paintFonts(); } });
+  panels = initEdPanels({ ed, tools, stage: $('[data-stage]'), getStep: () => st.step, curPal, openTab, paintSides, onStyleChange: () => { paintPals(); paintFonts(); } });
   if (/[?&]edtest\b/.test(location.search)) window.__vkEd = ed;
   ed.on('fields', ({ k }) => { syncFields(); if (k === 'name' && !st.slugTouched) setSlug(slugify(ed.design.f.name)); });
   ed.on('restore', () => { syncFields(); paintSides(); });
@@ -62,7 +64,9 @@ async function ensureEditor() {
   ed.on('history', ({ undo, redo }) => { $('[data-undo]').disabled = !undo; $('[data-redo]').disabled = !redo; });
   ed.on('change', () => { savedState('saving'); persist(); });
   ed.on('zoom', (z) => { $('[data-zoom-v]').textContent = Math.round(z * 100) + ' %'; $('[data-zoom-fit]').classList.toggle('on', Math.abs(z - 1) > 0.02); $('[data-stage]').classList.toggle('is-zoomed', Math.abs(z - 1) > 0.02); });
-  ed.on('interact', () => coachDone());
+  ed.on('interact', () => { coachDone(); if (isPhone() && edx.classList.contains('is-sheet')) closePanel(); });
+  // mobil: po pridaní prvku plachtu zavrieme, nech je nový prvok vidieť
+  ed.on('added', () => { if (isPhone() && edx.classList.contains('is-sheet')) closePanel(); });
   ed.on('selection', (o) => { if (o) coachDone(); });
   return ed;
 }
@@ -399,15 +403,43 @@ if (tpv.dlg) {
    3. ÚPRAVY
    ========================================================= */
 const tabs = $$('[data-tab]'), panes = $$('[data-pp]');
-function openTab(id) {
+const edx = $('.edx');
+const isPhone = () => matchMedia('(max-width: 760px)').matches;
+// ľavý panel nástrojov (na mobile spodný panel); opätovný klik na aktívnu ikonu ho zbalí
+function openTab(id, { toggle = false } = {}) {
+  if (id === 'viac') id = 'prvky';
+  const cur = $('[data-tab][aria-selected=true]')?.dataset.tab;
+  const open = !edx.classList.contains('is-collapsed') && (!isPhone() || edx.classList.contains('is-sheet'));
+  if (toggle && cur === id && open) { closePanel(); return; }
   tabs.forEach((t) => t.setAttribute('aria-selected', t.dataset.tab === id));
   panes.forEach((p) => p.classList.toggle('on', p.dataset.pp === id));
+  $('[data-panel-title]').textContent = $(`[data-tab="${id}"] span`)?.textContent || '';
+  edx.classList.remove('is-collapsed');
+  if (isPhone()) { edx.classList.add('is-sheet'); tools?.closePop(); }
+  requestAnimationFrame(() => ed?.fit());
   if (!ed || !st.loaded) return;
-  if (id === 'styl') { paintPals(); paintFonts(); paintBacks(); }
-  if (id === 'viac') { tools?.showElements(); paintArts(); }
+  if (id === 'styl') { paintPals(); paintFonts(); }
+  if (id === 'sablony') { paintBacks(); panels?.paintTemplates(); }
+  if (id === 'prvky') tools?.showElements();
+  if (id === 'pozadie') { paintArts(); panels?.paintBackground(); }
+  if (id === 'text') panels?.paintText();
+  if (id === 'qr') panels?.paintQR();
   if (id === 'logo') paintMark();
 }
-tabs.forEach((t) => t.addEventListener('click', () => openTab(t.dataset.tab)));
+// mobil: editor na celú výšku pod hlavičkou a krokmi
+function sizeEdx() { if (!edx) return; const top = edx.getBoundingClientRect().top + scrollY; edx.style.setProperty('--edx-top', Math.round(top) + 'px'); }
+addEventListener('resize', () => { if (st.step === 'edit') { sizeEdx(); ed?.fit(); } });
+document.addEventListener('vk:step', () => { if (st.step === 'edit') requestAnimationFrame(() => { sizeEdx(); ed?.fit(); }); });
+function closePanel() {
+  if (isPhone()) edx.classList.remove('is-sheet'); else edx.classList.add('is-collapsed');
+  tabs.forEach((t) => t.setAttribute('aria-selected', 'false'));
+  requestAnimationFrame(() => ed?.fit());
+}
+tabs.forEach((t) => t.addEventListener('click', () => openTab(t.dataset.tab, { toggle: true })));
+$('[data-panel-x]').addEventListener('click', closePanel);
+$$('[data-open]').forEach((b) => b.addEventListener('click', () => openTab(b.dataset.open)));
+$('[data-img-pick]').addEventListener('click', () => $('[data-img-file]').click());
+$('[data-goto-dig]').addEventListener('click', () => { openTab('udaje'); const d = $('[data-digital-fields]'); if (d) { d.open = true; d.scrollIntoView({ block: 'start', behavior: 'smooth' }); } });
 $('[data-back-choose]').addEventListener('click', () => { if (st.ai.length) { st.mode = 'ai'; $('[data-ai-box]').hidden = false; $('[data-tpl-box]').hidden = true; go('choose'); } else showTemplates(); });
 $('[data-to-order]').addEventListener('click', () => go('order'));
 
@@ -496,6 +528,7 @@ async function logoFlow(file) {
   st.logoColors = r.colors || [];
   await ed.setLogo(r.src);
   await ed.setPalette(st.logoPals[0]);
+  if (isPhone() && edx.classList.contains('is-sheet')) closePanel();
   $('[data-drop-img]').src = r.src; drop.classList.add('has');
   const sw = $('[data-logo-sw]'); sw.hidden = false;
   sw.innerHTML = tr('Farby značky:', 'Barvy značky:') + ' ' + r.colors.slice(0, 5).map((c) => `<i style="--c:${c}"></i>`).join('');

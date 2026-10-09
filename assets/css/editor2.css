@@ -229,3 +229,14 @@
   .ppk__grid button { height: 44px; }
 }
 @media (prefers-reduced-motion: reduce) { .etb, .etb-pop, .elay, .ecm, .ecrop { transition: none; animation: none; } }
+
+/* ---------- pozadie, zoskupenie, farby v skupine ---------- */
+.etb__lbl { padding: 0 8px 0 6px; font-size: .8rem; font-weight: 800; color: var(--ink-2, #5F6488); letter-spacing: .02em; }
+.etb[data-kind="bg"]::after { display: none; }
+.etb [data-act][hidden] { display: none; }
+.cpk__row--from { padding-bottom: 4px; }
+.cpk__from { position: relative; }
+.cpk__from.on { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--cobalt) !important; }
+.emulti { position: absolute; left: 50%; top: 58px; z-index: 13; pointer-events: none; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; max-width: calc(100% - 24px); padding: 6px 6px 6px 14px; border-radius: 99px; background: var(--ink); color: #fff; font-size: .82rem; font-weight: 700; box-shadow: 0 10px 24px -10px rgba(15, 20, 64, .6); }
+.emulti[hidden] { display: none; }
+.emulti button { pointer-events: auto; padding: .45rem .9rem; border-radius: 99px; background: var(--yellow); color: var(--ink); font-weight: 800; }

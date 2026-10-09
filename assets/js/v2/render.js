@@ -223,6 +223,8 @@ export async function toFabric(o, lay, ctx = {}) {
   if (!obj) return null;
   if (o.rot) { const ctr = obj.getCenterPoint(); obj.set({ originX: 'center', originY: 'center', left: ctr.x, top: ctr.y, angle: o.rot }); }
   obj.data = { kind: o.type, field: o.field || null, prefix: o.prefix || '', part: o.part ?? null, upper: !!o.upper, role: o.role || null, fit: o.fit || null };
+  if (o.mono) obj.data.mono = true;
+  if (o.tint) { obj.data.tint = o.tint; if (o.src && !String(o.src).startsWith('data:')) obj.data.src0 = o.src; }
   return obj;
 }
 

@@ -6,11 +6,63 @@ import { emblemURL } from './emblems.js';
 import { iconSVG } from '../icons.js';
 
 const F = () => window.fabric;
-const PROPS = ['data', 'selectable', 'evented', 'hasControls', 'lockMovementX', 'lockMovementY', 'lockScalingX', 'lockScalingY', 'lockRotation', 'editable', 'globalCompositeOperation', 'cropX', 'cropY', 'objectCaching'];
+const PROPS = ['data', 'selectable', 'evented', 'hasControls', 'lockMovementX', 'lockMovementY', 'lockScalingX', 'lockScalingY', 'lockRotation', 'editable', 'globalCompositeOperation', 'cropX', 'cropY', 'objectCaching', 'subTargetCheck'];
 const LOCK = { lockMovementX: true, lockMovementY: true, lockScalingX: true, lockScalingY: true, lockRotation: true, hasControls: false, editable: false };
 const UNLOCK = { lockMovementX: false, lockMovementY: false, lockScalingX: false, lockScalingY: false, lockRotation: false, hasControls: true, editable: true };
 const MM = (v) => (v / K).toFixed(1).replace('.0', '').replace('.', ',');
 const clone = (o) => JSON.parse(JSON.stringify(o));
+const sig = (v) => (v == null ? '' : typeof v === 'string' ? v.toLowerCase() : JSON.stringify(v));
+function walkJSON(list, fn) { (list || []).forEach((n) => { fn(n); if (n.objects) walkJSON(n.objects, fn); }); }
+const BGLOCK = { selectable: false, evented: false, hasBorders: false, hasControls: false, lockMovementX: true, lockMovementY: true, lockScalingX: true, lockScalingY: true, lockRotation: true };
+
+// ---------- skupiny: ilustrácie, ornamenty a znaky šablóny sa vyberajú ako celok ----------
+// Šablóny kreslia ilustrácie z desiatok tvarov (lístky, stonky, lúče…). V editore z nich spravíme jednu
+// skupinu: susediace dekoratívne tvary v jednom súvislom úseku vrstiev (medzi textami). Poradie vrstiev
+// sa zachová (prekrývajúce sa časti sú vždy v jednej skupine), takže tlač vyzerá rovnako.
+const DECOR = new Set(['path', 'circle', 'rect', 'line', 'polygon', 'polyline', 'ellipse', 'triangle', 'group', 'image']);
+function groupParts(fab, list, area, onlyTemplate) {
+  const okRun = (o) => o && o.visible !== false && !/text/.test(o.type) && DECOR.has(o.type)
+    && !(o.data && (o.data.bg || o.data.field || o.data.loose || o.data.mono || o.data.kind === 'qr' || o.data.kind === 'grp' || o.data.locked))
+    && !(o.type === 'image' && ['logo', 'photo', 'file', 'image'].includes(o.data?.role))
+    && (!onlyTemplate || o.data?.ti != null)
+    && (() => { const r = o.getBoundingRect(true, true); return r.width * r.height < 0.55 * area; })();
+  const out = [], tol = 1.2 * K;
+  for (let i = 0; i < list.length;) {
+    if (!okRun(list[i])) { out.push(list[i]); i++; continue; }
+    const run = []; while (i < list.length && okRun(list[i])) run.push(list[i++]);
+    const R = run.map((o) => o.getBoundingRect(true, true));
+    const par = run.map((_, k) => k); const find = (k) => (par[k] === k ? k : (par[k] = find(par[k])));
+    for (let a = 0; a < run.length; a++) for (let b = a + 1; b < run.length; b++) {
+      const A = R[a], B = R[b];
+      if (A.left - tol <= B.left + B.width && B.left - tol <= A.left + A.width && A.top - tol <= B.top + B.height && B.top - tol <= A.top + A.height) par[find(a)] = find(b);
+    }
+    const comps = new Map(); run.forEach((o, k) => { const r = find(k); if (!comps.has(r)) comps.set(r, []); comps.get(r).push(o); });
+    // rozsypané drobnosti (posýpka, konfety, bodky): jeden vzor, aby sa neklikali po jednom
+    const small = (c) => c.length === 1 && c.every((o) => { const r = R[run.indexOf(o)]; return r.width * r.height < 0.012 * area; });
+    const smalls = [...comps.values()].filter(small);
+    if (smalls.length >= 3) {
+      const merged = run.filter((o) => smalls.some((c) => c.includes(o)));
+      smalls.forEach((c) => [...comps.entries()].forEach(([k, v]) => { if (v === c) comps.delete(k); }));
+      comps.set('pattern', merged);
+    }
+    for (const c of comps.values()) {
+      if (c.length < 2) { out.push(c[0]); continue; }
+      const g = new fab.Group(c, { objectCaching: false, subTargetCheck: true });
+      g.data = { kind: 'grp', role: 'decor' };
+      out.push(g);
+    }
+  }
+  return out;
+}
+// listy (koncové objekty) vrátane obsahu skupín
+const leaves = (o, out = []) => { if (o.type === 'group' || o.type === 'activeSelection') o.getObjects().forEach((x) => leaves(x, out)); else out.push(o); return out; };
+const toRGB = (c) => {
+  if (typeof c !== 'string') return null;
+  let m = c.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (m) { let h = m[1]; if (h.length === 3) h = h.split('').map((x) => x + x).join(''); const n = parseInt(h, 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+  m = c.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/i); return m ? [+m[1], +m[2], +m[3]] : null;
+};
+const colKey = (c) => (typeof c === 'string' && c && c !== 'transparent' && c !== 'none' ? c.toUpperCase() : null);
 
 // malá menovka (mm, uhol) kreslená v súradniciach plátna, nezávisle od priblíženia
 function pill(ctx, text, x, y, z, bg) {
@@ -38,7 +90,7 @@ export function createEditor(el, host, opts = {}) {
   // Fabric 5.3 – ticho pre neplatný textBaseline
   const coarse = matchMedia('(pointer: coarse)').matches;
   const canvas = new fab.Canvas(el, { preserveObjectStacking: true, selectionColor: 'rgba(36,64,230,.08)', selectionBorderColor: '#2440E6', selectionLineWidth: 1.5, stopContextMenu: true, fireRightClick: true, targetFindTolerance: coarse ? 14 : 6, controlsAboveOverlay: true });
-  fab.Object.prototype.set({ borderColor: '#2440E6', cornerColor: '#FFFFFF', cornerStrokeColor: '#2440E6', cornerStyle: 'circle', cornerSize: coarse ? 16 : 11, touchCornerSize: 34, transparentCorners: false, borderScaleFactor: 1.6, padding: coarse ? 6 : 4 });
+  fab.Object.prototype.set({ borderColor: '#2440E6', cornerColor: '#FFFFFF', cornerStrokeColor: '#2440E6', cornerStyle: 'circle', cornerSize: coarse ? 16 : 11, touchCornerSize: 30, transparentCorners: false, borderScaleFactor: 1.6, padding: coarse ? 3 : 4 });
   // ovládač otáčania nad prvkom, kúsok vyššie (ako v Canve)
   if (fab.Object.prototype.controls?.mtr) fab.Object.prototype.controls.mtr.offsetY = coarse ? -34 : -26;
   fab.Textbox.prototype.set?.({ objectCaching: false });
@@ -50,23 +102,41 @@ export function createEditor(el, host, opts = {}) {
   const emit = (ev, x) => (S.listeners[ev] || []).forEach((fn) => fn(x));
   const size = () => SIZES[S.d.size] || SIZES['90x50'];
   const Wt = () => (size().w + 2 * BLEED) * K, Ht = () => (size().h + 2 * BLEED) * K;
+  // klikateľnosť: celoplošné textúry sú pozadie; veľké rámy a vzory reagujú len na svoje čiary, nie na prázdnu plochu
+  // texty, obrázky a ilustrácie sa zväčšujú rovnomerne za rohy (bočné úchyty by ich deformovali a na dotyku zavadzajú)
+  const tuneControls = (o) => { if (/text/.test(o.type) || o.type === 'image' || o.type === 'group') { o.setControlsVisibility?.({ mt: false, mb: false, ml: false, mr: false }); o.lockScalingFlip = true; } };
+  canvas.on('object:added', (e) => e.target && tuneControls(e.target));
+  function tuneHit() {
+    const area = Wt() * Ht();
+    canvas.getObjects().forEach((o) => {
+      tuneControls(o);
+      if (o.data?.bg) { o.set(BGLOCK); return; }
+      const r = o.getBoundingRect(true, true), a = r.width * r.height;
+      if ((o.type === 'image' || o.type === 'rect') && !o.data?.field && !['logo', 'photo'].includes(o.data?.role) && a >= 0.92 * area && o.data?.ti != null && !o.data?.user) { o.data = { ...o.data, bglike: true }; o.set(BGLOCK); return; }
+      const hollow = o.type === 'group' || !o.fill || o.fill === 'transparent' || o.fill === 'none';
+      o.perPixelTargetFind = !!(hollow && a > 0.18 * area);
+    });
+  }
 
   // ---------- veľkosť a zoom ----------
   // plátno vypĺňa celú plochu, vizitka pláva v strede so skutočným tieňom; zoom a posun cez viewport
+  // na mobile je pod vizitkou ukotvená lišta nástrojov – necháme jej miesto, aby nezakrývala okraj a rohy
+  const reserveB = () => 0;
   function fit() {
     if (!S.d) return;
     const r = host.getBoundingClientRect();
-    const W = Math.floor(r.width), H = Math.floor(r.height);
+    const W = Math.floor(r.width), H = Math.floor(r.height), rb = reserveB();
     if (W < 40 || H < 40) return;
     const pad = Math.min(opts.pad ?? 48, W * 0.07, H * 0.12);
-    S.base = Math.max(0.15, Math.min((W - 2 * pad) / Wt(), (H - 2 * pad) / Ht(), 3));
+    S.base = Math.max(0.15, Math.min((W - 2 * pad) / Wt(), (H - rb - 2 * pad) / Ht(), 3));
     const z = S.base * S.uz;
     S.zoom = z;
     // posun len keď je vizitka väčšia ako plocha
     const mx = Math.max(0, (Wt() * z - W) / 2 + 60), my = Math.max(0, (Ht() * z - H) / 2 + 60);
     S.px = Math.max(-mx, Math.min(mx, S.px)); S.py = Math.max(-my, Math.min(my, S.py));
     if (canvas.width !== W || canvas.height !== H) canvas.setDimensions({ width: W, height: H });
-    canvas.setViewportTransform([z, 0, 0, z, (W - Wt() * z) / 2 + S.px, (H - Ht() * z) / 2 + S.py]);
+    canvas.calcOffset();
+    canvas.setViewportTransform([z, 0, 0, z, (W - Wt() * z) / 2 + S.px, (H - rb - Ht() * z) / 2 + S.py]);
     applyClip();
     canvas.getObjects().forEach((o) => o.setCoords());
     canvas.requestRenderAll();
@@ -80,7 +150,7 @@ export function createEditor(el, host, opts = {}) {
     const z = S.base * uz;
     S.uz = uz;
     S.px = cx - sx * z - (Math.floor(r.width) - Wt() * z) / 2;
-    S.py = cy - sy * z - (Math.floor(r.height) - Ht() * z) / 2;
+    S.py = cy - sy * z - (Math.floor(r.height) - reserveB() - Ht() * z) / 2;
     if (Math.abs(uz - 1) < 0.02) { S.uz = 1; S.px = 0; S.py = 0; }
     fit();
   }
@@ -93,6 +163,7 @@ export function createEditor(el, host, opts = {}) {
   }
   const ro = new ResizeObserver(() => fit());
   ro.observe(host);
+  addEventListener('scroll', () => canvas.calcOffset(), { passive: true });
 
   // ---------- prekrytie: spadávka, orez, bezpečná zóna, vodiace čiary ----------
   let liveGuides = [];
@@ -218,6 +289,31 @@ export function createEditor(el, host, opts = {}) {
   });
   canvas.on('mouse:over', (e) => { if (e.target && e.target.selectable) { S.hover = e.target; canvas.requestRenderAll(); emit('hover', e.target); } });
   canvas.on('mouse:out', (e) => { if (S.hover && e.target === S.hover) { S.hover = null; canvas.requestRenderAll(); emit('hover', null); } });
+  // režim výberu viacerých prvkov (na dotyku nie je Shift)
+  let wasActive = null;
+  let multiPrev = null;
+  canvas.on('mouse:down:before', (e) => {
+    const a = canvas.getActiveObject(); wasActive = a && e.target === a ? a : null;
+    multiPrev = S.multi && a ? (a.type === 'activeSelection' ? a.getObjects().slice() : a.data?.bg ? [] : [a]) : null;
+  });
+  // režim „vybrať viac“: ťuknutie pridá/odoberie prvok z výberu
+  canvas.on('mouse:up', (e) => {
+    if (S.multi && e.isClick && !e.target) { api.setMulti(false); return; }
+    if (!S.multi || !multiPrev || !e.isClick) return;
+    const t = e.target; if (!t || !t.selectable || t.data?.bg) return;
+    const list = multiPrev.includes(t) ? multiPrev.filter((x) => x !== t) : [...multiPrev, t];
+    multiPrev = null;
+    S.multiBusy = true; canvas.discardActiveObject(); S.multiBusy = false;
+    if (list.length) canvas.setActiveObject(list.length > 1 ? new fab.ActiveSelection(list, { canvas }) : list[0]);
+    const na = canvas.getActiveObject(); if (na) na.hasControls = false; // pri výbere viacerých úchyty nezavadzajú
+    canvas.requestRenderAll(); emit('selection', canvas.getActiveObject()); emit('layers');
+  });
+  // druhé ťuknutie na vybraný text = písanie (na dotyku Fabric niekedy úpravu nezapne)
+  canvas.on('mouse:up', (e) => {
+    const t = e.target;
+    if (!t || !e.isClick || t !== wasActive || t.isEditing || !/text/.test(t.type) || t.data?.locked || !t.editable) return;
+    if (e.e && (e.e.pointerType === 'touch' || e.e.type?.startsWith('touch'))) { t.enterEditing(); t.setCursorByClick?.(e.e); canvas.requestRenderAll(); }
+  });
   canvas.on('mouse:down', (e) => {
     if (S.hover) { S.hover = null; }
     emit('interact');
@@ -230,7 +326,7 @@ export function createEditor(el, host, opts = {}) {
   });
   canvas.on('selection:created', () => { emit('selection', canvas.getActiveObject()); emit('layers'); });
   canvas.on('selection:updated', () => { emit('selection', canvas.getActiveObject()); emit('layers'); });
-  canvas.on('selection:cleared', () => { emit('selection', null); emit('layers'); });
+  canvas.on('selection:cleared', () => { emit('selection', null); emit('layers'); if (S.multi && !S.multiBusy) api.setMulti(false); });
   canvas.on('object:scaling', () => emit('selection', canvas.getActiveObject()));
 
   // ---------- história ----------
@@ -279,15 +375,28 @@ export function createEditor(el, host, opts = {}) {
     if (json && (S.custom[side] || fromState)) {
       const specs = []; (json.objects || []).forEach((o) => { if (o.fontFamily) specs.push(`${o.fontStyle === 'italic' ? 'italic ' : ''}${o.fontWeight || 400} 40px "${o.fontFamily}"`); });
       await loadFonts(specs);
-      if (tok !== loadTok) return;
+      if (tok !== loadTok) { S.busy = false; return; }
       canvas.discardActiveObject();
       canvas.clear(); fit();
       await new Promise((res) => canvas.loadFromJSON(json, res));
-      canvas.getObjects().forEach((o) => { if (o.data && o.data.bg) o.set({ selectable: false, evented: false }); if (o.type === 'i-text') o.set('objectCaching', false); });
+      canvas.getObjects().forEach((o) => { if (o.data && o.data.bg) o.set(BGLOCK); if (o.type === 'i-text') o.set('objectCaching', false); if (o.data?.kind === 'grp') o.set({ subTargetCheck: true, objectCaching: false }); });
+      // staršie návrhy: časti ilustrácií zo šablóny zoskupíme aj tu
+      const cur = canvas.getObjects(), bgs = cur.filter((o) => o.data && o.data.bg), rest = cur.filter((o) => !(o.data && o.data.bg));
+      let hasTi = false; walkJSON(json.objects, (n) => { if (n.data?.ti != null) hasTi = true; });
+      const grouped = groupParts(fab, rest, Wt() * Ht(), hasTi);
+      if (grouped.length !== rest.length) {
+        canvas.renderOnAddRemove = false; canvas.clear(); fit();
+        [...bgs, ...grouped].forEach((o) => canvas.add(o));
+        canvas.renderOnAddRemove = true;
+      }
     } else {
       const { bg, objs: fo } = await buildSide(S.d, side);
-      if (tok !== loadTok) return;
-      objs = [...bg, ...fo];
+      if (tok !== loadTok) { S.busy = false; return; }
+      // index objektu v šablóne: podľa neho pri zmene palety/písma prefarbíme aj upravenú vizitku
+      [...bg, ...fo].forEach((o, i) => { o.data = { ...(o.data || {}), ti: i }; });
+      S.d.tf = { ...(S.d.tf || {}), [side]: tfSnap() };
+      bg.forEach((o) => o.set(BGLOCK));
+      objs = [...bg, ...groupParts(fab, fo, Wt() * Ht(), false)];
       const sel = canvas.getActiveObject();
       canvas.discardActiveObject();
       canvas.renderOnAddRemove = false;
@@ -297,6 +406,7 @@ export function createEditor(el, host, opts = {}) {
       void sel;
     }
     S.side = side;
+    tuneHit();
     canvas.requestRenderAll();
     S.busy = false;
     saveSide();
@@ -314,6 +424,144 @@ export function createEditor(el, host, opts = {}) {
     const js = S.sides[other]; if (!js) return;
     (js.objects || []).forEach((o) => { if (o.data && o.data.field === k && o.data.part == null) o.text = (o.data.prefix || '') + (o.data.upper ? val.toLocaleUpperCase() : val); });
   }
+
+  // stav návrhu, z ktorého bola strana postavená (polia, logo, znak…) – základ pre porovnanie so šablónou
+  const tfSnap = () => ({ tpl: S.d.tpl, f: clone(S.d.f), logo: S.d.logo, mark: S.d.mark, art: S.d.art, back: S.d.back, size: S.d.size, photo: S.d.photo, qrUrl: S.d.qrUrl, emblem: S.d.emblem });
+  const baseFor = (side, d) => ({ ...d, ...(S.d.tf?.[side] || {}), pal: d.pal, fonts: d.fonts, sides: null });
+
+  /** Zmena palety / písma aj na ručne upravenej strane: každý prvok zo šablóny dostane farbu/písmo,
+   *  aké by mal v šablóne s novým štýlom – ak ho používateľ sám nezmenil. Pozície a úpravy ostanú. */
+  async function restyle(apply, kind) {
+    saveSide();
+    const oldD = clone({ ...S.d, sides: null });
+    apply();
+    const newD = clone({ ...S.d, sides: null });
+    for (const side of ['front', 'back']) {
+      if (!S.custom[side]) { if (side !== S.side) S.sides[side] = null; continue; }
+      const js = S.sides[side]; if (!js) continue;
+      let done = false;
+      if (S.d.tf?.[side]) {
+        const [ob, nb] = await Promise.all([buildSide(baseFor(side, oldD), side), buildSide(baseFor(side, newD), side)]);
+        const O = [...ob.bg, ...ob.objs].map((o) => o.toObject(PROPS)), N0 = [...nb.bg, ...nb.objs].map((o) => o.toObject(PROPS));
+        // nový prvok k starému: rovnaký index, alebo (keď šablóna s novým štýlom pridá/uberie prvky) rovnaký typ, pole a poloha
+        const key = (x) => [x.type, x.data?.field || '', x.data?.role || '', Math.round(x.left || 0), Math.round(x.top || 0), Math.round((x.width || 0) * (x.scaleX || 1)), Math.round((x.height || 0) * (x.scaleY || 1))].join('|');
+        const byKey = new Map(); N0.forEach((x) => { const k = key(x); if (!byKey.has(k)) byKey.set(k, x); });
+        const N = O.length === N0.length ? N0 : O.map((x) => byKey.get(key(x)) || null);
+        {
+          const keys = kind === 'pal' ? ['fill', 'stroke', 'src'] : ['fontFamily', 'fontWeight', 'fontStyle', 'fontSize'];
+          walkJSON(js.objects, (n) => {
+            const ti = n.data?.ti; if (ti == null || !O[ti] || !N[ti]) return;
+            const a = O[ti], b = N[ti];
+            if (a.type !== n.type || (a.data?.field || null) !== (n.data?.field || null)) return;
+            for (const k of keys) {
+              if (k === 'src' && !(n.type === 'image' && n.data?.tint)) continue;
+              if (sig(n[k]) === sig(a[k])) n[k] = b[k] == null ? null : clone(b[k]);
+            }
+            if (kind === 'pal' && n.type === 'image' && b.data?.tint && sig(n.src) === sig(b.src)) n.data = { ...n.data, tint: b.data.tint };
+          });
+          done = true;
+        }
+      }
+      if (!done) legacyRestyle(js, kind, oldD, newD);
+    }
+    if (S.custom[S.side]) await loadSide(S.side, true); else await rebuild(S.side);
+  }
+  // návrhy bez indexov šablóny: presná zhoda farieb palety / rodiny písma
+  function legacyRestyle(js, kind, oldD, newD) {
+    if (kind === 'pal') {
+      const old = oldD.pal || PALETTES[TEMPLATES[oldD.tpl].pal], pal = newD.pal, map = {};
+      ['bg', 'ink', 'accent', 'soft'].forEach((k) => { if (old[k] && pal[k]) map[old[k].toLowerCase()] = pal[k]; });
+      walkJSON(js.objects, (n) => { ['fill', 'stroke'].forEach((p) => { if (typeof n[p] === 'string' && map[n[p].toLowerCase()]) n[p] = map[n[p].toLowerCase()]; }); });
+    } else {
+      const oldFp = FONTS[oldD.fonts || TEMPLATES[oldD.tpl].fonts], fp = FONTS[newD.fonts];
+      walkJSON(js.objects, (n) => { if (n.fontFamily === oldFp.display) { n.fontFamily = fp.display; n.fontWeight = fp.dw; } else if (n.fontFamily === oldFp.text) n.fontFamily = fp.text; });
+    }
+  }
+  /** Logo / znak / obrázok šablóny na ručne upravenej strane: vymení len tieto prvky, zvyšok ostane */
+  async function patchRoles(roles, apply) {
+    saveSide();
+    apply();
+    const newD = clone({ ...S.d, sides: null });
+    for (const side of ['front', 'back']) {
+      if (!S.custom[side]) { if (side !== S.side) S.sides[side] = null; continue; }
+      const js = S.sides[side]; if (!js) continue;
+      const nb = await buildSide({ ...baseFor(side, newD), f: S.d.f, logo: newD.logo, mark: newD.mark, art: newD.art }, side);
+      const fresh = nb.objs.filter((o) => roles.includes(o.data?.role));
+      const monoNew = nb.objs.filter((o) => o.data?.mono);
+      js.objects = (js.objects || []).filter((n) => !roles.includes(n.data?.role));
+      if (fresh.length && !monoNew.length) js.objects = js.objects.filter((n) => !n.data?.mono); // logo nahradilo monogram
+      if (!fresh.length && monoNew.length && !js.objects.some((n) => n.data?.mono)) monoNew.forEach((o) => js.objects.push(o.toObject(PROPS)));
+      if (roles.includes('art')) { const nbg = nb.bg.map((o) => o.toObject(PROPS)); js.objects = [...nbg, ...js.objects.filter((n) => !n.data?.bg)]; }
+      fresh.forEach((o) => js.objects.push(o.toObject(PROPS)));
+    }
+    if (S.custom[S.side]) await loadSide(S.side, true); else await rebuild(S.side);
+  }
+  const colorSig = () => sig(canvas.getObjects().filter((o) => !o.data?.user).map((o) => leaves(o).map((x) => [x.fill, x.stroke].map((c) => (typeof c === 'string' ? c : '')).join(','))));
+  async function remapNearest(oldPal, pal) {
+    const roles = ['bg', 'ink', 'accent', 'soft'].filter((k) => toRGB(oldPal[k]) && pal[k]);
+    const near = (c) => {
+      const v = toRGB(c); if (!v) return null;
+      let best = null; for (const k of roles) { const o = toRGB(oldPal[k]); const d = Math.hypot(v[0] - o[0], v[1] - o[1], v[2] - o[2]); if (!best || d < best.d) best = { d, k }; }
+      return best && best.d < 120 ? pal[best.k] : null;
+    };
+    saveSide();
+    for (const side of ['front', 'back']) {
+      if (!S.custom[side]) {
+        if (side === S.side) { S.custom[side] = true; }
+        else { const { bg, objs } = await buildSide(S.d, side); [...bg, ...objs].forEach((o, i) => { o.data = { ...(o.data || {}), ti: i }; }); S.d.tf = { ...(S.d.tf || {}), [side]: tfSnap() }; S.sides[side] = { version: fab.version, objects: [...bg, ...groupParts(fab, objs, Wt() * Ht(), false)].map((o) => o.toObject(PROPS)) }; S.custom[side] = true; }
+      }
+      const js = S.sides[side]; if (!js) continue;
+      walkJSON(js.objects, (n) => { if (n.data?.user) return; ['fill', 'stroke'].forEach((k) => { const c = near(n[k]); if (c) n[k] = c; }); });
+    }
+    await loadSide(S.side, true);
+  }
+  const fontSig = () => canvas.getObjects().filter((o) => o.fontFamily).map((o) => o.fontFamily + o.fontWeight).join('|');
+  const isScript = (f) => /script|caveat|vibes|allura|pinyon|parisienne|signature/i.test(f || '');
+  async function remapFonts(fp) {
+    saveSide();
+    for (const side of ['front', 'back']) {
+      if (!S.custom[side]) {
+        if (side === S.side) S.custom[side] = true;
+        else { const { bg, objs } = await buildSide(S.d, side); [...bg, ...objs].forEach((o, i) => { o.data = { ...(o.data || {}), ti: i }; }); S.d.tf = { ...(S.d.tf || {}), [side]: tfSnap() }; S.sides[side] = { version: fab.version, objects: [...bg, ...groupParts(fab, objs, Wt() * Ht(), false)].map((o) => o.toObject(PROPS)) }; S.custom[side] = true; }
+      }
+      const js = S.sides[side]; if (!js) continue;
+      const texts = []; walkJSON(js.objects, (n) => { if (n.fontFamily && !n.data?.user && !isScript(n.fontFamily)) texts.push(n); });
+      const max = Math.max(0, ...texts.map((n) => (n.fontSize || 0) * (n.scaleY || 1)));
+      texts.forEach((n) => { if ((n.fontSize || 0) * (n.scaleY || 1) >= max * 0.7) { n.fontFamily = fp.display; n.fontWeight = fp.dw; } else { n.fontFamily = fp.text; n.fontWeight = +n.fontWeight >= 600 ? fp.tw2 : fp.tw; } });
+    }
+    await loadSide(S.side, true);
+  }
+  const hasRole = (role) => canvas.getObjects().some((o) => o.data?.role === role) || ['front', 'back'].some((sd) => sd !== S.side && S.custom[sd] && (S.sides[sd]?.objects || []).some((n) => n.data?.role === role));
+  // logo, ktoré šablóna nepoužíva: nahradí monogram, inak ho pridáme do rohu a vyberieme
+  async function placeLogo(src) {
+    const lay = layout(S.d, S.side), sz = size(), b = BLEED * K;
+    const mono = canvas.getObjects().find((o) => o.data?.mono && o.visible !== false);
+    let spec;
+    if (mono) {
+      const r = mono.getBoundingRect(true, true), side = Math.max(r.width, r.height * 1.6, 8 * K);
+      spec = { type: 'image', src, x: (r.left + r.width / 2 - side / 2) / K - BLEED, y: (r.top + r.height / 2 - side / 3.2) / K - BLEED, w: side / K, h: side / 1.6 / K, fit: 'contain', ax: 'left', ay: 'top', role: 'logo' };
+    } else spec = { type: 'image', src, x: sz.w - SAFE - 18, y: SAFE, w: 18, h: 9, fit: 'contain', ax: 'left', ay: 'top', role: 'logo' };
+    const o = await toFabric(spec, lay); if (!o) return null;
+    if (mono) { const r = mono.getBoundingRect(true, true); o.set({ left: r.left + r.width / 2 - (o.width * o.scaleX) / 2, top: r.top + r.height / 2 - (o.height * o.scaleY) / 2 }); canvas.remove(mono); }
+    else { o.set({ left: b + (sz.w - SAFE) * K - o.width * o.scaleX, top: b + SAFE * K }); }
+    o.setCoords(); canvas.add(o); canvas.setActiveObject(o); canvas.requestRenderAll();
+    S.custom[S.side] = true; saveSide();
+    emit('selection', o); emit('logoPlaced', { replacedMono: !!mono }); emit('added', o);
+    return o;
+  }
+  // výber pozadia kliknutím na prázdne miesto vizitky
+  canvas.on('mouse:up', (e) => {
+    if (e.target || !e.isClick || e.button === 3 || !S.d) return;
+    const p = canvas.getPointer(e.e), sz = size(), b = BLEED * K;
+    if (p.x < b || p.y < b || p.x > b + sz.w * K || p.y > b + sz.h * K) return;
+    const bg = canvas.getObjects().find((o) => o.data && o.data.kind === 'bg');
+    if (bg) { canvas.setActiveObject(bg); canvas.requestRenderAll(); emit('selection', bg); }
+  });
+  // dvojklik na skupinu: rozdelí ju a vyberie časť pod kurzorom (úpravy jednotlivých lístkov, lúčov…)
+  canvas.on('mouse:dblclick', (e) => {
+    const t = e.target;
+    if (t && t.type === 'group' && t.data?.kind === 'grp' && !t.data.locked) api.ungroup(t, e.subTargets && e.subTargets[e.subTargets.length - 1]);
+  });
 
   // ---------- verejné API ----------
   const api = {
@@ -361,6 +609,7 @@ export function createEditor(el, host, opts = {}) {
     },
     async setFields(obj) { Object.assign(S.d.f, obj); await rebuildAll(); commit(true); },
     async applyDesign(d2, { keepFields = true } = {}) {
+      if (Object.keys(d2).length === 1 && 'mark' in d2) { await patchRoles(['mark'], () => { S.d.mark = d2.mark; }); commit(true); return; }
       const f = keepFields ? { ...S.d.f, ...(d2.f || {}) } : d2.f;
       S.d = newDesign({ ...S.d, ...d2, f, sides: null, logo: d2.logo ?? S.d.logo, size: S.d.size, corners: S.d.corners, qrUrl: S.d.qrUrl });
       await rebuildAll(); commit(true);
@@ -371,33 +620,31 @@ export function createEditor(el, host, opts = {}) {
       await rebuildAll(); commit(true);
     },
     async setPalette(pal) {
-      const old = S.d.pal || PALETTES[TEMPLATES[S.d.tpl].pal];
-      S.d.pal = { ...pal };
-      for (const side of ['front', 'back']) {
-        if (!S.custom[side]) { if (side === S.side) await rebuild(side); else S.sides[side] = null; continue; }
-        const map = {}; ['bg', 'ink', 'accent', 'soft'].forEach((k) => { if (old[k]) map[old[k].toLowerCase()] = pal[k]; });
-        const recolor = (o) => { ['fill', 'stroke'].forEach((p) => { if (typeof o[p] === 'string' && map[o[p].toLowerCase()]) o[p] = map[o[p].toLowerCase()]; }); (o.objects || []).forEach(recolor); };
-        if (side === S.side) { canvas.getObjects().forEach((o) => { recolor(o); o.dirty = true; }); canvas.requestRenderAll(); saveSide(); }
-        else if (S.sides[side]) (S.sides[side].objects || []).forEach(recolor);
-      }
+      const oldPal = { ...(S.d.pal || PALETTES[TEMPLATES[S.d.tpl].pal]) };
+      const before = colorSig();
+      await restyle(() => { S.d.pal = { ...pal }; }, 'pal');
+      // šablóna s pevnými farbami: farby vizitky namapujeme na najbližšie farby novej palety
+      if (colorSig() === before && sig(oldPal) !== sig(pal)) await remapNearest(oldPal, pal);
       commit(true);
     },
     async setFonts(key) {
-      const oldFp = FONTS[S.d.fonts || TEMPLATES[S.d.tpl].fonts], fp = FONTS[key];
-      S.d.fonts = key;
-      for (const side of ['front', 'back']) {
-        if (!S.custom[side]) { if (side === S.side) await rebuild(side); else S.sides[side] = null; continue; }
-        const swap = (o) => { if (o.fontFamily === oldFp.display) { o.fontFamily = fp.display; o.fontWeight = fp.dw; } else if (o.fontFamily === oldFp.text) o.fontFamily = fp.text; (o.objects || []).forEach(swap); };
-        if (side === S.side) { await loadFonts([`${fp.dw} 40px "${fp.display}"`, `italic ${fp.dw} 40px "${fp.display}"`, `${fp.tw} 40px "${fp.text}"`, `${fp.tw2} 40px "${fp.text}"`]); canvas.getObjects().forEach((o) => { swap(o); o.dirty = true; o.initDimensions && o.initDimensions(); }); canvas.requestRenderAll(); saveSide(); }
-        else if (S.sides[side]) (S.sides[side].objects || []).forEach(swap);
-      }
+      const fp = FONTS[key];
+      await loadFonts([`${fp.dw} 40px "${fp.display}"`, `italic ${fp.dw} 40px "${fp.display}"`, `${fp.tw} 40px "${fp.text}"`, `${fp.tw2} 40px "${fp.text}"`]);
+      const before = fontSig();
+      await restyle(() => { S.d.fonts = key; }, 'font');
+      // šablóna s pevnými písmami: najväčší text dostane písmo nadpisov, ostatné písmo textu (písané ostanú)
+      if (fontSig() === before) await remapFonts(fp);
       commit(true);
     },
-    async setArt(art) { S.d.art = art; await rebuildAll(); commit(true); },
-    async setLogo(src) { S.d.logo = src; await rebuildAll(); commit(true); },
+    async setArt(art) { await patchRoles(['art'], () => { S.d.art = art; }); commit(true); },
+    async setLogo(src) {
+      await patchRoles(['logo'], () => { S.d.logo = src; });
+      if (src && !hasRole('logo')) await placeLogo(src);
+      commit(true);
+    },
     async setSize(sz) { S.d.size = sz; await rebuildAll(); fit(); commit(true); },
     async setCorners(c) { S.d.corners = c; applyClip(); canvas.requestRenderAll(); },
-    async setBack(key) { S.d.back = key; S.custom.back = false; S.sides.back = null; if (S.side === 'back') await loadSide('back'); else await api.setSide('back'); commit(true); },
+    async setBack(key) { S.d.back = key; S.custom.back = false; S.sides.back = null; if (S.side === 'back') await loadSide('back'); else { saveSide(); await loadSide('back'); emit('side', 'back'); } commit(true); },
     async setQR(url) {
       S.d.qrUrl = url;
       for (const side of ['front', 'back']) {
@@ -414,10 +661,62 @@ export function createEditor(el, host, opts = {}) {
         }
       }
     },
+    /** farba alebo prechod pozadia ({ grad: [..], angle }); textúru/grafiku šablóny pod tým skryje */
     setBg(color) {
-      const bg = canvas.getObjects().find((o) => o.data && o.data.kind === 'bg');
-      if (bg) { bg.set('fill', color); S.custom[S.side] = true; canvas.requestRenderAll(); commit(); }
+      const bg = canvas.getObjects().find((o) => o.data && o.data.kind === 'bg'); if (!bg) return;
+      bg.set('fill', paint(color)); bg.dirty = true;
+      canvas.getObjects().forEach((o) => { if (o.data && (o.data.bglike || o.data.kind === 'bgart')) o.set('visible', false); });
+      S.custom[S.side] = true; canvas.requestRenderAll(); commit(); emit('layers');
     },
+    bgColor() { const bg = canvas.getObjects().find((o) => o.data && o.data.kind === 'bg'); return bg ? bg.fill : null; },
+    /** textúra papiera cez celú vizitku ({ src, blend, opacity } alebo null) */
+    async setBgTexture(t) {
+      canvas.getObjects().filter((o) => o.data?.kind === 'bgtex').forEach((o) => canvas.remove(o));
+      if (t && t.src) {
+        const lay = layout(S.d, S.side), sz = size();
+        const img = await toFabric({ type: 'image', src: t.src, x: -BLEED, y: -BLEED, w: sz.w + 2 * BLEED, h: sz.h + 2 * BLEED, fit: 'cover', role: 'texture' }, lay);
+        if (img) {
+          img.set({ ...BGLOCK, opacity: t.opacity ?? 1, globalCompositeOperation: t.blend || 'source-over' });
+          img.data = { ...img.data, bg: true, kind: 'bgtex', tex: t.key || null };
+          const idx = canvas.getObjects().filter((o) => o.data?.bg && o.data.kind !== 'bgtex').length;
+          canvas.insertAt(img, idx, false);
+          if (!t.blend || t.blend === 'source-over') canvas.getObjects().forEach((o) => { if (o.data && (o.data.bglike || o.data.kind === 'bgart')) o.set('visible', false); });
+        }
+      }
+      S.custom[S.side] = true; canvas.requestRenderAll(); commit(true);
+    },
+    bgTexture() { return canvas.getObjects().find((o) => o.data?.kind === 'bgtex')?.data?.tex || null; },
+    /** štýl prvku (písmo, farba, rozostupy) – „kopírovať štýl“ */
+    styleOf(o = canvas.getActiveObject()) {
+      if (!o || o.type === 'activeSelection') return null;
+      const keys = /text/.test(o.type) ? ['fontFamily', 'fontWeight', 'fontStyle', 'fontSize', 'charSpacing', 'lineHeight', 'fill', 'stroke', 'strokeWidth', 'opacity'] : ['fill', 'stroke', 'strokeWidth', 'opacity'];
+      const st = { text: /text/.test(o.type), upper: !!o.data?.upper };
+      keys.forEach((k) => { st[k] = o[k]; });
+      if (o.type === 'group') st.col = api.colorsOf(o)[0] || null;
+      return st;
+    },
+    async applyStyle(st, o = canvas.getActiveObject()) {
+      if (!st || !o) return;
+      const targets = o.type === 'activeSelection' ? o.getObjects() : [o];
+      for (const t of targets) {
+        if (/text/.test(t.type) && st.text) {
+          await loadFonts([`${st.fontStyle === 'italic' ? 'italic ' : ''}${st.fontWeight || 400} 40px "${st.fontFamily}"`]);
+          ['fontFamily', 'fontWeight', 'fontStyle', 'charSpacing', 'lineHeight', 'fill', 'stroke', 'strokeWidth', 'opacity'].forEach((k) => { if (st[k] !== undefined) t.set(k, st[k]); });
+          if (st.fontSize) t.set('fontSize', st.fontSize / (t.scaleY || 1));
+          if (st.upper !== !!t.data?.upper) { t.set('text', st.upper ? t.text.toLocaleUpperCase() : (t.data?.field ? (t.data.prefix || '') + (S.d.f[t.data.field] || t.text) : t.text)); t.data = { ...t.data, upper: st.upper }; }
+          t.initDimensions?.();
+        } else if (t.type === 'group' && (st.col || typeof st.fill === 'string')) {
+          const from = api.colorsOf(t)[0]; const to = st.col || st.fill; if (from && to) { const pc = paint(to); leaves(t).forEach((x) => { if (colKey(x.fill) === from) x.set('fill', pc); if (colKey(x.stroke) === from) x.set('stroke', pc); }); }
+        } else if (!/text/.test(t.type) && t.type !== 'image') {
+          ['fill', 'stroke', 'strokeWidth', 'opacity'].forEach((k) => { if (st[k] !== undefined && st[k] !== null) t.set(k, st[k]); });
+        }
+        t.setCoords(); t.dirty = true;
+      }
+      canvas.requestRenderAll(); S.custom[S.side] = true; commit(); emit('selection', o);
+    },
+    /** QR kódy na aktuálnej strane */
+    qrCount() { return canvas.getObjects().filter((o) => o.data?.kind === 'qr').length; },
+    removeQR() { canvas.getObjects().filter((o) => o.data?.kind === 'qr').forEach((o) => canvas.remove(o)); canvas.discardActiveObject(); S.custom[S.side] = true; canvas.requestRenderAll(); commit(); emit('layers'); },
 
     // ---------- pridávanie ----------
     async add(kind, extra = {}) {
@@ -434,8 +733,21 @@ export function createEditor(el, host, opts = {}) {
       else if (kind === 'divider') {
         const c = (sz.h * K) / 2 + BLEED * K, cx = (sz.w * K) / 2 + BLEED * K, w = 11 * K, col = paint(pal.accent);
         const parts = [new fab.Line([cx - w, c, cx - 1.6 * K, c], { stroke: col, strokeWidth: 0.25 * K }), new fab.Rect({ left: cx, top: c, width: 1.6 * K, height: 1.6 * K, angle: 45, originX: 'center', originY: 'center', fill: col }), new fab.Line([cx + 1.6 * K, c, cx + w, c], { stroke: col, strokeWidth: 0.25 * K })];
-        const g = new fab.Group(parts, {}); g.data = { kind: 'divider' };
-        canvas.add(g); canvas.setActiveObject(g); canvas.requestRenderAll(); S.custom[S.side] = true; commit(); emit('selection', g);
+        const g = new fab.Group(parts, {}); g.data = { kind: 'divider', user: true };
+        canvas.add(g); canvas.setActiveObject(g); canvas.requestRenderAll(); S.custom[S.side] = true; commit(); emit('selection', g); emit('added', g);
+        return g;
+      }
+      else if (['frame2', 'corners', 'dots', 'wave', 'sprig'].includes(kind)) {
+        const b = BLEED * K, W = sz.w * K, H = sz.h * K, col = paint(pal.accent), sw = 0.25 * K, cx = b + W / 2, cy = b + H / 2;
+        let parts = [];
+        if (kind === 'frame2') { const m = (SAFE - 1.2) * K; parts = [new fab.Rect({ left: b + m, top: b + m, width: W - 2 * m, height: H - 2 * m, fill: 'transparent', stroke: col, strokeWidth: sw * 1.6, strokeUniform: true }), new fab.Rect({ left: b + m + 1.1 * K, top: b + m + 1.1 * K, width: W - 2 * m - 2.2 * K, height: H - 2 * m - 2.2 * K, fill: 'transparent', stroke: col, strokeWidth: sw * 0.7, strokeUniform: true })]; }
+        if (kind === 'corners') { const m = (SAFE - 1) * K, L = 5 * K; const c = (x, y, dx, dy) => new fab.Polyline([{ x: x + dx * L, y }, { x, y }, { x, y: y + dy * L }], { fill: 'transparent', stroke: col, strokeWidth: sw * 1.4, strokeUniform: true }); parts = [c(b + m, b + m, 1, 1), c(b + W - m, b + m, -1, 1), c(b + m, b + H - m, 1, -1), c(b + W - m, b + H - m, -1, -1)]; }
+        if (kind === 'dots') parts = [-1, 0, 1].map((k) => new fab.Circle({ left: cx + k * 2.4 * K, top: cy, radius: (k ? 0.45 : 0.7) * K, originX: 'center', originY: 'center', fill: col }));
+        if (kind === 'wave') { let d = `M ${cx - 12 * K} ${cy}`; for (let k = 0; k < 6; k++) d += ` q ${2 * K} ${k % 2 ? 1.6 * K : -1.6 * K} ${4 * K} 0`; parts = [new fab.Path(d, { fill: 'transparent', stroke: col, strokeWidth: sw * 1.2, strokeLineCap: 'round' })]; }
+        if (kind === 'sprig') { parts = [new fab.Path(`M ${cx - 9 * K} ${cy} Q ${cx} ${cy - 1.2 * K} ${cx + 9 * K} ${cy}`, { fill: 'transparent', stroke: col, strokeWidth: sw, strokeLineCap: 'round' })]; for (let k = -3; k <= 3; k++) { if (!k) continue; const x = cx + k * 2.4 * K, y = cy - 0.5 * K; parts.push(new fab.Ellipse({ left: x, top: y + (k % 2 ? -0.9 : 0.9) * K, rx: 1.05 * K, ry: 0.42 * K, angle: k % 2 ? -32 : 32, originX: 'center', originY: 'center', fill: col })); } }
+        const g = parts.length > 1 ? new fab.Group(parts, { objectCaching: false, subTargetCheck: true }) : parts[0];
+        g.data = { kind: parts.length > 1 ? 'grp' : 'path', role: 'ornament', user: true };
+        canvas.add(g); canvas.setActiveObject(g); canvas.requestRenderAll(); S.custom[S.side] = true; commit(); emit('selection', g); emit('added', g);
         return g;
       }
       else if (kind === 'text') spec = { type: 'text', text: extra.text || 'Text', x: sz.w / 2, y: sz.h / 2, ox: 'center', oy: 'center', size: 2.2, font: 't', color: pal.ink };
@@ -449,10 +761,11 @@ export function createEditor(el, host, opts = {}) {
       if (!o) return;
       if (spec.dash) o.set('strokeDashArray', [0.9 * K, 0.6 * K]);
       if (kind === 'emblem') o.data = { ...o.data, emb: extra.key, tint: spec.tint };
+      o.data = { ...o.data, user: true };
       if (spec.type === 'text') { await loadFonts([`${o.fontWeight} 40px "${o.fontFamily}"`]); o.initDimensions(); }
       canvas.add(o); canvas.setActiveObject(o); canvas.requestRenderAll();
       S.custom[S.side] = true; commit();
-      emit('selection', o);
+      emit('selection', o); emit('added', o);
       return o;
     },
     async replaceImage(o, src) {
@@ -471,8 +784,8 @@ export function createEditor(el, host, opts = {}) {
       for (const t of targets) {
         const p = { ...props };
         if (p.fontFamily || p.fontWeight || p.fontStyle) await loadFonts([`${p.fontStyle || t.fontStyle === 'italic' ? 'italic ' : ''}${p.fontWeight || t.fontWeight || 400} 40px "${p.fontFamily || t.fontFamily}"`]);
-        if (p.color && t.type === 'image' && (t.data?.emb || t.data?.role === 'mark' || t.data?.role === 'emblem')) {
-          const src = t.data.emb ? emblemURL(t.data.emb, 512) : S.d.mark;
+        if (p.color && t.type === 'image' && (t.data?.emb || t.data?.src0 || t.data?.role === 'mark' || t.data?.role === 'emblem')) {
+          const src = t.data.emb ? emblemURL(t.data.emb, 512) : (t.data.src0 || S.d.mark);
           const el2 = src && await tintEl(src, p.color);
           if (el2) { const sx = t.scaleX, sy = t.scaleY, w = t.width, h = t.height; t.setElement(el2); t.set({ width: w, height: h, scaleX: sx, scaleY: sy }); t.data = { ...t.data, tint: p.color }; }
           delete p.color;
@@ -494,8 +807,8 @@ export function createEditor(el, host, opts = {}) {
       emit('selection', o);
     },
     async remove() {
-      const o = canvas.getActiveObject(); if (!o || o.isEditing) return;
-      const all = o.type === 'activeSelection' ? o.getObjects() : [o];
+      const o = canvas.getActiveObject(); if (!o || o.isEditing || o.data?.bg) return;
+      const all = (o.type === 'activeSelection' ? o.getObjects() : [o]).filter((x) => !x.data?.bg);
       if (all.every((x) => x.data?.locked)) { emit('locked', o); return; }
       all.filter((x) => !x.data?.locked).forEach((x) => canvas.remove(x));
       canvas.discardActiveObject(); canvas.requestRenderAll(); S.custom[S.side] = true; commit();
@@ -525,6 +838,76 @@ export function createEditor(el, host, opts = {}) {
     copy() { const o = canvas.getActiveObject(); if (o) o.clone((c) => { S.clip = c; }, PROPS); },
     paste() { if (!S.clip) return; S.clip.clone((c) => { c.set({ left: c.left + 3 * K, top: c.top + 3 * K }); canvas.add(c); canvas.setActiveObject(c); canvas.requestRenderAll(); S.custom[S.side] = true; commit(); }, PROPS); },
 
+    // ---------- farby v skupine, zoskupenie ----------
+    /** farby použité v prvku (aj vo vnútri skupiny), od najčastejšej */
+    colorsOf(o = canvas.getActiveObject()) {
+      if (!o) return [];
+      const n = new Map();
+      leaves(o).forEach((x) => {
+        const w = x.type === 'image' ? 3 : 1;
+        if (x.type === 'image') { const k = colKey(x.data?.tint); if (k) n.set(k, (n.get(k) || 0) + w); return; }
+        [colKey(x.fill), x.strokeWidth ? colKey(x.stroke) : null].forEach((k) => { if (k) n.set(k, (n.get(k) || 0) + w); });
+      });
+      return [...n.entries()].sort((a, b) => b[1] - a[1]).map(([c]) => c);
+    },
+    /** v prvku nahradí jednu farbu inou (tiene a ďalšie farby ilustrácie ostanú) */
+    async recolor(o = canvas.getActiveObject(), from, to) {
+      if (!o || !from || !to) return;
+      const F0 = String(from).toUpperCase(), pc = paint(to);
+      for (const x of leaves(o)) {
+        if (x.type === 'image') {
+          if (colKey(x.data?.tint) === F0) {
+            const src = x.data.emb ? emblemURL(x.data.emb, 512) : (x.data.src0 || (x.data.role === 'mark' ? S.d.mark : null));
+            const el2 = src && await tintEl(src, to);
+            if (el2) { const sx = x.scaleX, sy = x.scaleY, w = x.width, h = x.height; x.setElement(el2); x.set({ width: w, height: h, scaleX: sx, scaleY: sy }); x.data = { ...x.data, tint: to }; }
+          }
+          continue;
+        }
+        if (colKey(x.fill) === F0) x.set('fill', pc);
+        if (colKey(x.stroke) === F0) x.set('stroke', pc);
+        x.dirty = true;
+      }
+      if (o.type === 'group') o.dirty = true;
+      canvas.requestRenderAll(); S.custom[S.side] = true; commit(); emit('selection', o);
+    },
+    canGroup(o = canvas.getActiveObject()) { return !!(o && o.type === 'activeSelection' && o.getObjects().filter((x) => !(x.data && (x.data.field || x.data.bg))).length >= 2); },
+    /** zoskupí vybrané prvky (texty s údajmi ostanú samostatne, aby sa dali ďalej meniť z polí) */
+    group() {
+      const act = canvas.getActiveObject(); if (!api.canGroup(act)) return null;
+      const all = canvas.getObjects();
+      const list = act.getObjects().filter((x) => !(x.data && (x.data.field || x.data.bg))).sort((a, b) => all.indexOf(a) - all.indexOf(b));
+      const idx = all.indexOf(list[0]);
+      canvas.discardActiveObject();
+      list.forEach((x) => canvas.remove(x));
+      list.forEach((x) => { if (x.data) delete x.data.loose; });
+      const g = new fab.Group(list, { objectCaching: false, subTargetCheck: true });
+      g.data = { kind: 'grp', role: 'user' };
+      canvas.insertAt(g, Math.min(idx, canvas.getObjects().length), false);
+      tuneHit(); canvas.setActiveObject(g); canvas.requestRenderAll(); S.custom[S.side] = true; commit(); emit('selection', g); emit('layers');
+      return g;
+    },
+    /** rozdelí skupinu na časti (zostanú na svojom mieste aj v poradí vrstiev) */
+    ungroup(o = canvas.getActiveObject(), focus) {
+      if (!o || o.type !== 'group' || o.data?.kind !== 'grp') return null;
+      const idx = canvas.getObjects().indexOf(o), items = o.getObjects().slice();
+      o._restoreObjectsState();
+      canvas.discardActiveObject(); canvas.remove(o);
+      items.forEach((it, k) => { it.group = undefined; it.data = { ...(it.data || {}), loose: true }; canvas.insertAt(it, idx + k, false); it.setCoords(); });
+      tuneHit();
+      const pick = focus && items.includes(focus) ? focus : null;
+      canvas.setActiveObject(pick || new fab.ActiveSelection(items, { canvas }));
+      canvas.requestRenderAll(); S.custom[S.side] = true; commit(); emit('selection', canvas.getActiveObject()); emit('layers'); emit('ungrouped', { n: items.length, focus: !!pick });
+      return items;
+    },
+    setMulti(on) {
+      S.multi = !!on;
+      const a = canvas.getActiveObject();
+      if (a) { a.hasControls = !S.multi && !a.data?.locked && !a.data?.bg; canvas.requestRenderAll(); }
+      emit('multi', S.multi);
+    },
+    get multi() { return !!S.multi; },
+    selectBg() { const bg = canvas.getObjects().find((o) => o.data && o.data.kind === 'bg'); if (bg) { canvas.setActiveObject(bg); canvas.requestRenderAll(); emit('selection', bg); } },
+
     // ---------- zamknutie, vrstvy, zarovnanie ----------
     isLocked(o = canvas.getActiveObject()) { return !!(o && (o.type === 'activeSelection' ? o.getObjects().every((x) => x.data?.locked) : o.data?.locked)); },
     lock(o = canvas.getActiveObject(), on) {
@@ -540,7 +923,7 @@ export function createEditor(el, host, opts = {}) {
     layers() {
       const act = canvas.getActiveObject();
       const sel = new Set(act ? (act.type === 'activeSelection' ? act.getObjects() : [act]) : []);
-      return canvas.getObjects().filter((o) => !(o.data && o.data.bg)).map((o) => ({ o, type: o.type, kind: o.data?.kind, role: o.data?.role, field: o.data?.field, text: o.text || '', locked: !!o.data?.locked, visible: o.visible !== false, selected: sel.has(o) })).reverse();
+      return canvas.getObjects().filter((o) => !(o.data && (o.data.bg || o.data.bglike))).map((o) => ({ o, type: o.type, kind: o.data?.kind, role: o.data?.role, field: o.data?.field, text: o.text || '', locked: !!o.data?.locked, visible: o.visible !== false, selected: sel.has(o) })).reverse();
     },
     select(o, add) {
       if (!o) return;
@@ -586,6 +969,8 @@ export function createEditor(el, host, opts = {}) {
       } else {
         const list = act.getObjects();
         canvas.discardActiveObject();
+        if (list.some((o) => o.initDimensions)) fab.util.clearFabricFontCache();
+        list.forEach((o) => { if (o.initDimensions) { o.initDimensions(); o.setCoords(); } });
         const R = list.map((o) => ({ o, r: o.getBoundingRect(true, true) }));
         const minL = Math.min(...R.map((x) => x.r.left)), maxR = Math.max(...R.map((x) => x.r.left + x.r.width));
         const minT = Math.min(...R.map((x) => x.r.top)), maxB = Math.max(...R.map((x) => x.r.top + x.r.height));
@@ -673,6 +1058,14 @@ export function createEditor(el, host, opts = {}) {
     },
   };
 
+  // zmeny návrhu bežia za sebou (rýchle klikanie na palety/písma/logo nesmie prepisovať rozpracovanú stranu)
+  let queue = Promise.resolve();
+  const serial = (fn) => (...a) => { const p = queue.then(() => fn(...a)); queue = p.catch(() => {}); return p; };
+  for (const k of ['load', 'setSide', 'setField', 'setFields', 'applyDesign', 'setTemplate', 'setPalette', 'setFonts', 'setArt', 'setLogo', 'setSize', 'setBack', 'setQR', 'resetSide', 'coverImage']) api[k] = serial(api[k]);
+  const _undo = serial(undo), _redo = serial(redo);
+  api.idle = () => queue;
+  api.undo = _undo; api.redo = _redo;
+
   // klávesy
   window.addEventListener('keydown', (e) => {
     if (!host.offsetParent) return; // editor nie je na obrazovke
@@ -684,8 +1077,8 @@ export function createEditor(el, host, opts = {}) {
     if (mod && (e.key === '=' || e.key === '+')) { e.preventDefault(); api.zoomIn(); }
     else if (mod && e.key === '-') { e.preventDefault(); api.zoomOut(); }
     else if (mod && e.key === '0') { e.preventDefault(); api.zoomFit(); }
-    else if (mod && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); }
-    else if (mod && e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); }
+    else if (mod && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? api.redo() : api.undo(); }
+    else if (mod && e.key.toLowerCase() === 'y') { e.preventDefault(); api.redo(); }
     else if (mod && e.key.toLowerCase() === 'd') { e.preventDefault(); api.duplicate(); }
     else if (mod && e.key.toLowerCase() === 'a') { e.preventDefault(); api.selectAll(); }
     else if (mod && e.shiftKey && e.key.toLowerCase() === 'l' && o) { e.preventDefault(); api.lock(); }

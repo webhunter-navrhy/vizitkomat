@@ -57,6 +57,9 @@ const I = {
   eye: '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
   eyeOff: '<svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.1A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 4.4-1"/></svg>',
   layers: '<svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg>',
+  group: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/><path d="M2 2h20v20H2z" stroke-dasharray="2.5 2.5"/></svg>',
+  ungroup: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/><path d="M14 4h6v6M4 14v6h6" stroke-dasharray="2.5 2.5"/></svg>',
+  roller: '<svg viewBox="0 0 24 24"><rect x="4" y="3.5" width="14" height="6" rx="1.5"/><path d="M18 6.5h2v5h-8v3"/><rect x="10.5" y="14.5" width="3" height="6.5" rx="1"/></svg>',
   grip: '<svg viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg>',
 };
 const ALIGN_I = {
@@ -97,6 +100,7 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
       <button class="etb__b" data-act="align" title="${L.align}" data-alignicon>${I.al}</button>
       <button class="etb__b" data-act="spacing" title="${L.spacing}">${I.sp}</button>
     </div>
+    <div class="etb__g" data-g="bg"><span class="etb__lbl">${tr('Pozadie', 'Pozadí')}</span></div>
     <div class="etb__g" data-g="color"><button class="etb__sw" data-act="color" title="${L.color}"><i data-curcol></i></button></div>
     <div class="etb__g" data-g="img">
       <button class="etb__t" data-act="replace">${I.swap}<span>${L.replace}</span></button>
@@ -104,20 +108,25 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
       <button class="etb__t" data-act="removebg">${I.wand}<span>${L.bg}</span></button>
     </div>
     <div class="etb__g" data-g="common">
+      <button class="etb__t" data-act="group" title="${tr('Zoskupiť – presúvať a meniť ako celok', 'Seskupit – přesouvat a měnit jako celek')}">${I.group}<span>${tr('Zoskupiť', 'Seskupit')}</span></button>
+      <button class="etb__t" data-act="ungroup" title="${tr('Rozdeliť na časti (alebo dvojklik)', 'Rozdělit na části (nebo dvojklik)')}">${I.ungroup}<span>${tr('Rozdeliť', 'Rozdělit')}</span></button>
       <button class="etb__b" data-act="pos" title="${L.pos}">${I.pos}</button>
+      <button class="etb__b" data-act="copystyle" title="${tr('Kopírovať štýl – potom kliknite na iný prvok', 'Kopírovat styl – pak klikněte na jiný prvek')}">${I.roller}</button>
       <button class="etb__b" data-act="lock" data-lockbtn title="${L.lock} (⌘⇧L)">${I.unlock}</button>
       <button class="etb__b" data-act="dup" title="${L.dup} (⌘D)">${I.dup}</button>
       <button class="etb__b etb__del" data-act="del" title="${L.del} (Del)">${I.del}</button>
       <button class="etb__b" data-act="more" title="${L.more}">${I.more}</button>
     </div>
     <button class="etb__warn" data-act="fitsafe" data-warn hidden>${I.warn}<span>${tr('Mimo bezpečnej zóny', 'Mimo bezpečné zóny')}</span><b>${tr('Opraviť', 'Opravit')}</b></button>`;
+  const dock = $('[data-ctxbar]', stage); if (dock) dock.append(bar);
   const pop = document.createElement('div'); pop.className = 'etb-pop'; pop.hidden = true; stage.append(pop);
   const fileIn = document.createElement('input'); fileIn.type = 'file'; fileIn.accept = 'image/*'; fileIn.hidden = true; stage.append(fileIn);
-  let popKind = null, moving = false;
+  let popKind = null, moving = false, recolorFrom = null, lastSel = null, styleClip = null, styleSrc = null;
 
   const kindOf = (o) => {
     if (!o) return null;
     if (o.type === 'activeSelection') return 'multi';
+    if (o.data?.bg) return 'bg';
     if (/text/.test(o.type)) return 'text';
     if (o.type === 'image') return ['mark', 'emblem'].includes(o.data?.role) || o.data?.emb ? 'tint' : 'img';
     return 'shape';
@@ -127,7 +136,7 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
     if (o.type === 'image') return o.data?.tint || '';
     if (o.type === 'activeSelection') return colorOf(o.getObjects()[0]);
     if (o.type === 'line') return o.stroke;
-    if (o.type === 'group') { const f = o.getObjects()[0]; return f?.stroke && f.stroke !== 'none' ? f.stroke : f?.fill; }
+    if (o.type === 'group') return recolorFrom && ed.colorsOf(o).includes(recolorFrom) ? recolorFrom : (ed.colorsOf(o)[0] || '');
     if ((o.type === 'rect' || o.type === 'circle') && (!o.fill || o.fill === 'transparent') && o.stroke) return o.stroke;
     return o.fill;
   };
@@ -143,6 +152,11 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
     $('[data-g="text"]', bar).hidden = k !== 'text';
     $('[data-g="img"]', bar).hidden = k !== 'img';
     $('[data-g="color"]', bar).hidden = k === 'img';
+    $('[data-g="bg"]', bar).hidden = k !== 'bg';
+    $('[data-g="common"]', bar).hidden = k === 'bg';
+    $('[data-act="group"]', bar).hidden = !(k === 'multi' && ed.canGroup(o));
+    $('[data-act="ungroup"]', bar).hidden = !(o.type === 'group' && o.data?.kind === 'grp');
+    if (o !== lastSel) { lastSel = o; recolorFrom = o.type === 'group' ? (ed.colorsOf(o)[0] || null) : null; }
     if (k === 'text') {
       $('[data-fontname]', bar).textContent = o.fontFamily;
       $('[data-fontname]', bar).style.fontFamily = `'${o.fontFamily}'`;
@@ -162,7 +176,7 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
   // lišta nad prvkom (alebo pod ním, keď nie je miesto); na mobile dole nad tlačidlom
   function place(o = ed.active()) {
     if (bar.hidden || !o) return;
-    if (isMobile()) { bar.style.left = ''; bar.style.top = ''; bar.classList.remove('is-below'); return; }
+    if (isMobile() || dock) { bar.style.left = ''; bar.style.top = ''; bar.classList.remove('is-below'); return; }
     const sr = stage.getBoundingClientRect(), hr = host.getBoundingClientRect();
     const r = o.getBoundingRect(); // px plátna vrátane priblíženia
     const bw = bar.offsetWidth, bh = bar.offsetHeight, topMin = 64;
@@ -216,11 +230,13 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
     const pal = curPal();
     const dot = (c, title = c) => `<button class="cpk__c${String(c).toUpperCase() === cur ? ' on' : ''}" data-col="${esc(c)}" style="background:${swatchBg(c)}" title="${esc(title)}" aria-label="${esc(title)}"></button>`;
     const sec = (h, list) => (list.length ? `<p class="cpk__h">${h}</p><div class="cpk__row">${list.join('')}</div>` : '');
-    const docCols = [...new Set([pal.ink, pal.accent, pal.bg, pal.soft, '#FFFFFF', '#111111'].map((c) => c.toUpperCase()))];
+    const docCols = [...new Set([pal.ink, pal.accent, pal.bg, pal.soft, '#FFFFFF', '#111111'].filter((c) => typeof c === 'string').map((c) => c.toUpperCase()))];
     const brand = (brandColors() || []).map((c) => c.toUpperCase()).filter((c) => !docCols.includes(c));
     const foils = [['foil:gold', tr('Zlatá fólia', 'Zlatá fólie')], ['foil:rose', tr('Ružové zlato', 'Růžové zlato')], ['foil:silver', tr('Strieborná fólia', 'Stříbrná fólie')], ['foil:copper', tr('Medená fólia', 'Měděná fólie')]].filter(([k]) => FOILS[k.slice(5)]);
     const hex = /^#[0-9a-f]{6}$/i.test(cur) ? cur : '#000000';
-    return `<div class="cpk">${sec(tr('Farby vizitky', 'Barvy vizitky'), docCols.map((c) => dot(c)))}${sec(tr('Farby značky', 'Barvy značky'), brand.map((c) => dot(c)))}${sec(tr('Nedávne', 'Nedávné'), recent().map((c) => dot(c, c.startsWith('foil:') ? 'fólia' : c)))}
+    const inEl = o?.type === 'group' ? ed.colorsOf(o).slice(0, 8) : [];
+    const elSec = inEl.length > 1 ? `<p class="cpk__h">${tr('Ktorú farbu zmeniť', 'Kterou barvu změnit')}</p><div class="cpk__row cpk__row--from">${inEl.map((c) => `<button class="cpk__c cpk__from${c === (recolorFrom || inEl[0]) ? ' on' : ''}" data-from="${esc(c)}" style="background:${swatchBg(c)}" title="${esc(c)}"></button>`).join('')}</div><p class="cpk__h">${tr('Nová farba', 'Nová barva')}</p>` : '';
+    return `<div class="cpk">${elSec}${sec(tr('Farby vizitky', 'Barvy vizitky'), docCols.map((c) => dot(c)))}${sec(tr('Farby značky', 'Barvy značky'), brand.map((c) => dot(c)))}${sec(tr('Nedávne', 'Nedávné'), recent().map((c) => dot(c, c.startsWith('foil:') ? 'fólia' : c)))}
       ${o?.type === 'activeSelection' || kindOf(o) !== 'img' ? sec(tr('Metalická fólia', 'Metalická fólie'), foils.map(([k, t]) => dot(k, t))) : ''}
       <div class="cpk__own"><label class="cpk__wheel" title="${tr('Vlastná farba', 'Vlastní barva')}"><input type="color" data-colpick value="${hex}"></label><input class="cpk__hex" data-hex value="${hex}" maxlength="7" spellcheck="false" aria-label="HEX"><span class="cpk__ct" data-ct></span></div></div>`;
   }
@@ -244,7 +260,7 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
   function morePop() {
     const o = ed.active();
     return `<div class="mpk"><label>${tr('Priehľadnosť', 'Průhlednost')}<output data-opv>${Math.round((o?.opacity ?? 1) * 100)} %</output><input type="range" min="10" max="100" value="${Math.round((o?.opacity ?? 1) * 100)}" data-opacity></label>
-      <hr><button data-act="copy">${tr('Kopírovať', 'Kopírovat')}<kbd>⌘C</kbd></button><button data-act="paste">${tr('Vložiť', 'Vložit')}<kbd>⌘V</kbd></button><button data-act="selall">${tr('Vybrať všetko', 'Vybrat vše')}<kbd>⌘A</kbd></button></div>`;
+      <hr><button data-act="multi">${ed.multi ? tr('Ukončiť výber viacerých', 'Ukončit výběr více prvků') : tr('Vybrať viac prvkov', 'Vybrat více prvků')}<kbd>Shift</kbd></button><button data-act="copy">${tr('Kopírovať', 'Kopírovat')}<kbd>⌘C</kbd></button><button data-act="paste">${tr('Vložiť', 'Vložit')}<kbd>⌘V</kbd></button><button data-act="selall">${tr('Vybrať všetko', 'Vybrat vše')}<kbd>⌘A</kbd></button></div>`;
   }
 
   /* ---------------- akcie ---------------- */
@@ -262,10 +278,19 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
     }
     if (a === 'lock') { const on = ed.lock(); toast(on ? tr('Prvok je zamknutý: nedá sa posunúť ani zmazať.', 'Prvek je zamčený: nejde posunout ani smazat.') : tr('Prvok je odomknutý.', 'Prvek je odemčený.')); return; }
     if (a === 'dup') return ed.duplicate();
+    if (a === 'copystyle') {
+      if (styleClip) { styleClip = null; bar.classList.remove('is-painting'); return; }
+      styleClip = ed.styleOf(o); styleSrc = o;
+      if (styleClip) { bar.classList.add('is-painting'); toast(tr('Štýl je skopírovaný. Kliknite na prvok, ktorému ho chcete dať.', 'Styl je zkopírovaný. Klikněte na prvek, kterému ho chcete dát.')); }
+      return;
+    }
+    if (a === 'group') { ed.group(); toast(tr('Zoskupené. Dvojklikom skupinu znova rozdelíte.', 'Seskupeno. Dvojklikem skupinu zase rozdělíte.')); return; }
+    if (a === 'ungroup') return ed.ungroup();
     if (a === 'del') return ed.remove();
     if (a === 'copy') { ed.copy(); closePop(); toast(tr('Skopírované. Vložíte cez ⌘V.', 'Zkopírováno. Vložíte přes ⌘V.')); return; }
     if (a === 'paste') { ed.paste(); closePop(); return; }
     if (a === 'selall') { closePop(); return ed.selectAll(); }
+    if (a === 'multi') { closePop(); ed.setMulti(!ed.multi); return; }
     if (a === 'fitsafe') return o && ed.fitSafe(o);
     if (a === 'replace') return fileIn.click();
     if (a === 'crop') return o && cropDialog(o);
@@ -283,14 +308,20 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
 
   async function setColor(c) {
     const o = ed.active(); if (!o) return;
-    await ed.style({ color: c }); pushRecent(c);
-    $$('.cpk__c', pop).forEach((b) => b.classList.toggle('on', b.dataset.col.toUpperCase() === String(c).toUpperCase()));
+    if (o.type === 'group' && o.data?.kind === 'grp') {
+      const from = recolorFrom && ed.colorsOf(o).includes(recolorFrom) ? recolorFrom : ed.colorsOf(o)[0];
+      await ed.recolor(o, from, c); recolorFrom = String(c).toUpperCase(); lastSel = o;
+      const fb = $(`.cpk__from[data-from]`, pop); if (fb) { closePop(); openPop('color', $('[data-act="color"]', bar)); }
+    } else await ed.style({ color: c });
+    pushRecent(c);
+    $$('[data-col]', pop).forEach((b) => b.classList.toggle('on', b.dataset.col.toUpperCase() === String(c).toUpperCase()));
     const ct = $('[data-ct]', pop);
     if (ct && /^#[0-9a-f]{6}$/i.test(c)) { const bg = curPal().bg; const r = contrast(c, bg); ct.textContent = r < 3 ? tr('slabý kontrast', 'slabý kontrast') : ''; }
   }
   pop.addEventListener('click', async (e) => {
     const fam = e.target.closest('[data-fam]');
     if (fam) { await ed.style({ fontFamily: fam.dataset.fam }); $$('.fpk__i', pop).forEach((b) => b.classList.toggle('is-cur', b === fam)); return; }
+    const fr = e.target.closest('[data-from]'); if (fr) { recolorFrom = fr.dataset.from; $$('.cpk__from', pop).forEach((b) => b.classList.toggle('on', b === fr)); $('[data-curcol]', bar).style.background = swatchBg(recolorFrom); return; }
     const c = e.target.closest('[data-col]'); if (c) return setColor(c.dataset.col);
     const al = e.target.closest('[data-align]'); if (al) return ed.alignSel(al.dataset.align);
     const ord = e.target.closest('[data-order]'); if (ord) return ed.order(ord.dataset.order);
@@ -378,7 +409,9 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
     menu.innerHTML = target
       ? it('copy', tr('Kopírovať', 'Kopírovat'), '⌘C') + it('paste', tr('Vložiť', 'Vložit'), '⌘V') + it('dup', L.dup, '⌘D') + '<hr>'
         + it('up', tr('Dopredu', 'Dopředu'), '⌘]') + it('down', tr('Dozadu', 'Dozadu'), '⌘[') + it('top', tr('Úplne dopredu', 'Úplně dopředu'), '⌘⇧]') + it('bottom', tr('Úplne dozadu', 'Úplně dozadu'), '⌘⇧[') + '<hr>'
-        + it('center', tr('Na stred vizitky', 'Na střed vizitky')) + it('lock', locked ? L.unlock : L.lock, '⌘⇧L') + '<hr>' + it('del', L.del, 'Del', 'ecm__del')
+        + it('center', tr('Na stred vizitky', 'Na střed vizitky')) + it('lock', locked ? L.unlock : L.lock, '⌘⇧L')
+        + (target.type === 'group' && target.data?.kind === 'grp' ? it('ungroup', tr('Rozdeliť na časti', 'Rozdělit na části'), '⌘⇧G') : '') + (ed.canGroup(target) ? it('group', tr('Zoskupiť', 'Seskupit'), '⌘G') : '')
+        + '<hr>' + it('del', L.del, 'Del', 'ecm__del')
       : it('paste', tr('Vložiť', 'Vložit'), '⌘V') + it('selall', tr('Vybrať všetko', 'Vybrat vše'), '⌘A') + it('marks', tr('Zobraziť orez a spadávku', 'Zobrazit ořez a spadávku'));
     menu.hidden = false;
     const mw = menu.offsetWidth, mh = menu.offsetHeight;
@@ -388,7 +421,7 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
   menu.addEventListener('click', (e) => {
     const m = e.target.closest('[data-m]')?.dataset.m; if (!m) return;
     menu.hidden = true;
-    ({ copy: () => ed.copy(), paste: () => ed.paste(), dup: () => ed.duplicate(), up: () => ed.order('up'), down: () => ed.order('down'), top: () => ed.order('top'), bottom: () => ed.order('bottom'), center: () => { ed.alignSel('center'); ed.alignSel('middle'); }, lock: () => act('lock'), del: () => ed.remove(), selall: () => ed.selectAll(), marks: () => $('[data-marks]')?.click() })[m]?.();
+    ({ copy: () => ed.copy(), paste: () => ed.paste(), dup: () => ed.duplicate(), up: () => ed.order('up'), down: () => ed.order('down'), top: () => ed.order('top'), bottom: () => ed.order('bottom'), center: () => { ed.alignSel('center'); ed.alignSel('middle'); }, lock: () => act('lock'), group: () => act('group'), ungroup: () => ed.ungroup(), del: () => ed.remove(), selall: () => ed.selectAll(), marks: () => $('[data-marks]')?.click() })[m]?.();
   });
   menu.addEventListener('keydown', (e) => {
     const items = $$('button', menu), i = items.indexOf(document.activeElement);
@@ -409,6 +442,7 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
     if (l.role === 'photo') return tr('Fotka', 'Fotka');
     if (l.type === 'image') return tr('Obrázok', 'Obrázek');
     if (l.type === 'line' || l.kind === 'divider') return tr('Čiara', 'Čára');
+    if (l.kind === 'grp') return l.o.data?.role === 'user' ? tr('Skupina', 'Skupina') : tr('Ilustrácia', 'Ilustrace');
     if (l.type === 'group') return tr('Ikona', 'Ikona');
     return tr('Tvar', 'Tvar');
   };
@@ -461,10 +495,10 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
   if (elBox) {
     const shapes = [['rect', tr('Obdĺžnik', 'Obdélník'), '<b class="a-r"></b>'], ['rounded', tr('Zaoblený', 'Zaoblený'), '<b class="a-rr"></b>'], ['circle', tr('Kruh', 'Kruh'), '<b class="a-c"></b>'], ['ring', tr('Prstenec', 'Prstenec'), '<b class="a-ring"></b>'],
       ['line', tr('Čiara', 'Čára'), '<b class="a-l"></b>'], ['dashed', tr('Prerušovaná', 'Přerušovaná'), '<b class="a-dl"></b>'], ['divider', tr('Oddeľovač', 'Oddělovač'), '<b class="a-div"><i></i></b>'], ['frame', tr('Rámik', 'Rámeček'), '<b class="a-fr"></b>']];
-    const texts = [['heading', tr('Nadpis', 'Nadpis'), 'a-h1'], ['subheading', tr('PODNADPIS', 'PODNADPIS'), 'a-h2'], ['text', tr('Text odseku', 'Text odstavce'), 'a-h3'], ['small', tr('Malý text', 'Malý text'), 'a-h4']];
+    const orn = [['frame2', tr('Dvojitý rám', 'Dvojitý rám'), '<svg viewBox="0 0 40 26"><rect x="2" y="2" width="36" height="22" rx="1"/><rect x="5" y="5" width="30" height="16" stroke-width=".8"/></svg>'], ['corners', tr('Rohy', 'Rohy'), '<svg viewBox="0 0 40 26"><path d="M2 8V2h6M32 2h6v6M2 18v6h6M38 18v6h-6"/></svg>'], ['dots', tr('Bodky', 'Tečky'), '<svg viewBox="0 0 40 26"><circle cx="12" cy="13" r="1.6"/><circle cx="20" cy="13" r="2.4"/><circle cx="28" cy="13" r="1.6"/></svg>'], ['wave', tr('Vlnka', 'Vlnka'), '<svg viewBox="0 0 40 26"><path d="M4 13q4-5 8 0t8 0 8 0 8 0"/></svg>'], ['sprig', tr('Vetvička', 'Větvička'), '<svg viewBox="0 0 40 26"><path d="M4 14Q20 11 36 14"/><ellipse cx="12" cy="11" rx="3" ry="1.2" transform="rotate(-30 12 11)"/><ellipse cx="20" cy="15" rx="3" ry="1.2" transform="rotate(30 20 15)"/><ellipse cx="28" cy="11" rx="3" ry="1.2" transform="rotate(-30 28 11)"/></svg>']];
     elBox.innerHTML = `<label class="els__q"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input data-elq placeholder="${tr('Hľadať: káva, kľúč, zub, srdce…', 'Hledat: káva, klíč, zub, srdce…')}" autocomplete="off"></label>
-      <div data-elgroup="text"><h3>${tr('Text', 'Text')}</h3><div class="els__txt">${texts.map(([k, l, c]) => `<button data-add="${k}" class="${c}">${l}</button>`).join('')}</div></div>
       <div data-elgroup="shapes"><h3>${tr('Tvary a čiary', 'Tvary a čáry')}</h3><div class="adds adds--4">${shapes.map(([k, l, i]) => `<button data-add="${k}">${i}${l}</button>`).join('')}<button data-add="qr"><b class="a-q"></b>QR</button><button data-add-img2><b class="a-i"></b>${tr('Obrázok', 'Obrázek')}</button></div></div>
+      <div data-elgroup="orn"><h3>${tr('Ornamenty a rámy', 'Ornamenty a rámy')}</h3><div class="adds adds--4 adds--orn">${orn.map(([k, l, i]) => `<button data-add="${k}">${i}${l}</button>`).join('')}</div></div>
       <div data-elgroup="emb"><h3>${tr('Znaky odborov', 'Znaky oborů')} <small data-emb-n></small></h3><div class="icons icons--emb" data-emb></div><button class="link els__more" data-emb-more>${tr('Zobraziť všetky', 'Zobrazit všechny')}</button></div>
       <div data-elgroup="ic"><h3>${tr('Ikony', 'Ikony')}</h3><div class="icons" data-ic></div></div>
       <p class="els__none" data-elnone hidden>${tr('Nič sme nenašli. Skúste iné slovo, napríklad „dom“ alebo „hviezda“.', 'Nic jsme nenašli. Zkuste jiné slovo, třeba „dům“ nebo „hvězda“.')}</p>`;
@@ -478,7 +512,7 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
       $('[data-emb-more]', elBox).hidden = !!q || embAll || emb.length <= 24;
       $('[data-ic]', elBox).innerHTML = ic.map((n) => `<button data-icon="${n}" title="${n}">${iconSVG(n, '#0F1440', 1.8)}</button>`).join('');
       $('[data-elgroup="emb"]', elBox).hidden = !emb.length; $('[data-elgroup="ic"]', elBox).hidden = !ic.length;
-      $('[data-elgroup="text"]', elBox).hidden = !!q; $('[data-elgroup="shapes"]', elBox).hidden = !!q;
+      $('[data-elgroup="shapes"]', elBox).hidden = !!q; $('[data-elgroup="orn"]', elBox).hidden = !!q;
       $('[data-elnone]', elBox).hidden = !!(emb.length || ic.length) || !q;
     };
     const ensure = () => { if (!painted) { painted = true; paintEls(); } };
@@ -523,12 +557,24 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
   });
 
   /* ---------------- väzby na editor ---------------- */
-  ed.on('selection', (o) => { paint(o); onSelection?.(o); });
+  ed.on('selection', (o) => {
+    // kopírovanie štýlu: ďalší vybraný prvok dostane skopírovaný štýl
+    if (styleClip && o && o !== styleSrc && !o.data?.bg) { const st = styleClip; styleClip = null; bar.classList.remove('is-painting'); ed.applyStyle(st, o).then(() => toast(tr('Štýl je použitý.', 'Styl je použitý.'), { label: tr('Späť', 'Zpět'), onClick: () => ed.undo() })); return; }
+    paint(o); onSelection?.(o);
+  });
   ed.on('transform', () => { if (!moving) { moving = true; bar.classList.add('is-moving'); closePop(); } });
   ed.on('transformEnd', () => { moving = false; bar.classList.remove('is-moving'); paint(); });
   ed.on('change', () => { if (!moving && !bar.hidden) { const o = ed.active(); if (o) { $('[data-warn]', bar).hidden = kindOf(o) === 'multi' || !ed.overflow(o); place(o); } } });
   ed.on('zoom', () => place());
   ed.on('layers', () => paintLayers());
+  // pruh „vyberáte viac prvkov“
+  const multiBar = document.createElement('div'); multiBar.className = 'emulti'; multiBar.hidden = true;
+  multiBar.innerHTML = `<span>${tr('Ťuknite na ďalšie prvky, ktoré chcete pridať k výberu', 'Ťukněte na další prvky, které chcete přidat k výběru')}</span><button type="button" data-multi-x>${tr('Hotovo', 'Hotovo')}</button>`;
+  stage.append(multiBar);
+  multiBar.addEventListener('click', (e) => { if (e.target.closest('[data-multi-x]')) ed.setMulti(false); });
+  ed.on('multi', (on) => { multiBar.hidden = !on; });
+  ed.on('ungrouped', ({ focus }) => toast(focus ? tr('Skupina je rozdelená, upravujete vybranú časť. Spojíte ich cez Zoskupiť alebo Späť.', 'Skupina je rozdělená, upravujete vybranou část. Spojíte je přes Seskupit nebo Zpět.') : tr('Skupina je rozdelená na časti.', 'Skupina je rozdělená na části.'), { label: tr('Späť', 'Zpět'), onClick: () => ed.undo() }));
+  ed.on('logoPlaced', ({ replacedMono }) => toast(replacedMono ? tr('Logo nahradilo monogram. Posuňte ho alebo zmeňte veľkosť za rohy.', 'Logo nahradilo monogram. Posuňte ho nebo změňte velikost za rohy.') : tr('Logo je vo vizitke. Chyťte ho a posuňte, kam patrí.', 'Logo je ve vizitce. Chyťte ho a posuňte, kam patří.')));
   ed.on('locked', () => toast(tr('Prvok je zamknutý. Odomknete ho ikonou zámku.', 'Prvek je zamčený. Odemknete ho ikonou zámku.')));
   ed.canvas.on('text:editing:entered', () => bar.classList.add('is-editing'));
   ed.canvas.on('text:editing:exited', () => { bar.classList.remove('is-editing'); paint(); });
@@ -546,6 +592,14 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
     const t = document.activeElement; if (t && /INPUT|TEXTAREA|SELECT/.test(t.tagName)) return;
     if (e.key.toLowerCase() === 'b') { e.preventDefault(); act('bold'); }
     if (e.key.toLowerCase() === 'i') { e.preventDefault(); act('italic'); }
+  });
+
+  // ⌘G zoskupiť, ⌘⇧G rozdeliť
+  addEventListener('keydown', (e) => {
+    if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== 'g' || getStep() !== 'edit') return;
+    const t = document.activeElement; if (t && /INPUT|TEXTAREA|SELECT/.test(t.tagName)) return;
+    const o = ed.active(); if (!o || o.isEditing) return;
+    e.preventDefault(); if (e.shiftKey) ed.ungroup(); else if (ed.canGroup()) act('group');
   });
 
   return { paint, place, paintLayers, closePop, showElements: () => showElements() };

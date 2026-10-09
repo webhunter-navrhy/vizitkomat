@@ -632,7 +632,7 @@ html[lang="cs"] .fld.is-sample > span::after { content: 'ukázka'; }
 @media (max-width: 760px) {
   .ed-zoom { display: none; }
   .ed-saved { margin-left: 0; }
-  .coach { top: auto; bottom: 10px; padding: 10px 10px 10px 14px; }
+  .coach { top: 112px; bottom: auto; padding: 10px 10px 10px 14px; }
   .coach span { display: none; }
   .coach b { font-size: .84rem; }
 }
