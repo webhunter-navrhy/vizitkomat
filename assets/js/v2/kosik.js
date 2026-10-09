@@ -15,7 +15,7 @@ async function printFiles(it) {
   const dd = { ...d }; if (dd.sides && !(dd.sides.front || dd.sides.back)) delete dd.sides;
   const out = {};
   if (it.kind !== 'digital') out.tlac = await exportPDF(dd, 'tlac.pdf', { dataUrl: true });
-  if (it.kind === 'bundle' || it.kind === 'digital') { out['karta-f'] = await snapshot(dd, 'front', 1100, 'image/jpeg', 0.88); out['karta-b'] = await snapshot(dd, 'back', 1100, 'image/jpeg', 0.88); }
+  if (it.kind === 'bundle' || it.kind === 'digital') { out['karta-f'] = await snapshot(dd, 'front', 680, 'image/jpeg', 0.84); out['karta-b'] = await snapshot(dd, 'back', 680, 'image/jpeg', 0.84); }
   return out;
 }
 const $ = (s, el = document) => el.querySelector(s);

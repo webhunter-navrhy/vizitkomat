@@ -1,7 +1,7 @@
 // Tvorba – sprievodca v 4 krokoch: začiatok → výber návrhu → úpravy → objednávka
 import { SIZES, FONTS, PALETTES, ART, newDesign, contrast, slugify, tr, CZ, DEFAULT_FIELDS } from './model.js';
 import { TEMPLATES, BACK_KEYS, templateDefaults } from './templates.js';
-import { snapshot, exportPDF, loadImg, photo, mockup, inspect } from './render.js';
+import { snapshot, loadImg, photo, mockup, inspect } from './render.js';
 import { createEditor } from './editor.js';
 import { askAI, makeMark, API } from './ai.js';
 import { ICONS, iconSVG } from '../icons.js';
@@ -619,7 +619,7 @@ async function enterOrder() {
   paintOrder();
   const d = ed.printable();
   $('[data-view-busy]').hidden = false;
-  const [f, b] = await Promise.all([snapshot(d, 'front', 1600, 'image/jpeg'), snapshot(d, 'back', 1600, 'image/jpeg')]);
+  const [f, b] = await Promise.all([snapshot(d, 'front', 1000, 'image/jpeg', 0.85), snapshot(d, 'back', 1000, 'image/jpeg', 0.85)]);
   Object.assign(v4, { f, b, pf: await photo(f), pb: await photo(b) }); v4.cache.clear();
   $('[data-thumb-front]').src = f; $('[data-thumb-back]').src = b;
   paintScenes();
@@ -750,7 +750,6 @@ function paintOrder() {
   $('[data-sum-m]').textContent = dig ? tr('jednorazovo, bez predplatného', 'jednorázově, bez předplatného') : `${c.qty} ${tr('ks', 'ks')} · ${money(total / c.qty, { decimals: 2 })} / ${tr('ks', 'ks')}${c.kind === 'bundle' ? ' · ' + tr('+ digitálna zadarmo', '+ digitální zdarma') : ''}`;
   const now = new Date();
   $('[data-sum-d]').textContent = dig ? tr('Digitálnu vizitku zapneme hneď po zaplatení.', 'Digitální vizitku zapneme hned po zaplacení.') : `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + deliveryDays(c.express)))}`;
-  $('[data-pdf]').hidden = dig;
 }
 $('[data-kind]').addEventListener('click', (e) => { const b = e.target.closest('.kind'); if (!b) return; st.cfg.kind = b.dataset.v; paintOrder(); persist(); paintPreflight(); });
 $('[data-paper]').addEventListener('click', (e) => { const b = e.target.closest('.paper'); if (!b) return; st.cfg = cfgFor(b.dataset.v); paintOrder(); paint3D(); persist(); });
@@ -769,10 +768,9 @@ $('[data-back-edit]').addEventListener('click', () => go('edit'));
 // mobil: lišta s cenou a tlačidlom, kým nie je vidieť súhrn
 $('[data-obar-go]').addEventListener('click', () => $('[data-add-cart]').click());
 new IntersectionObserver((es) => { $('[data-obar]').classList.toggle('is-off', es[0].isIntersecting); }, { rootMargin: '0px 0px -40px 0px' }).observe($('.sum'));
-$('[data-pdf]').addEventListener('click', async (e) => {
-  const b = e.currentTarget, t = b.textContent; b.textContent = tr('Pripravujem PDF…', 'Připravuji PDF…');
-  try { await exportPDF(ed.printable(), `vizitka-${slugify(ed.design.f.name) || 'vizitkomat'}.pdf`); } finally { b.textContent = t; }
-});
+// náhľady nechceme ponúkať na stiahnutie (tlačové dáta dostane len naša tlačiareň)
+document.addEventListener('contextmenu', (e) => { if (e.target.closest('.st4, [data-save-dlg], .ed-canvas, canvas')) e.preventDefault(); });
+document.addEventListener('dragstart', (e) => { if (e.target.tagName === 'IMG' && e.target.closest('.st4')) e.preventDefault(); });
 $('[data-add-cart]').addEventListener('click', async (e) => {
   const b = e.currentTarget; b.disabled = true;
   const d = ed.printable();
@@ -802,7 +800,7 @@ sform.addEventListener('submit', async (e) => {
   const go = $('[data-save-go]'); go.disabled = true;
   try {
     const state = { ...ed.export(), cfg: st.cfg, slugTouched: st.slugTouched, touched: [...st.touched] };
-    const thumb = await snapshot(ed.printable(), 'front', 720, 'image/jpeg', 0.84);
+    const thumb = await snapshot(ed.printable(), 'front', 520, 'image/jpeg', 0.8);
     const r = await fetch(API + '/draft', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, lang: VK.lang, state, thumb }) });
     if (!r.ok) throw new Error(r.status);
     const j = await r.json();
