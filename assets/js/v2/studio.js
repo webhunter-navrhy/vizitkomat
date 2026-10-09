@@ -39,7 +39,7 @@ function go(step) {
   $$('[data-go]').forEach((li) => { const s = li.dataset.go; li.classList.toggle('on', s === step); li.classList.toggle('ok', s !== step && st.reached.has(s)); });
   window.scrollTo(0, 0);
   if (step === 'edit') { const c = st.cfg; $('[data-ed-price]').innerHTML = c.kind === 'digital' ? `<b>${money(VK.prices.digital)}</b>` : `${c.qty} ${tr('ks', 'ks')} <b>${money(itemPrice(c, VK.prices))}</b><small>${tr('doprava zadarmo', 'doprava zdarma')}</small>`; }
-  if (step === 'edit') ensureEditor().then(() => { ed.fit(); const cur = $('[data-tab][aria-selected=true]')?.dataset.tab; if (isPhone()) { if (cur) openTab(cur); } else openTab(cur || 'udaje'); });
+  if (step === 'edit') ensureEditor().then(() => { ed.fit(); if (simple) { openTab('udaje'); paintMiniPals(); return; } const cur = $('[data-tab][aria-selected=true]')?.dataset.tab; if (isPhone()) { if (cur) openTab(cur); } else openTab(cur || 'udaje'); });
   if (step === 'order') enterOrder();
   if (step === 'edit') VK.ev?.('editor'); else if (step === 'order') VK.ev?.('order_step');
   document.dispatchEvent(new Event('vk:step'));
@@ -411,6 +411,25 @@ if (tpv.dlg) {
    ========================================================= */
 const tabs = $$('[data-tab]'), panes = $$('[data-pp]');
 const edx = $('.edx');
+// jednoduchý režim: len údaje, farby a veľký náhľad; editor až na požiadanie
+let simple = (() => { try { return localStorage.getItem('vk2-adv') !== '1'; } catch (x) { return true; } })();
+function setSimple(on) {
+  simple = on; edx.classList.toggle('is-simple', on);
+  try { localStorage.setItem('vk2-adv', on ? '0' : '1'); } catch (x) { /* nevadí */ }
+  if (on) { ed?.deselect(); edx.classList.remove('is-sheet'); openTab('udaje'); paintMiniPals(); } else if (isPhone()) closePanel?.();
+  requestAnimationFrame(() => ed?.fit());
+}
+edx.classList.toggle('is-simple', simple);
+function paintMiniPals() {
+  const box = $('[data-pals-mini]'); if (!box || !ed || !st.loaded) return;
+  const cur = curPal();
+  const list = [...st.logoPals.map((p, i) => ['logo' + i, p]), ...Object.entries(PALETTES)].slice(0, 10);
+  box.innerHTML = list.map(([k, p]) => `<button class="pal${p.bg === cur.bg && p.accent === cur.accent ? ' on' : ''}" data-pal="${k}" title="${p.label}"><i><b style="background:${p.bg}"></b><b style="background:${p.accent}"></b><b style="background:${p.ink}"></b></i></button>`).join('');
+}
+$('[data-pals-mini]')?.addEventListener('click', async (e) => { const b = e.target.closest('[data-pal]'); if (!b) return; const k = b.dataset.pal; await ed.setPalette(k.startsWith('logo') ? st.logoPals[+k.slice(4)] : PALETTES[k]); paintMiniPals(); });
+$$('[data-adv-on]').forEach((b) => b.addEventListener('click', () => { setSimple(false); toast(tr('Kliknite na čokoľvek vo vizitke a upravte to.', 'Klikněte na cokoli ve vizitce a upravte to.')); }));
+$('[data-adv-off]')?.addEventListener('click', () => setSimple(true));
+$('[data-shield]')?.addEventListener('click', () => toast(tr('Údaje meníte vľavo. Posúvať a meniť písmo môžete v časti Upraviť detailne.', 'Údaje měníte vlevo. Posouvat a měnit písmo můžete v části Upravit detailně.')));
 const isPhone = () => matchMedia('(max-width: 1023px)').matches;
 // ľavý panel nástrojov (na mobile spodný panel); opätovný klik na aktívnu ikonu ho zbalí
 function openTab(id, { toggle = false } = {}) {
@@ -422,7 +441,7 @@ function openTab(id, { toggle = false } = {}) {
   panes.forEach((p) => p.classList.toggle('on', p.dataset.pp === id));
   $('[data-panel-title]').textContent = $(`[data-tab="${id}"] span`)?.textContent || '';
   edx.classList.remove('is-collapsed');
-  if (isPhone()) { edx.classList.add('is-sheet'); tools?.closePop(); }
+  if (isPhone() && !simple) { edx.classList.add('is-sheet'); tools?.closePop(); }
   requestAnimationFrame(() => ed?.fit());
   if (!ed || !st.loaded) return;
   if (id === 'styl') { paintPals(); paintFonts(); }
@@ -663,7 +682,7 @@ function tourGo(i) {
   requestAnimationFrame(tourPlace);
 }
 function coachShow() {
-  if (st.step !== 'edit' || !tour.steps.length) return;
+  if (st.step !== 'edit' || !tour.steps.length || simple) return;
   try { if (localStorage.getItem(COACH)) return; } catch (e) { return; }
   tourGo(0);
 }

@@ -128,6 +128,7 @@
       <div class="edx-panel__head"><b data-panel-title></b><button type="button" class="edx-panel__x" data-panel-x aria-label="{{ L('Zavrieť panel', 'Zavřít panel') }}">×</button></div>
       <div class="ed-panels">
         <section class="pn" data-pp="udaje">
+          <div class="simple-intro"><h2>{{ L('Doplňte svoje údaje', 'Doplňte své údaje') }}</h2><p>{{ L('Vizitka sa mení naživo. Prázdne polia na vizitke nebudú.', 'Vizitka se mění živě. Prázdná pole na vizitce nebudou.') }}</p></div>
           <p class="pn__tip">{{ L('Text môžete upraviť aj priamo vo vizitke: dvakrát naň kliknite.', 'Text můžete upravit i přímo ve vizitce: dvakrát na něj klikněte.') }}</p>
           <div class="fields">
             {% for key, label, ac, type in [
@@ -142,6 +143,11 @@
             ] %}
             <label class="fld"><span>{{ label }}</span><input type="{{ type }}" data-f="{{ key }}" autocomplete="{{ ac }}" maxlength="70"></label>
             {% endfor %}
+          </div>
+          <div class="simple-extra">
+            <h3>{{ L('Farby', 'Barvy') }}</h3>
+            <div class="pals pals--mini" data-pals-mini></div>
+            <button class="simple-adv" type="button" data-adv-on><span>{{ L('Upraviť detailne', 'Upravit detailně') }}</span><small>{{ L('posúvať texty, meniť písmo, pridať logo či obrázok', 'posouvat texty, měnit písmo, přidat logo či obrázek') }}</small><b aria-hidden="true">→</b></button>
           </div>
           <details class="more more--dig" data-digital-fields>
             <summary>{{ L('Digitálna vizitka: fotka, o mne, služby, siete', 'Digitální vizitka: fotka, o mně, služby, sítě') }}</summary>
@@ -262,6 +268,7 @@ So: po domluvě') }}"></textarea></label>
           </div>
         </div>
         <div class="ed-tools">
+          <button class="tb tb--txt simple-back" type="button" data-adv-off>{{ L('← Jednoduchý režim', '← Jednoduchý režim') }}</button>
           <span class="ed-saved" data-saved aria-live="polite"><i aria-hidden="true"></i><span data-saved-t>{{ L('Uložené v prehliadači', 'Uloženo v prohlížeči') }}</span></span>
         <div class="edx-view edx-view--top">
           <button class="tb tb--txt edx-marks" data-marks aria-pressed="false" title="{{ L('Zobraziť orez, spadávku a bezpečnú zónu', 'Zobrazit ořez, spadávku a bezpečnou zónu') }}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="1"/><rect x="7.5" y="7.5" width="9" height="9" stroke-dasharray="2 2"/></svg><span>{{ L('Orez', 'Ořez') }}</span></button>
@@ -292,6 +299,7 @@ So: po domluvě') }}"></textarea></label>
         <ul class="elay__list" data-lay-list></ul>
       </aside>
       <div class="ed-canvas" data-host><canvas data-canvas></canvas></div>
+      <button class="simple-shield" type="button" data-shield aria-label="{{ L('Upraviť detailne', 'Upravit detailně') }}"></button>
       <div class="edx-pages">
         <div class="edx-pagelist" data-sides>
           <button class="edx-page on" type="button" data-side="front"><img alt="" data-page-img="front"><span>{{ L('Predná', 'Přední') }}</span></button>
