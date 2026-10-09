@@ -13,8 +13,8 @@ const plain = (t) => (t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerC
 
 const DIR = { classic: tr('Klasický', 'Klasický'), modern: tr('Moderný', 'Moderní'), creative: tr('Kreatívny', 'Kreativní') };
 function describe(d) {
-  const dir = DIR[d.direction] ? `${DIR[d.direction]} ${tr('smer', 'směr')} · ` : '';
-  return `${dir}${TEMPLATES[d.tpl]?.name || ''} · ${FONTS[d.fonts]?.label || ''}${d.mark ? tr(' · znak na mieru', ' · znak na míru') : ''}${d.art && String(d.art).startsWith('data:') ? tr(' · grafika od AI', ' · grafika od AI') : ''}`;
+  // jednoduchý popis bez technických názvov (šablóna, písmo)
+  return `${DIR[d.direction] || TEMPLATES[d.tpl]?.name || ''}${d.mark ? tr(' · so znakom na mieru', ' · se znakem na míru') : ''}`;
 }
 function introFrom(fields, A) {
   const bits = [];

@@ -90,7 +90,7 @@ async function loadDesign(d, sides, custom) {
 function paintStart() {
   const ids = ['glow', 'saloon', 'cafe'];
   const imgs = $$('[data-way-thumbs] img');
-  ids.forEach(async (id, i) => { if (!imgs[i].getAttribute('src')) imgs[i].src = await thumb(newDesign({ tpl: id, ...templateDefaults(id) }), 'front', 420); });
+  ids.forEach(async (id, i) => { if (imgs[i] && !imgs[i].getAttribute('src')) imgs[i].src = await thumb(newDesign({ tpl: id, ...templateDefaults(id) }), 'front', 420); });
   if (st.saved?.d) {
     $('[data-resume]').hidden = false;
     const s = st.saved;
@@ -102,9 +102,15 @@ $('[data-resume-go]').addEventListener('click', async () => {
   st.reached.add('choose');
   await loadDesign(s.d, s.sides, s.custom); go('edit');
 });
-$('[data-ask-start]').addEventListener('submit', (e) => { e.preventDefault(); const v = $('[data-ask-start-in]').value.trim(); if (v.length < 3) { $('[data-ask-start-in]').focus(); return; } runAI(v); });
-$('[data-ask-start-in]').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('[data-ask-start]').requestSubmit(); } });
-$$('[data-chips] button').forEach((b) => b.addEventListener('click', () => runAI(b.dataset.p)));
+$('[data-ask-start]').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nm = $('[data-ask-name]')?.value.trim() || '', job = $('[data-ask-start-in]').value.trim();
+  if (!job && !nm) { $('[data-ask-name]').focus(); return; }
+  if (!job) { $('[data-ask-start-in]').focus(); return; }
+  try { localStorage.setItem('vk2-me', JSON.stringify({ nm, job })); } catch (x) { /* nevadí */ }
+  runAI([nm, job].filter(Boolean).join(', '));
+});
+try { const me = JSON.parse(localStorage.getItem('vk2-me') || 'null'); if (me) { if ($('[data-ask-name]') && !$('[data-ask-name]').value) $('[data-ask-name]').value = me.nm || ''; if (!$('[data-ask-start-in]').value) $('[data-ask-start-in]').value = me.job || ''; } } catch (x) { /* nevadí */ }
 $('[data-start-tpl]').addEventListener('click', () => showTemplates());
 $('[data-start-tpl2]').addEventListener('click', () => showTemplates());
 // obľúbené šablóny priamo na začiatku: jedno kliknutie a ste v editore
@@ -954,6 +960,8 @@ const persist = debounce(async () => {
     toast(tr('Prepíšte ukážkové údaje na svoje, stačí kliknúť do vizitky.', 'Přepište ukázkové údaje na své, stačí kliknout do vizitky.'));
     return;
   }
+  // rýchly štart z homepage: meno + čím sa živíte → rovno návrhy s menom
+  if (!rez && (meno || (odbor && !IND[odbor]))) { runAI([meno, odbor && !IND[odbor] ? odbor : ''].filter(Boolean).join(', ')); return; }
   if (rez === 'ai' && params.get('prompt')) runAI(params.get('prompt'));
   else if (rez === 'sablony') showTemplates();
   else if (rez === 'logo') { await loadDesign(newDesign({ tpl: 'swiss', ...templateDefaults('swiss') })); st.reached.add('choose'); openTab('logo'); go('edit'); toast(tr('Nahrajte logo, farby vizitky sa mu prispôsobia.', 'Nahrajte logo, barvy vizitky se mu přizpůsobí.')); }

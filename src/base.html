@@ -66,11 +66,10 @@ window.VK = {
   <div class="nav__in">
     <a class="brand" href="{{ link('index') }}" aria-label="Vizitkomat"><span class="brand__dot"></span>vizitkomat</a>
     <nav class="nav__links" aria-label="{{ L('Hlavná navigácia', 'Hlavní navigace') }}">
-      <a href="{{ link('tvorba') }}"{% if page == 'tvorba' %} aria-current="page"{% endif %}>{{ L('Tvorba', 'Tvorba') }}</a>
-      <a href="{{ link('vlastny') }}"{% if page == 'vlastny' %} aria-current="page"{% endif %}>{{ L('Vlastný návrh', 'Vlastní návrh') }}</a>
+      <a href="{{ link('tvorba') }}"{% if page == 'tvorba' %} aria-current="page"{% endif %}>{{ L('Vizitky', 'Vizitky') }}</a>
       <a href="{{ link('digitalna') }}"{% if page == 'digitalna' %} aria-current="page"{% endif %}>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</a>
-      <a href="{{ link('obory') }}"{% if page == 'obory' or page.startswith('obor-') %} aria-current="page"{% endif %} data-wide>{{ L('Podľa odboru', 'Podle oboru') }}</a>
       <a href="{{ link('cennik') }}"{% if page == 'cennik' %} aria-current="page"{% endif %}>{{ L('Cenník', 'Ceník') }}</a>
+      <a href="{{ link('kontakt') }}"{% if page == 'kontakt' %} aria-current="page"{% endif %}>{{ L('Kontakt', 'Kontakt') }}</a>
     </nav>
     <div class="nav__end">
       <a class="nav__lang" href="{{ alt_url }}" hreflang="{{ 'cs' if lang == 'sk' else 'sk' }}" title="{{ L('Česká verzia', 'Slovenská verze') }}"><span{% if lang == 'sk' %} class="on"{% endif %}><b>SK</b></span><span{% if lang == 'cz' %} class="on"{% endif %}><b>CZ</b></span></a>
@@ -84,15 +83,13 @@ window.VK = {
   </div>
   <div class="nav__sheet" data-sheet id="menu" aria-label="Menu">
     <nav class="sheet__links">
-      <a href="{{ link('tvorba') }}"{% if page == 'tvorba' %} aria-current="page"{% endif %}>{{ L('Tvorba vizitky', 'Tvorba vizitky') }}</a>
-      <a href="{{ link('tvorba') }}?rezim=sablony">{{ L('Šablóny', 'Šablony') }}</a>
-      <a href="{{ link('vlastny') }}"{% if page == 'vlastny' %} aria-current="page"{% endif %}>{{ L('Vlastný návrh', 'Vlastní návrh') }}</a>
+      <a href="{{ link('tvorba') }}"{% if page == 'tvorba' %} aria-current="page"{% endif %}>{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }}</a>
       <a href="{{ link('digitalna') }}"{% if page == 'digitalna' %} aria-current="page"{% endif %}>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</a>
-      <a href="{{ link('obory') }}"{% if page == 'obory' or page.startswith('obor-') %} aria-current="page"{% endif %}>{{ L('Podľa odboru', 'Podle oboru') }}</a>
       <a href="{{ link('cennik') }}"{% if page == 'cennik' %} aria-current="page"{% endif %}>{{ L('Cenník', 'Ceník') }}</a>
+      <a href="{{ link('kontakt') }}"{% if page == 'kontakt' %} aria-current="page"{% endif %}>{{ L('Kontakt', 'Kontakt') }}</a>
     </nav>
     <div class="sheet__foot">
-      <a class="btn btn--c btn--lg" href="{{ link('tvorba') }}?rezim=ai">{{ L('Navrhnúť vizitku s AI', 'Navrhnout vizitku s AI') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a>
+      <a class="btn btn--c btn--lg" href="{{ link('tvorba') }}">{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a>
       <div class="sheet__meta"><a href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a><a class="nav__lang" href="{{ alt_url }}" hreflang="{{ 'cs' if lang == 'sk' else 'sk' }}" aria-label="{{ L('Česká verzia', 'Slovenská verze') }}"><span{% if lang == 'sk' %} class="on"{% endif %}><b>SK</b></span><span{% if lang == 'cz' %} class="on"{% endif %}><b>CZ</b></span></a></div>
     </div>
   </div>

@@ -14,9 +14,9 @@
 
   <div class="wz__bar">
     <ol class="wz__steps" data-steps>
-      <li data-go="start"><b>1</b><span>{{ L('Začiatok', 'Začátek') }}</span></li>
-      <li data-go="choose"><b>2</b><span>{{ L('Výber návrhu', 'Výběr návrhu') }}</span></li>
-      <li data-go="edit"><b>3</b><span>{{ L('Úpravy', 'Úpravy') }}</span></li>
+      <li data-go="start"><b>1</b><span>{{ L('Kto ste', 'Kdo jste') }}</span></li>
+      <li data-go="choose"><b>2</b><span>{{ L('Dizajn', 'Design') }}</span></li>
+      <li data-go="edit"><b>3</b><span>{{ L('Vaše údaje', 'Vaše údaje') }}</span></li>
       <li data-go="order"><b>4</b><span>{{ L('Objednávka', 'Objednávka') }}</span></li>
     </ol>
   </div>
@@ -24,50 +24,21 @@
   <!-- ===== 1. ZAČIATOK ===== -->
   <section class="st1" data-pane="start">
     <div class="wrap">
-      <h1 class="h-l st1__h" tabindex="-1">{{ L('Ako chcete', 'Jak chcete') }} <span class="hl-c">{{ L('začať?', 'začít?') }}</span></h1>
+      <h1 class="h-l st1__h" tabindex="-1">{{ L('Kto ste a', 'Kdo jste a') }} <span class="hl-c">{{ L('čím sa živíte?', 'čím se živíte?') }}</span></h1>
       <div class="resume" data-resume hidden>
         <img alt="" data-resume-img>
         <div><b>{{ L('Máte rozpracovanú vizitku', 'Máte rozpracovanou vizitku') }}</b><span>{{ L('Pokračujte tam, kde ste skončili.', 'Pokračujte tam, kde jste skončili.') }}</span></div>
         <button class="btn btn--sm" data-resume-go>{{ L('Pokračovať', 'Pokračovat') }} <span class="ar">→</span></button>
       </div>
-      <div class="ways">
-        <article class="way way--ai">
-          <span class="way__tag">{{ L('Odporúčame', 'Doporučujeme') }}</span>
-          <h2>{{ L('Navrhne mi', 'Navrhne mi') }} <span class="hl">{{ L('AI grafik', 'AI grafik') }}</span></h2>
-          <p>{{ L('Napíšte jednou vetou, čím sa živíte. Do pár sekúnd dostanete tri hotové návrhy aj so znakom na mieru.', 'Napište jednou větou, čím se živíte. Do pár sekund dostanete tři hotové návrhy i se znakem na míru.') }}</p>
-          <form class="ask" data-ask-start>
-            <textarea data-ask-start-in aria-label="{{ L('Čím sa živíte?', 'Čím se živíte?') }}" rows="2" maxlength="400" placeholder="{{ L('Napr. Som Jana, kaderníčka v Trnave, chcem niečo jemné', 'Např. Jsem Jana, kadeřnice v Brně, chci něco jemného') }}"></textarea>
-            <button class="btn btn--y" type="submit">{{ L('Navrhni', 'Navrhni') }} <span class="ar">→</span></button>
-          </form>
-          <div class="sense" data-sense aria-live="polite">
-            <span data-sense-k="job"><i aria-hidden="true"></i>{{ L('Čím sa živíte', 'Čím se živíte') }}</span>
-            <span data-sense-k="city"><i aria-hidden="true"></i>{{ L('Mesto', 'Město') }}</span>
-            <span data-sense-k="style"><i aria-hidden="true"></i>{{ L('Štýl', 'Styl') }}</span>
-            <small data-sense-tip>{{ L('Stačí jedna veta. Čím viac toho napíšete, tým presnejšie návrhy.', 'Stačí jedna věta. Čím víc toho napíšete, tím přesnější návrhy.') }}</small>
-          </div>
-          <div class="chips" data-chips>
-            <button data-p="{{ L('Som kaderníčka v Trnave, chcem niečo jemné a elegantné', 'Jsem kadeřnice v Brně, chci něco jemného a elegantního') }}">{{ L('Kaderníčka', 'Kadeřnice') }}</button>
-            <button data-p="{{ L('Pekáreň v Banskej Bystrici, poctivo a tradične', 'Pekárna v Olomouci, poctivě a tradičně') }}">{{ L('Pekáreň', 'Pekárna') }}</button>
-            <button data-p="{{ L('Realitný maklér v Bratislave, prémiovo', 'Realitní makléř v Praze, prémiově') }}">{{ L('Maklér', 'Makléř') }}</button>
-            <button data-p="{{ L('Elektrikár z Prešova, výrazne a čitateľne', 'Elektrikář z Ostravy, výrazně a čitelně') }}">{{ L('Elektrikár', 'Elektrikář') }}</button>
-            <button data-p="{{ L('Zubná ambulancia v Žiline, sviežo a dôveryhodne', 'Zubní ordinace v Brně, svěže a důvěryhodně') }}">{{ L('Zubár', 'Zubař') }}</button>
-            <button data-p="{{ L('Kaviareň v Košiciach, útulne a moderne', 'Kavárna v Ostravě, útulně a moderně') }}">{{ L('Kaviareň', 'Kavárna') }}</button>
-            <button data-p="{{ L('Advokátska kancelária v Bratislave, seriózne a luxusne', 'Advokátní kancelář v Praze, seriózně a luxusně') }}">{{ L('Advokát', 'Advokát') }}</button>
-          </div>
-          <p class="way__note">{{ L('Zadanie spracuje AI od Googlu. Stačí odbor, mesto a štýl, citlivé údaje doň nepíšte.', 'Zadání zpracuje AI od Googlu. Stačí obor, město a styl, citlivé údaje do něj nepište.') }} <a href="{{ link('gdpr') }}">{{ L('Viac', 'Více') }}</a></p>
-        </article>
-        <button class="way way--tpl" data-start-tpl>
-          <div class="way__thumbs" data-way-thumbs><img alt="" src="{{ pre['tpl-glow-f'] }}" width="640" height="368"><img alt="" src="{{ pre['tpl-saloon-f'] }}" width="640" height="368"><img alt="" src="{{ pre['tpl-cafe-f'] }}" width="640" height="368"></div>
-          <h2>{{ L('Vyberiem si šablónu', 'Vyberu si šablonu') }}</h2>
-          <p>{{ L(tpl_count ~ ' šablón, každú hneď uvidíte s vaším menom.', tpl_count ~ ' šablon, každou hned uvidíte se svým jménem.') }}</p>
-          <span class="link">{{ L('Prezrieť šablóny', 'Prohlédnout šablony') }} →</span>
-        </button>
-        <a class="way way--file" href="{{ link('vlastny') }}">
-          <div class="way__file"><span>PDF</span><span>PNG</span><span>JPG</span></div>
-          <h2>{{ L('Mám vlastný návrh', 'Mám vlastní návrh') }}</h2>
-          <p>{{ L('Nahráte hotový súbor, my ho skontrolujeme a vytlačíme.', 'Nahrajete hotový soubor, my ho zkontrolujeme a vytiskneme.') }}</p>
-          <span class="link">{{ L('Nahrať súbor', 'Nahrát soubor') }} →</span>
-        </a>
+      <div class="simple1">
+        <form class="ask ask--simple" data-ask-start>
+          <label class="qs__f"><span>{{ L('Vaše meno', 'Vaše jméno') }}</span><input data-ask-name autocomplete="name" maxlength="60" placeholder="{{ L('Jana Malá', 'Jana Malá') }}"></label>
+          <label class="qs__f"><span>{{ L('Čím sa živíte', 'Čím se živíte') }}</span><input data-ask-start-in maxlength="200" placeholder="{{ L('kaderníčka v Trnave', 'kadeřnice v Brně') }}"></label>
+          <button class="btn btn--c btn--lg" type="submit">{{ L('Ukázať návrhy', 'Ukázat návrhy') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
+        </form>
+        <p class="simple1__note">{{ L('Za pár sekúnd uvidíte hotové vizitky s vaším menom. Všetko ostatné doplníte potom.', 'Za pár sekund uvidíte hotové vizitky se svým jménem. Všechno ostatní doplníte potom.') }}</p>
+        <div class="sense" data-sense hidden><span data-sense-k="job"><i></i></span><span data-sense-k="city"><i></i></span><span data-sense-k="style"><i></i></span><small data-sense-tip></small></div>
+        <p class="simple1__alt"><button class="link" type="button" data-start-tpl>{{ L('Radšej si vyberiem zo šablón', 'Raději si vyberu ze šablon') }}</button> · <a class="link" href="{{ link('vlastny') }}">{{ L('Mám vlastný návrh', 'Mám vlastní návrh') }}</a></p>
       </div>
       <div class="insp" data-insp>
         <div class="insp__h"><h2>{{ L('Alebo začnite obľúbenou šablónou', 'Nebo začněte oblíbenou šablonou') }}</h2><button class="link" type="button" data-start-tpl2>{{ L('Všetkých ' ~ tpl_count, 'Všech ' ~ tpl_count) }} →</button></div>

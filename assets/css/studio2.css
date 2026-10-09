@@ -668,3 +668,16 @@ html[lang="cs"] .fld.is-sample > span::after { content: 'ukázka'; }
 @keyframes nudgeIn { from { opacity: 0; transform: translateY(8px); } }
 @media (max-width: 760px) { .nudge { left: 12px; right: 12px; max-width: none; font-size: .82rem; } }
 @media (prefers-reduced-motion: reduce) { .nudge { animation: none; } }
+
+/* jednoduchý 1. krok */
+.simple1 { max-width: 760px; margin-top: 1.6rem; }
+.ask--simple { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; padding: 10px; background: #fff; border-radius: 22px; box-shadow: 0 0 0 3px var(--ink), 6px 7px 0 var(--ink); }
+.ask--simple .qs__f { display: flex; flex-direction: column; gap: 2px; padding: .6rem .95rem; border-radius: 14px; background: var(--cream); cursor: text; }
+.ask--simple .qs__f span { font-size: .74rem; font-weight: 800; color: var(--ink-3); }
+.ask--simple .qs__f input { border: 0; background: none; font: inherit; font-size: 1.05rem; font-weight: 600; color: var(--ink); outline: none; padding: 0; width: 100%; min-width: 0; }
+.ask--simple .qs__f:focus-within { box-shadow: 0 0 0 2px var(--cobalt) inset; }
+.ask--simple .btn { white-space: nowrap; }
+.simple1__note { margin: 1rem 0 0; color: var(--ink-2); }
+.simple1__alt { margin: .8rem 0 0; color: var(--ink-3); font-size: .95rem; }
+.simple1__alt .link { font-size: .95rem; }
+@media (max-width: 760px) { .ask--simple { grid-template-columns: 1fr; } .ask--simple .btn { justify-content: center; } }

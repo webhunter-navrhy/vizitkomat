@@ -554,3 +554,55 @@
 /* zadanie má vždy miesto na dva riadky, balíček vizitiek pod ním neposkakuje */
 .demo__chat { min-height: calc(28px + 2 * 1.4em + 1.7rem + 6px); align-content: end; }
 .demo__msg { line-height: 1.4; }
+
+/* ===================== jednoduchá homepage (10/2026) ===================== */
+.hero--simple { min-height: auto; padding-bottom: clamp(4rem, 8vw, 6rem); }
+.hero--simple .hero__h { font-size: clamp(3rem, 6.4vw, 6rem); margin-bottom: 1.2rem; }
+.hero--simple .hero__lead { max-width: 30rem; margin-bottom: 1.8rem; }
+.qs { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; padding: 10px; background: #fff; border-radius: 22px; box-shadow: 0 0 0 3px var(--ink), 6px 7px 0 var(--ink); max-width: 680px; color: var(--ink); }
+.qs__f { display: flex; flex-direction: column; gap: 2px; padding: .55rem .9rem; border-radius: 14px; background: var(--cream); cursor: text; }
+.qs__f span { font-size: .72rem; font-weight: 800; letter-spacing: .02em; color: var(--ink-3); }
+.qs__f input { border: 0; background: none; font: inherit; font-size: 1.02rem; font-weight: 600; color: var(--ink); outline: none; padding: 0; width: 100%; min-width: 0; }
+.qs__f:focus-within { box-shadow: 0 0 0 2px var(--cobalt) inset; }
+.qs__go { align-self: stretch; white-space: nowrap; }
+.hero--simple .hero__trust { margin-top: 1.4rem; border-top: 0; padding-top: 0; }
+.hstack { position: relative; aspect-ratio: 1 / .9; max-width: 560px; justify-self: end; width: 100%; }
+.hstack__c { position: absolute; width: 82%; height: auto; aspect-ratio: 90 / 50; object-fit: cover; border-radius: 4px; box-shadow: 0 1px 1px rgba(5, 10, 60, .35), 0 10px 18px -8px rgba(5, 10, 60, .4), 0 40px 60px -26px rgba(5, 10, 60, .7); }
+.hstack__c--3 { right: 0; top: 4%; transform: rotate(8deg); filter: brightness(.88); }
+.hstack__c--2 { left: 0; top: 26%; transform: rotate(-6deg); filter: brightness(.94); }
+.hstack__c--1 { left: 9%; top: 50%; transform: rotate(2deg); }
+.tpls--simple .tpls__rows { margin-bottom: 0; }
+.steps3 { background: var(--cream); padding: var(--sec) 0; }
+.steps3__list { list-style: none; margin: 2.6rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; counter-reset: s; }
+.steps3__list li { background: #fff; border-radius: 26px; padding: 1.8rem 1.6rem 1.9rem; box-shadow: 0 0 0 2px var(--ink), 5px 6px 0 var(--ink); }
+.steps3__n { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--yellow); color: var(--ink); font-weight: 800; font-size: 1.15rem; margin-bottom: 1rem; box-shadow: 0 0 0 2px var(--ink); }
+.steps3__list h3 { font-size: 1.3rem; letter-spacing: -.02em; margin: 0 0 .4rem; }
+.steps3__list p { margin: 0; color: var(--ink-2); line-height: 1.55; }
+.price--simple { padding-top: 0; }
+.ptrust { list-style: none; margin: 2.4rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.ptrust li { display: flex; flex-direction: column; gap: 2px; padding: 1rem 1.2rem; border-radius: 16px; background: #fff; border: 2px solid var(--line); }
+.ptrust b { font-size: 1rem; }
+.ptrust span { color: var(--ink-3); font-size: .9rem; }
+.price__dig { display: flex; align-items: center; gap: 12px; margin: 1.6rem 0 0; color: var(--ink-2); }
+.price__dig-ico { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 12px; background: var(--yellow); color: var(--ink); }
+.price__dig-ico svg { width: 22px; height: 22px; }
+.price__more { margin: 1rem 0 0; }
+.faq--simple .faq__wrap { max-width: 820px; }
+.faq--simple .faq__list { margin-top: 2rem; }
+.faq__more { margin-top: 1.4rem; color: var(--ink-2); }
+.final--simple { text-align: left; }
+.final--simple .final__h { max-width: 14ch; }
+.final--simple .final__lead { margin: 1rem 0 1.8rem; max-width: 32rem; }
+@media (max-width: 1060px) {
+  .hero--simple .hero__grid { grid-template-columns: 1fr; }
+  .hstack { justify-self: center; max-width: 440px; margin-top: 1rem; }
+}
+@media (max-width: 760px) {
+  .qs { grid-template-columns: 1fr; }
+  .qs__go { justify-content: center; }
+  .steps3__list, .ptrust { grid-template-columns: 1fr; }
+  .hstack { max-width: 340px; }
+}
+
+.tpls--simple { padding-bottom: clamp(3rem, 6vw, 5rem); }
+.tpls--simple .tpls__rows { margin: 1rem 0 0; }
