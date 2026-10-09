@@ -3,8 +3,8 @@ import { SIZES, FONTS, PALETTES, ART, newDesign, contrast, slugify, tr, CZ, DEFA
 import { TEMPLATES, BACK_KEYS, templateDefaults } from './templates.js';
 import { snapshot, loadImg, photo, mockup, inspect } from './render.js';
 import { createEditor } from './editor.js';
+import { initEdTools } from './edtools.js';
 import { askAI, makeMark, API } from './ai.js';
-import { ICONS, iconSVG } from '../icons.js';
 import { analyzeLogo, fileToDataURL } from '../logo.js';
 import * as store from './store.js';
 import { PERSONAS, personaFields, TPL_PERSONA } from './personas.js';
@@ -26,7 +26,7 @@ const st = {
   cfg: { kind: 'bundle', size: '90x50', paper: 'matny', finish: 'none', corners: 'straight', qty: 250, express: false },
   ai: [], lastPrompt: '', slugTouched: false, touched: new Set(), saved: null, logoPals: [], loaded: false,
 };
-let ed = null;
+let ed = null, tools = null;
 
 /* =========================================================
    KROKY
@@ -54,7 +54,8 @@ $$('[data-go]').forEach((li) => li.addEventListener('click', () => { const s = l
 async function ensureEditor() {
   if (ed) return ed;
   ed = createEditor($('[data-canvas]'), $('[data-host]'), { pad: 40 });
-  ed.on('selection', paintCtx);
+  tools = initEdTools({ ed, stage: $('[data-stage]'), getStep: () => st.step, curPal, brandColors: () => st.logoColors, shrink, onStyleChange: () => { paintPals(); paintFonts(); } });
+  if (/[?&]edtest\b/.test(location.search)) window.__vkEd = ed;
   ed.on('fields', ({ k }) => { syncFields(); if (k === 'name' && !st.slugTouched) setSlug(slugify(ed.design.f.name)); });
   ed.on('restore', () => { syncFields(); paintSides(); });
   ed.on('side', paintSides);
@@ -403,7 +404,7 @@ function openTab(id) {
   panes.forEach((p) => p.classList.toggle('on', p.dataset.pp === id));
   if (!ed || !st.loaded) return;
   if (id === 'styl') { paintPals(); paintFonts(); paintBacks(); }
-  if (id === 'viac') { paintIcons(); paintArts(); }
+  if (id === 'viac') { tools?.showElements(); paintArts(); }
   if (id === 'logo') paintMark();
 }
 tabs.forEach((t) => t.addEventListener('click', () => openTab(t.dataset.tab)));
@@ -492,6 +493,7 @@ const drop = $('[data-drop]');
 async function logoFlow(file) {
   const r = await analyzeLogo(file);
   st.logoPals = r.palettes.map((p, i) => ({ ...p, label: [tr('Z loga', 'Z loga'), tr('Z loga 2', 'Z loga 2'), tr('Z loga tmavá', 'Z loga tmavá')][i] }));
+  st.logoColors = r.colors || [];
   await ed.setLogo(r.src);
   await ed.setPalette(st.logoPals[0]);
   $('[data-drop-img]').src = r.src; drop.classList.add('has');
@@ -504,7 +506,7 @@ $('[data-drop-file]').addEventListener('change', (e) => { const f = e.target.fil
 ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('over'); }));
 ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
 drop.addEventListener('drop', (e) => { const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) logoFlow(f); });
-$('[data-logo-del]').addEventListener('click', async () => { await ed.setLogo(null); drop.classList.remove('has'); $('[data-drop-img]').removeAttribute('src'); $('[data-logo-del]').hidden = true; });
+$('[data-logo-del]').addEventListener('click', async () => { st.logoColors = []; await ed.setLogo(null); drop.classList.remove('has'); $('[data-drop-img]').removeAttribute('src'); $('[data-logo-del]').hidden = true; });
 function paintMark() {
   const m = ed.design.mark, img = $('[data-mark-img]');
   if (m) { img.src = m; $('[data-mark-del]').hidden = false; } else { img.removeAttribute('src'); $('[data-mark-del]').hidden = true; }
@@ -519,12 +521,7 @@ $('[data-mark-form]').addEventListener('submit', async (e) => {
 });
 $('[data-mark-del]').addEventListener('click', async () => { await ed.applyDesign({ mark: null }); paintMark(); });
 
-$$('[data-add]').forEach((b) => b.addEventListener('click', () => ed.add(b.dataset.add)));
-$('[data-add-img]').addEventListener('click', () => $('[data-img-file]').click());
 $('[data-img-file]').addEventListener('change', async (e) => { const f = e.target.files[0]; if (!f) return; ed.add('image', { src: await shrink(f, 2000, f.type === 'image/png' ? 'image/png' : 'image/jpeg') }); e.target.value = ''; });
-let iconsDone = false;
-function paintIcons() { if (iconsDone) return; iconsDone = true; $('[data-icons]').innerHTML = Object.keys(ICONS).map((n) => `<button data-icon="${n}" title="${n}">${iconSVG(n, '#0F1440', 1.8)}</button>`).join(''); }
-$('[data-icons]').addEventListener('click', (e) => { const b = e.target.closest('[data-icon]'); if (b) ed.add('icon', { name: b.dataset.icon }); });
 function paintArts() {
   const cur = ed.design.art;
   $('[data-arts]').innerHTML = `<button class="none${!cur ? ' on' : ''}" data-art="">${tr('Bez', 'Bez')}</button>` + Object.keys(ART).map((k) => `<button data-art="${k}" class="${cur === k ? 'on' : ''}" title="${ART[k].label}" style="background-image:url(${VK.root}assets/art/${k}.jpg)"></button>`).join('');
@@ -568,57 +565,6 @@ function coachDone() {
 }
 $('[data-coach-x]').addEventListener('click', coachDone);
 
-const ctx = $('[data-ctx]');
-const FAMS = [...new Set(Object.values(FONTS).flatMap((f) => [f.display, f.text]))];
-$('[data-fontsel]').innerHTML = FAMS.map((f) => `<option value="${f}">${f}</option>`).join('');
-const PT = 25.4 / 72 * 10;
-function paintCtx(o) {
-  if (!o || st.step !== 'edit') { ctx.hidden = true; $$('.pop').forEach((p) => p.classList.remove('on')); return; }
-  ctx.hidden = false;
-  const isText = /text/.test(o.type), isImg = o.type === 'image', isMark = isImg && o.data?.role === 'mark';
-  $('[data-ctx-text]').hidden = !isText; $('[data-ctx-img]').hidden = !isImg || isMark; $('[data-ctx-colors]').hidden = isImg && !isMark;
-  $('[data-upper]').hidden = !isText; $('[data-ls]').closest('label').hidden = !isText;
-  if (isText) {
-    const sel = $('[data-fontsel]'); if (!FAMS.includes(o.fontFamily)) sel.insertAdjacentHTML('beforeend', `<option>${o.fontFamily}</option>`); sel.value = o.fontFamily;
-    $('[data-szv]').value = (o.fontSize * (o.scaleY || 1) / PT).toFixed(1).replace('.0', '');
-    $('[data-bold]').classList.toggle('on', +o.fontWeight >= 600);
-    $('[data-italic]').classList.toggle('on', o.fontStyle === 'italic');
-    $('[data-ls]').value = o.charSpacing || 0;
-  }
-  const pal = curPal();
-  const cur = (o.type === 'line' ? o.stroke : o.type === 'group' ? (o.getObjects()[0]?.stroke || o.getObjects()[0]?.fill) : o.fill) || '';
-  const cols = [...new Set([pal.ink, pal.accent, pal.bg, pal.soft, '#FFFFFF', '#111111'].map((c) => c.toUpperCase()))];
-  const foils = [['foil:gold', 'linear-gradient(135deg,#8A6A2C,#F5E3A6 45%,#B48F44)'], ['foil:rose', 'linear-gradient(135deg,#9C5E50,#F7D3C4 45%,#C48573)'], ['foil:silver', 'linear-gradient(135deg,#7D8186,#F7F8F9 45%,#A4A8AD)']];
-  $('[data-ctx-colors]').innerHTML = cols.map((c) => `<button data-col="${c}" style="background:${c}"${String(cur).toUpperCase() === c ? ' class="on"' : ''} aria-label="${c}"></button>`).join('') + foils.map(([k, g]) => `<button data-col="${k}" style="background:${g}" title="${tr('Metalický tlač', 'Metalický tisk')}" aria-label="${k}"></button>`).join('') + `<label title="${tr('Vlastná farba', 'Vlastní barva')}"><input type="color" data-colpick value="${/^#[0-9a-f]{6}$/i.test(cur) ? cur : '#000000'}"></label>`;
-  $('[data-opacity]').value = Math.round((o.opacity ?? 1) * 100);
-}
-$('[data-fontsel]').addEventListener('change', (e) => ed.style({ fontFamily: e.target.value }));
-$$('[data-sz]').forEach((b) => b.addEventListener('click', () => { const o = ed.active(); if (!o) return; const pt = o.fontSize * (o.scaleY || 1) / PT + (+b.dataset.sz); ed.style({ fontSize: Math.max(4, pt) * PT / (o.scaleY || 1) }); }));
-$('[data-szv]').addEventListener('change', (e) => { const o = ed.active(); const pt = parseFloat(e.target.value.replace(',', '.')); if (o && pt > 2) ed.style({ fontSize: pt * PT / (o.scaleY || 1) }); });
-$('[data-bold]').addEventListener('click', () => { const o = ed.active(); if (o) ed.style({ fontWeight: +o.fontWeight >= 600 ? 400 : 700 }); });
-$('[data-italic]').addEventListener('click', () => { const o = ed.active(); if (o) ed.style({ fontStyle: o.fontStyle === 'italic' ? 'normal' : 'italic' }); });
-$('[data-upper]').addEventListener('click', () => { const o = ed.active(); if (!o) return; const up = !(o.data && o.data.upper); if (!up && o.data?.field) ed.style({ upper: false, text: (o.data.prefix || '') + (ed.design.f[o.data.field] || o.text) }); else ed.style({ upper: up }); });
-$('[data-ls]').addEventListener('input', (e) => ed.style({ charSpacing: +e.target.value }));
-async function recolorMark(o, color) {
-  const src = ed.design.mark; if (!src) return;
-  const el = await loadImg(src); const c = document.createElement('canvas'); c.width = el.width; c.height = el.height;
-  const x = c.getContext('2d'); x.drawImage(el, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = color; x.fillRect(0, 0, c.width, c.height);
-  o.setElement(c); ed.canvas.requestRenderAll(); ed.canvas.fire('object:modified', { target: o });
-}
-ctx.addEventListener('click', (e) => {
-  const c = e.target.closest('[data-col]');
-  if (c) { const o = ed.active(); if (o && o.type === 'image' && o.data?.role === 'mark') recolorMark(o, c.dataset.col); else ed.style({ color: c.dataset.col }); }
-  const p = e.target.closest('[data-pop]');
-  if (p) { const box = $(`[data-popbox="${p.dataset.pop}"]`); const was = box.classList.contains('on'); $$('.pop').forEach((x) => x.classList.remove('on')); box.classList.toggle('on', !was); }
-  const ord = e.target.closest('[data-order]'); if (ord) ed.order(ord.dataset.order);
-  const al = e.target.closest('[data-alignc]'); if (al) ed.align(al.dataset.alignc);
-});
-ctx.addEventListener('input', (e) => { if (e.target.matches('[data-colpick]')) { const o = ed.active(); if (o?.data?.role === 'mark') recolorMark(o, e.target.value); else ed.style({ color: e.target.value }); } if (e.target.matches('[data-opacity]')) ed.style({ opacity: +e.target.value / 100 }); });
-document.addEventListener('pointerdown', (e) => { if (!e.target.closest('.ctx__pop')) $$('.pop').forEach((x) => x.classList.remove('on')); });
-$('[data-dup]').addEventListener('click', () => ed.duplicate());
-$('[data-del]').addEventListener('click', () => ed.remove());
-$('[data-replace]').addEventListener('click', () => $('[data-replace-file]').click());
-$('[data-replace-file]').addEventListener('change', async (e) => { const f = e.target.files[0]; const o = ed.active(); if (f && o) ed.replaceImage(o, await shrink(f, 2000, f.type === 'image/png' ? 'image/png' : 'image/jpeg')); e.target.value = ''; });
 
 /* =========================================================
    4. OBJEDNÁVKA

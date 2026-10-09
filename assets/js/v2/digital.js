@@ -331,39 +331,52 @@ export function renderDigital(host, d, opts = {}) {
   const hasCard = !!opts.front;
   const avatar = d.photo ? `<img src="${d.photo}" alt="">` : d.logo ? `<img class="is-logo" src="${d.logo}" alt="">` : d.mark ? `<i class="is-mark" style="-webkit-mask-image:url(${d.mark});mask-image:url(${d.mark})"></i>` : `<span class="dc__mono">${esc(mono(f))}</span>`;
 
-  const sh = (title, extra = '') => `<header class="dc__sh"><h2>${title}</h2>${extra}</header>`;
+  // ornament značky medzi sekciami (podľa charakteru šablóny)
+  const tg = T0.tags || [];
+  const ornKind = fs || tg.some((x) => /luxus|prestiz|advokat|pravnik|hotel|financie/.test(x)) ? 'diamond' : tg.some((x) => /kvet|prirod|svadba|wellness|joga|eko|zahrad|farma|caj/.test(x)) ? 'sprig' : tg.some((x) => /hrave|cukrar|kreativ|mlade|event|deti/.test(x)) ? 'dots' : 'rule';
+  const ORN = {
+    diamond: '<path d="M0 8h46M74 8h46"/><path d="M60 2l6 6-6 6-6-6z"/><path d="M60 5.5l2.5 2.5L60 10.5 57.5 8z" class="f"/><circle cx="50" cy="8" r="1.1" class="f"/><circle cx="70" cy="8" r="1.1" class="f"/>',
+    sprig: '<path d="M0 8h40M80 8h40"/><path d="M44 9c6-1 10-3 16-1s10 1 16-1"/><path d="M52 8.4c-1.6-3 0-5.4 3-6.2.4 3-1 5.2-3 6.2zM61 8c1.4-2.8 4-3.8 6.6-3-1 2.6-3.6 3.6-6.6 3zM57 8.4c1 2.6 3.4 3.8 6 3.4-1.2-2.4-3.4-3.4-6-3.4z" class="f"/>',
+    dots: '<circle cx="48" cy="8" r="2" class="f"/><circle cx="60" cy="8" r="3" class="f"/><circle cx="72" cy="8" r="2" class="f"/><path d="M0 8h38M82 8h38"/>',
+    rule: '<path d="M0 8h52M68 8h52"/><circle cx="60" cy="8" r="3"/>',
+  };
+  const orn = `<div class="dc__orn" aria-hidden="true"><svg viewBox="0 0 120 16">${ORN[ornKind]}</svg></div>`;
+  let secN = 0;
+  const sh = (title, extra = '') => `<header class="dc__sh"><span class="dc__no">${String(++secN).padStart(2, '0')}</span><h2>${title}</h2>${extra}</header>`;
   // „Služba – cena“: cena za bodkami ako v menu
   const svc = (s) => { const m = s.match(/^(.+?)\s+[–—|-]\s+([^–—|]{1,24})$/); return m && /\d|zadarmo|zdarma|dohod|na mieru|na míru/i.test(m[2]) ? `<li><span>${esc(m[1])}</span><i aria-hidden="true"></i><b>${esc(m[2])}</b></li>` : `<li><span>${esc(s)}</span></li>`; };
   const statusChip = status ? `<span class="dc__open${status.open ? ' is-open' : ''}${status.soft ? ' is-soft' : ''}"><i></i>${esc(status.text)}</span>` : '';
   const days = dg.booking ? nextDays(hours) : [];
   const stars = (v = 5) => `<span class="dc__stars" aria-hidden="true">${[1, 2, 3, 4, 5].map((k) => `<span class="${v >= k - 0.25 ? 'on' : v >= k - 0.75 ? 'half' : ''}">${ico('star')}</span>`).join('')}</span>`;
+  const realAv = d.photo || d.logo;
 
   const S = [];
   if (dg.booking) S.push(`<section class="dc__sec dc__sec--book">
       <a class="dc__book" href="${esc(href(dg.booking))}" target="_blank" rel="noopener">
-        <span class="dc__book-h"><i>${ico('cal')}</i><span><b>${esc(dg.bookingLabel || t('Rezervovať termín', 'Rezervovat termín'))}</b><small>${t('Vyberte si čas online, bez telefonovania', 'Vyberte si čas online, bez telefonování')}</small></span></span>
+        <span class="dc__book-k">${t('Online rezervácia', 'Online rezervace')}</span>
+        <b class="dc__book-t">${esc(dg.bookingLabel || t('Rezervovať termín', 'Rezervovat termín'))}</b>
         ${days.length ? `<span class="dc__days">${days.map((x, i) => `<span${i ? '' : ' class="on"'}><small>${x.top}</small><b>${x.num}</b></span>`).join('')}</span>` : ''}
-        <span class="dc__book-go"><span>${t('Zobraziť voľné termíny', 'Zobrazit volné termíny')}</span>${ico('arrow')}</span>
+        <span class="dc__book-go"><span>${t('Vybrať voľný termín', 'Vybrat volný termín')}</span><i>${ico('arrow')}</i></span>
       </a></section>`);
   if (dg.bio) S.push(`<section class="dc__sec dc__sec--bio">${sh(t('O mne', 'O mně'))}<p class="dc__bio">${esc(dg.bio).replace(/\n/g, '<br>')}</p>${f.name && f.name !== co ? `<p class="dc__sign">${esc(bare(f.name))}</p>` : ''}</section>`);
-  if (services.length) S.push(`<section class="dc__sec">${sh(t('Služby a ceny', 'Služby a ceny'))}<div class="dc__menu"><ul class="dc__svc">${services.map(svc).join('')}</ul></div></section>`);
+  if (services.length) S.push(`<section class="dc__sec">${sh(t('Služby a ceny', 'Služby a ceny'))}<ul class="dc__svc">${services.map(svc).join('')}</ul></section>`);
   if (gallery.length) S.push(`<section class="dc__sec dc__sec--bleed">${sh(t('Ukážky práce', 'Ukázky práce'), `<span class="dc__cnt">${gallery.length}</span>`)}<div class="dc__gal">${gallery.map((u, i) => `<button data-dc-gal="${i}" aria-label="${t('Zväčšiť fotku', 'Zvětšit fotku')} ${i + 1}"><img src="${esc(u)}" alt="" loading="lazy" decoding="async"></button>`).join('')}</div></section>`);
   if (hours.length) {
     const wk = weekState(hours), W = WD();
-    S.push(`<section class="dc__sec">${sh(t('Otváracie hodiny', 'Otevírací doba'), statusChip)}
+    S.push(`<section class="dc__sec">${sh(t('Otváracie hodiny', 'Otevírací doba'))}${statusChip ? `<p class="dc__now">${statusChip}</p>` : ''}
       ${wk.some((x) => x.s) ? `<div class="dc__week" aria-hidden="true">${wk.map((x) => `<span class="s${x.s}${status && status.today === x.wd ? ' is-today' : ''}"><b>${W[x.wd]}</b><i></i></span>`).join('')}</div>` : ''}
       <ul class="dc__hours">${hours.map((h) => `<li${status && h.days.includes(status.today) ? ' class="is-today"' : ''}><span>${esc(h.label)}${status && h.days.includes(status.today) ? `<em>${t('dnes', 'dnes')}</em>` : ''}</span>${h.value ? `<b>${esc(h.value)}</b>` : ''}</li>`).join('')}</ul></section>`);
   }
-  if (dg.reviews || rating) S.push(`<section class="dc__sec"><a class="dc__rev${rating ? ' has-num' : ''}"${dg.reviews ? ` href="${esc(href(dg.reviews))}" target="_blank" rel="noopener"` : ''}>
-      ${rating ? `<span class="dc__rev-n"><b>${rating.num}</b>${stars(rating.val)}<small>${esc(rating.note || t('hodnotenie na Google', 'hodnocení na Googlu'))}</small></span>` : stars(5)}
-      <span class="dc__rev-t"><b>${t('Boli ste spokojní?', 'Byli jste spokojeni?')}</b><small>${t('Recenzia na Google zaberie 30 sekúnd a nám veľmi pomôže.', 'Recenze na Googlu zabere 30 sekund a nám moc pomůže.')}</small></span>
-      ${dg.reviews ? `<span class="dc__rev-go"><span>${t('Napísať recenziu', 'Napsat recenzi')}</span>${ico('arrow')}</span>` : ''}</a></section>`);
-  if (rows.length || f.address) S.push(`<section class="dc__sec">${sh(t('Kontakt', 'Kontakt'))}<ul class="dc__rows">${rows.map(([k, lab, v, h]) => `<li><a href="${h}"${ext(h)}><i>${ico(k)}</i><span><small>${lab}</small>${esc(v)}</span>${ico('chev')}</a></li>`).join('')}</ul>
-      ${f.address ? `<div class="dc__map"><a class="dc__map-art" href="${map}" target="_blank" rel="noopener" aria-label="${t('Otvoriť mapu', 'Otevřít mapu')}">${mapArt(hash(f.address), { base: mix(p.bg, dark ? '#000000' : '#FFFFFF', dark ? 0.25 : 0.35), block: dark ? mix(ink, p.bg, 0.9) : mix(ink, p.bg, 0.935), road: dark ? mix(ink, p.bg, 0.8) : '#FFFFFF', water: mix(p.accent, p.bg, dark ? 0.7 : 0.72), park: mix(p.accent, p.bg, dark ? 0.8 : 0.82) })}<span class="dc__pin" aria-hidden="true">${ico('pin')}</span></a>
-        <div class="dc__map-t"><span><small>${t('Adresa', 'Adresa')}</small><b>${esc(f.address)}</b></span></div>
-        <div class="dc__maps"><a href="${map}" target="_blank" rel="noopener">${ico('nav')}Google Maps</a><a href="https://maps.apple.com/?q=${q}" target="_blank" rel="noopener">${ico('map')}Apple</a><a href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">${ico('nav')}Waze</a></div></div>` : ''}</section>`);
+  if (dg.reviews || rating) S.push(`<section class="dc__sec dc__sec--rev"><a class="dc__rev"${dg.reviews ? ` href="${esc(href(dg.reviews))}" target="_blank" rel="noopener"` : ''}>
+      ${rating ? `<span class="dc__rev-n"><b>${rating.num}</b><span>${stars(rating.val)}<small>${esc(rating.note || t('hodnotenie na Google', 'hodnocení na Googlu'))}</small></span></span>` : `<span class="dc__rev-n">${stars(5)}</span>`}
+      <span class="dc__rev-t">${t('Boli ste spokojní? Recenzia zaberie pol minúty a veľmi nám pomôže.', 'Byli jste spokojeni? Recenze zabere půl minuty a moc nám pomůže.')}</span>
+      ${dg.reviews ? `<span class="dc__lnk">${t('Napísať recenziu', 'Napsat recenzi')}${ico('arrow')}</span>` : ''}</a></section>`);
+  if (rows.length || f.address) S.push(`<section class="dc__sec">${sh(t('Kontakt', 'Kontakt'))}<ul class="dc__rows">${rows.map(([k, lab, v, h]) => `<li><a href="${h}"${ext(h)}><small>${ico(k)}${lab}</small><span>${esc(v)}</span></a></li>`).join('')}</ul>
+      ${f.address ? `<div class="dc__map"><a class="dc__map-art" href="${map}" target="_blank" rel="noopener" aria-label="${t('Otvoriť mapu', 'Otevřít mapu')}">${mapArt(hash(f.address), { base: mix(p.bg, dark ? '#000000' : '#FFFFFF', dark ? 0.25 : 0.35), block: dark ? mix(ink, p.bg, 0.9) : mix(ink, p.bg, 0.935), road: dark ? mix(ink, p.bg, 0.8) : '#FFFFFF', water: mix(p.accent, p.bg, dark ? 0.7 : 0.72), park: mix(p.accent, p.bg, dark ? 0.8 : 0.82) })}<span class="dc__pin" aria-hidden="true">${ico('pin')}</span>
+        <span class="dc__map-t"><small>${t('Adresa', 'Adresa')}</small><b>${esc(f.address)}</b></span></a>
+        <div class="dc__maps"><a href="${map}" target="_blank" rel="noopener">Google Maps</a><a href="https://maps.apple.com/?q=${q}" target="_blank" rel="noopener">Apple Mapy</a><a href="https://waze.com/ul?q=${q}&navigate=yes" target="_blank" rel="noopener">Waze</a></div></div>` : ''}</section>`);
   if (links.length) S.push(`<section class="dc__sec">${sh(t('Odkazy', 'Odkazy'))}<ul class="dc__links">${links.map(([a, u]) => `<li><a href="${esc(href(u))}" target="_blank" rel="noopener"><span><b>${esc(a)}</b><small>${esc(hostOf(u))}</small></span><i>${ico('arrow')}</i></a></li>`).join('')}</ul></section>`);
-  if (socials.length) S.push(`<section class="dc__sec">${sh(t('Sledujte ma', 'Sledujte mě'))}<div class="dc__soc" style="--n:${Math.min(socials.length, 4)}">${socials.map(([k, v]) => `<a href="${esc(href(v))}" target="_blank" rel="noopener" style="--b:${B[k][0]}" aria-label="${SOC[k]}"><i>${bico(k)}</i><span>${SOC[k]}</span></a>`).join('')}</div></section>`);
+  if (socials.length) S.push(`<section class="dc__sec dc__sec--soc"><p class="dc__k">${t('Sledujte ma', 'Sledujte mě')}</p><div class="dc__soc">${socials.map(([k, v]) => `<a href="${esc(href(v))}" target="_blank" rel="noopener" aria-label="${SOC[k]}"><i>${bico(k)}</i><span>${SOC[k]}</span></a>`).join('')}</div></section>`);
 
   const pass = `<button class="dc__pass" data-dc-qr aria-label="${t('Ukázať QR kód na celú obrazovku', 'Ukázat QR kód na celou obrazovku')}">
       <span class="dc__pass-top"><span class="dc__pass-av">${avatar}</span><span class="dc__pass-br">${esc(co || name)}</span><em>${t('Vizitka', 'Vizitka')}</em></span>
@@ -372,12 +385,16 @@ export function renderDigital(host, d, opts = {}) {
       <span class="dc__pass-qr" data-dc-qrmini></span>
       <span class="dc__pass-url">${esc(shortUrl || t('vaša adresa', 'vaše adresa'))}</span>
     </button>`;
+  // url() v CSS premennej sa rieši voči štýlu, nie stránke → absolútna adresa
+  const absU = (u) => { try { return u ? new URL(u, document.baseURI).href : ''; } catch (e) { return u || ''; } };
+  const heroImg = absU(dg.cover || opts.back || opts.front || '');
 
   host.innerHTML = `
-  <article class="dc${dark ? ' dc--dark' : ' dc--light'}${fs ? ' dc--foil' : ''}${hairMono ? ' dc--hair' : ''}${/Bebas|Archivo|Unbounded|Syne|Rubik|Mono|Abril|Caveat/.test(fp.display) ? ' dc--loud' : ''}${opts.static ? ' dc--static' : ''}${hasCard ? ' dc--card' : ''}" style="--d-bg:${p.bg};--d-ink:${ink};--d-acc:${p.accent};--d-acc-fg:${accFg};--d-acc-t:${accText};--d-muted:${muted};--d-line:${line};--d-panel:${panel};--d-tint:${tint};--d-cover:${cover};--d-foil:${foil};--d-btn:${btn};--d-btn-fg:${btnFg};--d-pass:${passBg};--d-pass-fg:${passFg};--d-fd:'${fp.display}';--d-dw:${fp.dw};--d-ft:'${fp.text}';--d-ar:${sz.w}/${sz.h}">
-    <header class="dc__cover"${dg.cover ? ` style="--cov:url('${esc(dg.cover)}')"` : ''}>
-      ${dg.cover ? '<span class="dc__cov-img" aria-hidden="true"></span>' : pattern(patternKind(T0.tags || [], dark), seed, patCol)}
-      <span class="dc__spot" aria-hidden="true"></span>
+  <article class="dc${dark ? ' dc--dark' : ' dc--light'}${fs ? ' dc--foil' : ''}${hairMono ? ' dc--hair' : ''}${/Bebas|Archivo|Unbounded|Syne|Rubik|Mono|Abril|Caveat/.test(fp.display) ? ' dc--loud' : ''}${opts.static ? ' dc--static' : ''}${hasCard ? ' dc--card' : ''}${realAv ? ' dc--av' : ''}${/Cinzel/.test(fp.display) ? ' dc--caps' : ''}" style="--d-bg:${p.bg};--d-ink:${ink};--d-acc:${p.accent};--d-acc-fg:${accFg};--d-acc-t:${accText};--d-muted:${muted};--d-line:${line};--d-panel:${panel};--d-tint:${tint};--d-cover:${cover};--d-foil:${foil};--d-btn:${btn};--d-btn-fg:${btnFg};--d-pass:${passBg};--d-pass-fg:${passFg};--d-fd:'${fp.display}';--d-dw:${fp.dw};--d-ft:'${fp.text}';--d-ar:${sz.w}/${sz.h}">
+    <header class="dc__cover">
+      ${heroImg ? `<span class="dc__aura" aria-hidden="true" style="--hero:url('${esc(heroImg)}')"></span>` : ''}
+      ${dg.cover ? '<span class="dc__cov-img" aria-hidden="true" style="--cov:url(\'' + esc(absU(dg.cover)) + '\')"></span>' : pattern(patternKind(tg, dark), seed, patCol)}
+      <span class="dc__grain" aria-hidden="true"></span>
       <div class="dc__top">
         <span class="dc__brand">${esc(co || t('Digitálna vizitka', 'Digitální vizitka'))}</span>
         <span class="dc__tbtns"><button class="dc__ibtn" data-dc-qr aria-label="${t('Ukázať QR kód', 'Ukázat QR kód')}">${ico('qr')}</button><button class="dc__ibtn" data-dc-share aria-label="${t('Zdieľať vizitku', 'Sdílet vizitku')}">${ico('share')}</button></span>
@@ -389,12 +406,15 @@ export function renderDigital(host, d, opts = {}) {
         </button>
         <span class="dc__floor" aria-hidden="true"></span>
       </div>
+      <p class="dc__fliphint" aria-hidden="true">${ico('flip')}${t('Ťuknite a vizitka sa otočí', 'Ťukněte a vizitka se otočí')}</p>
     </header>
     <section class="dc__id">
-      <div class="dc__idrow"><div class="dc__av">${avatar}</div>${statusChip || `<span class="dc__fliphint">${ico('flip')}${t('Ťuknite na vizitku', 'Ťukněte na vizitku')}</span>`}</div>
+      ${realAv ? `<div class="dc__av">${avatar}</div>` : ''}
       <${H} class="dc__name">${esc(name)}</${H}>
-      ${f.role || co ? `<p class="dc__role">${f.role ? `<b>${esc(f.role)}</b>` : ''}${co ? `<span>${esc(co)}${city ? ' · ' + esc(city) : ''}</span>` : city ? `<span>${esc(city)}</span>` : ''}</p>` : ''}
-      ${f.tagline ? `<p class="dc__tag">${esc(f.tagline)}</p>` : ''}
+      ${f.role ? `<p class="dc__role">${esc(f.role)}</p>` : ''}
+      ${co || city ? `<p class="dc__co">${esc([co, city].filter(Boolean).join(' · '))}</p>` : ''}
+      ${f.tagline ? `${orn}<p class="dc__tag">${esc(f.tagline)}</p>` : ''}
+      ${statusChip ? `<p class="dc__idst">${statusChip}</p>` : ''}
     </section>
     <div class="dc__cta" data-dc-cta>
       <button class="dc__save" data-dc-save><i>${ico('userplus')}</i><span>${t('Uložiť do kontaktov', 'Uložit do kontaktů')}</span></button>
@@ -402,9 +422,10 @@ export function renderDigital(host, d, opts = {}) {
     </div>
     ${S.join('')}
     <section class="dc__sec dc__share">
-      ${pass}
+      ${orn}
       <h2 class="dc__share-h">${t('Pošlite vizitku ďalej', 'Pošlete vizitku dál')}</h2>
       <p>${t('Ukážte kód na celú obrazovku alebo pošlite odkaz cez WhatsApp, SMS či e-mail.', 'Ukažte kód na celou obrazovku nebo pošlete odkaz přes WhatsApp, SMS či e-mail.')}</p>
+      ${pass}
       <div class="dc__share-b"><button class="dc__ghost" data-dc-share>${ico('share')}<span>${t('Zdieľať', 'Sdílet')}</span></button><button class="dc__ghost" data-dc-qr>${ico('qr')}<span>${t('QR kód', 'QR kód')}</span></button></div>
     </section>
     <footer class="dc__foot"><a href="${home}" target="_blank" rel="noopener"><span>${t('Chcete tiež takúto vizitku?', 'Chcete taky takovou vizitku?')}</span><b>${t('Vytvorte si ju na', 'Vytvořte si ji na')} vizitkomat.eu →</b></a></footer>
@@ -468,6 +489,14 @@ export function renderDigital(host, d, opts = {}) {
     }).observe(cta);
   }
   if (opts.static) return card;
+
+  // jemný paralax obálky pri posúvaní (vizitka zaostáva, aura sa rozplynie)
+  if (!reduce) {
+    const tgt = scroller || window, cov = card.querySelector('.dc__cover');
+    let raf = 0;
+    const onScroll = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { const y = Math.max(0, -cov.getBoundingClientRect().top + (scroller ? scroller.getBoundingClientRect().top : 0)); if (y < 900) cov.style.setProperty('--sy', y.toFixed(1)); }); };
+    tgt.addEventListener('scroll', onScroll, { passive: true });
+  }
 
   // lesk a náklon vizitky podľa prsta / myši
   const stage = card.querySelector('[data-dc-stage]');
