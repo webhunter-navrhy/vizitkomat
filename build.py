@@ -49,7 +49,7 @@ PAGES = [
 LANGS = {'sk': '', 'cz': 'cz/'}
 SITE = 'https://vizitkomat.eu/'
 # False = testovacia verzia na webhunter-navrhy.github.io (noindex); True = ostrý web na vizitkomat.eu
-PRODUCTION = False
+PRODUCTION = True
 PUBLIC = SITE if PRODUCTION else 'https://webhunter-navrhy.github.io/vizitkomat/'
 THREE = {'three': 'https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js', 'three/addons/': 'https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/'}
 

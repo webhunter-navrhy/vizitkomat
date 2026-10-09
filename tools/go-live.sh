@@ -7,7 +7,7 @@
 #   (MX záznamy pre poštu nechať tak, ako sú)
 set -euo pipefail
 cd "$(dirname "$0")/.."
-for ip in $(dig +short A vizitkomat.eu); do
+for ip in $(dig +short A vizitkomat.eu @ns1.webglobe.cz); do
   case "$ip" in 185.199.10[89].153|185.199.11[01].153) ;; *) echo "DNS ešte nesmeruje na GitHub Pages ($ip)"; exit 1 ;; esac
 done
 sed -i '' 's/^PRODUCTION = False/PRODUCTION = True/' build.py

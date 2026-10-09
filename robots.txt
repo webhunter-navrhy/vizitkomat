@@ -1,3 +1,7 @@
 User-agent: *
-Disallow: /
+Disallow: /kosik/
+Disallow: /cz/kosik/
+Disallow: /koncepty/
+Disallow: /v/
+Disallow: /admin/
 Sitemap: https://vizitkomat.eu/sitemap.xml
