@@ -87,7 +87,7 @@
 .edx .etb.is-painting [data-act="copystyle"] { background: var(--yellow); }
 .edx-hint { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: .82rem; color: var(--ink-3); }
 .edx-hint[hidden], .edx .etb:not([hidden]) ~ .edx-hint { display: none; }
-.edx-hint span { margin-right: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.edx-hint span { flex: none; margin-right: 4px; white-space: nowrap; font-weight: 700; }
 .edx-hint button { flex: none; padding: .45rem .75rem; border-radius: 10px; background: #fff; font-weight: 800; font-size: .78rem; color: var(--ink); box-shadow: 0 0 0 1px rgba(15, 20, 64, .08); }
 .edx-hint button:hover { background: #F2F4FE; color: var(--cobalt); }
 .edx .ed-tools { flex: none; }
@@ -121,7 +121,7 @@
 .edx .ed-zoom { display: flex; }
 
 /* ---------- tablet ---------- */
-@media (min-width: 761px) and (max-width: 1240px) {
+@media (min-width: 1024px) and (max-width: 1240px) {
   .wz[data-step="edit"] .st3.edx { grid-template-columns: 72px 300px minmax(0, 1fr); }
   .edx-hint span { display: none; }
   .edx .ed-saved span { display: none; }
@@ -129,11 +129,11 @@
 }
 
 /* ---------- mobil: aplikácia na celú obrazovku, panel ako spodná plachta ---------- */
-@media (max-width: 760px) {
+@media (max-width: 1023px) {
   .wz[data-step="edit"] .st3.edx { display: flex; flex-direction: column; height: calc(100svh - var(--nav-h) - 51px); overflow: hidden; }
   .edx .ed-stage { order: 1; position: relative; top: auto; flex: 1; min-height: 0; height: auto; z-index: 1; }
   .edx-rail { order: 2; flex-direction: row; gap: 0; padding: 4px 4px calc(4px + env(safe-area-inset-bottom)); overflow-x: auto; flex: none; }
-  .edx-rail button { flex: 1 0 auto; min-width: 58px; padding: 6px 2px 4px; font-size: .62rem; gap: 2px; }
+  .edx-rail button { flex: 1 1 0; min-width: 0; padding: 6px 0 4px; font-size: .6rem; gap: 2px; letter-spacing: -.01em; }
   .edx-rail button svg { width: 22px; height: 22px; padding: 4px; }
   .edx .ed-foot { position: static; box-shadow: none; padding: 6px 12px 8px; background: transparent; }
   .edx .ed-foot .link, .edx .ed-price { display: none; }
@@ -149,7 +149,6 @@
   .edx-page { grid-auto-flow: column; gap: 6px; padding: 3px 8px 3px 3px; }
   .edx-page img { width: 54px; border-radius: 4px; }
   .edx-view .ed-zoom, .edx-marks span { display: none; }
-  .edx-pf span { display: none; }
   .edx-pf { padding: .5rem; }
   .edx-pfpop { left: 10px; right: 10px; width: auto; }
   /* spodná plachta s panelom */
@@ -169,17 +168,17 @@
 .edx-pages .ed-foot .nudge { position: absolute; right: 0; bottom: calc(100% + 10px); }
 .edx-view--top { margin-left: 0; gap: 6px; }
 .edx-view--top .edx-marks span { display: none; }
-@media (min-width: 761px) and (max-width: 1240px) {
+@media (min-width: 1024px) and (max-width: 1240px) {
   .edx-pages .ed-foot .link { display: none; }
   .edx-pages .ed-foot .btn--lg { padding-inline: 1rem; font-size: .95rem; }
 }
-@media (max-width: 760px) {
+@media (max-width: 1023px) {
   .edx-pages { flex-wrap: wrap; padding-bottom: 6px; }
   .edx-pages .ed-foot { order: 5; flex: 1 0 100%; margin-left: 0; }
   .edx-view--top .ed-zoom { display: none; }
 }
 .edx-pf span { white-space: nowrap; }
-@media (max-width: 760px) {
+@media (max-width: 1023px) {
   .wz[data-step="edit"] .st3.edx { height: calc(100svh - var(--edx-top, 130px)); }
   .edx-top { flex-wrap: wrap; row-gap: 6px; }
   .edx-ctx { order: 2; flex: 1 0 100%; }
@@ -187,14 +186,109 @@
   .edx .etb { width: 100%; justify-content: flex-start; }
 }
 .emulti { top: 64px; white-space: nowrap; font-size: .78rem; padding: 5px 5px 5px 12px; }
-@media (max-width: 760px) { .emulti { top: auto; bottom: 120px; } .emulti span { max-width: 200px; overflow: hidden; text-overflow: ellipsis; } }
+@media (max-width: 1023px) { .emulti { top: auto; bottom: 120px; } .emulti span { max-width: 200px; overflow: hidden; text-overflow: ellipsis; } }
 /* kontextová lišta má stálu výšku – výber prvku nesmie posunúť vizitku */
 .edx-ctx { min-height: 48px; }
-@media (max-width: 760px) { .edx-ctx { min-height: 50px; } .edx .etb { min-height: 50px; box-sizing: border-box; } .edx-hint { min-height: 50px; } }
+@media (max-width: 1023px) { .edx-ctx { min-height: 50px; } .edx .etb { min-height: 50px; box-sizing: border-box; } .edx-hint { min-height: 50px; } }
 .adds--orn button svg { width: 40px; height: 26px; fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 2px; }
 .adds--orn button svg circle, .adds--orn button svg ellipse { fill: var(--ink); stroke: none; }
-@media (max-width: 760px) {
+@media (max-width: 1023px) {
   /* plachta je nad spodným pásom nástrojov, pás ostáva klikateľný */
   .edx-rail { position: relative; z-index: 71; box-shadow: 0 -1px 0 rgba(255, 255, 255, .06); }
   .edx .edx-panel { bottom: calc(58px + env(safe-area-inset-bottom)); height: min(58svh, 520px); }
+}
+
+/* tablet na výšku (761–1023 px): rovnaké rozloženie ako mobil – pás nástrojov dole, panel ako plachta, vizitka na celú šírku */
+@media (min-width: 761px) and (max-width: 1023px) {
+  .wz[data-step="edit"] .st3 { display: flex; flex-direction: column; animation: none; }
+  .ed-side { order: 2; border: 0; }
+  .ed-tools { gap: 6px; }
+  .ed-keys { display: none; }
+  .tb--z { min-width: 52px; }
+  .edx .edx-panel { left: 50%; right: auto; width: min(640px, 100%); transform: translate(-50%, 105%); }
+  .edx.is-sheet .edx-panel { transform: translate(-50%, 0); }
+  .edx-rail button { font-size: .68rem; }
+}
+
+/* ---------- krátka prehliadka (3 kroky) ---------- */
+.tour { position: fixed; z-index: 90; width: min(320px, calc(100vw - 20px)); padding: 16px 16px 12px; border-radius: 18px; background: var(--ink); color: #fff; box-shadow: 0 24px 50px -18px rgba(15, 20, 64, .6); --ax: 50%; }
+.tour[hidden] { display: none; }
+.tour.is-in { animation: tourIn .32s var(--pop, cubic-bezier(.2, .9, .3, 1.2)); }
+@keyframes tourIn { from { opacity: 0; transform: translateY(6px) scale(.97); } }
+.tour__n { display: inline-block; margin-bottom: 6px; padding: .12rem .5rem; border-radius: 99px; background: rgba(255, 255, 255, .12); font-size: .68rem; font-weight: 800; letter-spacing: .04em; }
+.tour b { display: block; font-size: 1.02rem; letter-spacing: -.01em; }
+.tour p { margin: 4px 0 12px; font-size: .84rem; line-height: 1.45; color: rgba(255, 255, 255, .8); }
+.tour__b { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.tour__skip { padding: .45rem .2rem; color: rgba(255, 255, 255, .7); font-weight: 700; font-size: .82rem; }
+.tour__skip:hover { color: #fff; }
+.tour__next { padding: .55rem 1rem; border-radius: 12px; background: var(--yellow); color: var(--ink); font-weight: 800; font-size: .86rem; }
+.tour__arr { position: absolute; width: 14px; height: 14px; background: var(--ink); transform: rotate(45deg); }
+.tour[data-side="top"] .tour__arr { top: -6px; left: calc(var(--ax) - 7px); }
+.tour[data-side="bottom"] .tour__arr { bottom: -6px; left: calc(var(--ax) - 7px); }
+.tour[data-side="left"] .tour__arr { left: -6px; top: 26px; }
+@media (prefers-reduced-motion: reduce) { .tour.is-in { animation: none; } }
+
+/* mobil/tablet: otvorený panel neprekryje vizitku – plocha sa zmenší nad plachtu a vizitka sa do nej prispôsobí */
+@media (max-width: 1023px) {
+  .edx .edx-panel { height: min(44svh, 420px); }
+  .edx.is-sheet .ed-stage { padding-bottom: min(44svh, 420px); }
+  .edx.is-sheet .edx-pages, .edx.is-sheet .edx-hint { display: none; }
+  .edx.is-sheet .edx-ctx { min-height: 0; }
+  /* strany: popis pod náhľadom, aby sa do riadka zmestila aj kontrola tlače */
+  .edx-page { grid-auto-flow: row; gap: 2px; padding: 3px; font-size: .62rem; }
+  .edx-pf { font-size: .72rem; padding: .42rem .7rem; }
+}
+
+/* počítač: keď je vybraný prvok, kontextová lišta dostane miesto – stav uloženia a vrstvy len ako ikony */
+@media (min-width: 1024px) {
+  .edx-top:has(.etb:not([hidden])) .ed-saved span,
+  .edx-top:has(.etb:not([hidden])) .ed-laybtn span { display: none; }
+  .edx-top:has(.etb:not([hidden])) .ed-laybtn { min-width: 40px; padding: 0; justify-content: center; }
+  .edx-top { gap: 10px; }
+}
+@media (min-width: 1024px) and (max-width: 1360px) {
+  .wz[data-step="edit"] .st3.edx { grid-template-columns: 72px 312px minmax(0, 1fr); }
+  .edx-top:has(.etb:not([hidden])) .ed-zoom .tb--s { display: none; }
+}
+.etb.is-tight [data-act="copystyle"], .etb.is-tight [data-act="lock"] { display: none; }
+.edx .etb.is-over { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); }
+@media (min-width: 1024px) {
+  .edx-top:has(.etb:not([hidden])) .ed-zoom .tb--s, .edx-top:has(.etb:not([hidden])) .ed-keys { display: none; }
+  .edx .etb__font { max-width: 132px; }
+}
+/* užší počítač: kontextová lišta na vlastnom riadku na celú šírku plochy */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .edx-top { flex-wrap: wrap; row-gap: 6px; }
+  .edx-ctx { order: 2; flex: 1 0 100%; }
+  .edx .ed-tools { order: 1; margin-left: auto; }
+  .edx-top:has(.etb:not([hidden])) .ed-zoom .tb--s { display: inline-flex; }
+}
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .edx-pages .ed-foot [data-back-choose], .edx-pages .ed-foot .ed-price { display: none; }
+  .edx-pages { gap: 10px; }
+}
+/* nižšie obrazovky (notebooky): kompaktnejšie kroky, lišty a spodný riadok – viac miesta pre vizitku */
+@media (min-width: 1024px) and (max-height: 900px) {
+  .wz[data-step="edit"] .wz__steps { padding: 6px 0; }
+  .wz[data-step="edit"] .wz__steps li { padding: .38rem .8rem; }
+  .edx-top { min-height: 52px; padding: 8px 12px 2px; }
+  .edx-pages { padding: 4px 14px 8px; }
+  .edx-page img { width: 72px; }
+  .edx-pages .ed-foot .btn--lg { min-height: 50px; padding-block: .6rem; }
+}
+@media (min-width: 1024px) and (max-width: 1439px) { .edx-top { row-gap: 4px; } }
+.tour[data-side="right"] .tour__arr { right: -6px; top: calc(50% - 7px); }
+.tour[data-side="none"] .tour__arr { display: none; }
+.fld__other { display: flex; align-items: center; gap: 8px; margin: 6px 2px 0; font-size: .76rem; color: var(--ink-3); }
+.fld__other button { padding: .2rem .55rem; border-radius: 8px; background: var(--ink); color: #fff; font-weight: 800; font-size: .72rem; }
+.edx-page img:not([src]), .edx-page img[src=""] { background: linear-gradient(100deg, #EEF0FA 30%, #F8F9FE 50%, #EEF0FA 70%) 0 0 / 220% 100%; animation: edxSk 1.2s linear infinite; }
+@keyframes edxSk { to { background-position: -220% 0; } }
+@media (prefers-reduced-motion: reduce) { .edx-page img { animation: none !important; } }
+/* mobil/tablet: ikony v lište s krátkym popisom (bez myši nie sú tooltipy) */
+@media (max-width: 1023px) {
+  .edx .etb [data-l] { position: relative; flex-direction: column; justify-content: center; gap: 1px; height: 52px; min-width: 50px; padding-bottom: 2px; }
+  .edx .etb [data-l]::after { content: attr(data-l); font-size: .56rem; font-weight: 700; line-height: 1; color: var(--ink-3); white-space: nowrap; }
+  .edx .etb [data-l] svg { width: 20px; height: 20px; }
+  .edx .etb__sw[data-l] i { width: 20px; height: 20px; }
+  .edx-ctx, .edx .etb { min-height: 58px; }
 }

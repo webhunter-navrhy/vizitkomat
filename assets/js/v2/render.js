@@ -165,6 +165,12 @@ export async function toFabric(o, lay, ctx = {}) {
         lineHeight: o.lh || 1.12, opacity: o.opacity ?? 1, objectCaching: false,
       });
       if (o.fit && obj.width > len(o.fit)) obj.set('fontSize', Math.max(len(MIN_FIT), obj.fontSize * (len(o.fit) / obj.width)));
+      // dlhý údaj zákazníka (e-mail, firma…) nesmie vytiecť z vizitky – zmenšíme ho len vtedy, keď by presiahol bezpečný okraj
+      else if (o.field && !o.angle && lay.W && !String(textValue(o)).includes('\n')) {
+        const M = 3, ox = o.ox || 'left', x = o.x;
+        const avail = ox === 'right' ? x - M : ox === 'center' ? 2 * Math.min(x - M, lay.W - M - x) : lay.W - M - x;
+        if (avail > 6 && obj.width > len(avail)) obj.set('fontSize', Math.max(len(MIN_FIT), obj.fontSize * (len(avail) / obj.width)));
+      }
       break;
     }
     case 'rect': {

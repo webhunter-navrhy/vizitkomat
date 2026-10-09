@@ -12,7 +12,7 @@ const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const PT = 25.4 / 72 * 10; // 1 pt v px plátna (K = 10 px/mm)
-const isMobile = () => matchMedia('(max-width: 760px)').matches;
+const isMobile = () => matchMedia('(max-width: 1023px)').matches;
 
 // všetky písma, ktoré sa načítavajú (FONT_CSS), zoskupené podľa štýlu
 const FAMILIES = [...new Set([...Object.values(FONTS).flatMap((f) => [f.display, f.text]), 'Pinyon Script', 'Montserrat'])];
@@ -95,13 +95,13 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
     <div class="etb__g" data-g="text">
       <button class="etb__font" data-act="font" title="${L.font}"><span data-fontname>Font</span><svg viewBox="0 0 12 12"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
       <div class="etb__size"><button data-act="sz-" aria-label="−">−</button><input data-szv inputmode="decimal" aria-label="${L.size}"><button data-act="sz+" aria-label="+">+</button></div>
-      <button class="etb__b" data-act="bold" title="${L.bold} (⌘B)">${I.b}</button>
-      <button class="etb__b" data-act="italic" title="${L.italic} (⌘I)">${I.i}</button>
-      <button class="etb__b" data-act="align" title="${L.align}" data-alignicon>${I.al}</button>
-      <button class="etb__b" data-act="spacing" title="${L.spacing}">${I.sp}</button>
+      <button class="etb__b" data-act="bold" data-l="${tr('Tučné', 'Tučné')}" title="${L.bold} (⌘B)">${I.b}</button>
+      <button class="etb__b" data-act="italic" data-l="${tr('Kurzíva', 'Kurzíva')}" title="${L.italic} (⌘I)">${I.i}</button>
+      <button class="etb__b" data-act="align" data-l="${tr('Zarovnať', 'Zarovnat')}" title="${L.align}" data-alignicon>${I.al}</button>
+      <button class="etb__b" data-act="spacing" data-l="${tr('Rozostup', 'Rozestup')}" title="${L.spacing}">${I.sp}</button>
     </div>
     <div class="etb__g" data-g="bg"><span class="etb__lbl">${tr('Pozadie', 'Pozadí')}</span></div>
-    <div class="etb__g" data-g="color"><button class="etb__sw" data-act="color" title="${L.color}"><i data-curcol></i></button></div>
+    <div class="etb__g" data-g="color"><button class="etb__sw" data-act="color" data-l="${tr('Farba', 'Barva')}" title="${L.color}"><i data-curcol></i></button></div>
     <div class="etb__g" data-g="img">
       <button class="etb__t" data-act="replace">${I.swap}<span>${L.replace}</span></button>
       <button class="etb__t" data-act="crop">${I.crop}<span>${L.crop}</span></button>
@@ -110,12 +110,12 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
     <div class="etb__g" data-g="common">
       <button class="etb__t" data-act="group" title="${tr('Zoskupiť – presúvať a meniť ako celok', 'Seskupit – přesouvat a měnit jako celek')}">${I.group}<span>${tr('Zoskupiť', 'Seskupit')}</span></button>
       <button class="etb__t" data-act="ungroup" title="${tr('Rozdeliť na časti (alebo dvojklik)', 'Rozdělit na části (nebo dvojklik)')}">${I.ungroup}<span>${tr('Rozdeliť', 'Rozdělit')}</span></button>
-      <button class="etb__b" data-act="pos" title="${L.pos}">${I.pos}</button>
-      <button class="etb__b" data-act="copystyle" title="${tr('Kopírovať štýl – potom kliknite na iný prvok', 'Kopírovat styl – pak klikněte na jiný prvek')}">${I.roller}</button>
-      <button class="etb__b" data-act="lock" data-lockbtn title="${L.lock} (⌘⇧L)">${I.unlock}</button>
-      <button class="etb__b" data-act="dup" title="${L.dup} (⌘D)">${I.dup}</button>
-      <button class="etb__b etb__del" data-act="del" title="${L.del} (Del)">${I.del}</button>
-      <button class="etb__b" data-act="more" title="${L.more}">${I.more}</button>
+      <button class="etb__b" data-act="pos" data-l="${tr('Pozícia', 'Pozice')}" title="${L.pos}">${I.pos}</button>
+      <button class="etb__b" data-act="copystyle" data-l="${tr('Štýl', 'Styl')}" title="${tr('Kopírovať štýl – potom kliknite na iný prvok', 'Kopírovat styl – pak klikněte na jiný prvek')}">${I.roller}</button>
+      <button class="etb__b" data-act="lock" data-lockbtn data-l="${tr('Zámok', 'Zámek')}" title="${L.lock} (⌘⇧L)">${I.unlock}</button>
+      <button class="etb__b" data-act="dup" data-l="${tr('Kópia', 'Kopie')}" title="${L.dup} (⌘D)">${I.dup}</button>
+      <button class="etb__b etb__del" data-act="del" data-l="${tr('Zmazať', 'Smazat')}" title="${L.del} (Del)">${I.del}</button>
+      <button class="etb__b" data-act="more" data-l="${tr('Viac', 'Více')}" title="${L.more}">${I.more}</button>
     </div>
     <button class="etb__warn" data-act="fitsafe" data-warn hidden>${I.warn}<span>${tr('Mimo bezpečnej zóny', 'Mimo bezpečné zóny')}</span><b>${tr('Opraviť', 'Opravit')}</b></button>`;
   const dock = $('[data-ctxbar]', stage); if (dock) dock.append(bar);
@@ -172,7 +172,20 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
     const ov = k !== 'multi' && ed.overflow(o);
     $('[data-warn]', bar).hidden = !ov;
     place(o);
+    tighten();
   }
+  // keď sa lišta nezmestí, menej časté akcie (kopírovať štýl, zámok) presunieme do ponuky „Ďalšie“
+  function tighten() {
+    if (bar.hidden) return;
+    bar.classList.remove('is-tight');
+    requestAnimationFrame(() => {
+      if (bar.scrollWidth > bar.clientWidth + 2) bar.classList.add('is-tight');
+      bar.classList.toggle('is-over', bar.scrollWidth > bar.clientWidth + 2);
+    });
+  }
+  addEventListener('resize', () => tighten());
+  bar.addEventListener('wheel', (e) => { if (bar.scrollWidth > bar.clientWidth && Math.abs(e.deltaY) > Math.abs(e.deltaX)) { bar.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive: false });
+  bar.addEventListener('scroll', () => bar.classList.toggle('is-over', bar.scrollLeft + bar.clientWidth < bar.scrollWidth - 2));
   // lišta nad prvkom (alebo pod ním, keď nie je miesto); na mobile dole nad tlačidlom
   function place(o = ed.active()) {
     if (bar.hidden || !o) return;
@@ -259,7 +272,8 @@ export function initEdTools({ ed, stage, getStep, curPal, brandColors, onStyleCh
   }
   function morePop() {
     const o = ed.active();
-    return `<div class="mpk"><label>${tr('Priehľadnosť', 'Průhlednost')}<output data-opv>${Math.round((o?.opacity ?? 1) * 100)} %</output><input type="range" min="10" max="100" value="${Math.round((o?.opacity ?? 1) * 100)}" data-opacity></label>
+    const lk = o && ed.isLocked(o), tight = bar.classList.contains('is-tight');
+    return `<div class="mpk">${tight ? `<button data-act="copystyle">${tr('Kopírovať štýl', 'Kopírovat styl')}<kbd>${I.roller}</kbd></button><button data-act="lock">${lk ? L.unlock : L.lock}<kbd>⌘⇧L</kbd></button><hr>` : ''}<label>${tr('Priehľadnosť', 'Průhlednost')}<output data-opv>${Math.round((o?.opacity ?? 1) * 100)} %</output><input type="range" min="10" max="100" value="${Math.round((o?.opacity ?? 1) * 100)}" data-opacity></label>
       <hr><button data-act="multi">${ed.multi ? tr('Ukončiť výber viacerých', 'Ukončit výběr více prvků') : tr('Vybrať viac prvkov', 'Vybrat více prvků')}<kbd>Shift</kbd></button><button data-act="copy">${tr('Kopírovať', 'Kopírovat')}<kbd>⌘C</kbd></button><button data-act="paste">${tr('Vložiť', 'Vložit')}<kbd>⌘V</kbd></button><button data-act="selall">${tr('Vybrať všetko', 'Vybrat vše')}<kbd>⌘A</kbd></button></div>`;
   }
 

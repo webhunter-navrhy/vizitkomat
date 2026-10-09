@@ -286,7 +286,7 @@ So: po domluvě') }}"></textarea></label>
       <div class="ed-top edx-top">
         <div class="edx-ctx" data-ctxbar>
           <div class="edx-hint" data-ctx-empty>
-            <span>{{ L('Kliknite na prvok vo vizitke alebo na pozadie', 'Klikněte na prvek ve vizitce nebo na pozadí') }}</span>
+            <span title="{{ L('Kliknite na prvok vo vizitke alebo na pozadie', 'Klikněte na prvek ve vizitce nebo na pozadí') }}">{{ L('Celá vizitka:', 'Celá vizitka:') }}</span>
             <button type="button" data-open="pozadie">{{ L('Pozadie', 'Pozadí') }}</button><button type="button" data-open="styl">{{ L('Farby a písmo', 'Barvy a písmo') }}</button><button type="button" data-open="sablony">{{ L('Rozloženie', 'Rozložení') }}</button>
           </div>
         </div>
@@ -336,7 +336,18 @@ So: po domluvě') }}"></textarea></label>
           <button class="btn btn--c btn--lg" data-to-order>{{ L('Pokračovať k objednávke', 'Pokračovat k objednávce') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
         </div>
       </div>
-      <div class="coach" data-coach hidden role="note"><b>{{ L('Upravujte priamo vo vizitke', 'Upravujte přímo ve vizitce') }}</b><span>{{ L('Kliknite na text a píšte. Prvky chyťte a posuňte, vodítka ich zarovnajú.', 'Klikněte na text a pište. Prvky chyťte a posuňte, vodítka je zarovnají.') }}</span><button type="button" data-coach-x>{{ L('Rozumiem', 'Rozumím') }}</button></div>
+      <div class="tour" data-tour hidden role="dialog" aria-label="{{ L('Krátka prehliadka editora', 'Krátká prohlídka editoru') }}"
+        data-steps='{{ [
+          [L("Píšte priamo vo vizitke", "Pište přímo ve vizitce"), L("Kliknite na text a prepíšte ho. Obrázky a ozdoby chyťte a posuňte, vodítka ich zarovnajú.", "Klikněte na text a přepište ho. Obrázky a ozdoby chyťte a posuňte, vodítka je zarovnají.")],
+          [L("Všetko ostatné nájdete tu", "Všechno ostatní najdete tady"), L("Šablóny, farby a písmo, text, prvky, logo, pozadie aj QR kód. Údaje vyplníte v prvom paneli.", "Šablony, barvy a písmo, text, prvky, logo, pozadí i QR kód. Údaje vyplníte v prvním panelu.")],
+          [L("Hotovo? Pokračujte", "Hotovo? Pokračujte"), L("Pred tlačou návrh skontroluje človek a platíte až potom. Rozpracovanú vizitku si pamätáme.", "Před tiskem návrh zkontroluje člověk a platíte až potom. Rozpracovanou vizitku si pamatujeme.")]
+        ] | tojson | forceescape }}'>
+        <span class="tour__n" data-tour-n></span>
+        <b data-tour-h></b>
+        <p data-tour-p></p>
+        <div class="tour__b"><button type="button" class="tour__skip" data-tour-skip>{{ L('Preskočiť', 'Přeskočit') }}</button><button type="button" class="tour__next" data-tour-next data-l-next="{{ L('Ďalej', 'Další') }}" data-l-done="{{ L('Začať', 'Začít') }}"></button></div>
+        <i class="tour__arr" aria-hidden="true"></i>
+      </div>
     </div>
     <aside class="dgp" data-dgp hidden aria-label="{{ L('Náhľad digitálnej vizitky', 'Náhled digitální vizitky') }}">
       <div class="dgp__head"><span class="dgp__live"><i></i>{{ L('Naživo', 'Živě') }}</span><b>{{ L('Digitálna vizitka', 'Digitální vizitka') }}</b><button class="dgp__x" type="button" data-dgp-close aria-label="{{ L('Zavrieť náhľad', 'Zavřít náhled') }}">×</button></div>

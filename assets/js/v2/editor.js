@@ -25,7 +25,7 @@ function groupParts(fab, list, area, onlyTemplate) {
     && !(o.data && (o.data.bg || o.data.field || o.data.loose || o.data.mono || o.data.kind === 'qr' || o.data.kind === 'grp' || o.data.locked))
     && !(o.type === 'image' && ['logo', 'photo', 'file', 'image'].includes(o.data?.role))
     && (!onlyTemplate || o.data?.ti != null)
-    && (() => { const r = o.getBoundingRect(true, true); return r.width * r.height < 0.55 * area; })();
+    && (o.type === 'line' || (() => { const r = o.getBoundingRect(true, true); return r.width * r.height < 0.55 * area; })()); // dlhé lúče a linky patria do vzoru, nie samostatne
   const out = [], tol = 1.2 * K;
   for (let i = 0; i < list.length;) {
     if (!okRun(list[i])) { out.push(list[i]); i++; continue; }
@@ -101,6 +101,12 @@ export function createEditor(el, host, opts = {}) {
   };
   const emit = (ev, x) => (S.listeners[ev] || []).forEach((fn) => fn(x));
   const size = () => SIZES[S.d.size] || SIZES['90x50'];
+  // dlhý text nesmie vytiecť cez okraj vizitky (3 mm od orezu) – zmenšíme písmo, najviac na tlačové minimum
+  function fitToCard(o) {
+    const W = size().w, M = 3, x = o.left / K - BLEED, w = o.width * o.scaleX / K, ox = o.originX || 'left';
+    const avail = ox === 'right' ? x - M : ox === 'center' ? 2 * Math.min(x - M, W - M - x) : W - M - x;
+    if (avail > 6 && w > avail) o.set('fontSize', Math.max(1.6 * K / (o.scaleX || 1), o.fontSize * avail / w));
+  }
   const Wt = () => (size().w + 2 * BLEED) * K, Ht = () => (size().h + 2 * BLEED) * K;
   // klikateľnosť: celoplošné textúry sú pozadie; veľké rámy a vzory reagujú len na svoje čiary, nie na prázdnu plochu
   // texty, obrázky a ilustrácie sa zväčšujú rovnomerne za rohy (bočné úchyty by ich deformovali a na dotyku zavadzajú)
@@ -108,13 +114,17 @@ export function createEditor(el, host, opts = {}) {
   canvas.on('object:added', (e) => e.target && tuneControls(e.target));
   function tuneHit() {
     const area = Wt() * Ht();
+    // stredy textov: veľký „dutý“ prvok, ktorý ich obopína (rám, vzor), reaguje len na svoje čiary, inak celou plochou
+    const tc = canvas.getObjects().filter((o) => /text/.test(o.type)).map((o) => o.getCenterPoint());
     canvas.getObjects().forEach((o) => {
       tuneControls(o);
       if (o.data?.bg) { o.set(BGLOCK); return; }
       const r = o.getBoundingRect(true, true), a = r.width * r.height;
       if ((o.type === 'image' || o.type === 'rect') && !o.data?.field && !['logo', 'photo'].includes(o.data?.role) && a >= 0.92 * area && o.data?.ti != null && !o.data?.user) { o.data = { ...o.data, bglike: true }; o.set(BGLOCK); return; }
       const hollow = o.type === 'group' || !o.fill || o.fill === 'transparent' || o.fill === 'none';
-      o.perPixelTargetFind = !!(hollow && a > 0.18 * area);
+      const wraps = tc.some((p) => p.x > r.left && p.x < r.left + r.width && p.y > r.top && p.y < r.top + r.height);
+      const cw = Math.max(0, Math.min(r.left + r.width, Wt()) - Math.max(r.left, 0)), ch = Math.max(0, Math.min(r.top + r.height, Ht()) - Math.max(r.top, 0));
+      o.perPixelTargetFind = !!(hollow && a > 0.18 * area && (wraps || cw * ch > 0.4 * area));
     });
   }
 
@@ -127,8 +137,10 @@ export function createEditor(el, host, opts = {}) {
     const r = host.getBoundingClientRect();
     const W = Math.floor(r.width), H = Math.floor(r.height), rb = reserveB();
     if (W < 40 || H < 40) return;
-    const pad = Math.min(opts.pad ?? 48, W * 0.07, H * 0.12);
-    S.base = Math.max(0.15, Math.min((W - 2 * pad) / Wt(), (H - rb - 2 * pad) / Ht(), 3));
+    // spadávka je mimo orezu neviditeľná – vizitku prispôsobíme jej skutočnému formátu, na úzkych displejoch s menším okrajom
+    const narrow = W < 760, sz0 = size(), vw = (S.marks ? Wt() : sz0.w * K), vh = (S.marks ? Ht() : sz0.h * K);
+    const pad = narrow ? Math.max(14, W * 0.04) : Math.min(opts.pad ?? 48, W * 0.07, H * 0.12);
+    S.base = Math.max(0.15, Math.min((W - 2 * pad) / vw, (H - rb - 2 * pad) / vh, 3));
     const z = S.base * S.uz;
     S.zoom = z;
     // posun len keď je vizitka väčšia ako plocha
@@ -202,6 +214,15 @@ export function createEditor(el, host, opts = {}) {
       ctx.setLineDash([4 / S.zoom, 3 / S.zoom]); ctx.strokeStyle = 'rgba(36,64,230,.85)'; ctx.lineWidth = 1.4 / S.zoom;
       ctx.strokeRect(br.left - p, br.top - p, br.width + 2 * p, br.height + 2 * p); ctx.setLineDash([]);
     }
+    // pole, ktoré práve vypĺňate v paneli Údaje, svieti aj vo vizitke
+    if (S.focusField) {
+      const z = S.zoom, p = 4 / z;
+      canvas.getObjects().filter((o) => o.visible !== false && (o.data?.field === S.focusField || (o.type === 'group' && o.getObjects?.().some((c) => c.data?.field === S.focusField)))).forEach((o) => {
+        const br = o.getBoundingRect(true, true);
+        ctx.fillStyle = 'rgba(255,210,63,.22)'; ctx.fillRect(br.left - p, br.top - p, br.width + 2 * p, br.height + 2 * p);
+        ctx.strokeStyle = '#2440E6'; ctx.lineWidth = 2 / z; ctx.strokeRect(br.left - p, br.top - p, br.width + 2 * p, br.height + 2 * p);
+      });
+    }
     if (S.guides && liveGuides.length) {
       ctx.strokeStyle = '#FF3D9A'; ctx.lineWidth = 1.2 / S.zoom;
       liveGuides.forEach((g) => { ctx.beginPath(); if (g.x != null) { ctx.moveTo(g.x, 0); ctx.lineTo(g.x, Ht()); } else { ctx.moveTo(0, g.y); ctx.lineTo(Wt(), g.y); } ctx.stroke(); });
@@ -222,6 +243,16 @@ export function createEditor(el, host, opts = {}) {
   });
 
   // ---------- prichytávanie ----------
+  // keď prvok presahuje viditeľnú plochu, posunieme pohľad (o kúsok), aby jeho úchyty boli na dosah
+  function keepReachable(o, view = false) {
+    const v = canvas.viewportTransform, z = v[0], W = canvas.width, H = canvas.height, m = 10;
+    const r = o.getBoundingRect(true, true), x0 = r.left * z + v[4], y0 = r.top * z + v[5], w = r.width * z, h = r.height * z;
+    let dx = 0, dy = 0;
+    if (w <= W - 2 * m) { if (x0 < m) dx = m - x0; else if (x0 + w > W - m) dx = W - m - (x0 + w); } else { const c = x0 + w / 2; if (c < m) dx = m - c; else if (c > W - m) dx = W - m - c; }
+    if (h <= H - 2 * m) { if (y0 < m) dy = m - y0; else if (y0 + h > H - m) dy = H - m - (y0 + h); } else { const c = y0 + h / 2; if (c < m) dy = m - c; else if (c > H - m) dy = H - m - c; }
+    if (!dx && !dy) return;
+    if (view) { S.px += dx; S.py += dy; fit(); } else { o.left += dx / z; o.top += dy / z; o.setCoords(); }
+  }
   canvas.on('object:moving', (e) => {
     const o = e.target; liveGuides = [];
     if (!S.guides || e.e?.altKey) return;
@@ -272,12 +303,22 @@ export function createEditor(el, host, opts = {}) {
 
   // ---------- zmeny používateľa ----------
   const userChange = () => { if (S.busy) return; S.custom[S.side] = true; commit(); };
-  canvas.on('object:modified', userChange);
+  canvas.on('object:modified', (e) => { userChange(); if (e.target && !S.busy) requestAnimationFrame(() => keepReachable(e.target, true)); });
   canvas.on('text:changed', (e) => {
     const o = e.target; if (S.busy || !o.data || !o.data.field) { userChange(); return; }
     const k = o.data.field;
-    let val = o.text;
-    if (o.data.prefix && val.startsWith(o.data.prefix)) val = val.slice(o.data.prefix.length);
+    const strip = (t) => (o.data.prefix && t.startsWith(o.data.prefix) ? t.slice(o.data.prefix.length) : t);
+    let val = strip(o.text);
+    // text zobrazený VEĽKÝMI písmenami: do údajov uložíme pôvodnú veľkosť písmen, zmeníme len prepísanú časť
+    const prev = S.d.f[k] ?? '', before = strip(o.__last ?? o._textBeforeEdit ?? o.text);
+    o.__last = o.text;
+    const up = (t) => t.toLocaleUpperCase();
+    if (o.data.part == null && prev && (o.__upperShown || (prev !== up(prev) && before === up(prev))) && up(before) === up(prev) && before.length === prev.length) {
+      let a = 0; while (a < before.length && a < val.length && before[a] === val[a]) a++;
+      let b = 0; while (b < before.length - a && b < val.length - a && before[before.length - 1 - b] === val[val.length - 1 - b]) b++;
+      val = prev.slice(0, a) + val.slice(a, val.length - b) + prev.slice(prev.length - b);
+      o.__upperShown = true;
+    }
     if (o.data.part != null) {
       const parts = canvas.getObjects().filter((x) => x.data && x.data.field === k && x.data.part != null).sort((a, b) => a.data.part - b.data.part);
       val = parts.map((x) => x.text).join(' ').trim();
@@ -286,6 +327,11 @@ export function createEditor(el, host, opts = {}) {
     syncOtherSide(k, val);
     emit('fields', { k, v: val });
     commit();
+  });
+  canvas.on('text:editing:entered', (e) => { if (e.target) e.target.__last = e.target.text; });
+  canvas.on('text:editing:exited', (e) => {
+    const o = e.target; if (!o) return; o.__last = null;
+    if (o.__upperShown && o.data?.field) { o.__upperShown = false; o.set('text', (o.data.prefix || '') + (S.d.f[o.data.field] || '').toLocaleUpperCase()); o.data = { ...o.data, upper: true }; canvas.requestRenderAll(); saveSide(); }
   });
   canvas.on('mouse:over', (e) => { if (e.target && e.target.selectable) { S.hover = e.target; canvas.requestRenderAll(); emit('hover', e.target); } });
   canvas.on('mouse:out', (e) => { if (S.hover && e.target === S.hover) { S.hover = null; canvas.requestRenderAll(); emit('hover', null); } });
@@ -601,6 +647,7 @@ export function createEditor(el, host, opts = {}) {
               o.set('text', o.data.part === 0 ? first : last);
             } else o.set('text', (o.data.prefix || '') + (o.data.upper ? v.toLocaleUpperCase() : v));
             if (o.data.fit && o.width * o.scaleX > o.data.fit * K) o.set('fontSize', o.fontSize * (o.data.fit * K) / (o.width * o.scaleX));
+            else if (!o.data.fit && !o.angle && !String(o.text).includes('\n')) fitToCard(o);
           });
           canvas.requestRenderAll(); saveSide();
         } else syncOtherSide(k, v);
@@ -1030,7 +1077,8 @@ export function createEditor(el, host, opts = {}) {
     },
     async setElement(o, el) { o.setElement(el); o.dirty = true; canvas.requestRenderAll(); S.custom[S.side] = true; commit(); emit('selection', o); },
     setGuides(on) { S.guides = on; },
-    setMarks(on) { S.marks = on; applyClip(); canvas.requestRenderAll(); },
+    setMarks(on) { S.marks = on; fit(); },
+    focusField(k) { S.focusField = k || null; canvas.requestRenderAll(); return !!k && canvas.getObjects().some((o) => o.data?.field === k || (o.type === 'group' && o.getObjects?.().some((c) => c.data?.field === k))); },
     zoomIn() { zoomAt(S.uz * 1.25); },
     zoomOut() { zoomAt(S.uz / 1.25); },
     zoomFit() { S.uz = 1; S.px = 0; S.py = 0; fit(); },

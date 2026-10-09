@@ -196,8 +196,8 @@
 .magic b { font-weight: 800; color: var(--ink); }
 
 /* ---------- tablet a mobil ---------- */
-@media (min-width: 761px) and (max-width: 1240px) { .ed-laybtn span { display: none; } .ed-laybtn { min-width: 36px; padding: 0; justify-content: center; } }
-@media (max-width: 760px) {
+@media (min-width: 1024px) and (max-width: 1240px) { .ed-laybtn span { display: none; } .ed-laybtn { min-width: 36px; padding: 0; justify-content: center; } }
+@media (max-width: 1023px) {
   .etb { position: absolute; left: 8px !important; right: 8px; top: auto !important; bottom: 8px; z-index: 12; padding: 5px; border-radius: 18px; overflow-x: auto; scrollbar-width: none; transform: none; justify-content: flex-start; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
   .etb.is-end { -webkit-mask-image: none; mask-image: none; }
   .etb::-webkit-scrollbar { display: none; }

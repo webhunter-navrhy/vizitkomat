@@ -1,6 +1,6 @@
 // Tvorba – sprievodca v 4 krokoch: začiatok → výber návrhu → úpravy → objednávka
 import { SIZES, FONTS, PALETTES, ART, newDesign, contrast, slugify, tr, CZ, DEFAULT_FIELDS } from './model.js';
-import { TEMPLATES, BACK_KEYS, templateDefaults } from './templates.js';
+import { TEMPLATES, BACK_KEYS, templateDefaults, layout } from './templates.js';
 import { snapshot, loadImg, photo, mockup, inspect } from './render.js';
 import { createEditor } from './editor.js';
 import { initEdTools } from './edtools.js';
@@ -64,10 +64,11 @@ async function ensureEditor() {
   ed.on('history', ({ undo, redo }) => { $('[data-undo]').disabled = !undo; $('[data-redo]').disabled = !redo; });
   ed.on('change', () => { savedState('saving'); persist(); });
   ed.on('zoom', (z) => { $('[data-zoom-v]').textContent = Math.round(z * 100) + ' %'; $('[data-zoom-fit]').classList.toggle('on', Math.abs(z - 1) > 0.02); $('[data-stage]').classList.toggle('is-zoomed', Math.abs(z - 1) > 0.02); });
-  ed.on('interact', () => { coachDone(); if (isPhone() && edx.classList.contains('is-sheet')) closePanel(); });
+  ed.on('interact', () => { coachDone('interact'); if (isPhone() && edx.classList.contains('is-sheet')) closePanel(); });
   // mobil: po pridaní prvku plachtu zavrieme, nech je nový prvok vidieť
   ed.on('added', () => { if (isPhone() && edx.classList.contains('is-sheet')) closePanel(); });
-  ed.on('selection', (o) => { if (o) coachDone(); });
+  ed.on('selection', (o) => { if (o) coachDone('interact'); });
+  ed.on('zoom', () => requestAnimationFrame(tourPlace));
   return ed;
 }
 async function loadDesign(d, sides, custom) {
@@ -404,7 +405,7 @@ if (tpv.dlg) {
    ========================================================= */
 const tabs = $$('[data-tab]'), panes = $$('[data-pp]');
 const edx = $('.edx');
-const isPhone = () => matchMedia('(max-width: 760px)').matches;
+const isPhone = () => matchMedia('(max-width: 1023px)').matches;
 // ľavý panel nástrojov (na mobile spodný panel); opätovný klik na aktívnu ikonu ho zbalí
 function openTab(id, { toggle = false } = {}) {
   if (id === 'viac') id = 'prvky';
@@ -474,6 +475,29 @@ function paintSamples() {
   tip.textContent = n ? tr(`Zvýraznené polia sú ukážkové (${n}). Prepíšte ich na svoje, vizitka sa mení naživo.`, `Zvýrazněná pole jsou ukázková (${n}). Přepište je na svá, vizitka se mění živě.`) : tr('Text môžete upraviť aj priamo vo vizitke: kliknite naň a píšte.', 'Text můžete upravit i přímo ve vizitce: klikněte na něj a pište.');
 }
 $$('.fields [data-f]').forEach((i) => i.addEventListener('focus', () => { if (i.closest('.fld').classList.contains('is-sample')) requestAnimationFrame(() => i.select()); }));
+// zvýraznenie poľa vo vizitke počas písania (ak je na tejto strane)
+// ak pole na tejto strane nie je, ale je na druhej, povieme to a ponúkneme prepnutie
+function onOtherSide(k) {
+  try {
+    const other = ed.side === 'front' ? 'back' : 'front';
+    const d = ed.printable(), js = d.sides?.[other];
+    const objs = js ? (js.objects || []).flatMap((o) => (o.objects ? [o, ...o.objects] : [o])) : layout(d, other).objs;
+    return objs.some((o) => (o.data?.field || o.field) === k) ? other : null;
+  } catch (e) { return null; }
+}
+$$('.fields [data-f]').forEach((i) => {
+  i.addEventListener('focus', () => {
+    $$('.fld__other').forEach((x) => x.remove());
+    if (!ed || ed.focusField?.(i.dataset.f)) return;
+    const other = onOtherSide(i.dataset.f); if (!other) return;
+    const n = document.createElement('p'); n.className = 'fld__other';
+    n.innerHTML = `${other === 'back' ? tr('Tento údaj je na zadnej strane.', 'Tento údaj je na zadní straně.') : tr('Tento údaj je na prednej strane.', 'Tento údaj je na přední straně.')} <button type="button">${tr('Ukázať', 'Ukázat')}</button>`;
+    n.querySelector('button').addEventListener('mousedown', (e) => e.preventDefault());
+    n.querySelector('button').addEventListener('click', async () => { $(`[data-side="${other}"]`)?.click(); setTimeout(() => { i.focus(); ed.focusField?.(i.dataset.f); }, 450); n.remove(); });
+    i.closest('.fld').append(n);
+  });
+  i.addEventListener('blur', () => { ed?.focusField?.(null); setTimeout(() => { if (!i.closest('.fld').contains(document.activeElement)) i.closest('.fld').querySelector('.fld__other')?.remove(); }, 200); });
+});
 const setFieldD = debounce((k, v) => ed.setField(k, v), 120);
 $$('[data-f]').forEach((i) => i.addEventListener('input', () => {
   const k = i.dataset.f; st.touched.add(k);
@@ -585,18 +609,71 @@ function savedState(s) {
   $('[data-saved-t]').textContent = s === 'saving' ? tr('Ukladám…', 'Ukládám…') : tr('Uložené v prehliadači', 'Uloženo v prohlížeči');
   if (s === 'saved') { el.classList.add('is-flash'); clearTimeout(savedT); savedT = setTimeout(() => el.classList.remove('is-flash'), 1200); }
 }
-// nápoveda pri prvej návšteve editora
+// krátka prehliadka pri prvej návšteve editora: vizitka → nástroje → objednávka (dá sa preskočiť)
 const COACH = 'vk2-coach';
+const tour = { el: $('[data-tour]'), i: -1, steps: [] };
+document.body.append(tour.el); // fixed pozícia voči oknu, nie voči ploche editora (tá má transform)
+try { tour.steps = JSON.parse(tour.el.dataset.steps || '[]'); } catch (e) { tour.steps = []; }
+function tourTarget(i) {
+  if (i === 0) {
+    const c = ed?.canvas, h = $('[data-host]'); if (!c || !h) return null;
+    const r = h.getBoundingClientRect(), v = c.viewportTransform, sz = ed.design ? (SIZES[ed.design.size] || SIZES['90x50']) : SIZES['90x50'];
+    const z = v[0], B = 2 * 10 * z;
+    return { left: r.left + v[4] + B, top: r.top + v[5] + B, width: sz.w * 10 * z, height: sz.h * 10 * z };
+  }
+  if (i === 1) return $('.edx-rail')?.getBoundingClientRect();
+  return $('[data-to-order]')?.getBoundingClientRect();
+}
+function tourPlace() {
+  if (tour.i < 0) return;
+  const el = tour.el; let t = tourTarget(tour.i); if (!t) return;
+  if (!t.width) { const sr = $('[data-stage]')?.getBoundingClientRect(); if (sr) t = { left: sr.left, top: sr.top + 60, width: sr.width, height: 0 }; }
+  const bw = el.offsetWidth, bh = el.offsetHeight, vw = innerWidth, vh = innerHeight, gap = 14;
+  let x, y, side;
+  if (tour.i === 1 && !isPhone()) { side = 'left'; x = t.left + t.width + gap; y = Math.min(vh - bh - 12, Math.max(12, t.top + 120)); }
+  else if (tour.i === 0) {
+    // pod vizitkou, nad ňou, alebo vedľa nej – bublina nesmie zakryť samotnú vizitku
+    const sr = $('[data-stage]')?.getBoundingClientRect() || { top: 0, bottom: vh };
+    side = 'top'; x = t.left + t.width / 2 - bw / 2; y = t.top + t.height + gap;
+    if (y + bh > Math.min(vh, sr.bottom) - 8) { side = 'bottom'; y = t.top - bh - gap; }
+    if (side === 'bottom' && y < sr.top + 8) {
+      if (t.left - bw - gap >= 10) { side = 'right'; x = t.left - bw - gap; y = Math.max(sr.top + 8, t.top + t.height / 2 - bh / 2); }
+      else { side = 'none'; y = Math.min(vh, sr.bottom) - bh - 8; x = t.left + 8; }
+    }
+  }
+  else { side = 'bottom'; x = (tour.i === 1 ? vw / 2 : t.left + t.width / 2) - bw / 2; y = t.top - bh - gap; }
+  x = Math.max(10, Math.min(vw - bw - 10, x)); y = Math.max(10, Math.min(vh - bh - 10, y));
+  el.style.left = x + 'px'; el.style.top = y + 'px'; el.dataset.side = side;
+  const ax = side === 'left' || side === 'right' || side === 'none' ? 0 : Math.max(18, Math.min(bw - 18, (tour.i === 1 && isPhone() ? vw / 2 : t.left + t.width / 2) - x));
+  el.style.setProperty('--ax', ax + 'px');
+}
+function tourGo(i) {
+  if (i >= tour.steps.length) { coachDone(); return; }
+  tour.i = i; const [h, p] = tour.steps[i], el = tour.el;
+  $('[data-tour-n]', el).textContent = `${i + 1} / ${tour.steps.length}`;
+  $('[data-tour-h]', el).textContent = h; $('[data-tour-p]', el).textContent = p;
+  const nx = $('[data-tour-next]', el); nx.textContent = i === tour.steps.length - 1 ? nx.dataset.lDone : nx.dataset.lNext;
+  el.hidden = false; el.classList.remove('is-in'); void el.offsetWidth; el.classList.add('is-in');
+  requestAnimationFrame(tourPlace);
+}
 function coachShow() {
-  if (st.step !== 'edit') return;
+  if (st.step !== 'edit' || !tour.steps.length) return;
   try { if (localStorage.getItem(COACH)) return; } catch (e) { return; }
-  $('[data-coach]').hidden = false;
+  tourGo(0);
 }
-function coachDone() {
-  const c = $('[data-coach]'); if (c.hidden) return;
-  c.hidden = true; try { localStorage.setItem(COACH, '1'); } catch (e) { /* nič */ }
+// interakcia s vizitkou počas 1. kroku = pochopené, ideme ďalej
+function coachDone(adv) {
+  if (tour.i < 0) return;
+  if (adv === 'interact') { if (tour.i === 0) tourGo(1); return; }
+  tour.i = -1; tour.el.hidden = true; try { localStorage.setItem(COACH, '1'); } catch (e) { /* nič */ }
 }
-$('[data-coach-x]').addEventListener('click', coachDone);
+$('[data-tour-next]').addEventListener('click', () => tourGo(tour.i + 1));
+$('[data-tour-skip]').addEventListener('click', () => coachDone());
+addEventListener('resize', () => requestAnimationFrame(tourPlace));
+// mimo editora prehliadka zmizne; kto otvorí panel nástrojov, krok 2 už pochopil
+document.addEventListener('vk:step', () => { if (st.step !== 'edit' && tour.i >= 0) coachDone(); });
+tabs.forEach((t) => t.addEventListener('click', () => { if (tour.i < 0) return; if (isPhone()) coachDone(); else if (tour.i <= 1) tourGo(2); }));
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && tour.i >= 0) coachDone(); });
 
 
 /* =========================================================

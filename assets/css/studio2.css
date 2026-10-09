@@ -629,14 +629,14 @@ html[lang="cs"] .fld.is-sample > span::after { content: 'ukázka'; }
   .coach { bottom: 12px; }
 }
 .insp__h .link { white-space: nowrap; }
-@media (max-width: 760px) {
+@media (max-width: 1023px) {
   .ed-zoom { display: none; }
   .ed-saved { margin-left: 0; }
   .coach { top: 112px; bottom: auto; padding: 10px 10px 10px 14px; }
   .coach span { display: none; }
   .coach b { font-size: .84rem; }
 }
-@media (max-width: 760px) {
+@media (max-width: 1023px) {
   .ed-stage.is-zoomed .ed-zoom { display: flex; }
   .ed-stage.is-zoomed .ed-zoom .tb--s { display: none; }
   .ed-stage.is-zoomed .tb--z::after { content: ' ⤢'; }
