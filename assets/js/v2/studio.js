@@ -9,6 +9,7 @@ import { analyzeLogo, fileToDataURL } from '../logo.js';
 import * as store from './store.js';
 import { PERSONAS, personaFields, TPL_PERSONA } from './personas.js';
 import { emblemFor } from './emblems.js';
+import { ranked, badge as tplBadge, BY_IND } from './featured.js';
 import { toast } from './site.js';
 import { money, printPrice, itemPrice, addWorkdays, fmtDay, debounce, session, qrSVG, deliveryDays } from '../util.js';
 
@@ -39,6 +40,8 @@ function go(step) {
   if (step === 'edit') { const c = st.cfg; $('[data-ed-price]').innerHTML = c.kind === 'digital' ? `<b>${money(VK.prices.digital)}</b>` : `${c.qty} ${tr('ks', 'ks')} <b>${money(itemPrice(c, VK.prices))}</b><small>${tr('doprava zadarmo', 'doprava zdarma')}</small>`; }
   if (step === 'edit') ensureEditor().then(() => { ed.fit(); openTab($('[data-tab][aria-selected=true]')?.dataset.tab || 'udaje'); });
   if (step === 'order') enterOrder();
+  if (step === 'edit') VK.ev?.('editor'); else if (step === 'order') VK.ev?.('order_step');
+  document.dispatchEvent(new Event('vk:step'));
   $('[data-obar]').hidden = step !== 'order';
   // čítačky obrazovky: presun na nadpis kroku
   requestAnimationFrame(() => { const h = $(`[data-pane="${step}"] h1, [data-pane="${step}"] [data-focus]`); if (h && step !== 'edit') h.focus({ preventScroll: true }); });
@@ -101,6 +104,7 @@ $('[data-start-tpl2]').addEventListener('click', () => showTemplates());
 // obľúbené šablóny priamo na začiatku: jedno kliknutie a ste v editore
 $('[data-insp]').addEventListener('click', async (e) => {
   const b = e.target.closest('[data-insp-t]'); if (!b) return;
+  VK.ev?.('quick_start');
   const id = b.dataset.inspT; if (!TEMPLATES[id]) return;
   b.classList.add('is-going');
   const pf = personaFor(id); st.mode = 'tpl';
@@ -157,6 +161,7 @@ async function runAI(prompt, previous) {
   go('choose');
   const base = {};
   if (ed && st.loaded) for (const [k, v] of Object.entries(ed.design.f)) if (st.touched.has(k) && v) base[k] = v;
+  VK.ev?.('ai_submit');
   const r = await askAI(prompt, base, { previous, onArt: (idx, d) => refreshMock(idx, d) });
   clearInterval(stepT); paintLoadSteps(STEPS.length, true);
   await new Promise((res) => setTimeout(res, 260));
@@ -249,7 +254,9 @@ const IND = {
   pravo: ['pravnik', 'advokat', 'financie', 'uctovnictvo', 'poistenie', 'konzultant', 'poradenstvo', 'dane', 'mzdy'],
   kreativ: ['foto', 'dizajn', 'kreativ', 'it', 'marketing', 'agentura', 'hudba', 'umelec', 'startup'],
 };
-const RICH = ['kytice', 'klas', 'etiketa', 'lotos', 'vykres', 'erb', 'britva', 'glazura', 'vows', 'iskra', 'objektiv', 'prazirna', 'arkada', 'stavitel', 'neon', 'eukalyptus', 'garaz', 'atrament', 'cisto', 'bilancia', 'orbit', 'dusa', 'sila', 'hrastar', 'ticha', 'minimal', 'muse', 'maitland', 'organic', 'chmel', 'hvezdy', 'panorama', 'letokruhy', 'dortik', 'glow', 'saloon', 'builders', 'cafe', 'samet', 'venec', 'deco', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'odznak', 'medic', 'konfety', 'ruzovezlato', 'akvarelsalvia', 'labka', 'volant', 'zahrada', 'tehla', 'valcek', 'komin', 'naprstok', 'svetlo', 'vinyl', 'lingua', 'tabula', 'vila', 'penzion', 'menu', 'forno', 'filter', 'vinoteka', 'kniha', 'pivonka', 'dotyk', 'serum', 'apoteka', 'prstene', 'duha', 'brazda', 'gatsby', 'wabi', 'riso', 'opal', 'herbar'];
+// odznak na karte v galérii (výber grafika / novinka / ilustrovaná)
+const BADGE_CSS = { top: 'background:var(--ink);color:#fff', new: 'background:var(--coral);color:#fff', ill: '' };
+const badgeHTML = (id) => { const b = tplBadge(id, tr); return b ? `<em${BADGE_CSS[b.k] ? ` style="${BADGE_CSS[b.k]}"` : ''}>${b.k === 'top' ? '✦ ' : ''}${b.t}</em>` : ''; };
 // ukážkový obor šablóny, s menom zákazníka
 function personaFor(id, nm) {
   const pk = TPL_PERSONA[id] || 'arch', p = PERSONAS[pk], f = personaFields(pk);
@@ -280,6 +287,17 @@ async function tplRender(id, box) {
   const u = await mockup(await photo(await thumb(dd, 'front', 720)), await photo(await thumb(dd, 'back', 720)), { width: 640, ratio: 0.72, seed: Object.keys(TEMPLATES).indexOf(id) });
   if (im.dataset.k === key) im.src = u;
 }
+// obor šablóny podľa jej ukážkovej osoby (štítky sú príliš široké) + výber grafika pre obor
+const PERS_IND = {
+  beauty: ['kader', 'nechty', 'barber', 'kozmeticka', 'tetovanie'],
+  gastro: ['pekar', 'vino', 'kava', 'cukrar', 'pivo', 'restauracia', 'pizzeria', 'vinoteka', 'koktail', 'caj', 'penzion', 'farma'],
+  reality: ['makler', 'luxreality', 'arch', 'stavba', 'murar'],
+  zdravie: ['zubar', 'joga', 'terapeut', 'psycholog', 'veterinar', 'fyzio', 'lekaren', 'fitness'],
+  remeslo: ['stolar', 'elektro', 'auto', 'stavba', 'upratovanie', 'zahradnik', 'murar', 'maliar', 'kominar', 'krajcirka', 'farma', 'keramika', 'autoskola'],
+  pravo: ['advokat', 'uct', 'uctovnicka', 'itkonz'],
+  kreativ: ['it', 'foto', 'svfoto', 'startup', 'produktfoto', 'dj', 'grafik', 'agentura', 'svadba', 'eventy', 'lektor', 'doucovanie', 'knihy', 'skolka'],
+};
+const inInd = (id, ind) => (BY_IND[ind] || []).includes(id) || (PERS_IND[ind] || []).includes(TPL_PERSONA[id]);
 async function showTemplates() {
   st.mode = 'tpl';
   $('[data-ai-box]').hidden = true; $('[data-tpl-box]').hidden = false;
@@ -287,13 +305,13 @@ async function showTemplates() {
   const filt = $('[data-filt] .on')?.dataset.f || '', ind = $('[data-ind] .on')?.dataset.i || '';
   if (st.loaded && !$('[data-tpl-name]').value) $('[data-tpl-name]').value = ed.design.f.name || '';
   const tags = (id) => TEMPLATES[id].tags;
-  const ids = Object.keys(TEMPLATES)
-    .filter((id) => (!filt || tags(id).includes(filt)) && (!ind || IND[ind].some((t) => tags(id).includes(t))))
-    .sort((a, b) => (RICH.includes(b) - RICH.includes(a)));
+  const pool = Object.keys(TEMPLATES)
+    .filter((id) => (!filt || tags(id).includes(filt)) && (!ind || inInd(id, ind)));
+  const ids = ranked(pool, ind);
   $('[data-tpl-count]').textContent = ids.length;
   const box = $('[data-tpls]'); ++tplTok;
   tplIds = ids;
-  box.innerHTML = ids.length ? ids.map((id) => `<div class="tcell"><button data-tpl="${id}"><img alt="" loading="lazy">${RICH.includes(id) ? `<em>${tr('Ilustrovaná', 'Ilustrovaná')}</em>` : ''}<span>${TEMPLATES[id].name}</span></button><button class="tzoom" type="button" data-zoom="${id}" aria-label="${tr('Náhľad šablóny', 'Náhled šablony')} ${TEMPLATES[id].name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></button></div>`).join('')
+  box.innerHTML = ids.length ? ids.map((id) => `<div class="tcell"><button data-tpl="${id}"><img alt="" loading="lazy">${badgeHTML(id)}<span>${TEMPLATES[id].name}</span></button><button class="tzoom" type="button" data-zoom="${id}" aria-label="${tr('Náhľad šablóny', 'Náhled šablony')} ${TEMPLATES[id].name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2M11 8.5v5M8.5 11h5"/></svg></button></div>`).join('')
     : `<p class="tgrid__none">${tr('Takú kombináciu nemáme. Skúste iný štýl.', 'Takovou kombinaci nemáme. Zkuste jiný styl.')}</p>`;
   tplIO?.disconnect();
   tplIO = new IntersectionObserver((ents) => ents.forEach((e) => { if (e.isIntersecting) { tplIO.unobserve(e.target); tplRender(e.target.dataset.tpl, box); } }), { rootMargin: '300px' });
@@ -306,6 +324,7 @@ $('[data-ind]').addEventListener('click', (e) => { const b = e.target.closest('b
 $('[data-tpls]').addEventListener('click', async (e) => {
   const z = e.target.closest('[data-zoom]'); if (z) { openTpv(z.dataset.zoom); return; }
   const b = e.target.closest('[data-tpl]'); if (!b) return;
+  VK.ev?.('tpl_click');
   const id = b.dataset.tpl, prev = st.loaded ? ed.design : null;
   const nm = $('[data-tpl-name]').value.trim();
   const pf = personaFor(id, nm);
@@ -337,7 +356,7 @@ async function openTpv(id) {
   tpv.id = id; const tok = ++tpv.tok;
   const pk = TPL_PERSONA[id], role = PERSONAS[pk]?.role;
   $('[data-tpv-name]', D).textContent = TEMPLATES[id].name;
-  $('[data-tpv-tag]', D).textContent = [RICH.includes(id) && tr('Ilustrovaná', 'Ilustrovaná'), role && tr('ukážka: ', 'ukázka: ') + role.toLowerCase()].filter(Boolean).join(' · ');
+  $('[data-tpv-tag]', D).textContent = [tplBadge(id, tr)?.t, role && tr('ukážka: ', 'ukázka: ') + role.toLowerCase()].filter(Boolean).join(' · ');
   const i = tplIds.indexOf(id);
   $('[data-tpv-pos]', D).textContent = i >= 0 ? `${i + 1} / ${tplIds.length}` : '';
   tpvSide('f');
@@ -776,6 +795,7 @@ $('[data-add-cart]').addEventListener('click', async (e) => {
   const d = ed.printable();
   const [front, back] = await Promise.all([snapshot(d, 'front', 640, 'image/jpeg'), snapshot(d, 'back', 640, 'image/jpeg')]);
   await store.cartAdd({ kind: st.cfg.kind, config: { ...st.cfg }, design: d, thumb: front, thumbBack: back, title: d.f.name || tr('Vizitka', 'Vizitka') });
+  VK.ev?.('add_cart', true);
   location.href = VK.links.kosik;
 });
 
@@ -783,6 +803,21 @@ $('[data-add-cart]').addEventListener('click', async (e) => {
    ULOŽIŤ NA NESKÔR (odkaz e-mailom)
    ========================================================= */
 const sdlg = $('[data-save-dlg]'), sform = $('[data-save-form]');
+// po ~2,5 min v editore jemne ponúkneme uloženie odkazu (raz za návštevu, dá sa zavrieť)
+(() => {
+  const el = $('[data-nudge]'); if (!el) return;
+  let spent = 0, done = false;
+  try { done = sessionStorage.getItem('vk2-nudge') === '1' || !!localStorage.getItem('vk2-draft-id'); } catch (x) { /* nič */ }
+  const hide = () => { el.hidden = true; done = true; try { sessionStorage.setItem('vk2-nudge', '1'); } catch (x) { /* nič */ } };
+  const t = setInterval(() => {
+    if (done) { clearInterval(t); return; }
+    if (st.step === 'edit' && !document.hidden && !$('[data-save-dlg]')?.open) spent += 5;
+    if (spent >= 150) { el.hidden = false; clearInterval(t); }
+  }, 5000);
+  $('[data-nudge-x]').addEventListener('click', hide);
+  el.querySelector('[data-save-open]').addEventListener('click', hide);
+  document.addEventListener('vk:step', () => { if (st.step !== 'edit') el.hidden = true; });
+})();
 $$('[data-save-open]').forEach((b) => b.addEventListener('click', async () => {
   if (!st.loaded) return;
   sform.hidden = false; $('[data-save-ok]').hidden = true; $('[data-save-err]').hidden = true;
@@ -805,6 +840,7 @@ sform.addEventListener('submit', async (e) => {
     if (!r.ok) throw new Error(r.status);
     const j = await r.json();
     try { localStorage.setItem('vk2-draft-id', j.id); } catch (x) { /* nič */ }
+    VK.ev?.('draft_saved', true);
     sform.hidden = true; $('[data-save-ok]').hidden = false;
     $('[data-save-to]').textContent = tr(`Poslali sme ho na ${email}. Ak nepríde do pár minút, pozrite sa do priečinka Hromadné alebo Spam.`, `Poslali jsme ho na ${email}. Pokud nepřijde do pár minut, podívejte se do složky Hromadné nebo Spam.`);
   } catch (x) { err.hidden = false; err.textContent = tr('Nepodarilo sa odoslať. Skúste to o chvíľu znova.', 'Nepodařilo se odeslat. Zkuste to za chvíli znovu.'); }

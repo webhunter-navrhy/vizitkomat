@@ -154,11 +154,11 @@ function deriveContacts(f, base) {
 }
 
 // ---------- záloha bez servera ----------
-const IND_TPL = {
-  kadernik: ['saloon', 'arkada', 'glow'], reality: ['panorama', 'vila', 'samet'], stavba: ['stavitel', 'tehla', 'vykres'],
-  it: ['neon', 'orbit', 'brut'], pravnik: ['erb', 'paragraf', 'deco'], wellness: ['lotos', 'dotyk', 'vetvicka'],
-  foto: ['objektiv', 'svetlo', 'eukalyptus'], gastro: ['prazirna', 'menu', 'klas'], auto: ['garaz', 'volant', 'odznak'],
-  lekar: ['medic', 'apoteka', 'vlnyluxe'], sport: ['sila', 'odznak', 'garaz'],
+const IND_TPL = { // najlepšie šablóny odboru (výber grafika z featured.js) ako prvé
+  kadernik: ['saloon', 'arkada', 'glow'], reality: ['noirgold', 'vila', 'panorama'], stavba: ['tehla', 'stavitel', 'vykres'],
+  it: ['orbit', 'neon', 'swiss'], pravnik: ['erb', 'deco', 'paragraf'], wellness: ['hvezdy', 'lotos', 'dotyk'],
+  foto: ['vows', 'objektiv', 'svetlo'], gastro: ['prazirna', 'chmel', 'menu'], auto: ['garaz', 'volant', 'odznak'],
+  lekar: ['medic', 'apoteka', 'vlnyluxe'], sport: ['sila', 'odznak', 'garaz'], prirodne: ['kytice', 'herbar', 'letokruhy'], seriozne: ['noirgold', 'erb', 'etiketa'],
 };
 // konkrétny odbor podľa slov v zadaní → ilustrovaná šablóna na prvé miesto
 const KW_TPL = [[/svadobn\S* fotograf|svatebn\S* fotograf|wedding photo/i, 'vows'], [/veterin|zverolek|zvěrolék/i, 'labka'], [/autoškol|autoskol|vodičák|vodicak|řidičák|ridicak/i, 'volant'], [/produktov\S* fot|product photo/i, 'svetlo'], [/svadobn\S* agent|svatebn\S* agent|koordinátork|koordinatork|event/i, 'prstene'], [/murár|murar|zedník|zednik|stavebn\S* firm|rekonštruk|rekonstruk/i, 'tehla'], [/maliar|malíř|malir|natierač|natěrač|tapet/i, 'valcek'], [/komin/i, 'komin'], [/krajč|krajc|švadlen|svadlen|krejč|krejc|šitie|šití/i, 'naprstok'], [/\bdj\b|dídžej|hudobník|hudebník|kapela|muzikant/i, 'vinyl'], [/jazyk|angličtin|anglictin|nemčin|němčin|preklad|překlad|tlmoč|tlumoč/i, 'lingua'], [/doučov|doucov|matematik|prijímačk|přijímačk|maturit/i, 'tabula'], [/luxusn\S* (realit|nehnut|nemovit)|vila\b|vily\b/i, 'vila'], [/penzi[oó]n|hotel|chata|chalup|ubytov|apartm/i, 'penzion'], [/pizz/i, 'forno'], [/fine dining|degusta|reštaur|restaur|šéfkuch|sefkuch|kuchár|kuchař/i, 'menu'], [/specialty|výberov\S* káv|výběrov\S* káv|filtrovan|v60|pour.?over/i, 'filter'], [/vinoték|vinotek|someli/i, 'vinoteka'], [/kníhk|knihk|kniž|antikvar|knih/i, 'kniha'], [/flori[sś]t|pivón|pivoň/i, 'pivonka'], [/masér|maser|masáž|masaz|fyzio|rehabilit/i, 'dotyk'], [/kozmetič|kozmetic|kosmetič|kosmetic|pleť|estetik|derma/i, 'serum'], [/lekáre[ňn]|lekarn|lékárn|lekárnik|lékárník|farmaceut/i, 'apoteka'], [/škôlk|skolk|školk|jasl|materská|mateřsk|detsk|dětsk|animátor/i, 'duha'], [/koktejl|koktail|cocktail|\bbar\b|barman/i, 'gatsby'], [/keramik|keramič|hrnčiar|hrnčíř|japandi/i, 'wabi'], [/grafick|ilustr|risograf/i, 'riso'], [/agentúr|agentur|marketing|influenc/i, 'opal'], [/čaj|bylin|herb/i, 'herbar'], [/it konzult|konzultant it|devops|sysadmin|brutal/i, 'brut'], [/farm|bio\b|eko\b|zelenin|včel|vcel|syr/i, 'brazda'], [/záhrad|zahrad|kosenie|trávnik|travnik|trávník/i, 'zahrada'], [/elektrik|elektrikář|elektroinšt|elektroinst|elektrikár/i, 'iskra'], [/inštalat|instalat|vodoinšt|vodoinst|kúrenár|topenář|topenar/i, 'iskra'], [/upratov|úklid|uklid|čisti[ac]|čistí|cleaning/i, 'cisto'], [/fitness|fitko|osobn\S* tréner|osobn\S* trenér|tréner|trenér|trener|gym/i, 'sila'], [/tetov|tattoo/i, 'atrament'], [/účtov|uctov|účetn|ucetn|danov|daňov|mzdov/i, 'bilancia'], [/psycholog|psychoterap/i, 'dusa'], [/barber|holič|holic/i, 'britva'], [/cukr[aá]re|cukrář|cukrár|patisser|makrónk|makronk/i, 'glazura'], [/startup|start-up|saas|aplikác|aplikac/i, 'orbit'], [/pek[aá]r|chleb|chlieb|kvás/i, 'klas'], [/v[ií]n[aoá]r|vinař|víno|vino\b/i, 'etiketa'], [/kvet|květ|flor/i, 'kytice'], [/pivo|pivovar|sládek|sládok/i, 'chmel'], [/stol[aá]r|truhl|nábyt|nabyt/i, 'letokruhy'], [/cukr|tort|dort|zákusk|zakusk/i, 'dortik'], [/foto|fotograf/i, 'objektiv'], [/káv|kav[aá]r|kavia|barista|pražia|praží/i, 'prazirna'], [/svad|svat|wedding/i, 'eukalyptus'], [/advok|práv|prav[nň]|notár|notář/i, 'erb'], [/archit/i, 'vykres'], [/auto|servis|mechan|pneu/i, 'garaz'], [/jóg|jog[ay]/i, 'lotos'], [/terap|psych|kouč|kouc/i, 'hvezdy'], [/realit|makl/i, 'panorama'], [/stav[ebi]|stavb/i, 'stavitel'], [/program|vývoj|vyvoj|softw/i, 'neon'], [/kader|kadeř|salón|salon|nech|neht/i, 'arkada']];
@@ -195,7 +195,7 @@ function nameRole(raw) {
   return { name: m[1], role };
 }
 function local(prompt, base, A, onArt) {
-  let ids = IND_TPL[A.industry] || ['glow', 'saloon', 'odznak'];
+  let ids = IND_TPL[A.industry] || ['kytice', 'noirgold', 'glow'];
   const kw = KW_TPL.find(([re]) => re.test(prompt));
   if (kw) ids = [kw[1], ...ids.filter((t) => t !== kw[1])].slice(0, 3);
   const pals = IND_PAL[A.industry] || ['krieda', 'more', 'ruza'];

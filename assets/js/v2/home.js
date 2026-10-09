@@ -62,6 +62,7 @@ const vis = $('[data-hero-vis]');
 const STEPS = [tr('Čítam zadanie…', 'Čtu zadání…'), tr('Vyberám rozloženie…', 'Vybírám rozložení…'), tr('Ladím farby a písmo…', 'Ladím barvy a písmo…'), tr('Píšem slogan…', 'Píšu slogan…'), tr('Kreslím grafiku…', 'Kreslím grafiku…')];
 let designs = [], snapshot = null;
 async function heroAI(prompt) {
+  VK.ev?.('ai_submit');
   vis.classList.add('running');
   const run = $('[data-ai-run]'); run.hidden = false;
   $('[data-ai-load]').hidden = false; $('[data-ai-res]').hidden = true;
@@ -89,7 +90,7 @@ $('[data-ai-grid]').addEventListener('click', (e) => { const b = e.target.closes
 $('[data-ai-open]').addEventListener('click', (e) => { if (designs.length) { e.preventDefault(); openDesign(0); } });
 $('[data-aibox]').addEventListener('submit', (e) => { e.preventDefault(); const v = $('[data-ai-in]').value.trim(); if (v.length > 2) heroAI(v); else $('[data-ai-in]').focus(); });
 $$('[data-ai-chips] button').forEach((b) => b.addEventListener('click', () => { $('[data-ai-in]').value = b.dataset.p; heroAI(b.dataset.p); }));
-$('[data-aibox-final]').addEventListener('submit', (e) => { e.preventDefault(); const v = $('[data-final-in]').value.trim(); location.href = VK.links.tvorba + '?rezim=ai' + (v ? '&prompt=' + encodeURIComponent(v) : ''); });
+$('[data-aibox-final]').addEventListener('submit', (e) => { e.preventDefault(); VK.ev?.('ai_submit'); const v = $('[data-final-in]').value.trim(); location.href = VK.links.tvorba + '?rezim=ai' + (v ? '&prompt=' + encodeURIComponent(v) : ''); });
 
 /* ---------- kroky ---------- */
 lazy($('.story'), () => {
@@ -126,9 +127,9 @@ lazy($('.real'), async () => {
 /* ---------- šablóny ---------- */
 lazy($('.tpls'), async () => {
   const [{ TEMPLATES }, { TPL_PERSONA, personaLabel }] = await Promise.all([tplMod(), import('./personas.js')]);
-  // ilustrované šablóny ako prvé
-  const RICH = ['kytice', 'klas', 'etiketa', 'lotos', 'vykres', 'erb', 'britva', 'glazura', 'vows', 'iskra', 'objektiv', 'prazirna', 'arkada', 'stavitel', 'neon', 'eukalyptus', 'garaz', 'atrament', 'cisto', 'bilancia', 'orbit', 'dusa', 'sila', 'hrastar', 'ticha', 'minimal', 'muse', 'maitland', 'organic', 'chmel', 'hvezdy', 'panorama', 'letokruhy', 'dortik', 'glow', 'saloon', 'builders', 'cafe', 'samet', 'venec', 'deco', 'vetvicka', 'mramorzlato', 'vlnyluxe', 'boho', 'odznak', 'medic', 'konfety', 'ruzovezlato', 'akvarelsalvia', 'labka', 'volant', 'zahrada', 'tehla', 'valcek', 'komin', 'naprstok', 'svetlo', 'vinyl', 'lingua', 'tabula', 'vila', 'penzion', 'menu', 'forno', 'filter', 'vinoteka', 'kniha', 'pivonka', 'dotyk', 'serum', 'apoteka', 'prstene', 'duha', 'brazda', 'gatsby', 'wabi', 'riso', 'opal', 'herbar'];
-  const ids = [...RICH, ...Object.keys(TEMPLATES).filter((id) => !RICH.includes(id))].filter((id) => TEMPLATES[id]).slice(0, 24);
+  // výber grafika ako prvý, potom ďalšie najlepšie (poradie z featured.js)
+  const { ORDER } = await import('./featured.js');
+  const ids = ORDER.filter((id) => TEMPLATES[id] && VK.pre['tpl-' + id + '-f']).slice(0, 24);
   const rows = [ids.filter((_, i) => i % 2 === 0), ids.filter((_, i) => i % 2 === 1)];
   const TILT = [-2.5, 1.8, -1.2, 2.6, -1.9, 1.1];
   for (const [ri, list] of rows.entries()) {
@@ -142,7 +143,7 @@ lazy($('.tpls'), async () => {
 }, '600px');
 $('[data-tpl-rows]')?.addEventListener('click', async (e) => {
   const a = e.target.closest('[data-t]'); if (!a) return;
-  e.preventDefault();
+  e.preventDefault(); VK.ev?.('tpl_click');
   const { templateDefaults } = await tplMod();
   session('vk2-draft', newDesign({ tpl: a.dataset.t, ...templateDefaults(a.dataset.t) }));
   location.href = VK.links.tvorba + '?rezim=texty';

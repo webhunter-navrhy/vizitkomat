@@ -658,3 +658,13 @@ html[lang="cs"] .fld.is-sample > span::after { content: 'ukázka'; }
   .resume > div { flex: 1 1 calc(100% - 130px); }
   .resume .btn { margin-left: 0; width: 100%; justify-content: center; }
 }
+
+/* jemná ponuka „uložiť na neskôr“ po dlhšej chvíli v editore (len raz za návštevu) */
+.nudge { position: absolute; left: 18px; bottom: calc(100% + 10px); z-index: 7; display: flex; align-items: center; gap: .8rem; max-width: min(560px, calc(100% - 36px)); padding: .7rem .8rem .7rem 1rem; border-radius: 16px; background: var(--ink); color: #fff; font-size: .88rem; font-weight: 600; line-height: 1.35; box-shadow: 0 18px 30px -16px rgba(15, 20, 64, .55); animation: nudgeIn .45s var(--pop) both; }
+.nudge[hidden] { display: none; }
+.nudge .btn { flex: none; }
+.nudge__x { flex: none; width: 30px; height: 30px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .12); color: #fff; font-size: 1.1rem; cursor: pointer; }
+.nudge__x:hover { background: rgba(255, 255, 255, .22); }
+@keyframes nudgeIn { from { opacity: 0; transform: translateY(8px); } }
+@media (max-width: 760px) { .nudge { left: 12px; right: 12px; max-width: none; font-size: .82rem; } }
+@media (prefers-reduced-motion: reduce) { .nudge { animation: none; } }

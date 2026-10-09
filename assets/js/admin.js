@@ -37,7 +37,7 @@ function loginView(err) {
 }
 
 function shell(active, inner) {
-  const nav = [['objednavky', 'Objednávky'], ['cenik', 'Ceník a marže'], ['nastaveni', 'Nastavení']];
+  const nav = [['objednavky', 'Objednávky'], ['konverze', 'Konverze'], ['cenik', 'Ceník a marže'], ['nastaveni', 'Nastavení']];
   app.innerHTML = `<header class="top"><span class="brand"><i></i>vizitkomat</span><nav>${nav.map(([h, l]) => `<a href="#${h}" class="${active === h ? 'on' : ''}">${l}</a>`).join('')}</nav><a href="${window.VKA.site}" target="_blank" style="color:rgba(255,255,255,.7);font-size:13px">Web ↗</a><button data-logout>Odhlásit</button></header><main>${inner}</main>`;
   app.querySelector('[data-logout]').addEventListener('click', logout);
   return app.querySelector('main');
@@ -142,6 +142,47 @@ async function detailView(num) {
   });
 }
 
+/* ---------- konverze (anonymní denní součty z webu) ---------- */
+const FUNNEL = [
+  ['visit', 'Návštěvy webu', 'zobrazení stránek celkem'],
+  ['start', 'Začali navrhovat', 'zadání pro AI nebo klik na šablonu'],
+  ['editor', 'Otevřeli editor', 'krok Úpravy'],
+  ['order_step', 'Krok Objednávka', 'výběr papíru a počtu'],
+  ['add_cart', 'Vložili do košíku', ''],
+  ['checkout_start', 'Začali vyplňovat objednávku', 'košík, první pole formuláře'],
+  ['order_sent', 'Odeslali objednávku', ''],
+];
+const PAGE_L = { home: 'Úvod', tvorba: 'Tvorba', kosik: 'Košík', cennik: 'Ceník', digitalna: 'Digitální vizitka', vlastny: 'Vlastní návrh', obor: 'Oborové stránky', obory: 'Přehled oborů', kontakt: 'Kontakt', objednavka: 'Stav objednávky', other: 'Ostatní' };
+let statsDays = 30, statsLang = 'all';
+async function statsView() {
+  const main = shell('konverze', '<h1 class="pg">Konverze</h1><p class="muted">Načítám…</p>');
+  let data; try { data = await api('stats?days=' + statsDays); } catch (e) { main.innerHTML = `<h1 class="pg">Konverze</h1><p class="msg err">${esc(e.message)}</p>`; return; }
+  const ok = (k) => statsLang === 'all' || k.endsWith('.' + statsLang);
+  const sum = (pred) => data.days.reduce((s, d) => s + Object.entries(d.counts).filter(([k]) => pred(k) && ok(k)).reduce((a, [, n]) => a + n, 0), 0);
+  const ev = (name) => sum((k) => k.startsWith(name + '.'));
+  const val = { visit: sum((k) => k.startsWith('pv.')), start: ev('ai_submit') + ev('tpl_click') + ev('quick_start'), editor: ev('editor'), order_step: ev('order_step'), add_cart: ev('add_cart'), checkout_start: ev('checkout_start'), order_sent: ev('order_sent') };
+  const pct = (a, b) => (b ? Math.round((a / b) * 1000) / 10 : 0);
+  const pf = (a, b) => pct(a, b).toLocaleString('cs-CZ');
+  const max = Math.max(1, val.visit);
+  const rows = FUNNEL.map(([k, l, hint], i) => {
+    const prev = i ? val[FUNNEL[i - 1][0]] : val.visit, v = val[k], drop = i ? 100 - pct(v, prev) : 0;
+    return `<div class="fn"><div class="fn__l"><b>${l}</b>${hint ? `<span class="muted">${hint}</span>` : ''}</div><div class="fn__bar"><i style="width:${Math.max(0.6, (v / max) * 100)}%"></i></div><div class="fn__n"><b>${v.toLocaleString('cs-CZ')}</b>${i ? `<span class="${drop > 70 ? 'low' : 'muted'}">${pf(v, prev)} % z předchozího</span>` : '<span class="muted">100 %</span>'}</div></div>`;
+  }).join('');
+  const pages = Object.keys(PAGE_L).map((p) => [p, sum((k) => k.startsWith('pv.' + p + '.'))]).filter(([, n]) => n).sort((a, b) => b[1] - a[1]);
+  const dmax = Math.max(1, ...data.days.map((d) => Object.entries(d.counts).filter(([k]) => k.startsWith('pv.') && ok(k)).reduce((a, [, n]) => a + n, 0)));
+  const daily = data.days.map((d) => { const v = Object.entries(d.counts).filter(([k]) => k.startsWith('pv.') && ok(k)).reduce((a, [, n]) => a + n, 0); const o = Object.entries(d.counts).filter(([k]) => k.startsWith('order_sent.') && ok(k)).reduce((a, [, n]) => a + n, 0); return `<span class="dd" title="${d.d}: ${v} zobrazení, ${o} objednávek"><i style="height:${(v / dmax) * 100}%"></i>${o ? '<em></em>' : ''}</span>`; }).join('');
+  main.innerHTML = `<h1 class="pg">Konverze</h1>
+    <div class="tabs">${[[7, '7 dní'], [30, '30 dní'], [90, '90 dní']].map(([d, l]) => `<button class="chip${statsDays === d ? ' on' : ''}" data-days="${d}">${l}</button>`).join('')}<span style="width:12px"></span>${[['all', 'SK + CZ'], ['sk', 'Slovensko'], ['cz', 'Česko']].map(([v, l]) => `<button class="chip${statsLang === v ? ' on' : ''}" data-lang="${v}">${l}</button>`).join('')}</div>
+    <div class="stats"><div class="stat"><b>${val.visit.toLocaleString('cs-CZ')}</b><span>zobrazení stránek</span></div><div class="stat"><b>${val.order_sent}</b><span>odeslaných objednávek</span></div><div class="stat"><b>${pf(val.order_sent, val.start)} %</b><span>z těch, co začali navrhovat</span></div><div class="stat"><b>${ev('draft_saved')}</b><span>uložených návrhů e-mailem</span></div></div>
+    <div class="grid2"><section class="box"><h3 style="margin-top:0">Trychtýř</h3>${rows}<p class="muted" style="margin-bottom:0">Každý krok se počítá nejvýš jednou za zobrazení stránky. Data jsou anonymní souhrny (bez cookies a osobních údajů), proto jde o orientační čísla, ne o počet unikátních lidí.</p></section>
+    <div class="stack"><section class="box"><h3 style="margin-top:0">Návštěvnost po dnech</h3><div class="daily">${daily}</div><p class="muted" style="margin:8px 0 0">Tečka = den s objednávkou.</p></section>
+    <section class="box"><h3 style="margin-top:0">Stránky</h3>${pages.length ? `<table class="ptable"><tbody>${pages.map(([p, n]) => `<tr><td>${PAGE_L[p]}</td><td class="r"><b>${n.toLocaleString('cs-CZ')}</b></td></tr>`).join('')}</tbody></table>` : '<p class="muted">Zatím žádná data. Statistiky se začnou sbírat po nasazení.</p>'}</section></div></div>`;
+  main.addEventListener('click', (e) => {
+    const d = e.target.closest('[data-days]'); if (d) { statsDays = +d.dataset.days; statsView(); return; }
+    const l = e.target.closest('[data-lang]'); if (l) { statsLang = l.dataset.lang; statsView(); }
+  });
+}
+
 /* ---------- ceník a marže ---------- */
 const QTY = ['100', '250', '500', '1000'];
 const ROWS = [['papers', 'matny', 'Matný 350 g'], ['papers', 'triplex', 'Triplex 720 g'], ['finishes', 'matna', '+ matná laminace'], ['finishes', 'leskla', '+ lesklá laminace'], ['finishes', 'soft', '+ soft-touch'], ['round', null, '+ zaoblené rohy'], ['sizes', '85x55', '+ formát 85 × 55'], ['sizes', '55x55', '+ formát 55 × 55']];
@@ -227,6 +268,7 @@ function route() {
   if (!token) return loginView();
   const h = decodeURIComponent(location.hash.slice(1));
   if (/^VK\d+$/.test(h)) return detailView(h);
+  if (h === 'konverze') return statsView();
   if (h === 'cenik') return pricesView();
   if (h === 'nastaveni') return settingsView();
   return ordersView();

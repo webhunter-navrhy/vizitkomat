@@ -259,7 +259,9 @@
 .dc__pass { position: relative; display: grid; justify-items: start; gap: 0; width: min(100%, 300px); padding: 16px 18px 14px; border-radius: 22px; text-align: left; background: radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, #fff 16%, transparent), transparent 60%), var(--d-pass); color: var(--d-pass-fg); box-shadow: 0 0 0 1px color-mix(in srgb, var(--d-pass-fg) 10%, transparent), 0 30px 50px -26px rgba(0, 0, 0, .6); transform: rotate(-2deg); transition: transform .4s var(--pop); overflow: hidden; }
 .dc__pass:active { transform: rotate(0) scale(.98); }
 .dc--foil .dc__pass::before { content: ''; position: absolute; inset: 0 0 auto; height: 4px; background: var(--d-foil); }
-.dc__pass-top { display: flex; align-items: center; gap: 9px; width: 100%; }
+.dc__pass-top { display: flex; align-items: center; gap: 9px; width: 100%; min-width: 0; max-width: 100%; }
+.dc__pass-top em { flex: none; }
+.dc__pass > * { max-width: 100%; }
 .dc__pass-av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; overflow: hidden; flex: none; background: color-mix(in srgb, var(--d-pass-fg) 16%, transparent); font-size: 12px; }
 .dc__pass-av > * { width: 100%; height: 100%; display: grid; place-items: center; }
 .dc__pass-av .dc__mono { font-size: 12px; letter-spacing: 0; }

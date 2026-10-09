@@ -15,6 +15,7 @@ ROOT = pathlib.Path(__file__).parent
 SRC = ROOT / 'src'
 PRICES = json.loads((ROOT / '_data' / 'prices.json').read_text())
 OBORY = json.loads((ROOT / '_data' / 'obory.json').read_text())
+FEATURED = json.loads((ROOT / '_data' / 'featured.json').read_text())  # poradie šablón (výber grafika), zdroj: assets/js/v2/featured.js
 
 
 def template_names():
@@ -130,7 +131,7 @@ def main():
                 org_json=json.dumps(ORG, ensure_ascii=False),
                 obory=OBORY, obor=obor, O=(obor[lang] if obor else None),
                 tname=lambda i, _l=lang: TPLN.get(i, {}).get(_l, i.capitalize()),
-                tpl_count=TPL_COUNT,
+                tpl_count=TPL_COUNT, featured=FEATURED,
             )
             html = env.get_template(tpl).render(**ctx)
             out.parent.mkdir(parents=True, exist_ok=True)

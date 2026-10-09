@@ -1,0 +1,28 @@
+// Výber šablón: jediný zdroj poradia a odznakov (TOP = výber grafika, nie predajnosť).
+// Poradie zostavené ručne podľa toho, ako šablóna pôsobí v náhľade: dojem, čitateľnosť, univerzálnosť.
+export const TOP = ["kytice", "noirgold", "chmel", "glow", "vows", "iskra", "hvezdy", "etiketa", "glazura", "erb", "menu", "labka", "prazirna", "saloon", "letokruhy", "penzion"];
+export const A = ["mramorzlato", "gatsby", "forno", "vila", "herbar", "atrament", "lotos", "objektiv", "klas", "deco", "arkada", "vykres", "britva", "vetvicka", "venec", "samet", "eukalyptus", "odznak", "akvarelsalvia", "stavitel", "boho", "bilancia", "cafe", "sila", "dortik", "orbit", "garaz", "komin", "medic", "volant", "panorama", "vinoteka", "tehla", "neon", "cisto", "builders", "dusa", "serum", "pivonka", "filter", "apoteka", "kniha", "dotyk", "ruzovezlato", "konfety"];
+// celé poradie (TOP → A → ostatné)
+export const ORDER = ["kytice", "noirgold", "chmel", "glow", "vows", "iskra", "hvezdy", "etiketa", "glazura", "erb", "menu", "labka", "prazirna", "saloon", "letokruhy", "penzion", "mramorzlato", "gatsby", "forno", "vila", "herbar", "atrament", "lotos", "objektiv", "klas", "deco", "arkada", "vykres", "britva", "vetvicka", "venec", "samet", "eukalyptus", "odznak", "akvarelsalvia", "stavitel", "boho", "bilancia", "cafe", "sila", "dortik", "orbit", "garaz", "komin", "medic", "volant", "panorama", "vinoteka", "tehla", "neon", "cisto", "builders", "dusa", "serum", "pivonka", "filter", "apoteka", "kniha", "dotyk", "ruzovezlato", "konfety", "zahrada", "naprstok", "valcek", "lingua", "tabula", "prstene", "duha", "brazda", "wabi", "riso", "opal", "svetlo", "vinyl", "ticha", "oblouk", "organic", "muse", "maitland", "hrastar", "minimal", "podpis", "lina", "olivia", "maison", "pecat", "letterpress", "groom", "topo", "vlnyluxe", "velora", "wordmark", "ostraka", "galeria", "linka", "pruh", "pruhy", "swiss", "tvary", "monogram", "luxury", "mramor", "perla", "split", "paragraf", "axon", "brut", "stoh", "loud", "pismena", "kontrast", "crop", "bodka", "alder", "ar", "editorial", "casa", "figlia", "egon", "obrys", "vrstevnice", "morton", "bistro", "drop", "cb", "foto", "ahoj", "vlny", "vzor", "akvarel", "botanika"];
+// ilustrované šablóny (bohatá grafika, znak odboru)
+export const ILLUSTRATED = ["kytice", "klas", "etiketa", "lotos", "vykres", "erb", "britva", "glazura", "vows", "iskra", "objektiv", "prazirna", "arkada", "stavitel", "neon", "eukalyptus", "garaz", "atrament", "cisto", "bilancia", "orbit", "dusa", "sila", "hrastar", "ticha", "minimal", "muse", "maitland", "organic", "chmel", "hvezdy", "panorama", "letokruhy", "dortik", "glow", "saloon", "builders", "cafe", "samet", "venec", "deco", "vetvicka", "mramorzlato", "vlnyluxe", "boho", "odznak", "medic", "konfety", "ruzovezlato", "akvarelsalvia", "labka", "volant", "zahrada", "tehla", "valcek", "komin", "naprstok", "svetlo", "vinyl", "lingua", "tabula", "vila", "penzion", "menu", "forno", "filter", "vinoteka", "kniha", "pivonka", "dotyk", "serum", "apoteka", "prstene", "duha", "brazda", "gatsby", "wabi", "riso", "opal", "herbar"];
+// najnovšie šablóny
+export const NEW = ["labka", "volant", "zahrada", "tehla", "valcek", "komin", "naprstok", "svetlo", "vinyl", "lingua", "tabula", "vila", "penzion", "menu", "forno", "filter", "vinoteka", "kniha", "pivonka", "dotyk", "serum", "apoteka", "paragraf", "axon", "prstene", "duha", "brazda", "gatsby", "wabi", "riso", "opal", "herbar", "brut"];
+// najlepšie šablóny podľa odboru (kľúče ako IND v studio.js a obory.json)
+export const BY_IND = {"beauty": ["glow", "saloon", "mramorzlato", "arkada", "britva", "serum"], "gastro": ["chmel", "prazirna", "menu", "etiketa", "glazura", "forno"], "reality": ["noirgold", "vila", "panorama", "vykres", "tehla", "builders"], "zdravie": ["hvezdy", "labka", "lotos", "medic", "dusa", "dotyk"], "remeslo": ["iskra", "letokruhy", "garaz", "tehla", "stavitel", "cisto"], "pravo": ["erb", "deco", "gatsby", "bilancia", "paragraf", "luxury"], "kreativ": ["vows", "orbit", "objektiv", "neon", "atrament", "svetlo"], "kadernici": ["saloon", "arkada", "britva", "glow", "maison", "groom", "atrament", "mramor"], "kozmetika": ["glow", "mramorzlato", "serum", "ruzovezlato", "lina", "olivia", "perla", "podpis"], "makleri": ["noirgold", "vila", "panorama", "samet", "builders", "gatsby", "topo"], "remeselnici": ["iskra", "letokruhy", "garaz", "tehla", "stavitel", "cisto", "komin", "valcek", "zahrada"], "lekari": ["labka", "hvezdy", "medic", "dotyk", "dusa", "apoteka", "vlnyluxe", "muse"], "foto": ["vows", "objektiv", "svetlo", "galeria", "letterpress", "riso", "ostraka"], "fitness": ["sila", "lotos", "boho", "ticha", "dotyk", "oblouk", "minimal"], "architekti": ["vykres", "hrastar", "axon", "alder", "obrys", "casa", "linka"], "kvety": ["kytice", "herbar", "vetvicka", "akvarelsalvia", "pivonka", "eukalyptus", "prstene", "velora"], "it": ["orbit", "neon", "swiss", "riso", "brut", "kontrast", "crop"]};
+
+const RANK = new Map(ORDER.map((id, i) => [id, i]));
+export const rank = (id) => (RANK.has(id) ? RANK.get(id) : 9999);
+// zoradí zoznam podľa poradia; voliteľne s prednostnými šablónami odboru na začiatku
+export function ranked(ids, ind) {
+  const pre = (ind && BY_IND[ind]) || [];
+  const p = (id) => (pre.includes(id) ? pre.indexOf(id) - 1000 : rank(id));
+  return [...ids].sort((a, b) => p(a) - p(b));
+}
+// jeden odznak na kartu: výber grafika > novinka > ilustrovaná
+export function badge(id, tr) {
+  if (TOP.includes(id)) return { k: 'top', t: tr('Výber grafika', 'Výběr grafika') };
+  if (NEW.includes(id)) return { k: 'new', t: tr('Novinka', 'Novinka') };
+  if (ILLUSTRATED.includes(id)) return { k: 'ill', t: tr('Ilustrovaná', 'Ilustrovaná') };
+  return null;
+}

@@ -34,7 +34,7 @@ async () => {
   }
   // hero
   // hero: živá ukážka (6 odborov, predná aj zadná strana)
-  for (const [i, [id, pk]] of [['glow', 'nechty'], ['cafe', 'kava'], ['saloon', 'kader'], ['venec', 'vino'], ['odznak', 'barber'], ['medic', 'zubar']].entries()) {
+  for (const [i, [id, pk]] of [['glow', 'nechty'], ['prazirna', 'kava'], ['saloon', 'kader'], ['etiketa', 'vino'], ['iskra', 'elektro'], ['noirgold', 'makler']].entries()) {
     const d = newDesign({ tpl: id, ...templateDefaults(id), f: personaFields(pk), mark: null, emblem: emblemFor(PERSONAS[pk].icon, PERSONAS[pk].role) });
     out[`hero-${i}-f`] = await photo(await snapshot(d, 'front', 1100, 'image/png'));
     out[`hero-${i}-b`] = await photo(await snapshot(d, 'back', 1100, 'image/png'));

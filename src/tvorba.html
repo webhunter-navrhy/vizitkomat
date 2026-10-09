@@ -70,7 +70,7 @@
       <div class="insp" data-insp>
         <div class="insp__h"><h2>{{ L('Alebo začnite obľúbenou šablónou', 'Nebo začněte oblíbenou šablonou') }}</h2><button class="link" type="button" data-start-tpl2>{{ L('Všetkých ' ~ tpl_count, 'Všech ' ~ tpl_count) }} →</button></div>
         <div class="insp__row">
-          {% for id, nm in [('kytice', L('Kytica', 'Kytice')), ('etiketa', 'Etiketa'), ('erb', 'Erb'), ('vows', L('Áno', 'Ano')), ('chmel', 'Chmeľ'), ('glazura', L('Glazúra', 'Glazura')), ('iskra', 'Iskra'), ('noirgold', 'Noir & zlato')] %}
+          {% for id in featured.top[:8] %}{% set nm = tname(id) %}
           <button class="insp__c" type="button" data-insp-t="{{ id }}" style="--r:{{ [-2.5, 1.5, -1, 2, -1.8, 1.2, -1.4, 2.2][loop.index0] }}deg"><img alt="" src="{{ pre['tpl-' ~ id ~ '-f'] }}" loading="lazy" width="500" height="278"><span>{{ nm }}</span></button>
           {% endfor %}
         </div>
@@ -296,6 +296,7 @@ So: po domluvě') }}"></textarea></label>
       <div class="ed-canvas" data-host><canvas data-canvas></canvas></div>
       <div class="coach" data-coach hidden role="note"><b>{{ L('Upravujte priamo vo vizitke', 'Upravujte přímo ve vizitce') }}</b><span>{{ L('Kliknite na text a píšte. Prvky chyťte a posuňte, vodítka ich zarovnajú.', 'Klikněte na text a pište. Prvky chyťte a posuňte, vodítka je zarovnají.') }}</span><button type="button" data-coach-x>{{ L('Rozumiem', 'Rozumím') }}</button></div>
       <div class="ed-foot">
+        <div class="nudge" data-nudge hidden role="status"><span>{{ L('Nemáte čas to dokončiť teraz? Pošleme vám odkaz e-mailom a vrátite sa k vizitke kedykoľvek.', 'Nemáte čas to dokončit teď? Pošleme vám odkaz e-mailem a k vizitce se vrátíte kdykoli.') }}</span><button class="btn btn--sm btn--y" type="button" data-save-open>{{ L('Poslať odkaz', 'Poslat odkaz') }}</button><button class="nudge__x" type="button" data-nudge-x aria-label="{{ L('Zavrieť', 'Zavřít') }}">×</button></div>
         <button class="link" data-back-choose>← {{ L('Iný návrh', 'Jiný návrh') }}</button>
         <button class="link ed-save" data-save-open>{{ L('Uložiť na neskôr', 'Uložit na později') }}</button>
         <span class="ed-price" data-ed-price></span>
@@ -339,11 +340,11 @@ So: po domluvě') }}"></textarea></label>
           <h3>{{ L('Papier', 'Papír') }}</h3>
           <div class="papers" data-paper>
             <button class="paper on" data-v="std"><i class="paper__sw"></i><b>{{ L('Štandard', 'Standard') }}</b><small>{{ L('matný 350 g', 'matný 350 g') }}</small><em data-pp-price="std"></em></button>
-            <button class="paper" data-v="soft"><span class="badge4">{{ L('Najobľúbenejší', 'Nejoblíbenější') }}</span><i class="paper__sw paper__sw--soft"></i><b>{{ L('Prémium', 'Prémium') }}</b><small>{{ L('soft-touch, zamatový', 'soft-touch, sametový') }}</small><em data-pp-price="soft"></em></button>
+            <button class="paper" data-v="soft"><span class="badge4">{{ L('Odporúčame', 'Doporučujeme') }}</span><i class="paper__sw paper__sw--soft"></i><b>{{ L('Prémium', 'Prémium') }}</b><small>{{ L('soft-touch, zamatový', 'soft-touch, sametový') }}</small><em data-pp-price="soft"></em></button>
             <button class="paper" data-v="triplex"><i class="paper__sw paper__sw--tri"></i><b>{{ L('Luxus', 'Luxus') }}</b><small>{{ L('Triplex 720 g, hrubý', 'Triplex 720 g, silný') }}</small><em data-pp-price="triplex"></em></button>
           </div>
           <h3>{{ L('Počet kusov', 'Počet kusů') }}</h3>
-          <div class="qty" data-qty>{% for q in prices.qty %}<button{% if q == 250 %} class="on"{% endif %} data-v="{{ q }}">{% if q == 250 %}<span class="badge4">{{ L('Najčastejšie', 'Nejčastěji') }}</span>{% endif %}<b>{{ q }}</b><small data-qp="{{ q }}"></small></button>{% endfor %}</div>
+          <div class="qty" data-qty>{% for q in prices.qty %}<button{% if q == 250 %} class="on"{% endif %} data-v="{{ q }}">{% if q == 250 %}<span class="badge4">{{ L('Odporúčame', 'Doporučujeme') }}</span>{% endif %}<b>{{ q }}</b><small data-qp="{{ q }}"></small></button>{% endfor %}</div>
           <details class="more">
             <summary>{{ L('Ďalšie možnosti: formát, rohy, expres', 'Další možnosti: formát, rohy, expres') }}</summary>
             <div class="opt"><span>{{ L('Formát', 'Formát') }}</span><div class="seg seg--s" data-o="size"><button class="on" data-v="90x50">90×50</button><button data-v="85x55">85×55</button><button data-v="55x55">55×55</button></div></div>

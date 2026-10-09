@@ -43,7 +43,7 @@ function upsell(it) {
   }
   if (c.paper === 'matny' && (c.finish || 'none') === 'none' && !it.design?.custom) {
     const sp = itemPrice({ ...c, finish: 'soft' });
-    out.push(`<button data-up="${it.id}" data-soft="1"><b>${tr('Zamatový soft-touch', 'Sametový soft-touch')} +${money(sp - now)}</b><small>${tr('najobľúbenejší, príjemný na dotyk', 'nejoblíbenější, příjemný na dotek')}</small></button>`);
+    out.push(`<button data-up="${it.id}" data-soft="1"><b>${tr('Zamatový soft-touch', 'Sametový soft-touch')} +${money(sp - now)}</b><small>${tr('zamatový na dotyk, nedrží odtlačky', 'sametový na dotek, nedrží otisky')}</small></button>`);
   }
   return out.length ? `<div class="it__up">${out.join('')}</div>` : '';
 }
@@ -60,6 +60,7 @@ async function paint() {
   $('[data-empty]').hidden = !!items.length; $('[data-full]').hidden = !items.length;
   try { $('[data-mine-link]').hidden = !JSON.parse(localStorage.getItem('vk2-orders') || '[]').length; } catch (e) { /* nič */ }
   if (!items.length) return;
+  VK.ev?.('cart_view');
   $('[data-team-box]').hidden = !items.some((i) => !i.design?.custom && i.kind !== 'digital');
   $('[data-items]').innerHTML = items.map((it) => {
     const c = it.config;
@@ -184,7 +185,7 @@ $('[data-checkout]').addEventListener('submit', async (e) => {
       }
       if (typeof j.total === 'number') order.total = j.total;
       if (j.payUrl) { await store.cartClear(); location.href = j.payUrl; return; }
-      sent = true;
+      sent = true; VK.ev?.('order_sent', true);
     } catch (x) {
       // objednávka neodišla: košík ostáva, zákazník môže skúsiť znova
       console.error(x);
@@ -271,3 +272,5 @@ tf.addEventListener('submit', async (e) => {
   } finally { go.disabled = false; }
 });
 function toastMsg(t) { import('./site.js').then((m) => m.toast?.(t)).catch(() => {}); }
+// štatistika: zákazník začal vypĺňať objednávku
+document.querySelector('[data-checkout]')?.addEventListener('focusin', () => VK.ev?.('checkout_start'), { once: true });

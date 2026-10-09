@@ -3,14 +3,15 @@
     "key": "kadernici",
     "ind": "beauty",
     "tpls": [
-      "arkada",
       "saloon",
+      "arkada",
       "britva",
-      "odznak",
-      "groom",
+      "glow",
       "maison",
+      "groom",
+      "atrament",
       "mramor",
-      "stoh"
+      "odznak"
     ],
     "sk": {
       "slug": "vizitky-pre-kadernikov",
@@ -33,7 +34,7 @@
         ],
         [
           "Ktorý papier je najlepší pre salón?",
-          "Najčastejšie volený je soft-touch so zamatovým povrchom. Ak chcete niečo výnimočné, Triplex 720 g má farebnú hranu a je výrazne hrubší."
+          "Odporúčame soft-touch so zamatovým povrchom. Ak chcete niečo výnimočné, Triplex 720 g má farebnú hranu a je výrazne hrubší."
         ],
         [
           "Môžem dať na vizitku cenník služieb?",
@@ -62,7 +63,7 @@
         ],
         [
           "Který papír je nejlepší pro salon?",
-          "Nejčastěji volený je soft-touch se sametovým povrchem. Pokud chcete něco výjimečného, Triplex 720 g má barevnou hranu a je výrazně silnější."
+          "Doporučujeme soft-touch se sametovým povrchem. Pokud chcete něco výjimečného, Triplex 720 g má barevnou hranu a je výrazně silnější."
         ],
         [
           "Mohu dát na vizitku ceník služeb?",
@@ -75,15 +76,15 @@
     "key": "kozmetika",
     "ind": "beauty",
     "tpls": [
-      "serum",
-      "opal",
       "glow",
       "mramorzlato",
+      "serum",
       "ruzovezlato",
       "lina",
       "olivia",
       "perla",
-      "podpis"
+      "podpis",
+      "opal"
     ],
     "sk": {
       "slug": "vizitky-pre-kozmetiku-a-nechty",
@@ -148,12 +149,12 @@
     "key": "makleri",
     "ind": "reality",
     "tpls": [
-      "vila",
-      "gatsby",
       "noirgold",
+      "vila",
       "panorama",
-      "builders",
       "samet",
+      "builders",
+      "gatsby",
       "topo"
     ],
     "sk": {
@@ -181,7 +182,7 @@
         ],
         [
           "Ktorý papier vyberajú makléri?",
-          "Najčastejšie soft-touch, ktorý je príjemný na dotyk a nepúšťa odtlačky. Pre top segment Triplex 720 g s farebnou hranou."
+          "Odporúčame soft-touch, ktorý je príjemný na dotyk a nepúšťa odtlačky. Pre top segment Triplex 720 g s farebnou hranou."
         ]
       ]
     },
@@ -210,7 +211,7 @@
         ],
         [
           "Který papír vybírají makléři?",
-          "Nejčastěji soft-touch, který je příjemný na dotek a nedrží otisky. Pro top segment Triplex 720 g s barevnou hranou."
+          "Doporučujeme soft-touch, který je příjemný na dotek a nedrží otisky. Pro top segment Triplex 720 g s barevnou hranou."
         ]
       ]
     }
@@ -219,16 +220,15 @@
     "key": "remeselnici",
     "ind": "remeslo",
     "tpls": [
-      "tehla",
-      "valcek",
-      "komin",
-      "letokruhy",
       "iskra",
+      "letokruhy",
       "garaz",
+      "tehla",
       "stavitel",
-      "morton",
-      "vrstevnice",
-      "cisto"
+      "cisto",
+      "komin",
+      "valcek",
+      "zahrada"
     ],
     "sk": {
       "slug": "vizitky-pre-remeselnikov",
@@ -293,14 +293,14 @@
     "key": "lekari",
     "ind": "zdravie",
     "tpls": [
-      "dotyk",
-      "apoteka",
       "labka",
+      "hvezdy",
       "medic",
+      "dotyk",
+      "dusa",
+      "apoteka",
       "vlnyluxe",
       "muse",
-      "dusa",
-      "hvezdy",
       "wabi"
     ],
     "sk": {
@@ -366,16 +366,15 @@
     "key": "gastro",
     "ind": "gastro",
     "tpls": [
-      "menu",
-      "forno",
-      "filter",
-      "prazirna",
-      "cafe",
-      "klas",
       "chmel",
+      "prazirna",
+      "menu",
       "etiketa",
-      "dortik",
-      "glazura"
+      "glazura",
+      "forno",
+      "penzion",
+      "filter",
+      "vinoteka"
     ],
     "sk": {
       "slug": "vizitky-pre-kaviarne-a-restauracie",
@@ -440,14 +439,14 @@
     "key": "pravo",
     "ind": "pravo",
     "tpls": [
-      "paragraf",
       "erb",
       "deco",
+      "bilancia",
+      "paragraf",
       "luxury",
       "monogram",
-      "ar",
-      "bilancia",
       "maitland",
+      "ar",
       "split"
     ],
     "sk": {
@@ -513,12 +512,12 @@
     "key": "foto",
     "ind": "kreativ",
     "tpls": [
-      "svetlo",
-      "riso",
-      "objektiv",
       "vows",
+      "objektiv",
+      "svetlo",
       "galeria",
       "letterpress",
+      "riso",
       "ostraka",
       "foto",
       "vlny"
@@ -590,6 +589,7 @@
       "lotos",
       "boho",
       "ticha",
+      "dotyk",
       "oblouk",
       "minimal"
     ],
@@ -656,14 +656,14 @@
     "key": "architekti",
     "ind": "reality",
     "tpls": [
-      "axon",
-      "brut",
       "vykres",
       "hrastar",
+      "axon",
       "alder",
       "obrys",
       "casa",
       "linka",
+      "brut",
       "editorial"
     ],
     "sk": {
@@ -729,16 +729,15 @@
     "key": "kvety",
     "ind": "beauty",
     "tpls": [
-      "pivonka",
-      "prstene",
-      "herbar",
       "kytice",
+      "herbar",
       "vetvicka",
       "akvarelsalvia",
-      "organic",
+      "pivonka",
+      "eukalyptus",
+      "prstene",
       "velora",
-      "botanika",
-      "eukalyptus"
+      "organic"
     ],
     "sk": {
       "slug": "vizitky-pre-kvetinarstva-a-svadby",
@@ -803,13 +802,14 @@
     "key": "it",
     "ind": "kreativ",
     "tpls": [
-      "riso",
       "orbit",
       "neon",
       "swiss",
-      "bodka",
+      "riso",
+      "brut",
       "kontrast",
-      "crop"
+      "crop",
+      "bodka"
     ],
     "sk": {
       "slug": "vizitky-pre-it-a-startupy",

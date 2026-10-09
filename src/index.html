@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}{{ L('Vizitkomat – vizitka za 2 minúty, navrhne ju AI grafik', 'Vizitkomat – vizitka za 2 minuty, navrhne ji AI grafik') }}{% endblock %}
-{% block description %}{{ L('Napíšte, čím sa živíte, a AI grafik navrhne originálne vizitky. Upravíte ich ako v Canve, vytlačíme na prémiový papier a pridáme digitálnu vizitku. Doprava zdarma.', 'Napište, čím se živíte, a AI grafik navrhne originální vizitky. Upravíte je jako v Canvě, vytiskneme na prémiový papír a přidáme digitální vizitku. Doprava zdarma.') }}{% endblock %}
+{% block description %}{{ L('Napíšte, čím sa živíte, a AI grafik navrhne originálne vizitky. Upravíte ich ako v Canve, vytlačíme na prémiový papier a pridáme digitálnu vizitku. Doprava zadarmo.', 'Napište, čím se živíte, a AI grafik navrhne originální vizitky. Upravíte je jako v Canvě, vytiskneme na prémiový papír a přidáme digitální vizitku. Doprava zdarma.') }}{% endblock %}
 {% set FAQ = [
   (L('Naozaj to navrhuje AI?', 'Opravdu to navrhuje AI?'), L('Áno. Váš popis spracuje jazykový model Gemini od Googlu: pochopí odbor, vyberie rozloženie, farby a písmo, napíše slogan a zvolí znak. Výsledok je normálna upraviteľná vizitka, nie obrázok, takže v nej zmeníte čokoľvek.', 'Ano. Váš popis zpracuje jazykový model Gemini od Googlu: pochopí obor, vybere rozložení, barvy a písmo, napíše slogan a zvolí znak. Výsledek je normální upravitelná vizitka, ne obrázek, takže v ní změníte cokoli.')),
   (L('Ako dlho trvá doručenie?', 'Jak dlouho trvá doručení?'), L('Zvyčajne do ' ~ prices.days.std ~ ' pracovných dní od objednávky (približne dva týždne), s expresom do ' ~ prices.days.express ~ '. V tom je kontrola návrhu, výroba na prémiovom papieri aj doprava kuriérom DPD. Presný odhad vidíte pri objednávke.', 'Obvykle do ' ~ prices.days.std ~ ' pracovních dnů od objednávky (zhruba dva týdny), s expresem do ' ~ prices.days.express ~ '. V tom je kontrola návrhu, výroba na prémiovém papíře i doprava kurýrem DPD. Přesný odhad vidíte při objednávce.')),
@@ -27,7 +27,7 @@
       <p class="lead hero__lead">{{ L('Napíšte jednou vetou, čím sa živíte. AI grafik navrhne tri originálne vizitky, doladíte ich ako v Canve a my ich vytlačíme na prémiový papier.', 'Napište jednou větou, čím se živíte. AI grafik navrhne tři originální vizitky, doladíte je jako v Canvě a my je vytiskneme na prémiový papír.') }}</p>
       <form class="aibox" data-aibox>
         <label for="ai-in" class="sr">{{ L('Popis pre AI grafika', 'Popis pro AI grafika') }}</label>
-        <input id="ai-in" data-ai-in aria-label="{{ L('Čím sa živíte?', 'Čím se živíte?') }}" maxlength="300" autocomplete="off" placeholder="{{ L('Napr. kaderníčka v Trnave, jemný štýl', 'Např. kadeřnice v Brně, jemný styl') }}">
+        <input id="ai-in" data-ai-in aria-label="{{ L('Čím sa živíte?', 'Čím se živíte?') }}" maxlength="300" autocomplete="off" placeholder="{{ L('Napr. Jana Malá, kaderníčka v Trnave, jemne', 'Např. Jana Malá, kadeřnice v Brně, jemně') }}">
         <button class="btn btn--c" type="submit">{{ L('Navrhni mi vizitky', 'Navrhni mi vizitky') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
       </form>
       <div class="hero__chips" data-ai-chips>
@@ -39,19 +39,19 @@
       </div>
       <p class="hero__alt">{{ L('Alebo', 'Nebo') }} <a href="{{ link('tvorba') }}?rezim=sablony">{{ L('si vyberte šablónu', 'si vyberte šablonu') }}</a> · <a href="{{ link('vlastny') }}">{{ L('nahrajte vlastný návrh', 'nahrajte vlastní návrh') }}</a></p>
       <ul class="hero__trust">
+        <li>{{ L('Od', 'Od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }} {{ L('vrátane dopravy', 'včetně dopravy') }}</li>
         <li>{{ L('Platíte až po schválení', 'Platíte až po schválení') }}</li>
         <li>{{ L('Kontrolu robí človek', 'Kontrolu dělá člověk') }}</li>
-        <li>{{ L('Doprava zdarma SK a CZ', 'Doprava zdarma CZ a SK') }}</li>
       </ul>
     </div>
     <div class="hero__vis" data-hero-vis>
       {% set DEMO = [
         (L('Nikola, nechtová dizajnérka z Piešťan, jemne a luxusne', 'Nikola, nehtová designérka z Karlových Varů, jemně a luxusně'), 'Glow', L('Luxusný', 'Luxusní')),
-        (L('Kaviareň Zrnko, poctivá káva a pohoda', 'Kavárna Zrnko, poctivá káva a pohoda'), L('Kaviareň', 'Kavárna'), L('Útulný', 'Útulný')),
+        (L('Kaviareň Zrnko, poctivá káva a pohoda', 'Kavárna Zrnko, poctivá káva a pohoda'), L('Pražiareň', 'Pražírna'), L('Remeselný', 'Řemeslný')),
         (L('Salón Jana v Trnave, elegantne', 'Salon Jana v Brně, elegantně'), 'Saloon', L('Elegantný', 'Elegantní')),
-        (L('Rodinné vinárstvo pod Pezinkom, tradične', 'Rodinné vinařství pod Pálavou, tradičně'), L('Veniec', 'Věnec'), L('Klasický', 'Klasický')),
-        (L('Barber Adam zo Zvolena, retro a odvážne', 'Barber Adam z Opavy, retro a odvážně'), L('Odznak', 'Odznak'), L('Retro', 'Retro')),
-        (L('Zubná ambulancia Úsmev v Prešove', 'Zubní ordinace Úsměv v Pardubicích'), 'Medic', L('Moderný', 'Moderní')),
+        (L('Rodinné vinárstvo pod Pezinkom, tradične', 'Rodinné vinařství pod Pálavou, tradičně'), L('Etiketa', 'Etiketa'), L('Klasický', 'Klasický')),
+        (L('Kubiš Elektro zo Senca, spoľahlivo a moderne', 'Kubiš Elektro z Teplic, spolehlivě a moderně'), L('Iskra', 'Jiskra'), L('Odvážny', 'Odvážný')),
+        (L('Martin Kováč, realitný maklér zo Žiliny, luxusne', 'Martin Kovář, realitní makléř z Plzně, luxusně'), 'Noir', L('Luxusný', 'Luxusní')),
       ] %}
       <div class="demo" data-demo>
         <div class="demo__chat" aria-hidden="true">
@@ -76,7 +76,8 @@
         <div class="ai-run__res" data-ai-res hidden>
           <p data-ai-intro></p>
           <div class="ai-run__grid" data-ai-grid></div>
-          <a class="btn btn--y btn--sm" href="{{ link('tvorba') }}" data-ai-open>{{ L('Upraviť v editore', 'Upravit v editoru') }} <span class="ar">→</span></a>
+          <a class="btn btn--y btn--sm" href="{{ link('tvorba') }}" data-ai-open>{{ L('Pokračovať s týmto návrhom', 'Pokračovat s tímto návrhem') }} <span class="ar">→</span></a>
+          <p class="ai-run__note">{{ L('Kliknite na návrh, ktorý sa vám páči. Údaje doplníte v editore, platíte až po kontrole.', 'Klikněte na návrh, který se vám líbí. Údaje doplníte v editoru, platíte až po kontrole.') }}</p>
         </div>
       </div>
       <span class="sticker hero__sticker">AI<br>{{ L('grafik', 'grafik') }}<br>24/7</span>
@@ -85,7 +86,7 @@
 </section>
 
 <div class="band-clip" aria-hidden="true"><div class="band"><div class="band__in">
-  {% for _ in range(2) %}<span>350 g {{ L('papier', 'papír') }}</span><span>AI grafik 24/7</span><span>{{ L('Doprava zdarma', 'Doprava zdarma') }}</span><span>Soft-touch</span><span>{{ L('QR do telefónu', 'QR do telefonu') }}</span><span>{{ L('Editor ako Canva', 'Editor jako Canva') }}</span><span>{{ L('Platba po schválení', 'Platba po schválení') }}</span>{% endfor %}
+  {% for _ in range(2) %}<span>350 g {{ L('papier', 'papír') }}</span><span>AI grafik 24/7</span><span>{{ L('Doprava zadarmo', 'Doprava zdarma') }}</span><span>Soft-touch</span><span>{{ L('QR do telefónu', 'QR do telefonu') }}</span><span>{{ L('Editor ako Canva', 'Editor jako Canva') }}</span><span>{{ L('Platba po schválení', 'Platba po schválení') }}</span>{% endfor %}
 </div></div></div>
 
 <!-- ===== PRÍBEH: OD VETY K VIZITKE ===== -->
@@ -211,7 +212,7 @@
 <!-- ===== CENA ===== -->
 <section class="price" data-nav="cream">
   <div class="wrap">
-    <h2 class="h-l rv">{{ L('Jasná cena.', 'Jasná cena.') }} <span class="hl-c">{{ L('Doprava zdarma.', 'Doprava zdarma.') }}</span></h2>
+    <h2 class="h-l rv">{{ L('Jasná cena.', 'Jasná cena.') }} <span class="hl-c">{{ L('Doprava zadarmo.', 'Doprava zdarma.') }}</span></h2>
     <p class="lead rv price__lead">{{ L('Cena je konečná a je v nej všetko: návrh, kontrola, tlač, doprava aj digitálna vizitka. Platíte až po schválení návrhu.', 'Cena je konečná a je v ní všechno: návrh, kontrola, tisk, doprava i digitální vizitka. Platíte až po schválení návrhu.') }}</p>
     <div class="price__grid">
       {% for q, col, tag, who in [

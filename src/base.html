@@ -45,6 +45,17 @@ window.VK = {
   pre: {{ pre_json }},
   orderEndpoint: 'https://vizitkomat-api.webhunter.workers.dev/order'
 };
+/* anonymné súčty krokov (bez cookies a osobných údajov) */
+(function () {
+  var P = '{{ page }}', seen = {}, q = [], U = 'https://vizitkomat-api.webhunter.workers.dev/ev';
+  P = P === 'index' ? 'home' : P.indexOf('obor-') === 0 ? 'obor' : P;
+  var off = navigator.doNotTrack === '1' || P === 'admin' || (/^(localhost|127\.)/.test(location.hostname) && !/evtest/.test(location.search));
+  function send() { if (!q.length) return; var b = JSON.stringify({ e: q.splice(0), p: P, l: VK.lang }); try { if (!(navigator.sendBeacon && navigator.sendBeacon(U, b))) fetch(U, { method: 'POST', body: b, keepalive: true, mode: 'no-cors' }); } catch (x) {} }
+  VK.ev = function (e, now) { if (off || seen[e]) return; seen[e] = 1; q.push(e); if (now) send(); };
+  VK.ev('pv');
+  addEventListener('pagehide', send);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') send(); });
+})();
 </script>
 </head>
 <body class="page-{{ page }}">

@@ -66,6 +66,7 @@
 @keyframes dot { 50% { transform: translateY(-8px); } }
 .ai-run__res { width: 100%; display: grid; gap: 14px; justify-items: start; }
 .ai-run__res p { font-weight: 700; font-size: 1.02rem; line-height: 1.4; max-width: 46ch; }
+.ai-run__res p.ai-run__note { font-weight: 500; font-size: .86rem; opacity: .82; margin: -4px 0 0; }
 .ai-run__grid { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .ai-run__grid button { position: relative; display: block; border-radius: 10px; overflow: hidden; aspect-ratio: 90/50; background: rgba(255, 255, 255, .12); box-shadow: 0 24px 40px -16px rgba(5, 10, 60, .7); animation: aiPop .6s var(--pop) both; transition: transform .3s var(--pop); }
 .ai-run__grid button:first-child { grid-column: span 2; }
