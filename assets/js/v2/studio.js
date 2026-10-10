@@ -112,6 +112,110 @@ $('[data-ask-start]').addEventListener('submit', (e) => {
 });
 try { const me = JSON.parse(localStorage.getItem('vk2-me') || 'null'); if (me) { if ($('[data-ask-name]') && !$('[data-ask-name]').value) $('[data-ask-name]').value = me.nm || ''; if (!$('[data-ask-start-in]').value) $('[data-ask-start-in]').value = me.job || ''; } } catch (x) { /* nevadí */ }
 $('[data-start-tpl]').addEventListener('click', () => showTemplates());
+/* ---------- brand z webu zákazníka: logo, farby, písmo, kontakty ---------- */
+const hexRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const lum = (h) => { const [r, g, b] = hexRgb(h).map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+const mixH = (a, b, t) => { const x = hexRgb(a), y = hexRgb(b); return '#' + x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+function brandPalettes(cols, logoCols) {
+  const all = [...(cols || []), ...(logoCols || [])].filter((h) => /^#[0-9a-f]{6}$/i.test(h));
+  if (!all.length) return null;
+  const accent0 = all.find((h) => lum(h) > 0.03 && lum(h) < 0.6) || all[0];
+  const accent = lum(accent0) > 0.6 ? mixH(accent0, '#000000', 0.35) : accent0;
+  const darkC = all.find((h) => lum(h) < 0.05 && h !== accent);
+  let ink = darkC || mixH(accent, '#0E0D0B', 0.82);
+  const bg = mixH(accent, '#FBF9F5', 0.93);
+  if (contrast(ink, bg) < 7) ink = '#16140F';
+  const second = all.find((h) => h !== accent && Math.abs(lum(h) - lum(accent)) > 0.05 && lum(h) < 0.7);
+  const light = { label: tr('Váš brand', 'Váš brand'), bg, ink, accent, soft: second ? mixH(second, '#FFFFFF', 0.72) : mixH(accent, '#FFFFFF', 0.78) };
+  const dbg = darkC ? mixH(darkC, '#000000', 0.1) : mixH(accent, '#000000', 0.62);
+  const dark = { label: tr('Váš brand tmavá', 'Váš brand tmavá'), bg: dbg, ink: '#F6F3EC', accent: lum(accent) < 0.12 ? mixH(accent, '#FFFFFF', 0.55) : accent, soft: mixH(dbg, '#FFFFFF', 0.14) };
+  const bold = { label: tr('Váš brand výrazná', 'Váš brand výrazná'), bg: accent, ink: contrast('#FFFFFF', accent) >= 4.5 ? '#FFFFFF' : '#16140F', accent: contrast('#FFFFFF', accent) >= 4.5 ? mixH(accent, '#FFFFFF', 0.82) : mixH(accent, '#000000', 0.6), soft: mixH(accent, '#000000', 0.2) };
+  return [light, dark, bold];
+}
+// pamätáme si pôvodný vzhľad návrhu, aby sa dal brand vypnúť
+function applyBrand(d) {
+  const B = st.brand; if (!B || !d) return d;
+  d._orig ||= { pal: d.pal, logo: d.logo, back: d.back, fonts: d.fonts };
+  if (!st.brandOn) { Object.assign(d, d._orig); return d; }
+  if (B.pals) d.pal = { ...B.pals[B.lightLogo ? 1 : 0] };
+  if (B.logo) { d.logo = B.logo; d.back = 'logo'; }
+  if (B.fonts) d.fonts = B.fonts;
+  const f = d.f || (d.f = { ...DEFAULT_FIELDS });
+  if (B.name && (!f.company || f.company === DEFAULT_FIELDS.company || !st.touched.has('company'))) f.company = B.name;
+  for (const k of ['phone', 'email', 'web', 'address']) if (B.f[k] && !st.touched.has(k)) f[k] = B.f[k];
+  if (B.role && (!f.role || f.role === DEFAULT_FIELDS.role)) f.role = B.role;
+  return d;
+}
+function paintBrandBar() {
+  const B = st.brand, bar = $('[data-brandbar]'); if (!bar) return;
+  bar.hidden = !B;
+  if (!B) return;
+  const im = $('[data-brand-logo]'); im.hidden = !B.logo; if (B.logo) im.src = B.logo;
+  $('[data-brand-name]').textContent = B.name || B.host;
+  $('[data-brand-sw]').innerHTML = (B.colors || []).slice(0, 4).map((c) => `<i style="background:${c}"></i>`).join('');
+  $('[data-brand-on]').checked = st.brandOn;
+}
+$('[data-brand-on]')?.addEventListener('change', (e) => {
+  st.brandOn = e.target.checked;
+  st.ai.forEach(applyBrand);
+  st.logoPals = st.brandOn && st.brand?.pals ? st.brand.pals : [];
+  paintMocks(); paintExtras();
+});
+const FONT_MATCH = (names) => {
+  const want = (names || []).map((n) => n.toLowerCase());
+  for (const [k, F] of Object.entries(FONTS)) if (want.some((w) => w === F.display.toLowerCase())) return k;
+  for (const [k, F] of Object.entries(FONTS)) if (want.some((w) => w === F.text.toLowerCase())) return k;
+  return null;
+};
+const WEB_STEPS = [tr('Čítam váš web…', 'Čtu váš web…'), tr('Hľadám logo a farby…', 'Hledám logo a barvy…'), tr('Pripravujem návrhy vo vašom štýle…', 'Připravuji návrhy ve vašem stylu…')];
+async function brandFlow(raw) {
+  const box = $('[data-webbox]'), err = $('[data-web-err]'), load = $('[data-web-load]');
+  err.hidden = true; load.hidden = false; $('[data-web-form]').hidden = true;
+  let i = 0; $('[data-web-step]').textContent = WEB_STEPS[0];
+  const t = setInterval(() => { i = Math.min(i + 1, 1); $('[data-web-step]').textContent = WEB_STEPS[i]; }, 1800);
+  VK.ev?.('brand_submit');
+  let b;
+  try {
+    const r = await fetch(`${API}/brand?lang=${CZ ? 'cz' : 'sk'}&url=${encodeURIComponent(raw)}`);
+    b = await r.json();
+  } catch (x) { b = { ok: false, message: tr('Web sa nám nepodarilo načítať. Skúste to znova alebo pokračujte bez neho.', 'Web se nám nepodařilo načíst. Zkuste to znovu nebo pokračujte bez něj.') }; }
+  clearInterval(t);
+  if (!b?.ok) { load.hidden = true; $('[data-web-form]').hidden = false; err.textContent = b?.message || tr('Web sa nepodarilo načítať.', 'Web se nepodařilo načíst.'); err.hidden = false; return; }
+  $('[data-web-step]').textContent = WEB_STEPS[2];
+  let logo = null, logoCols = [], lightLogo = false;
+  if (b.logo?.dataUrl) {
+    try {
+      const a = await analyzeLogo(b.logo.dataUrl);
+      logo = a.src; logoCols = a.colors || [];
+      lightLogo = logoCols.length > 0 && logoCols.every((c) => lum(c) > 0.55);
+    } catch (x) { logo = null; }
+  }
+  const pals = brandPalettes(b.colors, logoCols);
+  const c = b.contacts || {};
+  let host = ''; try { host = new URL(b.url).hostname.replace(/^www\./, ''); } catch (x) { /* */ }
+  st.brand = { name: b.name || '', host, role: b.role || '', tagline: b.tagline || '', logo, pals, lightLogo, colors: (b.colors || []).length ? b.colors : logoCols, fonts: FONT_MATCH(b.fonts), f: { phone: c.phone || '', email: c.email || '', web: c.web || host, address: c.address || '' } };
+  st.brandOn = true;
+  st.logoPals = pals || [];
+  if (logoCols.length) st.logoColors = logoCols;
+  const nm = $('[data-ask-name]')?.value.trim() || '';
+  const job = $('[data-ask-start-in]').value.trim() || b.role || '';
+  const prompt = [nm, job, b.name && !job.toLowerCase().includes(b.name.toLowerCase()) ? b.name : '', b.description ? b.description.slice(0, 160) : ''].filter(Boolean).join(', ');
+  load.hidden = true; $('[data-web-form]').hidden = false;
+  try { localStorage.setItem('vk2-web', raw); } catch (x) { /* nevadí */ }
+  runAI(prompt);
+  $('[data-ai-me]').textContent = '🌐 ' + (b.name || host) + (host && b.name && !b.name.toLowerCase().includes(host.split('.')[0]) ? ' · ' + host : '');
+}
+$('[data-web-toggle]')?.addEventListener('click', (e) => {
+  const f = $('[data-web-form]'), open = f.hidden;
+  f.hidden = !open; e.currentTarget.setAttribute('aria-expanded', open);
+  if (open) setTimeout(() => $('[data-web-in]').focus(), 50);
+});
+$('[data-web-form]')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const v = $('[data-web-in]').value.trim();
+  if (!/\.[a-z]{2,}/i.test(v)) { const err = $('[data-web-err]'); err.textContent = tr('Napíšte adresu webu, napr. mojafirma.sk.', 'Napište adresu webu, např. mojefirma.cz.'); err.hidden = false; $('[data-web-in]').focus(); return; }
+  brandFlow(v);
+});
 $('[data-start-tpl2]').addEventListener('click', () => showTemplates());
 // obľúbené šablóny priamo na začiatku: jedno kliknutie a ste v editore
 $('[data-insp]').addEventListener('click', async (e) => {
@@ -179,6 +283,7 @@ async function runAI(prompt, previous) {
   clearInterval(stepT); paintLoadSteps(STEPS.length, true);
   await new Promise((res) => setTimeout(res, 260));
   st.ai = r.designs;
+  if (st.brand) { st.ai.forEach((d) => { d.prompt ||= prompt; applyBrand(d); }); paintBrandBar(); }
   $('[data-ai-load]').hidden = true;
   $('[data-ai-intro]').textContent = r.intro;
   paintMine();
@@ -199,7 +304,7 @@ async function paintExtras() {
   grid.innerHTML = pool.map((id) => `<button class="extra__c" type="button" data-x="${id}"><span class="extra__img"><img alt="${TEMPLATES[id].name}"></span><span class="extra__go">${tr('Vybrať', 'Vybrat')} →</span></button>`).join('');
   box.hidden = false;
   for (const id of pool) {
-    const dd = newDesign({ tpl: id, ...templateDefaults(id), f: { ...f } });
+    const dd = applyBrand(newDesign({ tpl: id, ...templateDefaults(id), f: { ...f } }));
     const src = await thumb(dd, 'front', 640);
     if (extraKey() !== key) return;
     const im = $(`[data-x="${id}"] img`, grid); if (im) im.src = src;
@@ -209,7 +314,7 @@ const reExtras = debounce(paintExtras, 800);
 async function goExtra(id) {
   const f = { ...(st.ai[0]?.f || {}) };
   VK.ev?.('tpl_click', true);
-  st.mode = 'ai'; await loadDesign(newDesign({ tpl: id, ...templateDefaults(id), f })); st.reached.add('choose'); go('edit');
+  st.mode = 'ai'; await loadDesign(applyBrand(newDesign({ tpl: id, ...templateDefaults(id), f }))); st.reached.add('choose'); go('edit');
 }
 $('[data-extra-grid]').addEventListener('click', (e) => {
   const b = e.target.closest('[data-x]'); if (!b) return;
@@ -572,6 +677,7 @@ const normT = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g
 function inPrompt(v, loose) { const p = normT(st.lastPrompt), n = normT(v); if (!(n && p && n.length > 2)) return false; return p.includes(n) || (loose && n.length > 4 && p.includes(n.slice(0, -2))); }
 function unconfirmed(k, v) {
   if (!v || st.touched.has(k)) return false;
+  if (st.brand?.f?.[k] && normT(st.brand.f[k]) === normT(v)) return false; // z vlastného webu zákazníka
   if (CONTACT_K.includes(k)) return !inPrompt(v) || SAMPLE_RE.test(v);
   if (k === 'address') return !inPrompt(v, true) || v === DEFAULT_FIELDS.address;
   return isSample(k, v);
@@ -1080,6 +1186,9 @@ const persist = debounce(async () => {
     return;
   }
   // rýchly štart z homepage: meno + čím sa živíte → rovno návrhy s menom
+  const web = params.get('web');
+  if (!web && location.hash === '#web') { $('[data-web-form]').hidden = false; $('[data-web-toggle]').setAttribute('aria-expanded', 'true'); try { $('[data-web-in]').value = localStorage.getItem('vk2-web') || ''; } catch (x) { /* */ } setTimeout(() => { $('[data-webbox]').scrollIntoView({ block: 'center' }); $('[data-web-in]').focus(); }, 300); }
+  if (web) { if (meno && $('[data-ask-name]')) $('[data-ask-name]').value = meno; $('[data-web-in]').value = web; $('[data-web-form]').hidden = false; brandFlow(web); return; }
   if (!rez && (meno || (odbor && !IND[odbor]))) { runAI([meno, odbor && !IND[odbor] ? odbor : ''].filter(Boolean).join(', ')); return; }
   if (rez === 'ai' && params.get('prompt')) runAI(params.get('prompt'));
   else if (rez === 'sablony') showTemplates();

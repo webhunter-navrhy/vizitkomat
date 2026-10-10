@@ -869,5 +869,775 @@
         ]
       ]
     }
+  },
+  {
+    "key": "elektrikari",
+    "ind": "remeslo",
+    "tpls": [
+      "iskra",
+      "garaz",
+      "stavitel",
+      "tehla",
+      "builders",
+      "cisto"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-elektrikarov",
+      "name": "Elektrikári a inštalatéri",
+      "h1a": "Vizitky pre",
+      "h1b": "elektrikárov a inštalatérov",
+      "title": "Vizitky pre elektrikárov a inštalatérov – návrh za pár minút",
+      "desc": "Výrazné a čitateľné vizitky pre elektrikárov, inštalatérov a servisných technikov. Veľké telefónne číslo, pevný papier a digitálna vizitka zadarmo.",
+      "intro": "Vizitku elektrikára si zákazník najčastejšie nalepí na rozvádzač alebo chladničku a vytiahne ju, až keď niečo prestane fungovať. Musí byť pevná, čitateľná na prvý pohľad a číslo musí byť to najväčšie na nej.",
+      "tips": [
+        "Telefón dajte čo najväčší, zákazník vás bude hľadať v strese, nie pri káve.",
+        "Napíšte, akú oblasť pokrývate (napr. „Žilina a okolie do 30 km“), ušetríte si zbytočné telefonáty.",
+        "Ak robíte pohotovosť, uveďte to výrazne, napr. „Poruchy 7 dní v týždni“."
+      ],
+      "prompt": "Elektrikár zo Žiliny, výrazne a čitateľne, tmavomodrá a žltá",
+      "faq": [
+        [
+          "Aký papier vydrží v dielni alebo v aute?",
+          "Matný papier 350 g je pevný a nekrúti sa. Ak má vizitka vydržať dlhšie v peňaženke alebo na rozvádzači, zvoľte lamináciu, ktorá ju chráni pred odreninami."
+        ],
+        [
+          "Môžem na vizitku dať zoznam služieb?",
+          "Na papier odporúčame najviac tri hlavné služby. Úplný zoznam s cenami dáte do digitálnej vizitky, ktorú meníte bez novej tlače."
+        ],
+        [
+          "Dá sa urobiť magnetka na chladničku?",
+          "Magnetické vizitky zatiaľ netlačíme. Pevný papier s laminácou však dobre vydrží aj pripnutý magnetom."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-elektrikare",
+      "name": "Elektrikáři a instalatéři",
+      "h1a": "Vizitky pro",
+      "h1b": "elektrikáře a instalatéry",
+      "title": "Vizitky pro elektrikáře a instalatéry – návrh za pár minut",
+      "desc": "Výrazné a čitelné vizitky pro elektrikáře, instalatéry a servisní techniky. Velké telefonní číslo, pevný papír a digitální vizitka zdarma.",
+      "intro": "Vizitku elektrikáře si zákazník nejčastěji připíchne k rozvaděči nebo na lednici a vytáhne ji, až když něco přestane fungovat. Musí být pevná, čitelná na první pohled a číslo musí být to největší na ní.",
+      "tips": [
+        "Telefon dejte co největší, zákazník vás bude hledat ve stresu, ne u kávy.",
+        "Napište, jakou oblast pokrýváte (např. „Kolín a okolí do 30 km“), ušetříte si zbytečné telefonáty.",
+        "Pokud děláte pohotovost, uveďte to výrazně, např. „Poruchy 7 dní v týdnu“."
+      ],
+      "prompt": "Elektrikář z Kolína, výrazně a čitelně, tmavě modrá a žlutá",
+      "faq": [
+        [
+          "Jaký papír vydrží v dílně nebo v autě?",
+          "Matný papír 350 g je pevný a nekroutí se. Pokud má vizitka vydržet déle v peněžence nebo u rozvaděče, zvolte laminaci, která ji chrání před oděrem."
+        ],
+        [
+          "Mohu na vizitku dát seznam služeb?",
+          "Na papír doporučujeme nejvýš tři hlavní služby. Úplný seznam s cenami dáte do digitální vizitky, kterou měníte bez nového tisku."
+        ],
+        [
+          "Dá se udělat magnetka na lednici?",
+          "Magnetické vizitky zatím netiskneme. Pevný papír s laminací ale dobře vydrží i připnutý magnetem."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "veterinari",
+    "ind": "zdravie",
+    "tpls": [
+      "labka",
+      "dusa",
+      "medic",
+      "hvezdy",
+      "dotyk",
+      "organic"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-veterinarov",
+      "name": "Veterinári a starostlivosť o zvieratá",
+      "h1a": "Vizitky pre",
+      "h1b": "veterinárov a chovateľov",
+      "title": "Vizitky pre veterinárov, strihačov psov a chovateľov",
+      "desc": "Priateľské vizitky pre veterinárne ambulancie, strihačov psov a chovateľské stanice. Ilustrované šablóny, kartička na ďalšiu kontrolu a digitálna vizitka zadarmo.",
+      "intro": "Majitelia zvierat si veterinára vyberajú srdcom aj rozumom. Vizitka má pôsobiť vľúdne, ale zároveň dôveryhodne, a často slúži aj ako pripomienka na ďalšie očkovanie alebo kontrolu.",
+      "tips": [
+        "Zadnú stranu môžete navrhnúť ako kartičku na ďalší termín: dátum, čas a meno zvieraťa.",
+        "Pohotovostné číslo oddeľte od bežného, aby ho majiteľ v noci nehľadal.",
+        "Ilustrácia labky alebo zvieraťa pôsobí priateľsky, ale nechajte dosť miesta na kontakty."
+      ],
+      "prompt": "Veterinárna ambulancia v Nitre, vľúdne a dôveryhodne, zelená a krémová",
+      "faq": [
+        [
+          "Môžem mať na zadnej strane kartičku na termín?",
+          "Áno. V editore zadnú stranu upravíte tak, aby na nej boli riadky na dátum a čas. Píše sa na ňu bežným perom, na matnom papieri bez laminácie najlepšie."
+        ],
+        [
+          "Hodia sa vizitky aj pre strihača psov?",
+          "Určite. Ilustrované šablóny so zvieratami fungujú pre strihačov, hotely pre psov aj chovateľské stanice."
+        ],
+        [
+          "Ako uvediem otváracie hodiny?",
+          "Na papier stačí skrátená verzia. Presné hodiny a sviatky dáte do digitálnej vizitky, kde ich zmeníte kedykoľvek."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-veterinare",
+      "name": "Veterináři a péče o zvířata",
+      "h1a": "Vizitky pro",
+      "h1b": "veterináře a chovatele",
+      "title": "Vizitky pro veterináře, střihače psů a chovatele",
+      "desc": "Přátelské vizitky pro veterinární ordinace, střihače psů a chovatelské stanice. Ilustrované šablony, kartička na další kontrolu a digitální vizitka zdarma.",
+      "intro": "Majitelé zvířat si veterináře vybírají srdcem i rozumem. Vizitka má působit vlídně, ale zároveň důvěryhodně, a často slouží i jako připomínka dalšího očkování nebo kontroly.",
+      "tips": [
+        "Zadní stranu můžete navrhnout jako kartičku na další termín: datum, čas a jméno zvířete.",
+        "Pohotovostní číslo oddělte od běžného, aby ho majitel v noci nehledal.",
+        "Ilustrace tlapky nebo zvířete působí přátelsky, ale nechte dost místa na kontakty."
+      ],
+      "prompt": "Veterinární ordinace v Olomouci, vlídně a důvěryhodně, zelená a krémová",
+      "faq": [
+        [
+          "Mohu mít na zadní straně kartičku na termín?",
+          "Ano. V editoru zadní stranu upravíte tak, aby na ní byly řádky na datum a čas. Píše se na ni běžnou propiskou, na matném papíře bez laminace nejlépe."
+        ],
+        [
+          "Hodí se vizitky i pro střihače psů?",
+          "Určitě. Ilustrované šablony se zvířaty fungují pro střihače, hotely pro psy i chovatelské stanice."
+        ],
+        [
+          "Jak uvedu otevírací dobu?",
+          "Na papír stačí zkrácená verze. Přesnou otevírací dobu a svátky dáte do digitální vizitky, kde je změníte kdykoli."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "autoskoly",
+    "ind": "remeslo",
+    "tpls": [
+      "volant",
+      "garaz",
+      "iskra",
+      "swiss",
+      "stavitel",
+      "orbit"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-autoskoly",
+      "name": "Autoškoly a autoservisy",
+      "h1a": "Vizitky pre",
+      "h1b": "autoškoly a autoservisy",
+      "title": "Vizitky pre autoškoly, inštruktorov a autoservisy",
+      "desc": "Vizitky pre autoškoly, inštruktorov jazdy a autoservisy. Dynamické šablóny, jasné kontakty a digitálna vizitka s termínmi a cenníkom zadarmo.",
+      "intro": "Autoškolu si ľudia často vyberajú podľa odporúčania kamaráta. Vizitka, ktorú si podáte z ruky do ruky, preto musí rýchlo povedať, kto ste, kde učíte a ako sa prihlásiť.",
+      "tips": [
+        "Uveďte skupiny vodičských oprávnení, ktoré učíte (B, A, C…).",
+        "QR kód na prihlášku alebo voľné termíny ušetrí desiatky telefonátov.",
+        "Pri autoservise dajte na prvé miesto značky alebo služby, na ktoré sa špecializujete."
+      ],
+      "prompt": "Autoškola v Prešove, dynamicky a moderne, tmavomodrá a červená",
+      "faq": [
+        [
+          "Môžem dať na vizitku cenník kurzu?",
+          "Ceny sa menia, preto ich odporúčame dať do digitálnej vizitky. Na papier stačí „Kurz skupiny B od …“ alebo len kontakt."
+        ],
+        [
+          "Hodí sa QR kód na prihlásenie?",
+          "Áno. QR kód na zadnej strane môže viesť na digitálnu vizitku s formulárom alebo odkazom na rezerváciu jázd."
+        ],
+        [
+          "Koľko vizitiek objednať pre viacerých inštruktorov?",
+          "Každý inštruktor môže mať rovnaký dizajn s vlastným menom a telefónom. V košíku na to slúži tlačidlo „Vizitka pre kolegu“."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-autoskoly",
+      "name": "Autoškoly a autoservisy",
+      "h1a": "Vizitky pro",
+      "h1b": "autoškoly a autoservisy",
+      "title": "Vizitky pro autoškoly, instruktory a autoservisy",
+      "desc": "Vizitky pro autoškoly, instruktory jízd a autoservisy. Dynamické šablony, jasné kontakty a digitální vizitka s termíny a ceníkem zdarma.",
+      "intro": "Autoškolu si lidé často vybírají podle doporučení kamaráda. Vizitka, kterou si podáte z ruky do ruky, proto musí rychle říct, kdo jste, kde učíte a jak se přihlásit.",
+      "tips": [
+        "Uveďte skupiny řidičských oprávnění, které učíte (B, A, C…).",
+        "QR kód na přihlášku nebo volné termíny ušetří desítky telefonátů.",
+        "U autoservisu dejte na první místo značky nebo služby, na které se specializujete."
+      ],
+      "prompt": "Autoškola v Pardubicích, dynamicky a moderně, tmavě modrá a červená",
+      "faq": [
+        [
+          "Mohu dát na vizitku ceník kurzu?",
+          "Ceny se mění, proto je doporučujeme dát do digitální vizitky. Na papír stačí „Kurz skupiny B od …“ nebo jen kontakt."
+        ],
+        [
+          "Hodí se QR kód na přihlášení?",
+          "Ano. QR kód na zadní straně může vést na digitální vizitku s formulářem nebo odkazem na rezervaci jízd."
+        ],
+        [
+          "Kolik vizitek objednat pro více instruktorů?",
+          "Každý instruktor může mít stejný design s vlastním jménem a telefonem. V košíku k tomu slouží tlačítko „Vizitka pro kolegu“."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "ubytovanie",
+    "ind": "gastro",
+    "tpls": [
+      "penzion",
+      "vila",
+      "hvezdy",
+      "chmel",
+      "letokruhy",
+      "menu"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-penziony-a-ubytovanie",
+      "name": "Penzióny a ubytovanie",
+      "h1a": "Vizitky pre",
+      "h1b": "penzióny a ubytovanie",
+      "title": "Vizitky pre penzióny, chaty a apartmány",
+      "desc": "Vizitky pre penzióny, chaty, apartmány a malé hotely. Ilustrované šablóny s krajinou, QR kód na rezerváciu a digitálna vizitka zadarmo.",
+      "intro": "Hosť si vizitku penziónu odnáša ako spomienku a o pol roka podľa nej rezervuje znova alebo ju dá kamarátom. Má pripomínať atmosféru miesta a viesť priamo na rezerváciu, ideálne bez provízie portálom.",
+      "tips": [
+        "QR kód na priamu rezerváciu na vašom webe ušetrí províziu rezervačným portálom.",
+        "Ilustrácia hôr, lesa alebo mora vytvorí spomienku lepšie ako fotka.",
+        "Uveďte presnú adresu a GPS, hostia ju budú hľadať v navigácii."
+      ],
+      "prompt": "Penzión pod Tatrami, útulne a prírodne, zelená a drevo",
+      "faq": [
+        [
+          "Môžem dať vizitku hosťom na izbu?",
+          "Áno, mnohé penzióny ju dávajú k uvítaciemu listu. Pri väčšom počte sa oplatí 500 alebo 1000 kusov, cena za kus je nižšia."
+        ],
+        [
+          "Kam má viesť QR kód?",
+          "Najlepšie na vašu digitálnu vizitku s tlačidlom rezervácie a recenziami na Googli. Tam ho kedykoľvek zmeníte."
+        ],
+        [
+          "Ktorý papier pôsobí najprémiovejšie?",
+          "Pre butikové ubytovanie odporúčame soft-touch alebo Triplex 720 g s farebnou hranou."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-penziony-a-ubytovani",
+      "name": "Penziony a ubytování",
+      "h1a": "Vizitky pro",
+      "h1b": "penziony a ubytování",
+      "title": "Vizitky pro penziony, chaty a apartmány",
+      "desc": "Vizitky pro penziony, chaty, apartmány a malé hotely. Ilustrované šablony s krajinou, QR kód na rezervaci a digitální vizitka zdarma.",
+      "intro": "Host si vizitku penzionu odnáší jako vzpomínku a za půl roku podle ní rezervuje znovu nebo ji dá kamarádům. Má připomínat atmosféru místa a vést přímo na rezervaci, ideálně bez provize portálům.",
+      "tips": [
+        "QR kód na přímou rezervaci na vašem webu ušetří provizi rezervačním portálům.",
+        "Ilustrace hor, lesa nebo moře vytvoří vzpomínku lépe než fotka.",
+        "Uveďte přesnou adresu a GPS, hosté ji budou hledat v navigaci."
+      ],
+      "prompt": "Penzion v Krkonoších, útulně a přírodně, zelená a dřevo",
+      "faq": [
+        [
+          "Mohu dát vizitku hostům na pokoj?",
+          "Ano, řada penzionů ji dává k uvítacímu dopisu. Při větším počtu se vyplatí 500 nebo 1000 kusů, cena za kus je nižší."
+        ],
+        [
+          "Kam má vést QR kód?",
+          "Nejlépe na vaši digitální vizitku s tlačítkem rezervace a recenzemi na Googlu. Tam ho kdykoli změníte."
+        ],
+        [
+          "Který papír působí nejprémiověji?",
+          "Pro butikové ubytování doporučujeme soft-touch nebo Triplex 720 g s barevnou hranou."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "stavebne",
+    "ind": "reality",
+    "tpls": [
+      "tehla",
+      "stavitel",
+      "builders",
+      "hrastar",
+      "valcek",
+      "vykres"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-stavebne-firmy",
+      "name": "Stavebné firmy a maliari",
+      "h1a": "Vizitky pre",
+      "h1b": "stavebné firmy a maliarov",
+      "title": "Vizitky pre stavebné firmy, murárov a maliarov",
+      "desc": "Pevné a výrazné vizitky pre stavebné firmy, murárov, maliarov a rekonštrukcie. Šablóny s ilustráciou tehly, valčeka aj výkresu a digitálna vizitka zadarmo.",
+      "intro": "Pri stavbe a rekonštrukcii rozhoduje dôvera. Vizitka, ktorú nechávate pri obhliadke, má pôsobiť spoľahlivo a solídne, nie lacno, a jasne povedať, čo všetko robíte.",
+      "tips": [
+        "Napíšte stručne, čo robíte: „Rekonštrukcie bytov · Zatepľovanie · Strechy“.",
+        "Pridajte IČO, pri väčších zákazkách to zvyšuje dôveru.",
+        "QR kód môže viesť na fotky hotových realizácií v digitálnej vizitke."
+      ],
+      "prompt": "Stavebná firma z Trnavy, solídne a výrazne, tmavá a oranžová",
+      "faq": [
+        [
+          "Môžem na vizitku dať logo firmy?",
+          "Áno. Logo nahráte v editore v časti Logo, farby vizitky sa mu prispôsobia."
+        ],
+        [
+          "Ako ukázať hotové realizácie?",
+          "Do digitálnej vizitky pridáte galériu fotiek a QR kód na zadnej strane ju otvorí priamo v telefóne."
+        ],
+        [
+          "Objednávame pre viac majstrov, ide to naraz?",
+          "Áno, v košíku pridáte vizitku pre kolegu s rovnakým dizajnom a iným menom a telefónom."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-stavebni-firmy",
+      "name": "Stavební firmy a malíři",
+      "h1a": "Vizitky pro",
+      "h1b": "stavební firmy a malíře",
+      "title": "Vizitky pro stavební firmy, zedníky a malíře",
+      "desc": "Pevné a výrazné vizitky pro stavební firmy, zedníky, malíře a rekonstrukce. Šablony s ilustrací cihly, válečku i výkresu a digitální vizitka zdarma.",
+      "intro": "Při stavbě a rekonstrukci rozhoduje důvěra. Vizitka, kterou necháváte při prohlídce, má působit spolehlivě a solidně, ne lacině, a jasně říct, co všechno děláte.",
+      "tips": [
+        "Napište stručně, co děláte: „Rekonstrukce bytů · Zateplení · Střechy“.",
+        "Přidejte IČO, u větších zakázek to zvyšuje důvěru.",
+        "QR kód může vést na fotky hotových realizací v digitální vizitce."
+      ],
+      "prompt": "Stavební firma z Brna, solidně a výrazně, tmavá a oranžová",
+      "faq": [
+        [
+          "Mohu na vizitku dát logo firmy?",
+          "Ano. Logo nahrajete v editoru v části Logo, barvy vizitky se mu přizpůsobí."
+        ],
+        [
+          "Jak ukázat hotové realizace?",
+          "Do digitální vizitky přidáte galerii fotek a QR kód na zadní straně ji otevře přímo v telefonu."
+        ],
+        [
+          "Objednáváme pro více mistrů, jde to najednou?",
+          "Ano, v košíku přidáte vizitku pro kolegu se stejným designem a jiným jménem a telefonem."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "cukrarne",
+    "ind": "gastro",
+    "tpls": [
+      "glazura",
+      "dortik",
+      "konfety",
+      "klas",
+      "figlia",
+      "pruhy"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-cukrarne-a-pekarne",
+      "name": "Cukrárne a pekárne",
+      "h1a": "Vizitky pre",
+      "h1b": "cukrárne a pekárne",
+      "title": "Vizitky pre cukrárne, pekárne a domáce cukrárky",
+      "desc": "Sladké vizitky pre cukrárne, pekárne a domáce cukrárky. Ilustrované šablóny s tortami a pečivom, vernostná kartička a digitálna vizitka zadarmo.",
+      "intro": "Torty na objednávku a domáce pečivo sa šíria odporúčaním. Vizitka priložená ku krabici s tortou je najlacnejšia reklama, akú môžete mať, ak vyzerá tak chutne ako váš výrobok.",
+      "tips": [
+        "Vizitku priložte ku každej objednávke, putuje s tortou na oslavu.",
+        "Zadnú stranu môžete použiť ako vernostnú kartičku s políčkami na pečiatky.",
+        "Uveďte, ako dlho vopred treba torty objednávať."
+      ],
+      "prompt": "Domáca cukrárka z Banskej Bystrice, hravo a sladko, ružová a čokoládová",
+      "faq": [
+        [
+          "Dá sa zo zadnej strany urobiť vernostná kartička?",
+          "Áno. V editore pridáte na zadnú stranu krúžky alebo políčka na pečiatky. Na matný papier bez laminácie sa pečiatkuje najlepšie."
+        ],
+        [
+          "Koľko vizitiek objednať, keď ich dávam ku každej torte?",
+          "Pri pravidelných objednávkach sa oplatí 500 kusov, cena za kus je výrazne nižšia ako pri 100."
+        ],
+        [
+          "Môžem dať na vizitku fotku torty?",
+          "Do editora môžete nahrať obrázok. Na malej vizitke však lepšie fungujú ilustrácie, fotky odporúčame dať do galérie digitálnej vizitky."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-cukrarny-a-pekarny",
+      "name": "Cukrárny a pekárny",
+      "h1a": "Vizitky pro",
+      "h1b": "cukrárny a pekárny",
+      "title": "Vizitky pro cukrárny, pekárny a domácí cukrářky",
+      "desc": "Sladké vizitky pro cukrárny, pekárny a domácí cukrářky. Ilustrované šablony s dorty a pečivem, věrnostní kartička a digitální vizitka zdarma.",
+      "intro": "Dorty na objednávku a domácí pečivo se šíří doporučením. Vizitka přiložená ke krabici s dortem je nejlevnější reklama, jakou můžete mít, pokud vypadá tak chutně jako váš výrobek.",
+      "tips": [
+        "Vizitku přiložte ke každé objednávce, putuje s dortem na oslavu.",
+        "Zadní stranu můžete použít jako věrnostní kartičku s políčky na razítka.",
+        "Uveďte, jak dlouho předem je třeba dorty objednávat."
+      ],
+      "prompt": "Domácí cukrářka z Olomouce, hravě a sladce, růžová a čokoládová",
+      "faq": [
+        [
+          "Dá se ze zadní strany udělat věrnostní kartička?",
+          "Ano. V editoru přidáte na zadní stranu kroužky nebo políčka na razítka. Na matný papír bez laminace se razítkuje nejlépe."
+        ],
+        [
+          "Kolik vizitek objednat, když je dávám ke každému dortu?",
+          "Při pravidelných objednávkách se vyplatí 500 kusů, cena za kus je výrazně nižší než u 100."
+        ],
+        [
+          "Mohu dát na vizitku fotku dortu?",
+          "Do editoru můžete nahrát obrázek. Na malé vizitce ale lépe fungují ilustrace, fotky doporučujeme dát do galerie digitální vizitky."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "vinarstva",
+    "ind": "gastro",
+    "tpls": [
+      "etiketa",
+      "venec",
+      "vinoteka",
+      "chmel",
+      "pecat",
+      "egon"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-vinarstva-a-pivovary",
+      "name": "Vinárstva a pivovary",
+      "h1a": "Vizitky pre",
+      "h1b": "vinárstva a pivovary",
+      "title": "Vizitky pre vinárstva, vinotéky a remeselné pivovary",
+      "desc": "Vizitky v štýle vinnej etikety pre vinárstva, vinotéky a remeselné pivovary. Zlaté detaily, ilustrácie hrozna a chmeľu a digitálna vizitka zadarmo.",
+      "intro": "Vinárstvo predáva príbeh a remeslo. Vizitka, ktorá vyzerá ako etiketa na fľaši, si zákazník zapamätá a ľahko ju spojí s vašim vínom pri ďalšej návšteve vinotéky alebo degustácie.",
+      "tips": [
+        "Inšpirujte sa vlastnou etiketou, nech vizitka a fľaša pôsobia ako jedna značka.",
+        "Uveďte vinársku obec a trať, pre milovníkov vína je to dôležitá informácia.",
+        "QR kód môže viesť na rezerváciu degustácie alebo e-shop."
+      ],
+      "prompt": "Rodinné vinárstvo pod Pezinkom, tradične a luxusne, bordová a zlatá",
+      "faq": [
+        [
+          "Dá sa vizitka navrhnúť ako vinná etiketa?",
+          "Áno, máme viacero šablón inšpirovaných etiketami s rámikmi, vavrínom a zlatými detailmi."
+        ],
+        [
+          "Ktorý papier pôsobí ako etiketa?",
+          "Matný papier 350 g má jemnú textúru. Pre luxusný dojem zvoľte Triplex 720 g s farebnou hranou."
+        ],
+        [
+          "Môžem dať vizitku do kartónu k vínu?",
+          "Áno, mnohé vinárstva ju vkladajú ku každej zásielke, pri 500 kusoch je cena za kus nízka."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-vinarstvi-a-pivovary",
+      "name": "Vinařství a pivovary",
+      "h1a": "Vizitky pro",
+      "h1b": "vinařství a pivovary",
+      "title": "Vizitky pro vinařství, vinotéky a řemeslné pivovary",
+      "desc": "Vizitky ve stylu vinné etikety pro vinařství, vinotéky a řemeslné pivovary. Zlaté detaily, ilustrace hroznů a chmele a digitální vizitka zdarma.",
+      "intro": "Vinařství prodává příběh a řemeslo. Vizitku, která vypadá jako etiketa na lahvi, si zákazník zapamatuje a snadno ji spojí s vaším vínem při další návštěvě vinotéky nebo degustace.",
+      "tips": [
+        "Inspirujte se vlastní etiketou, ať vizitka a lahev působí jako jedna značka.",
+        "Uveďte vinařskou obec a trať, pro milovníky vína je to důležitá informace.",
+        "QR kód může vést na rezervaci degustace nebo e-shop."
+      ],
+      "prompt": "Rodinné vinařství pod Pálavou, tradičně a luxusně, vínová a zlatá",
+      "faq": [
+        [
+          "Dá se vizitka navrhnout jako vinná etiketa?",
+          "Ano, máme několik šablon inspirovaných etiketami s rámečky, vavřínem a zlatými detaily."
+        ],
+        [
+          "Který papír působí jako etiketa?",
+          "Matný papír 350 g má jemnou texturu. Pro luxusní dojem zvolte Triplex 720 g s barevnou hranou."
+        ],
+        [
+          "Mohu dát vizitku do kartonu k vínu?",
+          "Ano, řada vinařství ji vkládá ke každé zásilce, při 500 kusech je cena za kus nízká."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "lektori",
+    "ind": "kreativ",
+    "tpls": [
+      "lingua",
+      "tabula",
+      "duha",
+      "kniha",
+      "swiss",
+      "minimal"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-lektorov-a-doucovanie",
+      "name": "Lektori a doučovanie",
+      "h1a": "Vizitky pre",
+      "h1b": "lektorov a doučovanie",
+      "title": "Vizitky pre lektorov jazykov, doučovanie a škôlky",
+      "desc": "Vizitky pre lektorov jazykov, doučovateľov, škôlky a kurzy. Priateľské ilustrované šablóny, QR kód na rozvrh a digitálna vizitka zadarmo.",
+      "intro": "Doučovanie a kurzy si rodičia odovzdávajú na ihrisku aj v školskej šatni. Vizitka má byť priateľská, ale profesionálna, a hneď povedať, aký predmet, pre koho a kde učíte.",
+      "tips": [
+        "Napíšte predmet a vek žiakov: „Matematika pre 5. – 9. ročník“.",
+        "Uveďte, či učíte osobne, online alebo oboje.",
+        "QR kód na voľné termíny zjednoduší dohodnutie prvej hodiny."
+      ],
+      "prompt": "Lektorka angličtiny z Košíc, priateľsky a moderne, modrá a žltá",
+      "faq": [
+        [
+          "Môžem dať na vizitku cenu hodiny?",
+          "Áno, ale ak sa mení, je lepšie dať ju do digitálnej vizitky, kde ju upravíte kedykoľvek."
+        ],
+        [
+          "Hodí sa vizitka aj pre materskú školu?",
+          "Áno, ilustrované a farebné šablóny fungujú pre škôlky, krúžky aj detské centrá."
+        ],
+        [
+          "Môžem vizitky rozdávať rodičom v škole?",
+          "Určite. Pri väčšom počte zvoľte 250 alebo 500 kusov, vychádza to výhodnejšie."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-lektory-a-doucovani",
+      "name": "Lektoři a doučování",
+      "h1a": "Vizitky pro",
+      "h1b": "lektory a doučování",
+      "title": "Vizitky pro lektory jazyků, doučování a školky",
+      "desc": "Vizitky pro lektory jazyků, doučovatele, školky a kurzy. Přátelské ilustrované šablony, QR kód na rozvrh a digitální vizitka zdarma.",
+      "intro": "Doučování a kurzy si rodiče předávají na hřišti i ve školní šatně. Vizitka má být přátelská, ale profesionální, a hned říct, jaký předmět, pro koho a kde učíte.",
+      "tips": [
+        "Napište předmět a věk žáků: „Matematika pro 5. – 9. ročník“.",
+        "Uveďte, jestli učíte osobně, online, nebo obojí.",
+        "QR kód na volné termíny zjednoduší domluvu první hodiny."
+      ],
+      "prompt": "Lektorka angličtiny z Ostravy, přátelsky a moderně, modrá a žlutá",
+      "faq": [
+        [
+          "Mohu dát na vizitku cenu hodiny?",
+          "Ano, ale pokud se mění, je lepší dát ji do digitální vizitky, kde ji upravíte kdykoli."
+        ],
+        [
+          "Hodí se vizitka i pro mateřskou školu?",
+          "Ano, ilustrované a barevné šablony fungují pro školky, kroužky i dětská centra."
+        ],
+        [
+          "Mohu vizitky rozdávat rodičům ve škole?",
+          "Určitě. Při větším počtu zvolte 250 nebo 500 kusů, vychází to výhodněji."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "hudba",
+    "ind": "kreativ",
+    "tpls": [
+      "vinyl",
+      "neon",
+      "riso",
+      "brut",
+      "orbit",
+      "crop"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-hudobnikov-a-dj",
+      "name": "Hudobníci a DJ",
+      "h1a": "Vizitky pre",
+      "h1b": "hudobníkov a DJ",
+      "title": "Vizitky pre hudobníkov, DJ a moderátorov",
+      "desc": "Výrazné vizitky pre DJ, kapely, moderátorov a hudobníkov. Neónové, risografické aj vinylové šablóny a digitálna vizitka s ukážkami zadarmo.",
+      "intro": "Svadby, firemné večierky a kluby sa vyberajú podľa dojmu. Vizitka DJ alebo kapely má mať štýl, ktorý ladí s vašou hudbou, a viesť na ukážky, kde vás klient hneď počuje.",
+      "tips": [
+        "QR kód na ukážky (Spotify, YouTube, SoundCloud) predá viac ako akýkoľvek text.",
+        "Uveďte typ akcií: svadby, firemné večierky, kluby.",
+        "Odvážny dizajn je v poriadku, ale telefón musí ostať čitateľný aj v tme."
+      ],
+      "prompt": "Svadobný DJ z Bratislavy, odvážne a moderne, čierna a neónová zelená",
+      "faq": [
+        [
+          "Môžem dať na vizitku odkaz na ukážky?",
+          "Áno, do digitálnej vizitky pridáte odkazy na Spotify, YouTube či SoundCloud a QR kód ich otvorí jedným ťuknutím."
+        ],
+        [
+          "Ktorý papier je najodolnejší?",
+          "Ak vizitky rozdávate na akciách, zvoľte lamináciu, ktorá ich chráni pred odreninami a vlhkosťou."
+        ],
+        [
+          "Hodí sa tmavá vizitka?",
+          "Áno, tmavé šablóny pôsobia výrazne. Odporúčame dostatočne veľký a svetlý text kontaktov."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-hudebniky-a-dj",
+      "name": "Hudebníci a DJ",
+      "h1a": "Vizitky pro",
+      "h1b": "hudebníky a DJ",
+      "title": "Vizitky pro hudebníky, DJ a moderátory",
+      "desc": "Výrazné vizitky pro DJ, kapely, moderátory a hudebníky. Neonové, risografické i vinylové šablony a digitální vizitka s ukázkami zdarma.",
+      "intro": "Svatby, firemní večírky a kluby se vybírají podle dojmu. Vizitka DJ nebo kapely má mít styl, který ladí s vaší hudbou, a vést na ukázky, kde vás klient hned uslyší.",
+      "tips": [
+        "QR kód na ukázky (Spotify, YouTube, SoundCloud) prodá víc než jakýkoli text.",
+        "Uveďte typ akcí: svatby, firemní večírky, kluby.",
+        "Odvážný design je v pořádku, ale telefon musí zůstat čitelný i ve tmě."
+      ],
+      "prompt": "Svatební DJ z Prahy, odvážně a moderně, černá a neonově zelená",
+      "faq": [
+        [
+          "Mohu dát na vizitku odkaz na ukázky?",
+          "Ano, do digitální vizitky přidáte odkazy na Spotify, YouTube či SoundCloud a QR kód je otevře jedním ťuknutím."
+        ],
+        [
+          "Který papír je nejodolnější?",
+          "Pokud vizitky rozdáváte na akcích, zvolte laminaci, která je chrání před oděrem a vlhkostí."
+        ],
+        [
+          "Hodí se tmavá vizitka?",
+          "Ano, tmavé šablony působí výrazně. Doporučujeme dostatečně velký a světlý text kontaktů."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "tetovanie",
+    "ind": "beauty",
+    "tpls": [
+      "atrament",
+      "britva",
+      "odznak",
+      "stoh",
+      "saloon",
+      "riso"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-tetovacie-studia",
+      "name": "Tetovacie štúdiá",
+      "h1a": "Vizitky pre",
+      "h1b": "tetovacie štúdiá",
+      "title": "Vizitky pre tetovacie štúdiá a tatérov",
+      "desc": "Vizitky pre tetovacie štúdiá, tatérov a piercing. Flash ilustrácie, odznaky a tmavé šablóny, kartička na ďalší termín a digitálna vizitka zadarmo.",
+      "intro": "Tetovanie je o štýle a vizitka tatéra je malá ukážka toho, čo vie. Klienti si ju nechávajú, ukazujú kamarátom a podľa nej sa objednávajú na ďalšie sedenie.",
+      "tips": [
+        "Zadnú stranu použite ako kartičku na ďalšie sedenie s dátumom a časom.",
+        "Instagram s portfóliom dajte na vizitku výrazne, klienti vás hľadajú tam.",
+        "Štýl vizitky prispôsobte vášmu štýlu tetovania: old school, fineline, black & grey…"
+      ],
+      "prompt": "Tetovacie štúdio v Bratislave, old school a odvážne, čierna a červená",
+      "faq": [
+        [
+          "Môžem na vizitku dať vlastnú kresbu?",
+          "Áno, v editore nahráte vlastný obrázok alebo logo. Pri kresbe odporúčame čistú čiernu linku na svetlom pozadí."
+        ],
+        [
+          "Ako urobiť kartičku na termín?",
+          "Zadnú stranu upravíte v editore s riadkami na dátum a čas. Na matný papier sa píše najlepšie."
+        ],
+        [
+          "Hodí sa tmavá vizitka?",
+          "Áno, tmavé šablóny sú pre tetovacie štúdiá typické. Text kontaktov nechajte dostatočne veľký."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-tetovaci-studia",
+      "name": "Tetovací studia",
+      "h1a": "Vizitky pro",
+      "h1b": "tetovací studia",
+      "title": "Vizitky pro tetovací studia a tatéry",
+      "desc": "Vizitky pro tetovací studia, tatéry a piercing. Flash ilustrace, odznaky a tmavé šablony, kartička na další termín a digitální vizitka zdarma.",
+      "intro": "Tetování je o stylu a vizitka tatéra je malá ukázka toho, co umí. Klienti si ji nechávají, ukazují kamarádům a podle ní se objednávají na další sezení.",
+      "tips": [
+        "Zadní stranu použijte jako kartičku na další sezení s datem a časem.",
+        "Instagram s portfoliem dejte na vizitku výrazně, klienti vás hledají tam.",
+        "Styl vizitky přizpůsobte svému stylu tetování: old school, fineline, black & grey…"
+      ],
+      "prompt": "Tetovací studio v Praze, old school a odvážně, černá a červená",
+      "faq": [
+        [
+          "Mohu na vizitku dát vlastní kresbu?",
+          "Ano, v editoru nahrajete vlastní obrázek nebo logo. U kresby doporučujeme čistou černou linku na světlém pozadí."
+        ],
+        [
+          "Jak udělat kartičku na termín?",
+          "Zadní stranu upravíte v editoru s řádky na datum a čas. Na matný papír se píše nejlépe."
+        ],
+        [
+          "Hodí se tmavá vizitka?",
+          "Ano, tmavé šablony jsou pro tetovací studia typické. Text kontaktů nechte dostatečně velký."
+        ]
+      ]
+    }
+  },
+  {
+    "key": "upratovanie",
+    "ind": "remeslo",
+    "tpls": [
+      "cisto",
+      "zahrada",
+      "komin",
+      "naprstok",
+      "brazda",
+      "herbar"
+    ],
+    "sk": {
+      "slug": "vizitky-pre-upratovanie-a-sluzby",
+      "name": "Upratovanie, záhrady a služby",
+      "h1a": "Vizitky pre",
+      "h1b": "upratovanie, záhrady a služby",
+      "title": "Vizitky pre upratovacie služby, záhradníkov a domáce služby",
+      "desc": "Vizitky pre upratovacie firmy, záhradníkov, kominárov, krajčírky a domáce služby. Ilustrované šablóny, jasné kontakty a digitálna vizitka zadarmo.",
+      "intro": "Domáce služby sa šíria od suseda k susedovi. Vizitka, ktorú nechávate v schránke alebo u spokojného zákazníka, má byť čistá, priateľská a hneď povedať, čo pre ľudí robíte.",
+      "tips": [
+        "Uveďte hlavné služby v troch slovách: „Byty · Kancelárie · Po rekonštrukcii“.",
+        "Napíšte oblasť pôsobenia, aby vám volali ľudia z okolia.",
+        "Pri sezónnych službách (záhrady, komíny) uveďte, kedy sa objednávať."
+      ],
+      "prompt": "Upratovacia služba z Nitry, čisto a priateľsky, svetlomodrá a biela",
+      "faq": [
+        [
+          "Môžem vizitky dávať do schránok?",
+          "Áno. Na roznos do schránok sa oplatí 500 alebo 1000 kusov, cena za kus je najnižšia."
+        ],
+        [
+          "Hodí sa vizitka aj pre krajčírku alebo kominára?",
+          "Áno, máme ilustrované šablóny s náprstkom, komínom, záhradou aj farmou."
+        ],
+        [
+          "Ako uviesť cenník?",
+          "Na papier stačí „od … €“. Podrobný cenník dáte do digitálnej vizitky, kde ho meníte bez novej tlače."
+        ]
+      ]
+    },
+    "cz": {
+      "slug": "vizitky-pro-uklid-a-sluzby",
+      "name": "Úklid, zahrady a služby",
+      "h1a": "Vizitky pro",
+      "h1b": "úklid, zahrady a služby",
+      "title": "Vizitky pro úklidové služby, zahradníky a domácí služby",
+      "desc": "Vizitky pro úklidové firmy, zahradníky, kominíky, švadleny a domácí služby. Ilustrované šablony, jasné kontakty a digitální vizitka zdarma.",
+      "intro": "Domácí služby se šíří od souseda k sousedovi. Vizitka, kterou necháváte ve schránce nebo u spokojeného zákazníka, má být čistá, přátelská a hned říct, co pro lidi děláte.",
+      "tips": [
+        "Uveďte hlavní služby ve třech slovech: „Byty · Kanceláře · Po rekonstrukci“.",
+        "Napište oblast působení, aby vám volali lidé z okolí.",
+        "U sezónních služeb (zahrady, komíny) uveďte, kdy se objednávat."
+      ],
+      "prompt": "Úklidová služba z Plzně, čistě a přátelsky, světle modrá a bílá",
+      "faq": [
+        [
+          "Mohu vizitky dávat do schránek?",
+          "Ano. Na roznos do schránek se vyplatí 500 nebo 1000 kusů, cena za kus je nejnižší."
+        ],
+        [
+          "Hodí se vizitka i pro švadlenu nebo kominíka?",
+          "Ano, máme ilustrované šablony s náprstkem, komínem, zahradou i farmou."
+        ],
+        [
+          "Jak uvést ceník?",
+          "Na papír stačí „od … Kč“. Podrobný ceník dáte do digitální vizitky, kde ho měníte bez nového tisku."
+        ]
+      ]
+    }
   }
 ]

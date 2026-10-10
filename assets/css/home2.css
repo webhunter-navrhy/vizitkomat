@@ -621,3 +621,7 @@
   .story__steps h3 { font-size: clamp(1.6rem, 6.6vw, 2.1rem); }
 }
 @media (max-width: 1060px) { .hero__grid { align-items: stretch; } .hero__grid > *, .aibox { width: 100%; max-width: 620px; align-self: center; } .hero__vis { width: 100%; } }
+.hero__web { margin: 1rem 0 0; }
+.hero__web a { display: inline-flex; align-items: center; gap: .4rem; flex-wrap: wrap; padding: .55rem .9rem; border-radius: 99px; background: rgba(255, 255, 255, .14); color: #fff; font-size: .92rem; text-decoration: none; border: 1px solid rgba(255, 255, 255, .28); transition: background .2s; }
+.hero__web a:hover { background: rgba(255, 255, 255, .24); }
+.hero__web b { color: var(--yellow); }

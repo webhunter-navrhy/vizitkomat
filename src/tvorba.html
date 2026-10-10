@@ -37,6 +37,15 @@
           <button class="btn btn--c btn--lg" type="submit">{{ L('Ukázať návrhy', 'Ukázat návrhy') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
         </form>
         <p class="simple1__note">{{ L('Za pár sekúnd uvidíte hotové vizitky s vaším menom. Všetko ostatné doplníte potom.', 'Za pár sekund uvidíte hotové vizitky se svým jménem. Všechno ostatní doplníte potom.') }}</p>
+        <div class="webbox" data-webbox>
+          <button class="webbox__t" type="button" data-web-toggle aria-expanded="false"><span class="webbox__ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.9 5.6 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.6-3.9-9S9.4 5.6 12 3z"/></svg></span><span><b>{{ L('Máte web?', 'Máte web?') }}</b> {{ L('Navrhneme vizitky vo vašich farbách a s vaším logom.', 'Navrhneme vizitky ve vašich barvách a s vaším logem.') }}</span><i aria-hidden="true">→</i></button>
+          <form class="webbox__f" data-web-form hidden>
+            <label class="qs__f"><span>{{ L('Adresa vášho webu', 'Adresa vašeho webu') }}</span><input data-web-in inputmode="url" autocomplete="url" maxlength="200" placeholder="{{ L('mojafirma.sk', 'mojefirma.cz') }}"></label>
+            <button class="btn btn--b" type="submit" data-web-go>{{ L('Načítať môj brand', 'Načíst můj brand') }} <span class="ar">→</span></button>
+          </form>
+          <div class="webbox__load" data-web-load hidden><span class="dots"><i></i><i></i><i></i></span><b data-web-step>{{ L('Čítam váš web…', 'Čtu váš web…') }}</b></div>
+          <p class="webbox__err" data-web-err hidden role="alert"></p>
+        </div>
         <div class="sense" data-sense hidden><span data-sense-k="job"><i></i></span><span data-sense-k="city"><i></i></span><span data-sense-k="style"><i></i></span><small data-sense-tip></small></div>
         <p class="simple1__alt"><button class="link" type="button" data-start-tpl>{{ L('Radšej si vyberiem zo šablón', 'Raději si vyberu ze šablon') }}</button> · <a class="link" href="{{ link('vlastny') }}">{{ L('Mám vlastný návrh', 'Mám vlastní návrh') }}</a></p>
       </div>
@@ -55,6 +64,12 @@
   <section class="st2" data-pane="choose">
     <div class="wrap">
       <div class="ai" data-ai-box>
+        <div class="brandbar" data-brandbar hidden>
+          <img alt="" data-brand-logo hidden>
+          <div class="brandbar__t"><small>{{ L('Váš brand z webu', 'Váš brand z webu') }}</small><b data-brand-name></b></div>
+          <span class="brandbar__sw" data-brand-sw></span>
+          <label class="brandbar__tog"><input type="checkbox" data-brand-on checked> <span>{{ L('Použiť', 'Použít') }}</span></label>
+        </div>
         <div class="ai__prompt"><span class="ai__me" data-ai-me></span><button class="link" data-ai-change>{{ L('Zmeniť zadanie', 'Změnit zadání') }}</button></div>
         <div class="ai__load" data-ai-load hidden>
           <div class="ai__lh"><span class="dots"><i></i><i></i><i></i></span><b data-ai-step></b><small>{{ L('Trvá to zvyčajne 5 až 10 sekúnd', 'Trvá to obvykle 5 až 10 sekund') }}</small></div>

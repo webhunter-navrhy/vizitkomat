@@ -22,6 +22,14 @@ async function api(path, body) {
   if (!r.ok) throw new Error(j.error || 'Chyba ' + r.status);
   return j;
 }
+let setup = null; // stav nastavení (bankovní účty) pro varování v hlavičce
+const copyBtn = (text, label = 'Kopírovat') => `<button type="button" class="cp" data-copy="${esc(text)}" title="Zkopírovat">${label}</button>`;
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-copy]'); if (!b) return;
+  try { await navigator.clipboard.writeText(b.dataset.copy); } catch (x) { const t = document.createElement('textarea'); t.value = b.dataset.copy; document.body.append(t); t.select(); document.execCommand('copy'); t.remove(); }
+  const o = b.textContent; b.textContent = '✓'; b.classList.add('ok'); setTimeout(() => { b.textContent = o; b.classList.remove('ok'); }, 1200);
+});
+const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
 function logout() { token = null; try { localStorage.removeItem('vka-token'); } catch (e) { /* nič */ } loginView(); }
 
 /* ---------- přihlášení ---------- */
@@ -32,15 +40,36 @@ function loginView(err) {
     <button class="btn c" type="submit">Přihlásit</button></form></div>`;
   app.querySelector('[data-login]').addEventListener('submit', async (e) => {
     e.preventDefault();
-    try { const j = await api('login', { password: e.target.pw.value }); token = j.token; try { localStorage.setItem('vka-token', token); } catch (x) { /* nič */ } route(); } catch (x) { loginView(x.message); }
+    try { const j = await api('login', { password: e.target.pw.value }); token = j.token; try { localStorage.setItem('vka-token', token); } catch (x) { /* nič */ } location.hash = 'prehled'; route(); } catch (x) { loginView(x.message); }
   });
 }
 
 function shell(active, inner) {
-  const nav = [['objednavky', 'Objednávky'], ['konverze', 'Konverze'], ['cenik', 'Ceník a marže'], ['nastaveni', 'Nastavení']];
-  app.innerHTML = `<header class="top"><span class="brand"><i></i>vizitkomat</span><nav>${nav.map(([h, l]) => `<a href="#${h}" class="${active === h ? 'on' : ''}">${l}</a>`).join('')}</nav><a href="${window.VKA.site}" target="_blank" style="color:rgba(255,255,255,.7);font-size:13px">Web ↗</a><button data-logout>Odhlásit</button></header><main>${inner}</main>`;
+  const nav = [['prehled', 'Přehled'], ['objednavky', 'Objednávky'], ['konverze', 'Konverze'], ['cenik', 'Ceník a marže'], ['hodnoceni', 'Hodnocení'], ['nastaveni', 'Nastavení']];
+  const warn = setup && (!setup.eur || !setup.czk) ? `<a class="warnbar" href="#nastaveni"><b>Chybí bankovní účet${!setup.eur && !setup.czk ? 'y' : ''}</b> ${!setup.eur ? 'pro € (SK)' : ''}${!setup.eur && !setup.czk ? ' a ' : ''}${!setup.czk ? 'pro Kč (CZ)' : ''} – zákazníkům nepůjde poslat QR platbu. Doplnit →</a>` : '';
+  app.innerHTML = `<header class="top"><span class="brand"><i></i>vizitkomat</span><nav>${nav.map(([h, l]) => `<a href="#${h}" class="${active === h ? 'on' : ''}">${l}</a>`).join('')}</nav><a href="${window.VKA.site}" target="_blank" class="top__web">Web ↗</a><button data-logout>Odhlásit</button></header>${warn}<main>${inner}</main>`;
   app.querySelector('[data-logout]').addEventListener('click', logout);
   return app.querySelector('main');
+}
+
+/* ---------- přehled: co je dnes potřeba udělat ---------- */
+async function dashboardView() {
+  const main = shell('prehled', '<h1 class="pg">Přehled</h1><p class="muted">Načítám…</p>');
+  let d; try { d = await api('dashboard'); } catch (e) { main.innerHTML = `<p class="msg err">${esc(e.message)}</p>`; return; }
+  if (JSON.stringify(setup) !== JSON.stringify(d.setup)) { setup = d.setup; return dashboardView(); }
+  const T = d.todo;
+  const rows = (list, extra = () => '') => (list.length ? `<ul class="tl">${list.map((o) => `<li><a href="#${o.number}"><b>${o.number}</b><span>${esc(o.n)}</span><em>${money(o.t, o.cur)}</em>${extra(o)}</a></li>`).join('')}</ul>` : '<p class="muted tl__none">Nic nečeká ✓</p>');
+  const card = (cls, title, hint, list, extra) => `<section class="box todo ${list.length ? cls : 'done'}"><div class="todo__h"><b>${list.length}</b><div><h3>${title}</h3><p class="muted">${hint}</p></div></div>${rows(list, extra)}</section>`;
+  const fin = (cur) => { const m = d.money[cur] || { rev: 0, cost: 0, n: 0 }; const mg = m.rev - m.cost; return `<div class="kpi"><span>${cur === 'EUR' ? 'Slovensko (€)' : 'Česko (Kč)'}</span><b>${money(m.rev, cur)}</b><small>${m.n} obj. · náklady ~${money(Math.round(m.cost), cur)} · marže <strong>${money(Math.round(mg), cur)}</strong> (${pct(mg, m.rev)} %)</small></div>`; };
+  main.innerHTML = `<h1 class="pg">Přehled</h1>
+    <div class="todos">
+      ${card('hot', 'Zkontrolovat návrh', 'Projděte PDF a pošlete výzvu k platbě.', T.check)}
+      ${card('warm', 'Čeká na platbu', 'Po 3 dnech jde automatická připomínka, tady ji pošlete ručně.', T.remind, (o) => `<i class="${o.days >= 3 ? 'late' : ''}">${o.days} d${o.reminded ? ' · připomenuto' : ''}</i>`)}
+      ${card('hot', 'Objednat u Bizay', 'Zaplaceno – v detailu najdete přesné volby a PDF.', T.order)}
+      ${card('warm', 'Zadat zásilku', 'Až Bizay odešle, vložte číslo zásilky DPD.', T.ship)}
+      ${T.deliver.length ? card('', 'Ověřit doručení', 'Odesláno před víc než 14 dny – uzavřít jako hotovo.', T.deliver) : ''}
+    </div>
+    <section class="box"><h2>Tento měsíc (zaplacené objednávky)</h2><div class="kpis">${fin('EUR')}${fin('CZK')}</div><p class="muted" style="margin:12px 0 0">Náklady jsou odhad podle kalkulačky Bizay (bez slevy pro nové zákazníky, s DPH a dopravou), nebo skutečná cena, pokud ji zadáte při objednání tisku. <a href="#konverze">Konverze webu →</a></p></section>`;
 }
 
 /* ---------- objednávky ---------- */
@@ -83,7 +112,18 @@ async function detailView(num) {
   const main = shell('objednavky', `<a class="back" href="#objednavky">← Objednávky</a><p class="muted">Načítám ${esc(num)}…</p>`);
   let data;
   try { data = await api('order/' + num); } catch (e) { main.innerHTML = `<a class="back" href="#objednavky">← Objednávky</a><p class="msg err">${esc(e.message)}</p>`; return; }
-  const { order: o, pay, carriers, track } = data, c = o.customer, cur = o.currency;
+  const { order: o, pay, carriers, track, bizay: B, mails } = data, c = o.customer, cur = o.currency;
+  const mailNote = (k) => (mails?.[k] ? `<div class="mailprev"><span>Zákazník dostane e-mail</span><b>${esc(mails[k].subject)}</b><p>${esc(mails[k].text)}</p></div>` : '');
+  const addr = [c.company, c.name, c.street, `${c.zip || ''} ${c.city || ''}`.trim(), c.country === 'CZ' ? 'Česká republika' : c.country === 'SK' ? 'Slovensko' : c.country, c.phone, c.email].filter(Boolean).join('\n');
+  const pdfs = (o.files || []).filter((f) => /tlac|predna|zadna/.test(f.name));
+  const bizayBox = B && B.items.length ? `<section class="box act bz"><div class="bz__h"><h3>Objednat u Bizay</h3><span class="mk">${B.market === 'CZ' ? 'bizay.cz · Kč' : 'bizay.sk · €'}</span><a class="btn sm c" href="${B.shop}" target="_blank" rel="noopener">Otevřít Bizay ↗</a></div>
+      ${B.items.map((it) => `<div class="bz__item"><p class="muted" style="margin:0 0 6px">Položka ${it.n}</p><dl class="bz__dl">${it.choices.map(([k, v]) => `<dt>${esc(k)}</dt><dd><span>${esc(v)}</span>${copyBtn(v, '⧉')}</dd>`).join('')}</dl>
+        <p class="bz__money">Prodej <b>${money(it.price, cur)}</b> · náklad Bizay ~<b>${it.cost != null ? money(it.cost, B.currency) : '?'}</b>${it.margin != null ? ` · marže <b class="${it.margin < 0 ? 'neg' : ''}">${money(it.margin, cur)}</b> (${pct(it.margin, it.price)} %)` : ''}${it.exact === false ? ' <span class="muted">(odhad)</span>' : ''}</p></div>`).join('')}
+      <div class="bz__files">${pdfs.map((f) => `<a class="btn sm" href="${fileUrl(o.number, f.name)}&dl=${encodeURIComponent(`${o.number}-${f.name}`)}">⬇ ${esc(`${o.number}-${f.name}`)}</a>`).join('') || '<span class="muted">Bez tiskového PDF</span>'}</div>
+      <p class="muted" style="margin:0">PDF má přední i zadní stranu (2 strany) se spadávkou 2 mm. U Bizay zvolte „Odoslať súbor“ / „Nahrát soubor“ a kontrolu návrhu nechte bez hodnocení (zdarma).</p>
+      ${c.street ? `<div class="bz__addr"><div><b>Doručovací adresa</b><pre>${esc(addr)}</pre></div>${copyBtn(addr, 'Kopírovat adresu')}</div>` : ''}
+    </section>` : '';
+
   const filesOf = (i) => (o.files || []).filter((f) => f.item === i);
   const specs = (cfg) => (cfg.kind === 'digital' ? 'jednorázově' : [SIZE[cfg.size] || cfg.size, PAPER[cfg.paper], cfg.paper !== 'triplex' && FIN[cfg.finish], cfg.corners === 'round' && 'zaoblené rohy', cfg.express && 'EXPRES', `${cfg.qty} ks`].filter(Boolean).join(' · '));
   const items = o.items.map((it, i) => {
@@ -98,11 +138,11 @@ async function detailView(num) {
   }).join('');
   const notify = (id, on = true) => `<label class="chk"><input type="checkbox" data-notify="${id}"${on ? ' checked' : ''}> Poslat zákazníkovi e-mail</label>`;
   let action = '';
-  if (o.status === 'nova') action = `<h3>1. Zkontrolujte návrh a pošlete platbu</h3><p class="muted">Projděte tiskové PDF. Když je v pořádku, zákazník dostane e-mail s QR platbou (${cur === 'EUR' ? 'PAY by square' : 'QR Platba'}).</p>${pay ? '' : '<p class="msg err">Nejdřív v Nastavení vyplňte bankovní účet pro ' + cur + '.</p>'}<div class="btns"><button class="btn y" data-act="request-payment"${pay ? '' : ' disabled'}>Poslat výzvu k platbě</button></div>`;
-  else if (o.status === 'k_platbe') action = `<h3>2. Čeká se na platbu</h3>${pay ? `<div class="pay">${pay.qr}<dl class="kv"><dt>Částka</dt><dd>${money(pay.amount, cur)}</dd><dt>${cur === 'EUR' ? 'IBAN' : 'Účet'}</dt><dd>${esc(pay.account && cur === 'CZK' ? pay.account : pay.ibanF)}</dd><dt>VS</dt><dd>${esc(pay.vs)}</dd></dl></div>` : ''}${notify('paid')}<div class="btns"><button class="btn g" data-act="paid">Označit jako zaplaceno</button><button class="btn o" data-act="request-payment">Poslat výzvu znovu</button></div>`;
-  else if (o.status === 'zaplaceno') action = `<h3>3. Objednejte tisk</h3><p class="muted">Stáhněte PDF a objednejte tisk u Bizay. Číslo jejich objednávky si můžete poznamenat.</p><label class="f">Číslo objednávky v tiskárně (nepovinné)<input data-ref></label><div class="btns"><button class="btn c" data-act="print">Objednáno v tisku</button></div>`;
-  else if (o.status === 'tisk') action = `<h3>4. Odeslání</h3><div class="row"><label class="f">Dopravce<select data-carrier>${Object.entries(carriers).map(([k, v]) => `<option value="${k}"${(c.ship === 'packeta' ? 'packeta' : 'dpd') === k ? ' selected' : ''}>${esc(v)}</option>`).join('')}</select></label><label class="f">Číslo zásilky<input data-track></label></div>${notify('ship')}<div class="btns"><button class="btn c" data-act="shipped">Označit jako odesláno</button></div>`;
-  else if (o.status === 'odeslano') action = `<h3>5. Doručeno?</h3><p class="muted">${o.shipping ? `Zásilka ${esc(o.shipping.number || '')} · ${esc(carriers[o.shipping.carrier] || '')}` : ''}</p><div class="btns"><button class="btn o" data-act="done">Uzavřít jako hotovo</button></div>`;
+  if (o.status === 'nova') action = `<h3>1. Zkontrolujte návrh a pošlete platbu</h3><p class="muted">Projděte tiskové PDF. Když je v pořádku, zákazník dostane QR platbu (${cur === 'EUR' ? 'PAY by square' : 'QR Platba'}) na ${money(o.total, cur)}.</p>${pay ? mailNote('pay') : '<p class="msg err">Nejdřív v <a href="#nastaveni">Nastavení</a> vyplňte bankovní účet pro ' + cur + '.</p>'}<div class="btns"><button class="btn y big" data-act="request-payment"${pay ? '' : ' disabled'}>✓ Návrh je OK – poslat platbu</button></div>`;
+  else if (o.status === 'k_platbe') action = `<h3>2. Čeká se na platbu</h3><p class="muted">Ve výpisu hledejte platbu s tímto VS a částkou:</p><div class="paymatch"><div><span>VS</span><b>${esc(pay?.vs || o.pay?.vs || '')}</b>${copyBtn(pay?.vs || o.pay?.vs || '', '⧉')}</div><div><span>Částka</span><b>${money(o.total, cur)}</b></div><div><span>Výzva odeslána</span><b>${dt(o.pay?.requested)}</b></div></div>${pay ? `<details class="muted"><summary style="cursor:pointer">QR a údaje platby</summary><div class="pay" style="margin-top:10px">${pay.qr}<dl class="kv"><dt>${cur === 'EUR' ? 'IBAN' : 'Účet'}</dt><dd>${esc(pay.account && cur === 'CZK' ? pay.account : pay.ibanF)}</dd><dt>VS</dt><dd>${esc(pay.vs)}</dd></dl></div></details>` : ''}${mailNote('paid')}${notify('paid')}<div class="btns"><button class="btn g big" data-act="paid">✓ Platba přišla – zaplaceno</button><button class="btn o" data-act="remind-payment">Připomenout platbu${o.reminded ? ' znovu' : ''}</button></div>`;
+  else if (o.status === 'zaplaceno') action = `<h3>3. Objednejte tisk u Bizay</h3><p class="muted">Volby, PDF a adresa jsou v panelu „Objednat u Bizay“ níže.</p><div class="row"><label class="f">Číslo objednávky Bizay<input data-ref placeholder="např. 12345678"></label><label class="f">Skutečná cena u Bizay (${B?.currency === 'CZK' ? 'Kč' : '€'}, nepovinné)<input data-cost inputmode="decimal" placeholder="${B?.cost ?? ''}"></label></div><div class="btns"><button class="btn c big" data-act="print">✓ Objednáno u Bizay – v tisku</button></div><p class="muted" style="margin:0">Zákazník e-mail nedostane, na stránce objednávky uvidí stav „V tlači“.</p>`;
+  else if (o.status === 'tisk') action = `<h3>4. Odeslání</h3><p class="muted">${o.printRef ? `Bizay č. <b>${esc(o.printRef)}</b>. ` : ''}Číslo zásilky najdete v e-mailu od Bizay.</p><div class="row"><label class="f">Dopravce<select data-carrier>${Object.entries(carriers).map(([k, v]) => `<option value="${k}"${k === 'dpd' ? ' selected' : ''}>${esc(v)}</option>`).join('')}</select></label><label class="f">Číslo zásilky<input data-track inputmode="numeric" placeholder="např. 01234567890123"></label></div>${mailNote('ship')}${notify('ship')}<div class="btns"><button class="btn c big" data-act="shipped">✓ Odesláno – poslat sledování</button></div>`;
+  else if (o.status === 'odeslano') action = `<h3>5. Doručeno?</h3><p class="muted">${o.shipping ? `Zásilka ${esc(o.shipping.number || '')} · ${esc(carriers[o.shipping.carrier] || '')}${o.shipping.number && o.shipping.carrier === 'dpd' ? ` · <a href="https://tracking.dpd.de/status/cs_CZ/parcel/${encodeURIComponent(o.shipping.number)}" target="_blank" rel="noopener">sledovat ↗</a>` : ''}` : ''}</p><div class="btns"><button class="btn o" data-act="done">Uzavřít jako hotovo</button></div>`;
   else action = `<h3>${ST[o.status]}</h3><p class="muted">Objednávka je uzavřená.</p>`;
 
   main.innerHTML = `<a class="back" href="#objednavky">← Objednávky</a>
@@ -115,6 +155,7 @@ async function detailView(num) {
         ${c.note ? `<dt>Poznámka</dt><dd>${esc(c.note)}</dd>` : ''}</dl></section>
     </div><div class="stack">
       <section class="box act" data-actions>${action}</section>
+      ${bizayBox}
       <section class="box act"><h3>Interní poznámka</h3><textarea rows="3" data-note>${esc(o.adminNote || '')}</textarea><div class="btns"><button class="btn sm o" data-act="note">Uložit poznámku</button></div></section>
       <section class="box act"><h3>Ostatní</h3><div class="row"><label class="f">Změnit stav ručně (bez e-mailu)<select data-status>${Object.entries(ST).map(([k, v]) => `<option value="${k}"${k === o.status ? ' selected' : ''}>${v}</option>`).join('')}</select></label><button class="btn sm o" data-act="status" style="flex:0 0 auto">Změnit</button></div>
         ${!['hotovo', 'zruseno'].includes(o.status) ? `<details><summary class="muted" style="cursor:pointer">Zrušit objednávku</summary><div class="act" style="margin-top:10px"><label class="f">Důvod (pošle se zákazníkovi)<input data-reason></label>${notify('cancel')}<button class="btn sm danger" data-act="cancel">Zrušit objednávku</button></div></details>` : ''}</section>
@@ -127,7 +168,8 @@ async function detailView(num) {
     const body = { action: act };
     if (act === 'request-payment' && !confirm(`Poslat zákazníkovi ${c.email} výzvu k platbě ${money(o.total, cur)}?`)) return;
     if (act === 'paid') body.notify = q('[data-notify="paid"]')?.checked;
-    if (act === 'print') body.ref = q('[data-ref]')?.value;
+    if (act === 'print') { body.ref = q('[data-ref]')?.value; body.cost = parseFloat(String(q('[data-cost]')?.value || '').replace(',', '.')) || null; }
+    if (act === 'remind-payment' && !confirm(`Poslat ${c.email} připomínku platby?`)) return;
     if (act === 'shipped') { body.carrier = q('[data-carrier]').value; body.number = q('[data-track]').value; body.notify = q('[data-notify="ship"]').checked; if (!body.number && !confirm('Odeslat bez čísla zásilky?')) return; }
     if (act === 'cancel') { body.reason = q('[data-reason]').value; body.notify = q('[data-notify="cancel"]').checked; if (!confirm('Opravdu zrušit objednávku?')) return; }
     if (act === 'status') body.status = q('[data-status]').value;
@@ -241,22 +283,30 @@ async function settingsView() {
   let s; try { s = await api('settings'); } catch (e) { main.innerHTML = `<p class="msg err">${esc(e.message)}</p>`; return; }
   const f = (k, label, ph = '', hint = '') => `<label class="f">${label}<input name="${k}" value="${esc(s[k] || '')}" placeholder="${esc(ph)}">${hint ? `<span class="muted" style="font-weight:400">${hint}</span>` : ''}</label>`;
   main.innerHTML = `<h1 class="pg">Nastavení</h1><div class="grid2"><div class="stack">
-    <form class="box act" data-set><h3>Platby převodem</h3>
+    <form class="box act" data-set>${!s.ibanEur || !(s.accountCzk || s.ibanCzk) ? `<div class="alert"><b>Platby zatím nefungují.</b> Bez účtu nejde zákazníkovi poslat QR kód k zaplacení. ${!s.ibanEur ? 'Chybí IBAN pro € (Slovensko). ' : ''}${!(s.accountCzk || s.ibanCzk) ? 'Chybí účet pro Kč (Česko).' : ''}</div>` : ''}<h3>Platby převodem</h3>
       ${f('accountCzk', 'Účet pro platby v Kč (Česko)', '123456789/0100', 'Z čísla účtu se vytvoří QR Platba.')}
       ${f('ibanEur', 'IBAN pro platby v € (Slovensko)', 'SK00 0000 0000 0000 0000 0000', 'Pro QR PAY by square. Může to být i EUR účet v Česku (CZ…).')}
       ${f('beneficiary', 'Příjemce (jméno na QR)', 'webhunter s.r.o.')}
       <h3 style="margin-top:8px">E-maily</h3>
       ${f('notifyTo', 'Kam chodí nové objednávky', 'info.webhunter@email.cz')}
       ${f('replyTo', 'Kam zákazníci odpovídají', 'info.webhunter@email.cz')}
-      ${f('siteUrl', 'Adresa webu (odkazy v e-mailech)', 'https://vizitkomat.eu/', 'Po spuštění domény změňte na https://vizitkomat.eu/')}
+      ${f('siteUrl', 'Adresa webu (odkazy v e-mailech)', 'https://vizitkomat.eu/', 'Odkazy v e-mailech zákazníkům vedou sem.')}
       <div data-msg></div><button class="btn y" type="submit">Uložit nastavení</button></form>
   </div><div class="stack">
 
     <form class="box act" data-pw><h3>Změna hesla</h3><label class="f">Současné heslo<input type="password" name="old" autocomplete="current-password" required></label><label class="f">Nové heslo (min. 10 znaků)<input type="password" name="new" autocomplete="new-password" minlength="10" required></label><div data-msg></div><button class="btn o" type="submit">Změnit heslo</button></form>
   </div></div>`;
-  main.querySelector('[data-set]').addEventListener('submit', async (e) => {
+  // kontrola účtů už při psaní (IBAN mod 97, české číslo účtu předčíslí-číslo/kód banky)
+  const ibanOk = (v) => { const x = v.replace(/\s+/g, '').toUpperCase(); if (!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(x)) return false; const r = (x.slice(4) + x.slice(0, 4)).replace(/[A-Z]/g, (ch) => ch.charCodeAt(0) - 55); let m = 0; for (const d of r) m = (m * 10 + +d) % 97; return m === 1; };
+  const czOk = (v) => /^(\d{1,6}-)?\d{2,10}\/\d{4}$/.test(v.replace(/\s+/g, ''));
+  const hint = (inp, ok, okText, badText) => { let h = inp.parentElement.querySelector('.vh'); if (!h) { h = document.createElement('span'); h.className = 'vh'; inp.after(h); } h.textContent = !inp.value ? '' : ok ? okText : badText; h.className = 'vh ' + (!inp.value ? '' : ok ? 'ok' : 'bad'); };
+  const fm = main.querySelector('[data-set]');
+  const vAcc = () => hint(fm.accountCzk, czOk(fm.accountCzk.value), '✓ formát účtu je v pořádku', 'Zadejte ve tvaru 123456789/0100 (případně 19-123456789/0800).');
+  const vIban = () => hint(fm.ibanEur, ibanOk(fm.ibanEur.value), '✓ IBAN je platný', 'IBAN nesedí – zkontrolujte číslice (SK + 22 číslic).');
+  fm.accountCzk.addEventListener('input', vAcc); fm.ibanEur.addEventListener('input', vIban); vAcc(); vIban();
+  fm.addEventListener('submit', async (e) => {
     e.preventDefault(); const body = Object.fromEntries(new FormData(e.target).entries()); const m = e.target.querySelector('[data-msg]');
-    try { await api('settings', body); m.innerHTML = '<p class="msg ok">Uloženo.</p>'; } catch (x) { m.innerHTML = `<p class="msg err">${esc(x.message)}</p>`; }
+    try { const r = await api('settings', body); setup = { eur: !!r.settings.ibanEur, czk: !!(r.settings.ibanCzk || r.settings.accountCzk), beneficiary: !!r.settings.beneficiary }; m.innerHTML = '<p class="msg ok">Uloženo.</p>'; } catch (x) { m.innerHTML = `<p class="msg err">${esc(x.message)}</p>`; }
   });
   main.querySelector('[data-pw]').addEventListener('submit', async (e) => {
     e.preventDefault(); const body = Object.fromEntries(new FormData(e.target).entries()); const m = e.target.querySelector('[data-msg]');
@@ -264,14 +314,72 @@ async function settingsView() {
   });
 }
 
+/* ---------- hodnocení zákazníků (moderace) ---------- */
+async function reviewsView() {
+  const main = shell('hodnoceni', '<h1 class="pg">Hodnocení</h1><p class="muted">Načítám…</p>');
+  let data; try { data = await api('reviews'); } catch (e) { main.innerHTML = `<h1 class="pg">Hodnocení</h1><p class="msg err">${esc(e.message)}</p>`; return; }
+  let rf = 'pending';
+  const RS = { pending: 'Čeká na schválení', approved: 'Zveřejněno', hidden: 'Skryto' };
+  const stars = (n) => `<span class="rv-st">${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i></span>`;
+  const draw = () => {
+    const list = data.reviews.filter((r) => rf === 'vse' || r.status === rf);
+    const pub = data.reviews.filter((r) => r.status === 'approved' && r.consent);
+    const avg = pub.length ? (pub.reduce((s, r) => s + r.stars, 0) / pub.length).toFixed(1).replace('.', ',') : '–';
+    main.innerHTML = `<h1 class="pg">Hodnocení</h1>
+      <p class="muted">Zákazníkům přijde e-mail s prosbou o hodnocení asi 5 dní po odeslání vizitek. Na web jdou jen schválená hodnocení se souhlasem zákazníka; blok s recenzemi se na webu ukáže od 3 zveřejněných.${data.github ? '' : ' <b>Pozor: chybí GH_TOKEN, zveřejnění na web nebude fungovat.</b>'}</p>
+      <div class="stats"><div class="stat" style="cursor:default"><b>${pub.length}</b><span>Zveřejněno na webu</span></div><div class="stat" style="cursor:default"><b>${avg}</b><span>Průměr zveřejněných</span></div><div class="stat${data.reviews.some((r) => r.status === 'pending') ? ' hot' : ''}" style="cursor:default"><b>${data.reviews.filter((r) => r.status === 'pending').length}</b><span>Čeká na schválení</span></div></div>
+      <div class="box"><div class="bar">${[['pending', 'Ke schválení'], ['approved', 'Zveřejněné'], ['hidden', 'Skryté'], ['vse', 'Vše']].map(([k, l]) => `<button class="chip${rf === k ? ' on' : ''}" data-rf="${k}">${l}</button>`).join('')}</div>
+      ${list.length ? list.map((r) => `<article class="rv-card" data-n="${r.n}">
+        <div class="rv-ph" data-ph="${r.photo ? r.n : ''}">${r.photo ? '<span class="muted">fotka…</span>' : '<span class="muted">bez fotky</span>'}</div>
+        <div class="rv-b"><div class="rv-h">${stars(r.stars)} <span><b>${esc(r.name || 'bez jména')}</b>${r.city ? ', ' + esc(r.city) : ''}</span> <a href="#${r.n}" class="muted">${r.n}</a> <span class="muted">${dt(r.created)} · ${r.lang.toUpperCase()}</span> <span class="st">${RS[r.status] || r.status}</span></div>
+          <textarea data-txt rows="3" maxlength="600">${esc(r.text || '')}</textarea>
+          <p class="muted" style="margin:4px 0 8px">${r.consent ? '✓ souhlasí se zveřejněním' : '✗ NEsouhlasí se zveřejněním – lze jen skrýt'}. Text můžete opravit jen v překlepech, smysl neměňte.</p>
+          <div class="rv-a">${r.consent ? `<button class="btn y" data-act="approved">${r.status === 'approved' ? 'Uložit a znovu zveřejnit' : 'Zveřejnit'}</button>` : ''}${r.photo && r.consent ? `<label class="muted rv-wp"><input type="checkbox" data-wp ${r.status === 'approved' && !r.photoPath ? '' : 'checked'}> i s fotkou</label>` : ''}<button class="btn o" data-act="hidden">Skrýt</button><button class="btn o" data-del>Smazat</button></div>
+        </div></article>`).join('') : '<p class="muted" style="padding:18px">Zatím tu nic není.</p>'}</div>`;
+    main.querySelectorAll('[data-ph]').forEach(async (el) => {
+      const n = el.dataset.ph; if (!n) return;
+      try { const r = await fetch(`${API}/admin/api/reviews/${n}/photo`, { headers: { authorization: `Bearer ${token}` } }); if (!r.ok) throw 0; const u = URL.createObjectURL(await r.blob()); el.innerHTML = `<a href="${u}" target="_blank" rel="noopener"><img alt="" src="${u}"></a>`; } catch (e) { el.innerHTML = '<span class="muted">fotku nelze načíst</span>'; }
+    });
+  };
+  main.addEventListener('click', async (e) => {
+    const f = e.target.closest('[data-rf]'); if (f) { rf = f.dataset.rf; draw(); return; }
+    const card = e.target.closest('[data-n]'); if (!card) return;
+    const n = card.dataset.n;
+    const act = e.target.closest('[data-act]'), del = e.target.closest('[data-del]');
+    if (!act && !del) return;
+    if (del && !confirm(`Opravdu smazat hodnocení ${n}? Nejde to vrátit.`)) return;
+    const btn = act || del; btn.disabled = true;
+    try {
+      let j;
+      if (del) { const r = await fetch(`${API}/admin/api/reviews/${n}`, { method: 'DELETE', headers: { authorization: `Bearer ${token}` } }); j = await r.json(); if (!r.ok) throw new Error(j.error || r.status); data.reviews = data.reviews.filter((x) => x.n !== n); }
+      else { j = await api(`reviews/${n}`, { status: act.dataset.act, text: card.querySelector('[data-txt]').value, withPhoto: card.querySelector('[data-wp]') ? card.querySelector('[data-wp]').checked : undefined }); data.reviews = data.reviews.map((x) => (x.n === n ? j.review : x)); }
+      toast(j.publish ? (j.publish.ok ? `Uloženo. Web se přegeneruje do 2 minut (${j.publish.count} na webu).` : 'Uloženo, ale zveřejnění selhalo: ' + (j.publish.note || '')) : 'Uloženo.');
+      draw();
+    } catch (x) { toast(x.message); btn.disabled = false; }
+  });
+  draw();
+}
+
+// stav účtů zjistíme jednou na začátku, ať je varování vidět na každé stránce
+async function loadSetup() {
+  if (setup || !token) return;
+  try {
+    const s = await api('settings'); setup = { eur: !!s.ibanEur, czk: !!(s.ibanCzk || s.accountCzk), beneficiary: !!s.beneficiary };
+    const top = app.querySelector('.top');
+    if (top && !app.querySelector('.warnbar') && (!setup.eur || !setup.czk)) top.insertAdjacentHTML('afterend', `<a class="warnbar" href="#nastaveni"><b>Chybí bankovní účet</b> ${!setup.eur ? 'pro € (SK)' : ''}${!setup.eur && !setup.czk ? ' a ' : ''}${!setup.czk ? 'pro Kč (CZ)' : ''} – zákazníkům nepůjde poslat QR platbu. Doplnit →</a>`);
+  } catch (e) { /* nevadí */ }
+}
 function route() {
   if (!token) return loginView();
+  setTimeout(loadSetup, 300);
   const h = decodeURIComponent(location.hash.slice(1));
   if (/^VK\d+$/.test(h)) return detailView(h);
   if (h === 'konverze') return statsView();
   if (h === 'cenik') return pricesView();
+  if (h === 'hodnoceni') return reviewsView();
   if (h === 'nastaveni') return settingsView();
-  return ordersView();
+  if (h === 'objednavky') return ordersView();
+  return dashboardView();
 }
 addEventListener('hashchange', route);
 route();

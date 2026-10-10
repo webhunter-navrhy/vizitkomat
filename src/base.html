@@ -9,7 +9,7 @@
 <link rel="alternate" hreflang="{{ 'sk' if lang == 'sk' else 'cs' }}" href="{{ canonical }}">
 <link rel="alternate" hreflang="{{ 'cs' if lang == 'sk' else 'sk' }}" href="{{ alt_canonical }}">
 <link rel="alternate" hreflang="x-default" href="{{ canonical if lang == 'sk' else alt_canonical }}">
-{% if not production or page in ('kosik', '404', 'objednavka') %}<meta name="robots" content="noindex">
+{% if not production or page in ('kosik', '404', 'objednavka', 'hodnotenie') %}<meta name="robots" content="noindex">
 {% endif %}
 <meta name="theme-color" content="#2440E6">
 <meta property="og:type" content="website">
@@ -18,7 +18,7 @@
 <meta property="og:url" content="{{ canonical }}">
 <meta property="og:title" content="{{ self.title() }}">
 <meta property="og:description" content="{{ self.description() }}">
-{% if obor %}<meta property="og:image" content="{{ public }}assets/pre/{{ lang }}/tpl-{{ obor.tpls[0] }}-f.jpg">
+{% if obor or clanok %}<meta property="og:image" content="{{ public }}assets/pre/{{ lang }}/tpl-{{ (obor or clanok).tpls[0] }}-f.jpg">
 <meta property="og:image:width" content="1000">
 <meta property="og:image:height" content="555">
 {% else %}<meta property="og:image" content="{{ public }}assets/img/og-{{ lang }}.png">
@@ -133,11 +133,12 @@ window.VK = {
     <div class="foot__col">
       <p class="foot__h">{{ L('Podľa odboru', 'Podle oboru') }}</p>
       {% for o in obory[:6] %}<a href="{{ link('obor-' ~ o.key) }}">{{ o[lang].name }}</a>
-      {% endfor %}<a href="{{ link('obory') }}"><b>{{ L('Všetky odbory', 'Všechny obory') }} →</b></a>
+      {% endfor %}<a href="{{ link('obory') }}"><b>{{ L('Všetky odbory', 'Všechny obory') }} →</b></a><a href="{{ link('rady') }}">{{ L('Rady a inšpirácia', 'Rady a inspirace') }}</a>
     </div>
     <div class="foot__col">
       <p class="foot__h">{{ L('Kontakt', 'Kontakt') }}</p>
       <a href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a>
+      <a href="{{ link('o-nas') }}">{{ L('O nás a ako to funguje', 'O nás a jak to funguje') }}</a>
       <a href="{{ link('kontakt') }}">{{ L('Kontakt a reklamácie', 'Kontakt a reklamace') }}</a>
       <span>{{ L('Slovensko a Česko', 'Česko a Slovensko') }}</span>
     </div>

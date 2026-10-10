@@ -15,7 +15,10 @@ ROOT = pathlib.Path(__file__).parent
 SRC = ROOT / 'src'
 PRICES = json.loads((ROOT / '_data' / 'prices.json').read_text())
 OBORY = json.loads((ROOT / '_data' / 'obory.json').read_text())
-FEATURED = json.loads((ROOT / '_data' / 'featured.json').read_text())  # poradie šablón (výber grafika), zdroj: assets/js/v2/featured.js
+FEATURED = json.loads((ROOT / '_data' / 'featured.json').read_text())
+CLANKY = json.loads((ROOT / '_data' / 'clanky.json').read_text())  # články „Rady a inšpirácia“
+_rv = ROOT / '_data' / 'reviews.json'  # schválené hodnotenia (zapisuje administrácia)
+REVIEWS = json.loads(_rv.read_text()) if _rv.exists() else {'count': 0, 'avg': 0, 'items': []}  # poradie šablón (výber grafika), zdroj: assets/js/v2/featured.js
 
 
 def template_names():
@@ -43,7 +46,10 @@ PAGES = [
     ('gdpr.html', 'ochrana-osobnych-udajov/', 'ochrana-osobnich-udaju/'),
     ('kontakt.html', 'kontakt/', 'kontakt/'),
     ('objednavka.html', 'objednavka/', 'objednavka/'),
+    ('hodnotenie.html', 'hodnotenie/', 'hodnoceni/'),
+    ('o-nas.html', 'o-nas/', 'o-nas/'),
     ('obory.html', 'vizitky-podla-odboru/', 'vizitky-podle-oboru/'),
+    ('rady.html', 'rady/', 'rady/'),
     ('404.html', '404.html', None),
 ]
 LANGS = {'sk': '', 'cz': 'cz/'}
@@ -63,6 +69,22 @@ ORG = {
 }
 
 
+def tokens(obj, lang):
+    """V textoch článkov nahradí {od100}, {sym}, {days}… aktuálnymi cenami a lehotami."""
+    P = PRICES[lang]
+    rep = {'{od100}': P['papers']['matny']['100'], '{od250}': P['papers']['matny']['250'], '{od500}': P['papers']['matny']['500'],
+           '{sym}': P['symbol'], '{days}': P['days']['std'], '{daysx}': P['days']['express'], '{digital}': P['digital']}
+    if isinstance(obj, str):
+        for k, v in rep.items():
+            obj = obj.replace(k, '{:,}'.format(v).replace(',', ' ') if isinstance(v, int) else str(v))
+        return obj
+    if isinstance(obj, list):
+        return [tokens(x, lang) for x in obj]
+    if isinstance(obj, dict):
+        return {k: tokens(v, lang) for k, v in obj.items()}
+    return obj
+
+
 def asset_hash(rel):
     p = ROOT / rel
     return hashlib.md5(p.read_bytes()).hexdigest()[:8] if p.exists() else '0'
@@ -70,6 +92,7 @@ def asset_hash(rel):
 
 def main():
     env = Environment(loader=FileSystemLoader(str(SRC)), autoescape=False, trim_blocks=True, lstrip_blocks=True)
+    env.filters['rvld'] = lambda r: {'@type': 'Review', 'reviewRating': {'@type': 'Rating', 'ratingValue': r['stars'], 'bestRating': 5}, 'author': {'@type': 'Person', 'name': r.get('name') or 'Zákazník'}, 'datePublished': r.get('date', ''), **({'reviewBody': r['text']} if r.get('text') else {})}
     env.filters['faqld'] = lambda qa: {'@type': 'Question', 'name': qa[0], 'acceptedAnswer': {'@type': 'Answer', 'text': qa[1]}}
     env.policies['json.dumps_kwargs'] = {'ensure_ascii': False}
     versions = {}
@@ -79,6 +102,7 @@ def main():
 
     pages = [(tpl, sk, cz, tpl.replace('.html', ''), None) for tpl, sk, cz in PAGES]
     pages += [('obor.html', o['sk']['slug'] + '/', o['cz']['slug'] + '/', 'obor-' + o['key'], o) for o in OBORY]
+    pages += [('clanok.html', 'rady/' + a['sk']['slug'] + '/', 'rady/' + a['cz']['slug'] + '/', 'clanok-' + a['key'], a) for a in CLANKY]
 
     def urls_for(lang):
         out = {}
@@ -89,6 +113,10 @@ def main():
             out[key] = LANGS[lang] + path
         return out
 
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('webp', ROOT / 'tools' / 'webp.py'); wp = importlib.util.module_from_spec(spec); spec.loader.exec_module(wp)
+    wp.convert()
+    PRE_V = {}
     TPLN = template_names()
     TPL_COUNT = len(list((ROOT / 'assets/pre/sk').glob('tpl-*-f.jpg'))) or len(TPLN)
     written = []
@@ -96,7 +124,9 @@ def main():
         U = urls_for(lang)
         other = 'cz' if lang == 'sk' else 'sk'
         UO = urls_for(other)
-        for tpl, sk, cz, key, obor in pages:
+        for tpl, sk, cz, key, item in pages:
+            obor = item if tpl == 'obor.html' else None
+            clanok = item if tpl == 'clanok.html' else None
             path = sk if lang == 'sk' else cz
             if path is None:
                 continue
@@ -119,7 +149,11 @@ def main():
                 p = _U.get(name, '')
                 return R + p if p else R
 
-            pre = {f.stem: f"{R}assets/pre/{lang}/{f.name}?v={asset_hash(f.relative_to(ROOT))}" for f in sorted((ROOT / 'assets' / 'pre' / lang).glob('*.jpg'))}
+            pre = {}
+            for f in sorted((ROOT / 'assets' / 'pre' / lang).glob('*.jpg')):
+                w = f.with_suffix('.webp')  # WebP (všetky súčasné prehliadače), JPG ostáva pre OG obrázky
+                g = w if w.exists() else f
+                pre[f.stem] = f"{R}assets/pre/{lang}/{g.name}?v={PRE_V.setdefault(g, asset_hash(g.relative_to(ROOT)))}"
             ctx = dict(
                 pre=pre, pre_json=json.dumps(pre),
                 lang=lang, L=L, A=A, R=R, link=link, page=key,
@@ -130,8 +164,9 @@ def main():
                 site=SITE, public=PUBLIC, production=PRODUCTION, importmap=importmap,
                 org_json=json.dumps(ORG, ensure_ascii=False),
                 obory=OBORY, obor=obor, O=(obor[lang] if obor else None),
+                clanky=CLANKY, clanok=clanok, C=(tokens(clanok[lang], lang) if clanok else None), clanky_t=[dict(a, **{lang: tokens(a[lang], lang)}) for a in CLANKY],
                 tname=lambda i, _l=lang: TPLN.get(i, {}).get(_l, i.capitalize()),
-                tpl_count=TPL_COUNT, featured=FEATURED,
+                tpl_count=TPL_COUNT, featured=FEATURED, reviews=REVIEWS,
             )
             html = env.get_template(tpl).render(**ctx)
             out.parent.mkdir(parents=True, exist_ok=True)
@@ -179,7 +214,7 @@ def main():
     for lang in LANGS:
         other = 'cz' if lang == 'sk' else 'sk'
         for name, p in U[lang].items():
-            if name in ('404', 'kosik', 'objednavka'):
+            if name in ('404', 'kosik', 'objednavka', 'hodnotenie'):
                 continue
             alt = U[other].get(name)
             links = f'<xhtml:link rel="alternate" hreflang="{"sk" if lang == "sk" else "cs"}" href="{SITE + p}"/>'

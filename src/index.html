@@ -12,6 +12,7 @@
   (L('Dá sa objednať na firmu?', 'Dá se objednat na firmu?'), L('Samozrejme, s IČO aj DIČ. Faktúru pošleme e-mailom. Nie sme platcami DPH, takže cena je konečná aj pre firmy.', 'Samozřejmě, s IČO i DIČ. Fakturu pošleme e-mailem. Nejsme plátci DPH, takže cena je konečná i pro firmy.')),
 ] %}
 {% block head %}
+<link rel="stylesheet" href="{{ A('assets/css/trust.css') }}">
 <link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ A('assets/css/home2.css') }}">
 <script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': FAQ | map('faqld') | list} | tojson }}</script>
@@ -37,6 +38,7 @@
         <button data-p="{{ L('Fitness trénerka, energicky a odvážne', 'Fitness trenérka, energicky a odvážně') }}">{{ L('Trénerka', 'Trenérka') }}</button>
         <button data-p="{{ L('Kaviareň s pražiarňou, retro a hravo', 'Kavárna s pražírnou, retro a hravě') }}">{{ L('Kaviareň', 'Kavárna') }}</button>
       </div>
+      <p class="hero__web"><a href="{{ link('tvorba') }}#web"><span aria-hidden="true">🌐</span> <b>{{ L('Máte web?', 'Máte web?') }}</b> {{ L('Navrhneme vizitky vo vašich farbách a s logom', 'Navrhneme vizitky ve vašich barvách a s logem') }} →</a></p>
       <p class="hero__alt">{{ L('Alebo', 'Nebo') }} <a href="{{ link('tvorba') }}?rezim=sablony">{{ L('si vyberte šablónu', 'si vyberte šablonu') }}</a> · <a href="{{ link('vlastny') }}">{{ L('nahrajte vlastný návrh', 'nahrajte vlastní návrh') }}</a></p>
       <ul class="hero__trust">
         <li class="hero__price">{{ L('Od', 'Od') }} <b>{{ prices.papers.matny['100'] }} {{ prices.symbol }}</b>{% if prices.launch %} <s>{{ prices.was.papers.matny['100'] }} {{ prices.symbol }}</s>{% endif %} {{ L('vrátane dopravy', 'včetně dopravy') }}{% if prices.launch %} <em>{{ L('zavádzacia cena', 'zaváděcí cena') }}</em>{% endif %}</li>
@@ -177,6 +179,8 @@
     <p class="price__more rv"><a class="link" href="{{ link('cennik') }}">{{ L('Celý cenník: soft-touch, Triplex, zaoblené rohy', 'Celý ceník: soft-touch, Triplex, zaoblené rohy') }} →</a></p>
   </div>
 </section>
+
+{% include '_reviews.html' %}
 
 <!-- ===== PAPIER ===== -->
 <section class="paper2" data-nav="cream">

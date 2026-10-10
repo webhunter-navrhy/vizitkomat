@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}{{ C.title }}{% endblock %}
+{% block description %}{{ C.desc }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ A('assets/css/rady.css') }}">
+<script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'Article', 'headline': C.title, 'description': C.desc, 'inLanguage': 'sk' if lang == 'sk' else 'cs',
+  'image': public ~ 'assets/pre/' ~ lang ~ '/tpl-' ~ clanok.tpls[0] ~ '-f.jpg', 'datePublished': clanok.date, 'dateModified': clanok.date, 'mainEntityOfPage': canonical,
+  'author': {'@type': 'Organization', 'name': 'Vizitkomat', 'url': site}, 'publisher': {'@type': 'Organization', 'name': 'Vizitkomat', 'logo': {'@type': 'ImageObject', 'url': site ~ 'assets/img/icon-512.png'}}} | tojson }}</script>
+<script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': C.faq | map('faqld') | list} | tojson }}</script>
+<script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [
+  {'@type': 'ListItem', 'position': 1, 'name': 'Vizitkomat', 'item': site + ('' if lang == 'sk' else 'cz/')},
+  {'@type': 'ListItem', 'position': 2, 'name': L('Rady a inšpirácia', 'Rady a inspirace'), 'item': site + ('' if lang == 'sk' else 'cz/') + 'rady/'},
+  {'@type': 'ListItem', 'position': 3, 'name': C.h1, 'item': canonical}]} | tojson }}</script>
+{% endblock %}
+{% block main %}
+{% set words = (C.lead ~ ' ' ~ (C.sections | map(attribute='p') | select | map('join', ' ') | join(' ')) ~ ' ' ~ (C.sections | map(attribute='list') | select | map('join', ' ') | join(' '))).split() | length %}
+<article class="rd-art">
+  <header class="rd-ahead" data-nav="cream">
+    <div class="wrap rd-ahead__grid">
+      <div>
+        <nav class="rd-crumbs" aria-label="{{ L('Omrvinky', 'Drobečková navigace') }}"><a href="{{ link('rady') }}">{{ L('Rady a inšpirácia', 'Rady a inspirace') }}</a><span aria-hidden="true">/</span><span>{{ C.h1 }}</span></nav>
+        <h1 class="rd-h1">{{ C.title }}</h1>
+        <p class="lead">{{ C.lead }}</p>
+        <p class="rd-meta">{{ L('Čítanie na', 'Čtení na') }} {{ [((words + 120) / 200) | round(0, 'ceil') | int, 2] | max }} min · Vizitkomat</p>
+      </div>
+      <div class="rd-fan" aria-hidden="true">{% for t in clanok.tpls[:3] %}<img alt="" src="{{ pre['tpl-' ~ t ~ '-f'] }}" width="1000" height="556"{% if not loop.first %} loading="lazy"{% endif %}>{% endfor %}</div>
+    </div>
+  </header>
+  <div class="wrap rd-body">
+    <aside class="rd-toc" aria-label="{{ L('Obsah', 'Obsah') }}">
+      <b>{{ L('V článku', 'V článku') }}</b>
+      <ol>{% for s in C.sections %}<li><a href="#s{{ loop.index }}">{{ s.h }}</a></li>{% endfor %}<li><a href="#faq">{{ L('Časté otázky', 'Časté otázky') }}</a></li></ol>
+    </aside>
+    <div class="rd-content">
+      {% for s in C.sections %}
+      <section id="s{{ loop.index }}">
+        <h2>{{ s.h }}</h2>
+        {% for p in s.p or [] %}<p>{{ p }}</p>{% endfor %}
+        {% if s.list %}<ul>{% for li in s.list %}{% set parts = li.split(' – ', 1) %}<li>{% if parts | length == 2 %}<b>{{ parts[0] }}</b> – {{ parts[1] }}{% else %}{{ li }}{% endif %}</li>{% endfor %}</ul>{% endif %}
+        {% if s.cards %}<div class="rd-figs rd-figs--{{ s.cards | length }}">{% for t in s.cards %}<figure><a href="{{ link('tvorba') }}?rezim=sablony&amp;sablona={{ t }}"><img alt="{{ L('Vizitka', 'Vizitka') }} {{ tname(t) }}" src="{{ pre['tpl-' ~ t ~ '-f'] }}" loading="lazy" decoding="async" width="1000" height="556"></a><figcaption>{{ L('Šablóna', 'Šablona') }} {{ tname(t) }} · <a href="{{ link('tvorba') }}?rezim=sablony&amp;sablona={{ t }}">{{ L('použiť', 'použít') }}</a></figcaption></figure>{% endfor %}</div>{% endif %}
+        {% if s.tip %}<p class="rd-tip">{{ s.tip }}</p>{% endif %}
+      </section>
+      {% if loop.index == 2 %}
+      <aside class="rd-inline">
+        <div><b>{{ L('Chcete to vidieť na vlastnej vizitke?', 'Chcete to vidět na vlastní vizitce?') }}</b><span>{{ L('Tri návrhy s vaším menom za pár sekúnd, zadarmo.', 'Tři návrhy s vaším jménem za pár vteřin, zdarma.') }}</span></div>
+        <a class="btn btn--c" href="{{ link('tvorba') }}">{{ L('Vyskúšať', 'Vyzkoušet') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a>
+      </aside>
+      {% endif %}
+      {% endfor %}
+      <section id="faq" class="rd-faq">
+        <h2>{{ L('Časté otázky', 'Časté otázky') }}</h2>
+        {% for q, ans in C.faq %}<details><summary>{{ q }}</summary><p>{{ ans }}</p></details>{% endfor %}
+      </section>
+      <section class="rd-rel">
+        <h2>{{ L('Vizitky podľa odboru', 'Vizitky podle oboru') }}</h2>
+        <div class="rd-chips">{% for o in obory if o.key in clanok.obory %}<a href="{{ link('obor-' ~ o.key) }}">{{ o[lang].name }}</a>{% endfor %}<a href="{{ link('cennik') }}">{{ L('Cenník', 'Ceník') }}</a><a href="{{ link('digitalna') }}">{{ L('Digitálna vizitka', 'Digitální vizitka') }}</a></div>
+      </section>
+    </div>
+  </div>
+  <section class="rd-more" data-nav="cream">
+    <div class="wrap">
+      <h2 class="h-m">{{ L('Ďalšie rady', 'Další rady') }}</h2>
+      <div class="rd-grid rd-grid--3">
+        {% for a in clanky_t if a.key != clanok.key %}{% if loop.index <= 3 %}{% set c = a[lang] %}
+        <a class="rd-card" href="{{ link('clanok-' ~ a.key) }}"><span class="rd-card__img"><img alt="" src="{{ pre['tpl-' ~ a.tpls[0] ~ '-f'] }}" loading="lazy" decoding="async" width="1000" height="556"></span><b>{{ c.title }}</b><i>{{ L('Čítať', 'Číst') }} →</i></a>
+        {% endif %}{% endfor %}
+      </div>
+    </div>
+  </section>
+  <section class="rd-cta" data-nav="blue">
+    <div class="wrap rd-cta__in">
+      <h2 class="h-l">{{ L('Vaša vizitka je', 'Vaše vizitka je') }} <span class="hl">{{ L('2 minúty', '2 minuty') }}</span> {{ L('odtiaľto.', 'odsud.') }}</h2>
+      <p class="lead">{{ L('Od', 'Od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }} {{ L('za 100 ks vrátane dopravy. Platíte až po kontrole návrhu.', 'za 100 ks včetně dopravy. Platíte až po kontrole návrhu.') }}</p>
+      <a class="btn btn--y btn--lg" href="{{ link('tvorba') }}">{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }} <span class="ar">→</span></a>
+    </div>
+  </section>
+</article>
+{% endblock %}

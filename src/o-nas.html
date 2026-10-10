@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}{{ L('O nás a ako to funguje | Vizitkomat', 'O nás a jak to funguje | Vizitkomat') }}{% endblock %}
+{% block description %}{{ L('Kto stojí za Vizitkomatom, ako vyrábame vaše vizitky, kto kontroluje každý návrh a čo urobíme, keď niečo nevyjde. Firma webhunter s.r.o., IČO 29498511.', 'Kdo stojí za Vizitkomatem, jak vyrábíme vaše vizitky, kdo kontroluje každý návrh a co uděláme, když něco nevyjde. Firma webhunter s.r.o., IČO 29498511.') }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/trust.css') }}">{% endblock %}
+{% block navclass %} solid{% endblock %}
+{% block main %}
+<section class="ab-hero wrap">
+  <div class="ab-hero__copy">
+    <p class="kicker">{{ L('O nás', 'O nás') }}</p>
+    <h1 class="h-l">{{ L('Vizitky od ľudí,', 'Vizitky od lidí,') }} <span class="hl-c">{{ L('nie od automatu.', 'ne od automatu.') }}</span></h1>
+    <p class="lead">{{ L('Návrh vám pomôže pripraviť AI, ale každú objednávku pred tlačou pozrie človek. Platíte až potom, keď je všetko v poriadku.', 'Návrh vám pomůže připravit AI, ale každou objednávku před tiskem zkontroluje člověk. Platíte až potom, když je všechno v pořádku.') }}</p>
+    <a class="btn btn--c btn--lg" href="{{ link('tvorba') }}">{{ L('Navrhnúť vizitku zadarmo', 'Navrhnout vizitku zdarma') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a>
+  </div>
+  <div class="ab-hero__vis" aria-hidden="true">
+    {% set ids = (featured.top or ['kytice', 'noirgold', 'chmel'])[:3] %}
+    {% for id in ids %}<img class="ab-card ab-card--{{ loop.index }}" alt="" src="{{ pre['tpl-' ~ id ~ '-f'] }}" width="1000" height="556" {% if loop.index == 3 %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>{% endfor %}
+  </div>
+</section>
+
+<section class="ab-sec wrap">
+  <h2 class="h-m">{{ L('Kto za tým stojí', 'Kdo za tím stojí') }}</h2>
+  <div class="ab-grid">
+    <div class="ab-box ab-box--ink">
+      <span class="ab-label">{{ L('Prevádzkovateľ', 'Provozovatel') }}</span>
+      <b class="ab-big">webhunter s.r.o.</b>
+      <dl class="ab-dl">
+        <dt>IČO</dt><dd>29498511</dd>
+        <dt>{{ L('Sídlo', 'Sídlo') }}</dt><dd>Na Provaznici 2691/7, 150 00 Praha 5</dd>
+        <dt>DPH</dt><dd>{{ L('nie sme platcami, ceny sú konečné', 'nejsme plátci, ceny jsou konečné') }}</dd>
+        <dt>E-mail</dt><dd><a href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a></dd>
+      </dl>
+      <p class="ab-note">{{ L('Firmu si môžete overiť v obchodnom registri ČR (ARES) podľa IČO.', 'Firmu si můžete ověřit v obchodním rejstříku (ARES) podle IČO.') }} <a class="link link--w" href="https://ares.gov.cz/ekonomicke-subjekty?ico=29498511" target="_blank" rel="noopener">{{ L('Overiť v ARES', 'Ověřit v ARES') }} ↗</a></p>
+    </div>
+    <div class="ab-box">
+      <span class="ab-label">{{ L('Čím sa líšime', 'Čím se lišíme') }}</span>
+      <ul class="ab-list">
+        <li><b>{{ L('Návrh bez grafika', 'Návrh bez grafika') }}</b>{{ L('AI pripraví hotové vizitky z jednej vety alebo z vášho webu. Upraviť ich zvládne každý.', 'AI připraví hotové vizitky z jedné věty nebo z vašeho webu. Upravit je zvládne každý.') }}</li>
+        <li><b>{{ L('Kontrola človekom', 'Kontrola člověkem') }}</b>{{ L('Pozrieme texty, okraje, rozlíšenie aj čitateľnosť. Keď niečo nesedí, ozveme sa skôr, než sa tlačí.', 'Zkontrolujeme texty, okraje, rozlišení i čitelnost. Když něco nesedí, ozveme se dřív, než se tiskne.') }}</li>
+        <li><b>{{ L('Digitálna vizitka zadarmo', 'Digitální vizitka zdarma') }}</b>{{ L('Ku každej tlačenej aj vlastná stránka s QR kódom, bez predplatného.', 'Ke každé tištěné i vlastní stránka s QR kódem, bez předplatného.') }}</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="ab-sec ab-sec--steps">
+  <div class="wrap">
+    <h2 class="h-m">{{ L('Čo sa deje po objednávke', 'Co se děje po objednávce') }}</h2>
+    <ol class="ab-steps">
+      <li><span>1</span><b>{{ L('Objednáte, nič neplatíte', 'Objednáte, nic neplatíte') }}</b><p>{{ L('Potvrdenie príde hneď e-mailom spolu s odkazom na stav objednávky.', 'Potvrzení přijde hned e-mailem spolu s odkazem na stav objednávky.') }}</p></li>
+      <li><span>2</span><b>{{ L('Návrh skontroluje človek', 'Návrh zkontroluje člověk') }}</b><p>{{ L('Do jedného pracovného dňa. Ak treba niečo upraviť, napíšeme vám a nič sa netlačí.', 'Do jednoho pracovního dne. Pokud je potřeba něco upravit, napíšeme vám a nic se netiskne.') }}</p></li>
+      <li><span>3</span><b>{{ L('Zaplatíte QR kódom', 'Zaplatíte QR kódem') }}</b><p>{{ L('Pošleme platobné údaje a QR kód. Bez karty, bez záloh vopred.', 'Pošleme platební údaje a QR kód. Bez karty, bez záloh předem.') }}</p></li>
+      <li><span>4</span><b>{{ L('Tlač u overeného partnera', 'Tisk u ověřeného partnera') }}</b><p>{{ L('Vizitky tlačí veľká európska tlačiareň na profesionálnych strojoch, na papier 350 g alebo Triplex.', 'Vizitky tiskne velká evropská tiskárna na profesionálních strojích, na papír 350 g nebo Triplex.') }}</p></li>
+      <li><span>5</span><b>{{ L('Doručí kuriér DPD', 'Doručí kurýr DPD') }}</b><p>{{ L('Číslo zásielky dostanete e-mailom, doprava na Slovensko aj do Česka je zadarmo.', 'Číslo zásilky dostanete e-mailem, doprava po Česku i na Slovensko je zdarma.') }}</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="ab-sec wrap">
+  <h2 class="h-m">{{ L('Keď niečo nevyjde', 'Když něco nevyjde') }}</h2>
+  <div class="ab-grid ab-grid--3">
+    <div class="ab-box ab-box--y"><span class="ab-ico" aria-hidden="true">↻</span><b>{{ L('Chyba tlače? Vytlačíme znova', 'Chyba tisku? Vytiskneme znovu') }}</b><p>{{ L('Zlé farby, orez alebo poškodenie pri doprave: pošlite fotku a vizitky vytlačíme znova zadarmo.', 'Špatné barvy, ořez nebo poškození při přepravě: pošlete fotku a vizitky vytiskneme znovu zdarma.') }}</p></div>
+    <div class="ab-box"><span class="ab-ico" aria-hidden="true">✎</span><b>{{ L('Zmena pred tlačou', 'Změna před tiskem') }}</b><p>{{ L('Kým nezaplatíte, môžete návrh zmeniť alebo objednávku zrušiť. Stačí odpovedať na e-mail.', 'Dokud nezaplatíte, můžete návrh změnit nebo objednávku zrušit. Stačí odpovědět na e-mail.') }}</p></div>
+    <div class="ab-box"><span class="ab-ico" aria-hidden="true">@</span><b>{{ L('Odpovedá človek', 'Odpovídá člověk') }}</b><p>{{ L('Na e-maily odpovedáme do 24 hodín v pracovné dni. Reklamáciu vybavíme podľa', 'Na e-maily odpovídáme do 24 hodin v pracovní dny. Reklamaci vyřídíme podle') }} <a class="link" href="{{ link('podmienky') }}">{{ L('obchodných podmienok', 'obchodních podmínek') }}</a>.</p></div>
+  </div>
+</section>
+
+{% include '_reviews.html' %}
+
+<section class="ab-cta wrap">
+  <h2 class="h-l">{{ L('Vyskúšajte to.', 'Vyzkoušejte to.') }} <span class="hl-c">{{ L('Návrh je zadarmo.', 'Návrh je zdarma.') }}</span></h2>
+  <div class="ab-cta__b"><a class="btn btn--c btn--lg" href="{{ link('tvorba') }}">{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a><a class="btn btn--w btn--lg" href="{{ link('kontakt') }}">{{ L('Napísať nám', 'Napsat nám') }}</a></div>
+</section>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}{{ L('Ohodnoťte vizitky | Vizitkomat', 'Ohodnoťte vizitky | Vizitkomat') }}{% endblock %}
+{% block description %}{{ L('Ako sa vám páčia vizitky z Vizitkomatu? Hodnotenie zaberie minútu.', 'Jak se vám líbí vizitky z Vizitkomatu? Hodnocení zabere minutu.') }}{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ A('assets/css/trust.css') }}">{% endblock %}
+{% block navclass %} solid{% endblock %}
+{% block main %}
+<section class="rvf wrap" data-rvf>
+  <div class="rvf__card">
+    <div class="rvf__state" data-state="load"><span class="dots"><i></i><i></i><i></i></span><p>{{ L('Načítavam vašu objednávku…', 'Načítám vaši objednávku…') }}</p></div>
+
+    <div class="rvf__state" data-state="bad" hidden>
+      <h1 class="h-m">{{ L('Odkaz nefunguje', 'Odkaz nefunguje') }}</h1>
+      <p>{{ L('Skontrolujte, či ste otvorili celý odkaz z e-mailu. Ak to nepomôže, napíšte nám na', 'Zkontrolujte, zda jste otevřeli celý odkaz z e-mailu. Pokud to nepomůže, napište nám na') }} <a class="link" href="mailto:info@vizitkomat.eu">info@vizitkomat.eu</a>.</p>
+    </div>
+
+    <div class="rvf__state" data-state="early" hidden>
+      <h1 class="h-m">{{ L('Na hodnotenie je ešte skoro', 'Na hodnocení je ještě brzy') }}</h1>
+      <p>{{ L('Vizitky ešte nie sú na ceste. Hodnotiť ich môžete, keď ich budete mať v ruke.', 'Vizitky ještě nejsou na cestě. Hodnotit je můžete, až je budete mít v ruce.') }}</p>
+      <a class="btn" data-track href="{{ link('objednavka') }}">{{ L('Stav objednávky', 'Stav objednávky') }} <span class="ar">→</span></a>
+    </div>
+
+    <div class="rvf__state" data-state="done" hidden>
+      <div class="rvf__ok" aria-hidden="true">✓</div>
+      <h1 class="h-m">{{ L('Ďakujeme!', 'Děkujeme!') }}</h1>
+      <p>{{ L('Vaše hodnotenie sme dostali. Pomáha ostatným živnostníkom rozhodnúť sa a nám robiť vizitky ešte lepšie.', 'Vaše hodnocení jsme dostali. Pomáhá ostatním živnostníkům rozhodnout se a nám dělat vizitky ještě lepší.') }}</p>
+      <a class="btn btn--c" href="{{ link('tvorba') }}">{{ L('Navrhnúť ďalšiu vizitku', 'Navrhnout další vizitku') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a>
+    </div>
+
+    <form class="rvf__form" data-state="form" hidden novalidate>
+      <p class="kicker"><span data-num></span></p>
+      <h1 class="h-m">{{ L('Ako sa vám páčia vizitky?', 'Jak se vám líbí vizitky?') }}</h1>
+      <p class="rvf__lead">{{ L('Zaberie to minútu. Ak niečo nie je v poriadku, napíšte to sem alebo nám na e-mail, vyriešime to.', 'Zabere to minutu. Pokud něco není v pořádku, napište to sem nebo nám na e-mail, vyřešíme to.') }}</p>
+
+      <fieldset class="rvf__stars" data-stars>
+        <legend>{{ L('Vaše hodnotenie', 'Vaše hodnocení') }}</legend>
+        {% for n in range(1, 6) %}<label><input type="radio" name="stars" value="{{ n }}"><span aria-hidden="true">★</span><b class="sr">{{ n }} / 5</b></label>{% endfor %}
+        <em data-stars-t></em>
+      </fieldset>
+
+      <label class="rvf__f"><span>{{ L('Čo sa vám páčilo? (nepovinné)', 'Co se vám líbilo? (nepovinné)') }}</span>
+        <textarea name="text" rows="4" maxlength="600" placeholder="{{ L('Napr. ako vizitky vyzerajú, ako sa vám s nimi pracovalo, či ich zákazníci chvália…', 'Např. jak vizitky vypadají, jak se vám s nimi pracovalo, jestli je zákazníci chválí…') }}"></textarea></label>
+
+      <div class="rvf__row">
+        <label class="rvf__f"><span>{{ L('Krstné meno', 'Křestní jméno') }}</span><input name="name" maxlength="30" autocomplete="given-name"></label>
+        <label class="rvf__f"><span>{{ L('Mesto', 'Město') }}</span><input name="city" maxlength="40" autocomplete="address-level2"></label>
+      </div>
+
+      <div class="rvf__photo">
+        <label class="rvf__drop" data-drop>
+          <input type="file" accept="image/*" data-file hidden>
+          <img alt="" data-prev hidden>
+          <span data-drop-t><b>{{ L('+ Pridať fotku vizitiek', '+ Přidat fotku vizitek') }}</b><small>{{ L('nepovinné · fotka z mobilu stačí', 'nepovinné · fotka z mobilu stačí') }}</small></span>
+        </label>
+        <button class="link" type="button" data-photo-x hidden>{{ L('Odstrániť fotku', 'Odstranit fotku') }}</button>
+      </div>
+
+      <label class="chk rvf__consent"><input type="checkbox" name="consent" checked> {{ L('Súhlasím so zverejnením hodnotenia (s krstným menom, mestom a fotkou) na vizitkomat.eu.', 'Souhlasím se zveřejněním hodnocení (s křestním jménem, městem a fotkou) na vizitkomat.eu.') }}</label>
+
+      <p class="rvf__err" data-err role="alert" hidden></p>
+      <button class="btn btn--c btn--lg rvf__go" type="submit">{{ L('Odoslať hodnotenie', 'Odeslat hodnocení') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
+      <p class="rvf__fine">{{ L('Zverejňujeme len skutočné hodnotenia zákazníkov, ktorí u nás objednali. Nič neupravujeme okrem preklepov.', 'Zveřejňujeme jen skutečná hodnocení zákazníků, kteří u nás objednali. Nic neupravujeme kromě překlepů.') }}</p>
+    </form>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}<script type="module" src="{{ A('assets/js/v2/hodnotenie.js') }}"></script>{% endblock %}

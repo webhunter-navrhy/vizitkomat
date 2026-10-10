@@ -1,0 +1,30 @@
+{#- Skutočné hodnotenia zákazníkov (_data/reviews.json zapisuje administrácia po schválení).
+    Blok sa zobrazí až od 3 zverejnených hodnotení – dovtedy nič, žiadne vymyslené recenzie.
+    Použitie: {% include '_reviews.html' %} (voliteľne pred tým {% set rv_limit = 6 %}) -#}
+{% set _rv = reviews if reviews is defined else {'count': 0, 'items': []} %}
+{% if _rv.count and _rv.count >= 3 %}
+{% set _lim = rv_limit if rv_limit is defined else 6 %}
+{% set _items = (_rv['items'] | selectattr('photo') | list) + (_rv['items'] | rejectattr('photo') | list) %}
+<section class="rvw" aria-labelledby="rvw-h">
+  <div class="wrap">
+    <div class="rvw__head">
+      <h2 class="h-m" id="rvw-h">{{ L('Čo hovoria zákazníci', 'Co říkají zákazníci') }}</h2>
+      <p class="rvw__sum"><span class="rvw__avg">{{ ('%.1f' % _rv.avg) | replace('.', ',') }}</span><span class="rvw__stars" aria-hidden="true"><i style="width:{{ (_rv.avg / 5 * 100) | round(1) }}%">★★★★★</i>★★★★★</span><span>{{ _rv.count }} {{ L('overených hodnotení', 'ověřených hodnocení') }}</span></p>
+    </div>
+    <div class="rvw__grid">
+      {% for r in _items[:_lim] %}
+      <figure class="rvw__c">
+        {% if r.photo %}<img class="rvw__ph" alt="{{ L('Fotka vizitiek od zákazníka', 'Fotka vizitek od zákazníka') }}" src="{{ R }}{{ r.photo }}" loading="lazy" width="600" height="450">{% endif %}
+        <div class="rvw__b">
+          <span class="rvw__st" aria-label="{{ r.stars }} / 5">{{ '★' * r.stars }}<i>{{ '★' * (5 - r.stars) }}</i></span>
+          {% if r.text %}<blockquote>„{{ r.text }}“</blockquote>{% endif %}
+          <figcaption><b>{{ r.name or L('Zákazník', 'Zákazník') }}</b>{% if r.city %}, {{ r.city }}{% endif %} <span>· {{ L('overený nákup', 'ověřený nákup') }}</span></figcaption>
+        </div>
+      </figure>
+      {% endfor %}
+    </div>
+    <p class="rvw__fine">{{ L('Zverejňujeme len hodnotenia zákazníkov, ktorí u nás objednali, a len s ich súhlasom.', 'Zveřejňujeme jen hodnocení zákazníků, kteří u nás objednali, a jen s jejich souhlasem.') }}</p>
+  </div>
+  <script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'Product', 'name': L('Tlačené vizitky s návrhom', 'Tištěné vizitky s návrhem'), 'brand': {'@type': 'Brand', 'name': 'Vizitkomat'}, 'aggregateRating': {'@type': 'AggregateRating', 'ratingValue': _rv.avg, 'reviewCount': _rv.count, 'bestRating': 5, 'worstRating': 1}, 'review': _rv['items'][:10] | map('rvld') | list} | tojson }}</script>
+</section>
+{% endif %}

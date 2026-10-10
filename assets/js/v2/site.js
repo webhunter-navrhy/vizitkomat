@@ -63,7 +63,7 @@ export function toast(msg, action) {
 /* ---------- konverzie: rozpracovaná vizitka + lepiace CTA na mobile ---------- */
 const PAGE = document.body.className.replace(/.*page-(\S+).*/, '$1');
 const tr2 = (sk, cz) => (window.VK?.lang === 'cz' ? cz : sk);
-if (!['tvorba', 'kosik', 'objednavka', 'admin', 'v_card'].includes(PAGE)) {
+if (!['tvorba', 'kosik', 'objednavka', 'hodnotenie', 'admin', 'v_card'].includes(PAGE)) {
   // pripomenutie rozpracovaného návrhu (uložený v IndexedDB editora)
   import('./store.js').then(async ({ get }) => {
     const s = await get('studio-v2'); if (!s?.d?.f) return;

@@ -8,7 +8,7 @@
   (L('Ako dlho bude fungovať?', 'Jak dlouho bude fungovat?'), L('Bez časového obmedzenia, kým beží Vizitkomat. Nič neplatíte každý rok a nič sa automaticky nepredlžuje.', 'Bez časového omezení, dokud běží Vizitkomat. Nic neplatíte každý rok a nic se automaticky neprodlužuje.')),
 ] %}
 {% block title %}{{ L('Digitálna vizitka do telefónu | Vizitkomat', 'Digitální vizitka do telefonu | Vizitkomat') }}{% endblock %}
-{% block description %}{{ L('Digitálna vizitka s vlastnou adresou a QR kódom. Kontakt sa uloží jedným ťuknutím, online rezervácia, recenzie aj otváracie hodiny. K tlačeným vizitkám zadarmo, inak jednorazovo za ' ~ prices.digital ~ ' ' ~ prices.symbol ~ '.', 'Digitální vizitka s vlastní adresou a QR kódem. Kontakt se uloží jedním ťuknutím, online rezervace, recenze i otevírací doba. K tištěným vizitkám zdarma, jinak jednorázově za ' ~ prices.digital ~ ' ' ~ prices.symbol ~ '.') }}{% endblock %}
+{% block description %}{{ L('Digitálna vizitka s vlastnou adresou a QR kódom: uloženie do kontaktov jedným ťuknutím, rezervácia aj recenzie. K tlačeným vizitkám zadarmo.', 'Digitální vizitka s vlastní adresou a QR kódem: uložení do kontaktů jedním ťuknutím, rezervace i recenze. K tištěným vizitkám zdarma.') }}{% endblock %}
 {% block head %}<link rel="stylesheet" href="{{ A('assets/css/dcard.css') }}"><link rel="stylesheet" href="{{ A('assets/css/pages2.css') }}">
 
 <script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': FAQD | map('faqld') | list} | tojson }}</script>

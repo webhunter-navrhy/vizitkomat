@@ -1,0 +1,1318 @@
+[
+ {
+  "key": "rozmery",
+  "tpls": [
+   "kytice",
+   "noirgold",
+   "swiss"
+  ],
+  "obory": [
+   "kadernici",
+   "makleri",
+   "pravo"
+  ],
+  "date": "2026-10-10",
+  "sk": {
+   "slug": "rozmery-vizitky",
+   "title": "Rozmery vizitky: 90 × 50 mm, 85 × 55 mm alebo štvorec?",
+   "desc": "Aký rozmer vizitky zvoliť? Porovnanie formátov 90 × 50 mm, 85 × 55 mm a 55 × 55 mm, spadávka, bezpečná zóna a čo sa zmestí do peňaženky.",
+   "h1": "Rozmery vizitky",
+   "lead": "Na Slovensku a v Česku je najbežnejší formát 90 × 50 mm. Popri ňom sa používa európsky 85 × 55 mm a čoraz obľúbenejší štvorec. Ukážeme, čím sa líšia a ktorý sa hodí k vám.",
+   "sections": [
+    {
+     "h": "Najbežnejšie formáty",
+     "p": [
+      "Rozmer vizitky ovplyvňuje, ako pôsobí v ruke aj či sa zmestí do bežných obalov a peňaženiek."
+     ],
+     "list": [
+      "90 × 50 mm – štandard v SK a CZ. Užší a elegantnejší, zmestí sa do každej peňaženky a stojanu na vizitky.",
+      "85 × 55 mm – európsky formát, rovnaký ako platobná karta. Trochu vyšší, viac miesta na text.",
+      "55 × 55 mm – štvorec. Výrazný a netradičný, hodí sa pre kreatívne odbory, kaviarne a značky, ktoré chcú vytŕčať.",
+      "89 × 51 mm – americký formát. V Európe sa používa zriedka."
+     ],
+     "cards": [
+      "kytice",
+      "noirgold"
+     ]
+    },
+    {
+     "h": "Spadávka a bezpečná zóna",
+     "p": [
+      "Tlačiareň reže vizitky z väčšieho hárku s malou toleranciou. Preto sa pozadie a obrázky, ktoré majú siahať až po okraj, natiahnu o 2 mm za hranu. Tomu sa hovorí spadávka. Pri formáte 90 × 50 mm má tlačový súbor 94 × 54 mm.",
+      "Opačne to platí pre texty: meno, telefón a e-mail nechajte aspoň 4 mm od okraja. Inak môžu byť po orezaní príliš na hrane alebo ich nôž zasiahne."
+     ],
+     "tip": "V našom editore je spadávka aj bezpečná zóna nastavená automaticky a kontrola pred tlačou upozorní, ak je text príliš blízko okraja."
+    },
+    {
+     "h": "Ktorý formát si vybrať",
+     "list": [
+      "Chcete istotu a klasiku? 90 × 50 mm.",
+      "Potrebujete viac textu, napríklad dve adresy? 85 × 55 mm.",
+      "Chcete, aby si vás zapamätali? Štvorec 55 × 55 mm, ale počítajte s menším priestorom na kontakty."
+     ],
+     "cards": [
+      "swiss"
+     ]
+    },
+    {
+     "h": "Na výšku alebo na šírku?",
+     "p": [
+      "Väčšina vizitiek je na šírku, pretože sa tak lepšie číta meno a kontakty. Orientácia na výšku pôsobí moderne a hodí sa pri výraznom logu alebo ilustrácii. Rozmer ostáva rovnaký, len sa otočí."
+     ]
+    }
+   ],
+   "faq": [
+    [
+     "Aký je štandardný rozmer vizitky na Slovensku?",
+     "Najbežnejší je 90 × 50 mm. Často sa používa aj európsky formát 85 × 55 mm, rovnaký ako platobná karta."
+    ],
+    [
+     "Koľko milimetrov má spadávka?",
+     "Zvyčajne 2 mm z každej strany. Pri vizitke 90 × 50 mm má tlačový súbor 94 × 54 mm."
+    ],
+    [
+     "Zmestí sa štvorcová vizitka do peňaženky?",
+     "Áno, 55 × 55 mm je užšia ako bežná karta, zmestí sa do väčšiny peňaženiek aj puzdier."
+    ]
+   ]
+  },
+  "cz": {
+   "slug": "rozmery-vizitky",
+   "title": "Rozměry vizitky: 90 × 50 mm, 85 × 55 mm, nebo čtverec?",
+   "desc": "Jaký rozměr vizitky zvolit? Srovnání formátů 90 × 50 mm, 85 × 55 mm a 55 × 55 mm, spadávka, bezpečná zóna a co se vejde do peněženky.",
+   "h1": "Rozměry vizitky",
+   "lead": "V Česku a na Slovensku je nejběžnější formát 90 × 50 mm. Vedle něj se používá evropský 85 × 55 mm a stále oblíbenější čtverec. Ukážeme, čím se liší a který se hodí k vám.",
+   "sections": [
+    {
+     "h": "Nejběžnější formáty",
+     "p": [
+      "Rozměr vizitky ovlivňuje, jak působí v ruce i jestli se vejde do běžných obalů a peněženek."
+     ],
+     "list": [
+      "90 × 50 mm – standard v CZ a SK. Užší a elegantnější, vejde se do každé peněženky a stojánku na vizitky.",
+      "85 × 55 mm – evropský formát, stejný jako platební karta. O něco vyšší, víc místa na text.",
+      "55 × 55 mm – čtverec. Výrazný a netradiční, hodí se pro kreativní obory, kavárny a značky, které chtějí vyčnívat.",
+      "89 × 51 mm – americký formát. V Evropě se používá zřídka."
+     ],
+     "cards": [
+      "kytice",
+      "noirgold"
+     ]
+    },
+    {
+     "h": "Spadávka a bezpečná zóna",
+     "p": [
+      "Tiskárna řeže vizitky z většího archu s malou tolerancí. Proto se pozadí a obrázky, které mají sahat až k okraji, protáhnou o 2 mm za hranu. Tomu se říká spadávka. U formátu 90 × 50 mm má tiskový soubor 94 × 54 mm.",
+      "Opačně to platí pro texty: jméno, telefon a e-mail nechte aspoň 4 mm od okraje. Jinak mohou být po ořezu příliš na hraně nebo je nůž zasáhne."
+     ],
+     "tip": "V našem editoru je spadávka i bezpečná zóna nastavená automaticky a kontrola před tiskem upozorní, pokud je text příliš blízko okraje."
+    },
+    {
+     "h": "Který formát zvolit",
+     "list": [
+      "Chcete jistotu a klasiku? 90 × 50 mm.",
+      "Potřebujete víc textu, například dvě adresy? 85 × 55 mm.",
+      "Chcete, aby si vás zapamatovali? Čtverec 55 × 55 mm, ale počítejte s menším prostorem na kontakty."
+     ],
+     "cards": [
+      "swiss"
+     ]
+    },
+    {
+     "h": "Na výšku, nebo na šířku?",
+     "p": [
+      "Většina vizitek je na šířku, protože se tak lépe čte jméno a kontakty. Orientace na výšku působí moderně a hodí se u výrazného loga nebo ilustrace. Rozměr zůstává stejný, jen se otočí."
+     ]
+    }
+   ],
+   "faq": [
+    [
+     "Jaký je standardní rozměr vizitky v Česku?",
+     "Nejběžnější je 90 × 50 mm. Často se používá i evropský formát 85 × 55 mm, stejný jako platební karta."
+    ],
+    [
+     "Kolik milimetrů má spadávka?",
+     "Obvykle 2 mm z každé strany. U vizitky 90 × 50 mm má tiskový soubor 94 × 54 mm."
+    ],
+    [
+     "Vejde se čtvercová vizitka do peněženky?",
+     "Ano, 55 × 55 mm je užší než běžná karta, vejde se do většiny peněženek i pouzder."
+    ]
+   ]
+  }
+ },
+ {
+  "key": "obsah",
+  "tpls": [
+   "etiketa",
+   "glow",
+   "iskra"
+  ],
+  "obory": [
+   "remeselnici",
+   "kozmetika",
+   "gastro"
+  ],
+  "date": "2026-10-10",
+  "sk": {
+   "slug": "co-napisat-na-vizitku",
+   "title": "Čo napísať na vizitku: kompletný zoznam a príklady",
+   "desc": "Čo musí byť na vizitke a čo je zbytočné? Meno, pozícia, telefón, e-mail, web, adresa, QR kód aj slogan. Praktický zoznam s príkladmi.",
+   "h1": "Čo napísať na vizitku",
+   "lead": "Dobrá vizitka povie za tri sekundy, kto ste, čo robíte a ako vás zastihnúť. Všetko ostatné je bonus. Tu je zoznam, čo na vizitku patrí, v poradí podľa dôležitosti.",
+   "sections": [
+    {
+     "h": "Čo na vizitke nesmie chýbať",
+     "list": [
+      "Meno a priezvisko – najväčší text na vizitke (okrem loga firmy).",
+      "Čím sa zaoberáte – pozícia alebo odbor, napr. „Kaderníčka“ či „Elektroinštalácie“.",
+      "Telefón – vo formáte, ktorý sa dá ľahko vyťukať: +421 905 123 456.",
+      "E-mail – ideálne na vlastnej doméne, pôsobí dôveryhodnejšie ako freemail."
+     ],
+     "cards": [
+      "glow"
+     ]
+    },
+    {
+     "h": "Čo je dobré pridať",
+     "list": [
+      "Web alebo Instagram – podľa toho, kde vás zákazníci naozaj hľadajú.",
+      "Adresa – ak máte prevádzku, kam zákazníci chodia.",
+      "QR kód – vedie na digitálnu vizitku, web alebo rezerváciu.",
+      "Krátky slogan – jedna veta, ktorá povie, čím ste iní.",
+      "Logo – ak ho máte. Ak nie, poslúži monogram alebo ilustrácia odboru."
+     ]
+    },
+    {
+     "h": "Čo radšej vynechať",
+     "list": [
+      "Fax a pevné linky, ktoré nikto nedvíha.",
+      "Dlhé zoznamy služieb – na papier stačia tri hlavné, zvyšok patrí do digitálnej vizitky.",
+      "Viac telefónnych čísel bez vysvetlenia.",
+      "Údaje, ktoré sa často menia, napr. ceny alebo otváracie hodiny."
+     ],
+     "tip": "Všetko, čo sa mení, dajte do digitálnej vizitky. Upravíte to kedykoľvek bez novej tlače a QR kód na papieri ostane rovnaký."
+    },
+    {
+     "h": "Predná a zadná strana",
+     "p": [
+      "Najčastejšie rozdelenie: predná strana nesie meno, logo a čím sa zaoberáte, zadná kontakty a QR kód. Iná možnosť je mať na prednej strane všetko a zadnú nechať na výraznú grafiku alebo vzor."
+     ],
+     "cards": [
+      "etiketa",
+      "iskra"
+     ]
+    }
+   ],
+   "faq": [
+    [
+     "Musí byť na vizitke IČO?",
+     "Nie je to povinné. Pri firemných zákazníkoch a väčších zákazkách však IČO zvyšuje dôveru."
+    ],
+    [
+     "Má byť na vizitke adresa bydliska?",
+     "Nie. Uvádzajte len adresu prevádzky, kam za vami zákazníci chodia. Súkromnú adresu na vizitku nedávajte."
+    ],
+    [
+     "Koľko textu je na vizitke priveľa?",
+     "Ak musíte zmenšiť písmo pod 7 bodov, je toho priveľa. Menej dôležité údaje presuňte do digitálnej vizitky."
+    ]
+   ]
+  },
+  "cz": {
+   "slug": "co-napsat-na-vizitku",
+   "title": "Co napsat na vizitku: kompletní seznam a příklady",
+   "desc": "Co musí být na vizitce a co je zbytečné? Jméno, pozice, telefon, e-mail, web, adresa, QR kód i slogan. Praktický seznam s příklady.",
+   "h1": "Co napsat na vizitku",
+   "lead": "Dobrá vizitka řekne za tři vteřiny, kdo jste, co děláte a jak vás zastihnout. Všechno ostatní je bonus. Tady je seznam, co na vizitku patří, seřazený podle důležitosti.",
+   "sections": [
+    {
+     "h": "Co na vizitce nesmí chybět",
+     "list": [
+      "Jméno a příjmení – největší text na vizitce (kromě loga firmy).",
+      "Čím se zabýváte – pozice nebo obor, např. „Kadeřnice“ či „Elektroinstalace“.",
+      "Telefon – ve formátu, který se dá snadno vyťukat: +420 605 123 456.",
+      "E-mail – ideálně na vlastní doméně, působí důvěryhodněji než freemail."
+     ],
+     "cards": [
+      "glow"
+     ]
+    },
+    {
+     "h": "Co je dobré přidat",
+     "list": [
+      "Web nebo Instagram – podle toho, kde vás zákazníci opravdu hledají.",
+      "Adresa – pokud máte provozovnu, kam zákazníci chodí.",
+      "QR kód – vede na digitální vizitku, web nebo rezervaci.",
+      "Krátký slogan – jedna věta, která řekne, čím jste jiní.",
+      "Logo – pokud ho máte. Pokud ne, poslouží monogram nebo ilustrace oboru."
+     ]
+    },
+    {
+     "h": "Co raději vynechat",
+     "list": [
+      "Fax a pevné linky, které nikdo nezvedá.",
+      "Dlouhé seznamy služeb – na papír stačí tři hlavní, zbytek patří do digitální vizitky.",
+      "Víc telefonních čísel bez vysvětlení.",
+      "Údaje, které se často mění, např. ceny nebo otevírací doba."
+     ],
+     "tip": "Všechno, co se mění, dejte do digitální vizitky. Upravíte to kdykoli bez nového tisku a QR kód na papíře zůstane stejný."
+    },
+    {
+     "h": "Přední a zadní strana",
+     "p": [
+      "Nejčastější rozdělení: přední strana nese jméno, logo a čím se zabýváte, zadní kontakty a QR kód. Jiná možnost je mít na přední straně všechno a zadní nechat na výraznou grafiku nebo vzor."
+     ],
+     "cards": [
+      "etiketa",
+      "iskra"
+     ]
+    }
+   ],
+   "faq": [
+    [
+     "Musí být na vizitce IČO?",
+     "Není to povinné. U firemních zákazníků a větších zakázek ale IČO zvyšuje důvěru."
+    ],
+    [
+     "Má být na vizitce adresa bydliště?",
+     "Ne. Uvádějte jen adresu provozovny, kam za vámi zákazníci chodí. Soukromou adresu na vizitku nedávejte."
+    ],
+    [
+     "Kolik textu je na vizitce moc?",
+     "Pokud musíte zmenšit písmo pod 7 bodů, je toho moc. Méně důležité údaje přesuňte do digitální vizitky."
+    ]
+   ]
+  }
+ },
+ {
+  "key": "zadarmo",
+  "tpls": [
+   "chmel",
+   "vows",
+   "glazura"
+  ],
+  "obory": [
+   "foto",
+   "cukrarne",
+   "it"
+  ],
+  "date": "2026-10-10",
+  "sk": {
+   "slug": "ako-navrhnut-vizitku-zadarmo",
+   "title": "Ako navrhnúť vizitku zadarmo za pár minút",
+   "desc": "Návod, ako navrhnúť vizitku zadarmo bez grafika: AI návrh z jednej vety, šablóny, úpravy textu a farieb a kontrola pred tlačou.",
+   "h1": "Ako navrhnúť vizitku zadarmo",
+   "lead": "Na pekné vizitky dnes nepotrebujete grafika ani grafický program. Stačí pár minút a jedna veta o tom, čím sa živíte. Postup krok za krokom.",
+   "sections": [
+    {
+     "h": "1. Napíšte, kto ste a čím sa živíte",
+     "p": [
+      "Do poľa na úvodnej stránke napíšte meno a odbor, napríklad „Jana Malá, kaderníčka v Trnave, jemne a elegantne“. AI grafik z toho pochopí odbor, mesto aj štýl a o pár sekúnd pripraví tri rôzne návrhy s vaším menom."
+     ]
+    },
+    {
+     "h": "2. Vyberte si návrh alebo šablónu",
+     "p": [
+      "Ak vám žiadny z AI návrhov nesadne, vyberte si z viac ako sto šablón. Každú hneď uvidíte s vaším menom, takže si viete predstaviť výsledok."
+     ],
+     "cards": [
+      "chmel",
+      "vows",
+      "glazura"
+     ]
+    },
+    {
+     "h": "3. Doplňte kontakty a farby",
+     "p": [
+      "V jednoduchom formulári doplníte telefón, e-mail a prípadne web. Vizitka sa mení naživo. Farby zmeníte jedným ťuknutím a ak chcete, môžete nahrať aj logo."
+     ],
+     "tip": "Kto chce viac, otvorí detailný editor: posúvanie textov, písma, ikonky aj vlastné obrázky."
+    },
+    {
+     "h": "4. Kontrola a tlač",
+     "p": [
+      "Návrh je zadarmo. Platíte až za vytlačené vizitky a až potom, čo návrh skontroluje človek. Ak je niečo zle, ozve sa vám skôr, než sa začne tlačiť."
+     ]
+    }
+   ],
+   "faq": [
+    [
+     "Je návrh vizitky naozaj zadarmo?",
+     "Áno. Navrhovať, upravovať aj uložiť si návrh môžete zadarmo. Platíte len za vytlačené vizitky."
+    ],
+    [
+     "Potrebujem logo?",
+     "Nie. Ak logo nemáte, vizitka použije monogram alebo ilustráciu vášho odboru."
+    ],
+    [
+     "Môžem si návrh uložiť a dokončiť neskôr?",
+     "Áno, návrh vám pošleme odkazom na e-mail a vrátite sa k nemu kedykoľvek do 90 dní."
+    ]
+   ]
+  },
+  "cz": {
+   "slug": "jak-navrhnout-vizitku-zdarma",
+   "title": "Jak navrhnout vizitku zdarma za pár minut",
+   "desc": "Návod, jak navrhnout vizitku zdarma bez grafika: AI návrh z jedné věty, šablony, úpravy textu a barev a kontrola před tiskem.",
+   "h1": "Jak navrhnout vizitku zdarma",
+   "lead": "Na pěkné vizitky dnes nepotřebujete grafika ani grafický program. Stačí pár minut a jedna věta o tom, čím se živíte. Postup krok za krokem.",
+   "sections": [
+    {
+     "h": "1. Napište, kdo jste a čím se živíte",
+     "p": [
+      "Do pole na úvodní stránce napište jméno a obor, například „Jana Malá, kadeřnice v Brně, jemně a elegantně“. AI grafik z toho pochopí obor, město i styl a za pár vteřin připraví tři různé návrhy s vaším jménem."
+     ]
+    },
+    {
+     "h": "2. Vyberte si návrh nebo šablonu",
+     "p": [
+      "Pokud vám žádný z AI návrhů nesedne, vyberte si z více než sta šablon. Každou hned uvidíte se svým jménem, takže si umíte představit výsledek."
+     ],
+     "cards": [
+      "chmel",
+      "vows",
+      "glazura"
+     ]
+    },
+    {
+     "h": "3. Doplňte kontakty a barvy",
+     "p": [
+      "V jednoduchém formuláři doplníte telefon, e-mail a případně web. Vizitka se mění živě. Barvy změníte jedním ťuknutím a pokud chcete, můžete nahrát i logo."
+     ],
+     "tip": "Kdo chce víc, otevře detailní editor: posouvání textů, písma, ikonky i vlastní obrázky."
+    },
+    {
+     "h": "4. Kontrola a tisk",
+     "p": [
+      "Návrh je zdarma. Platíte až za vytištěné vizitky a až poté, co návrh zkontroluje člověk. Pokud je něco špatně, ozve se vám dřív, než se začne tisknout."
+     ]
+    }
+   ],
+   "faq": [
+    [
+     "Je návrh vizitky opravdu zdarma?",
+     "Ano. Navrhovat, upravovat i uložit si návrh můžete zdarma. Platíte jen za vytištěné vizitky."
+    ],
+    [
+     "Potřebuji logo?",
+     "Ne. Pokud logo nemáte, vizitka použije monogram nebo ilustraci vašeho oboru."
+    ],
+    [
+     "Mohu si návrh uložit a dokončit později?",
+     "Ano, návrh vám pošleme odkazem na e-mail a vrátíte se k němu kdykoli do 90 dnů."
+    ]
+   ]
+  }
+ },
+ {
+  "key": "qr",
+  "tpls": [
+   "noirgold",
+   "kytice",
+   "orbit"
+  ],
+  "obory": [
+   "makleri",
+   "ubytovanie",
+   "kadernici"
+  ],
+  "date": "2026-10-10",
+  "sk": {
+   "slug": "vizitky-s-qr-kodom",
+   "title": "Vizitky s QR kódom: kam má viesť a ako ho umiestniť",
+   "desc": "Kedy sa oplatí QR kód na vizitke, kam má viesť (web, kontakt, rezervácia, digitálna vizitka), aký má byť veľký a ako ho umiestniť.",
+   "h1": "Vizitky s QR kódom",
+   "lead": "QR kód na vizitke premení kus papiera na odkaz, ktorý sa otvorí v telefóne. Funguje však len vtedy, ak vedie na niečo užitočné a dá sa ľahko načítať.",
+   "sections": [
+    {
+     "h": "Kam má QR kód viesť",
+     "list": [
+      "Na digitálnu vizitku – najlepšia voľba. Človek vás jedným ťuknutím uloží do kontaktov a vidí aj služby, hodiny či rezerváciu.",
+      "Na rezervačný systém – ideálne pre salóny, lekárov a ubytovanie.",
+      "Na web alebo portfólio – ak tam máte niečo, čo predáva.",
+      "Na recenzie na Googli – ak chcete zbierať hodnotenia."
+     ],
+     "cards": [
+      "noirgold"
+     ]
+    },
+    {
+     "h": "Prečo nie priamo na web",
+     "p": [
+      "Adresa webu sa môže zmeniť a vytlačený QR kód už nezmeníte. Ak QR kód vedie na digitálnu vizitku, jej obsah aj odkazy upravíte kedykoľvek a vytlačené vizitky ostanú platné."
+     ]
+    },
+    {
+     "h": "Veľkosť a umiestnenie",
+     "list": [
+      "Minimálna veľkosť je približne 15 × 15 mm, pohodlnejšie sa číta 18–20 mm.",
+      "Okolo kódu nechajte biely okraj, telefón ho potom načíta rýchlejšie.",
+      "Tmavý kód na svetlom pozadí funguje najlepšie, svetlý na tmavom niektoré telefóny čítajú horšie.",
+      "Najčastejšie miesto je zadná strana, kde neruší meno ani logo."
+     ],
+     "cards": [
+      "kytice",
+      "orbit"
+     ],
+     "tip": "Pri každej našej vizitke máte digitálnu vizitku zadarmo a QR kód na ňu pridáte do návrhu jedným ťuknutím."
+    }
+   ],
+   "faq": [
+    [
+     "Prestane QR kód niekedy fungovať?",
+     "Kód vedie na adresu vašej digitálnej vizitky. Tú platíte len raz a ostáva aktívna, takže kód funguje ďalej."
+    ],
+    [
+     "Načíta QR kód každý telefón?",
+     "Áno, súčasné telefóny s Androidom aj iPhony čítajú QR kódy priamo vo fotoaparáte."
+    ],
+    [
+     "Môžem QR kód zafarbiť?",
+     "Áno, ak ostane dostatočný kontrast. Najistejší je tmavý kód na svetlom pozadí."
+    ]
+   ]
+  },
+  "cz": {
+   "slug": "vizitky-s-qr-kodem",
+   "title": "Vizitky s QR kódem: kam má vést a jak ho umístit",
+   "desc": "Kdy se vyplatí QR kód na vizitce, kam má vést (web, kontakt, rezervace, digitální vizitka), jak má být velký a jak ho umístit.",
+   "h1": "Vizitky s QR kódem",
+   "lead": "QR kód na vizitce promění kus papíru v odkaz, který se otevře v telefonu. Funguje ale jen tehdy, když vede na něco užitečného a dá se snadno načíst.",
+   "sections": [
+    {
+     "h": "Kam má QR kód vést",
+     "list": [
+      "Na digitální vizitku – nejlepší volba. Člověk si vás jedním ťuknutím uloží do kontaktů a vidí i služby, otevírací dobu či rezervaci.",
+      "Na rezervační systém – ideální pro salony, lékaře a ubytování.",
+      "Na web nebo portfolio – pokud tam máte něco, co prodává.",
+      "Na recenze na Googlu – pokud chcete sbírat hodnocení."
+     ],
+     "cards": [
+      "noirgold"
+     ]
+    },
+    {
+     "h": "Proč ne přímo na web",
+     "p": [
+      "Adresa webu se může změnit a vytištěný QR kód už nezměníte. Pokud QR kód vede na digitální vizitku, její obsah i odkazy upravíte kdykoli a vytištěné vizitky zůstanou platné."
+     ]
+    },
+    {
+     "h": "Velikost a umístění",
+     "list": [
+      "Minimální velikost je přibližně 15 × 15 mm, pohodlněji se čte 18–20 mm.",
+      "Kolem kódu nechte bílý okraj, telefon ho pak načte rychleji.",
+      "Tmavý kód na světlém pozadí funguje nejlépe, světlý na tmavém některé telefony čtou hůř.",
+      "Nejčastější místo je zadní strana, kde neruší jméno ani logo."
+     ],
+     "cards": [
+      "kytice",
+      "orbit"
+     ],
+     "tip": "Ke každé naší vizitce máte digitální vizitku zdarma a QR kód na ni přidáte do návrhu jedním ťuknutím."
+    }
+   ],
+   "faq": [
+    [
+     "Přestane QR kód někdy fungovat?",
+     "Kód vede na adresu vaší digitální vizitky. Tu platíte jen jednou a zůstává aktivní, takže kód funguje dál."
+    ],
+    [
+     "Načte QR kód každý telefon?",
+     "Ano, současné telefony s Androidem i iPhony čtou QR kódy přímo ve fotoaparátu."
+    ],
+    [
+     "Mohu QR kód obarvit?",
+     "Ano, pokud zůstane dostatečný kontrast. Nejjistější je tmavý kód na světlém pozadí."
+    ]
+   ]
+  }
+ },
+ {
+  "key": "digitalna",
+  "tpls": [
+   "saloon",
+   "menu",
+   "labka"
+  ],
+  "obory": [
+   "kozmetika",
+   "lekari",
+   "fitness"
+  ],
+  "date": "2026-10-10",
+  "sk": {
+   "slug": "digitalna-vizitka-co-to-je",
+   "title": "Digitálna vizitka: čo to je a ako funguje",
+   "desc": "Čo je digitálna vizitka, ako sa líši od papierovej, ako sa uloží do kontaktov a prečo sa oplatí mať obe. Jednoduché vysvetlenie s príkladmi.",
+   "h1": "Digitálna vizitka",
+   "lead": "Digitálna vizitka je malá webová stránka s vašimi kontaktmi, ktorá sa otvorí v telefóne. Neruší papierovú vizitku, dopĺňa ju: papier dáte do ruky, digitál pošlete správou alebo ho otvorí QR kód.",
+   "sections": [
+    {
+     "h": "Ako funguje",
+     "list": [
+      "Má vlastnú adresu, napríklad vizitkomat.eu/v/vase-meno.",
+      "Tlačidlom „Uložiť do kontaktov“ si vás človek uloží aj s fotkou.",
+      "Obsahuje telefón, e-mail, mapu, služby s cenami, otváracie hodiny, rezerváciu aj sociálne siete.",
+      "Pošlete ju cez WhatsApp, SMS alebo e-mail, prípadne ju otvorí QR kód na papierovej vizitke."
+     ],
+     "cards": [
+      "saloon"
+     ]
+    },
+    {
+     "h": "Prečo mať aj papierovú",
+     "p": [
+      "Papierová vizitka funguje pri osobnom stretnutí, na pulte prevádzky alebo pri dodávke tovaru. Digitálna funguje na diaľku a dá sa meniť. Najlepšie fungujú spolu: QR kód na papieri vedie na digitálnu vizitku, ktorú upravíte kedykoľvek."
+     ]
+    },
+    {
+     "h": "Čo do nej dať",
+     "list": [
+      "Fotku tváre alebo logo – pôsobí osobnejšie.",
+      "Krátky text o vás – dve až tri vety.",
+      "Služby s cenami – môžete ich meniť bez novej tlače.",
+      "Odkaz na rezerváciu a recenzie na Googli."
+     ],
+     "cards": [
+      "menu",
+      "labka"
+     ],
+     "tip": "K tlačeným vizitkám od nás máte digitálnu vizitku zadarmo. Samostatne stojí {digital} {sym} jednorazovo, bez predplatného."
+    }
+   ],
+   "faq": [
+    [
+     "Platí sa digitálna vizitka každý rok?",
+     "U nás nie. K tlačeným vizitkám je zadarmo a samostatne ju zaplatíte len raz."
+    ],
+    [
+     "Potrebuje zákazník aplikáciu?",
+     "Nie. Digitálna vizitka sa otvorí v bežnom prehliadači na akomkoľvek telefóne."
+    ],
+    [
+     "Môžem údaje neskôr zmeniť?",
+     "Áno. Zmeny vám zverejníme a QR kód na papierových vizitkách ostáva rovnaký."
+    ]
+   ]
+  },
+  "cz": {
+   "slug": "digitalni-vizitka-co-to-je",
+   "title": "Digitální vizitka: co to je a jak funguje",
+   "desc": "Co je digitální vizitka, jak se liší od papírové, jak se uloží do kontaktů a proč se vyplatí mít obě. Jednoduché vysvětlení s příklady.",
+   "h1": "Digitální vizitka",
+   "lead": "Digitální vizitka je malá webová stránka s vašimi kontakty, která se otevře v telefonu. Neruší papírovou vizitku, doplňuje ji: papír dáte do ruky, digitál pošlete zprávou nebo ho otevře QR kód.",
+   "sections": [
+    {
+     "h": "Jak funguje",
+     "list": [
+      "Má vlastní adresu, například vizitkomat.eu/v/vase-jmeno.",
+      "Tlačítkem „Uložit do kontaktů“ si vás člověk uloží i s fotkou.",
+      "Obsahuje telefon, e-mail, mapu, služby s cenami, otevírací dobu, rezervaci i sociální sítě.",
+      "Pošlete ji přes WhatsApp, SMS nebo e-mail, případně ji otevře QR kód na papírové vizitce."
+     ],
+     "cards": [
+      "saloon"
+     ]
+    },
+    {
+     "h": "Proč mít i papírovou",
+     "p": [
+      "Papírová vizitka funguje při osobním setkání, na pultu provozovny nebo při dodávce zboží. Digitální funguje na dálku a dá se měnit. Nejlépe fungují spolu: QR kód na papíře vede na digitální vizitku, kterou upravíte kdykoli."
+     ]
+    },
+    {
+     "h": "Co do ní dát",
+     "list": [
+      "Fotku obličeje nebo logo – působí osobněji.",
+      "Krátký text o vás – dvě až tři věty.",
+      "Služby s cenami – můžete je měnit bez nového tisku.",
+      "Odkaz na rezervaci a recenze na Googlu."
+     ],
+     "cards": [
+      "menu",
+      "labka"
+     ],
+     "tip": "K tištěným vizitkám od nás máte digitální vizitku zdarma. Samostatně stojí {digital} {sym} jednorázově, bez předplatného."
+    }
+   ],
+   "faq": [
+    [
+     "Platí se digitální vizitka každý rok?",
+     "U nás ne. K tištěným vizitkám je zdarma a samostatně ji zaplatíte jen jednou."
+    ],
+    [
+     "Potřebuje zákazník aplikaci?",
+     "Ne. Digitální vizitka se otevře v běžném prohlížeči na jakémkoli telefonu."
+    ],
+    [
+     "Mohu údaje později změnit?",
+     "Ano. Změny vám zveřejníme a QR kód na papírových vizitkách zůstává stejný."
+    ]
+   ]
+  }
+ },
+ {
+  "key": "papier",
+  "tpls": [
+   "samet",
+   "erb",
+   "letokruhy"
+  ],
+  "obory": [
+   "pravo",
+   "vinarstva",
+   "ubytovanie"
+  ],
+  "date": "2026-10-10",
+  "sk": {
+   "slug": "papier-na-vizitky",
+   "title": "Papier na vizitky: matný, soft-touch alebo Triplex?",
+   "desc": "Porovnanie papiera na vizitky: matný 350 g, laminácia, zamatový soft-touch a hrubý Triplex 720 g s farebnou hranou. Kedy sa ktorý hodí.",
+   "h1": "Papier na vizitky",
+   "lead": "Papier je prvé, čo človek pri vizitke ucíti, ešte skôr, než si prečíta meno. Rozdiel medzi tenkou a pevnou vizitkou spozná každý. Prehľad materiálov, ktoré tlačíme.",
+   "sections": [
+    {
+     "h": "Matný papier 350 g",
+     "p": [
+      "Pevný natieraný papier s matným povrchom. Neleskne sa, farby sú sýte a dá sa naň písať perom, napríklad termín ďalšej návštevy. Pre väčšinu vizitiek je to najlepší pomer ceny a kvality."
+     ],
+     "cards": [
+      "letokruhy"
+     ]
+    },
+    {
+     "h": "Laminácia: matná alebo lesklá",
+     "p": [
+      "Tenká fólia chráni vizitku pred odreninami a vlhkosťou. Lesklá zvýrazní farby, matná pôsobí jemnejšie. Na laminovanú vizitku sa horšie píše perom."
+     ]
+    },
+    {
+     "h": "Soft-touch",
+     "p": [
+      "Laminácia so zamatovým povrchom. Vizitka je príjemná na dotyk, nedrží odtlačky a pôsobí luxusne. Hodí sa pre salóny, advokátov, realitných maklérov a prémiové služby."
+     ],
+     "cards": [
+      "samet"
+     ]
+    },
+    {
+     "h": "Triplex 720 g",
+     "p": [
+      "Tri vrstvy papiera zlepené k sebe, s farebným jadrom, ktoré vidno na hrane. Vizitka je približne dvakrát hrubšia ako bežná a hneď poznať, že je výnimočná. Vyrába sa s rovnými rohmi."
+     ],
+     "cards": [
+      "erb"
+     ],
+     "tip": "Ceny všetkých papierov nájdete v cenníku, pri objednávke uvidíte rozdiel jedným ťuknutím."
+    }
+   ],
+   "faq": [
+    [
+     "Ktorý papier na vizitky je najlepší?",
+     "Pre väčšinu ľudí matný 350 g. Ak chcete luxusný dojem, soft-touch. Ak chcete, aby si vizitku každý zapamätal, Triplex."
+    ],
+    [
+     "Dá sa písať na soft-touch?",
+     "Perom horšie, laminácia tlačí atrament k povrchu. Na kartičky na termín odporúčame matný papier bez laminácie."
+    ],
+    [
+     "Ako hrubý je Triplex?",
+     "Približne dvakrát hrubší ako bežná vizitka 350 g, s farebnou hranou."
+    ]
+   ]
+  },
+  "cz": {
+   "slug": "papir-na-vizitky",
+   "title": "Papír na vizitky: matný, soft-touch, nebo Triplex?",
+   "desc": "Srovnání papíru na vizitky: matný 350 g, laminace, sametový soft-touch a silný Triplex 720 g s barevnou hranou. Kdy se který hodí.",
+   "h1": "Papír na vizitky",
+   "lead": "Papír je první, co člověk u vizitky ucítí, ještě dřív, než si přečte jméno. Rozdíl mezi tenkou a pevnou vizitkou pozná každý. Přehled materiálů, které tiskneme.",
+   "sections": [
+    {
+     "h": "Matný papír 350 g",
+     "p": [
+      "Pevný natíraný papír s matným povrchem. Neleskne se, barvy jsou syté a dá se na něj psát propiskou, například termín další návštěvy. Pro většinu vizitek je to nejlepší poměr ceny a kvality."
+     ],
+     "cards": [
+      "letokruhy"
+     ]
+    },
+    {
+     "h": "Laminace: matná, nebo lesklá",
+     "p": [
+      "Tenká fólie chrání vizitku před oděrem a vlhkostí. Lesklá zvýrazní barvy, matná působí jemněji. Na laminovanou vizitku se hůř píše propiskou."
+     ]
+    },
+    {
+     "h": "Soft-touch",
+     "p": [
+      "Laminace se sametovým povrchem. Vizitka je příjemná na dotek, nedrží otisky a působí luxusně. Hodí se pro salony, advokáty, realitní makléře a prémiové služby."
+     ],
+     "cards": [
+      "samet"
+     ]
+    },
+    {
+     "h": "Triplex 720 g",
+     "p": [
+      "Tři vrstvy papíru slepené k sobě, s barevným jádrem, které je vidět na hraně. Vizitka je přibližně dvakrát silnější než běžná a hned poznat, že je výjimečná. Vyrábí se s rovnými rohy."
+     ],
+     "cards": [
+      "erb"
+     ],
+     "tip": "Ceny všech papírů najdete v ceníku, při objednávce uvidíte rozdíl jedním ťuknutím."
+    }
+   ],
+   "faq": [
+    [
+     "Který papír na vizitky je nejlepší?",
+     "Pro většinu lidí matný 350 g. Pokud chcete luxusní dojem, soft-touch. Pokud chcete, aby si vizitku každý zapamatoval, Triplex."
+    ],
+    [
+     "Dá se psát na soft-touch?",
+     "Propiskou hůř, laminace drží inkoust na povrchu. Na kartičky na termín doporučujeme matný papír bez laminace."
+    ],
+    [
+     "Jak silný je Triplex?",
+     "Přibližně dvakrát silnější než běžná vizitka 350 g, s barevnou hranou."
+    ]
+   ]
+  }
+ },
+ {
+  "key": "zivnostnici",
+  "tpls": [
+   "iskra",
+   "prazirna",
+   "cisto"
+  ],
+  "obory": [
+   "remeselnici",
+   "elektrikari",
+   "upratovanie"
+  ],
+  "date": "2026-10-10",
+  "sk": {
+   "slug": "vizitky-pre-zivnostnikov",
+   "title": "Vizitky pre živnostníkov: čo funguje v praxi",
+   "desc": "Praktické rady pre živnostníkov: koľko vizitiek objednať, čo na ne napísať, kde ich rozdávať a ako sa odlíšiť od konkurencie.",
+   "h1": "Vizitky pre živnostníkov",
+   "lead": "Pre živnostníka je vizitka najlacnejšia reklama, ktorá funguje roky. Nechávate ju u zákazníka, v schránke aj pri pokladni. Ako z nej vyťažiť čo najviac.",
+   "sections": [
+    {
+     "h": "Koľko vizitiek objednať",
+     "list": [
+      "100 kusov – na vyskúšanie dizajnu alebo ak ich rozdávate len osobne.",
+      "250 kusov – bežná zásoba na pol roka až rok pre väčšinu živnostníkov.",
+      "500 a viac – ak ich dávate ku každej zákazke, do schránok alebo na veľtrhy. Cena za kus je výrazne nižšia."
+     ]
+    },
+    {
+     "h": "Kde vizitky rozdávať",
+     "list": [
+      "Pri každej hotovej zákazke – spokojný zákazník vás odporučí ďalej.",
+      "Do balíkov a k faktúram.",
+      "Na nástenky v obchodoch a vchodoch (so súhlasom).",
+      "Partnerom, s ktorými spolupracujete, napríklad elektrikár staviteľovi."
+     ],
+     "cards": [
+      "iskra",
+      "cisto"
+     ]
+    },
+    {
+     "h": "Ako sa odlíšiť",
+     "p": [
+      "Väčšina vizitiek živnostníkov vyzerá rovnako: biele pozadie, čierny text a clipart. Stačí ilustrácia vášho remesla, farba, ktorá sa vám páči, a pevný papier, a zákazník si vás zapamätá ako „toho s tou peknou vizitkou“."
+     ],
+     "cards": [
+      "prazirna"
+     ],
+     "tip": "AI grafik pripraví tri návrhy podľa vášho remesla za pár sekúnd, bez grafika a zadarmo."
+    },
+    {
+     "h": "Čo nezabudnúť",
+     "list": [
+      "Číslo, na ktoré naozaj dvíhate.",
+      "Oblasť, kde pôsobíte.",
+      "IČO, ak robíte pre firmy.",
+      "QR kód na fotky prác alebo recenzie."
+     ]
+    }
+   ],
+   "faq": [
+    [
+     "Koľko stoja vizitky pre živnostníka?",
+     "100 obojstranných vizitiek na matnom papieri stojí u nás od {od100} {sym} vrátane dopravy a návrhu."
+    ],
+    [
+     "Môžem objednať na IČO?",
+     "Áno, v pokladni zaškrtnete „Nakupujem na firmu“ a doplníte IČO, údaje sa načítajú z registra."
+    ],
+    [
+     "Ako rýchlo budú vizitky doma?",
+     "Zvyčajne do {days} pracovných dní od objednávky, s expresom do {daysx}."
+    ]
+   ]
+  },
+  "cz": {
+   "slug": "vizitky-pro-zivnostniky",
+   "title": "Vizitky pro živnostníky: co funguje v praxi",
+   "desc": "Praktické rady pro živnostníky: kolik vizitek objednat, co na ně napsat, kde je rozdávat a jak se odlišit od konkurence.",
+   "h1": "Vizitky pro živnostníky",
+   "lead": "Pro živnostníka je vizitka nejlevnější reklama, která funguje roky. Necháváte ji u zákazníka, ve schránce i u pokladny. Jak z ní vytěžit co nejvíc.",
+   "sections": [
+    {
+     "h": "Kolik vizitek objednat",
+     "list": [
+      "100 kusů – na vyzkoušení designu nebo pokud je rozdáváte jen osobně.",
+      "250 kusů – běžná zásoba na půl roku až rok pro většinu živnostníků.",
+      "500 a víc – pokud je dáváte ke každé zakázce, do schránek nebo na veletrhy. Cena za kus je výrazně nižší."
+     ]
+    },
+    {
+     "h": "Kde vizitky rozdávat",
+     "list": [
+      "U každé hotové zakázky – spokojený zákazník vás doporučí dál.",
+      "Do balíků a k fakturám.",
+      "Na nástěnky v obchodech a vchodech (se souhlasem).",
+      "Partnerům, se kterými spolupracujete, například elektrikář stavaři."
+     ],
+     "cards": [
+      "iskra",
+      "cisto"
+     ]
+    },
+    {
+     "h": "Jak se odlišit",
+     "p": [
+      "Většina vizitek živnostníků vypadá stejně: bílé pozadí, černý text a klipart. Stačí ilustrace vašeho řemesla, barva, která se vám líbí, a pevný papír, a zákazník si vás zapamatuje jako „toho s tou hezkou vizitkou“."
+     ],
+     "cards": [
+      "prazirna"
+     ],
+     "tip": "AI grafik připraví tři návrhy podle vašeho řemesla za pár vteřin, bez grafika a zdarma."
+    },
+    {
+     "h": "Na co nezapomenout",
+     "list": [
+      "Číslo, na kterém opravdu zvedáte.",
+      "Oblast, kde působíte.",
+      "IČO, pokud děláte pro firmy.",
+      "QR kód na fotky prací nebo recenze."
+     ]
+    }
+   ],
+   "faq": [
+    [
+     "Kolik stojí vizitky pro živnostníka?",
+     "100 oboustranných vizitek na matném papíře stojí u nás od {od100} {sym} včetně dopravy a návrhu."
+    ],
+    [
+     "Mohu objednat na IČO?",
+     "Ano, v pokladně zaškrtnete „Nakupuji na firmu“ a doplníte IČO, údaje se načtou z ARES."
+    ],
+    [
+     "Jak rychle budou vizitky doma?",
+     "Obvykle do {days} pracovních dnů od objednávky, s expresem do {daysx}."
+    ]
+   ]
+  }
+ },
+ {
+  "key": "chyby",
+  "tpls": [
+   "minimal",
+   "vlnyluxe",
+   "deco"
+  ],
+  "obory": [
+   "architekti",
+   "pravo",
+   "lekari"
+  ],
+  "date": "2026-10-10",
+  "sk": {
+   "slug": "najcastejsie-chyby-na-vizitkach",
+   "title": "10 najčastejších chýb na vizitkách (a ako sa im vyhnúť)",
+   "desc": "Príliš malé písmo, text pri okraji, rozmazané logo, preklepy v telefóne. Najčastejšie chyby na vizitkách a jednoduché rady, ako sa im vyhnúť.",
+   "h1": "Najčastejšie chyby na vizitkách",
+   "lead": "Väčšina zlých vizitiek nie je škaredá. Sú len nečitateľné, preplnené alebo s chybou v čísle. Tieto chyby vidíme najčastejšie.",
+   "sections": [
+    {
+     "h": "Chyby v texte",
+     "list": [
+      "Preklep v telefóne alebo e-maile – najdrahšia chyba, vizitky sú na nič. Pred tlačou si čísla prečítajte nahlas.",
+      "Príliš malé písmo – pod 6–7 bodov je kontakt ťažko čitateľný, najmä pre starších ľudí.",
+      "Priveľa informácií – päť telefónov, tri adresy a zoznam služieb. Menej je viac.",
+      "Neaktuálne údaje – starý web alebo zrušený e-mail."
+     ]
+    },
+    {
+     "h": "Chyby v grafike",
+     "list": [
+      "Text príliš blízko okraja – po orezaní môže byť na hrane. Držte ho aspoň 4 mm od okraja.",
+      "Rozmazané logo – logo stiahnuté z webu má často nízke rozlíšenie. Na tlač treba aspoň 300 dpi alebo vektor.",
+      "Slabý kontrast – svetlosivý text na bielom alebo tmavomodrý na čiernom sa na papieri stratí.",
+      "Bez spadávky – biely prúžok na okraji, keď pozadie nesiaha 2 mm za hranu."
+     ],
+     "cards": [
+      "minimal",
+      "deco"
+     ]
+    },
+    {
+     "h": "Chyby vo výbere",
+     "list": [
+      "Tenký papier – vizitka pôsobí lacno a ohne sa v peňaženke.",
+      "Dizajn, ktorý nesedí k odboru – advokát s komiksovým písmom alebo cukráreň v sivej."
+     ],
+     "cards": [
+      "vlnyluxe"
+     ],
+     "tip": "Pred tlačou robíme automatickú kontrolu (veľkosť písma, okraje, rozlíšenie loga) a návrh pozrie aj človek. Ak niečo nesedí, ozveme sa skôr, než sa tlačí."
+    }
+   ],
+   "faq": [
+    [
+     "Aké najmenšie písmo môže byť na vizitke?",
+     "Odporúčame aspoň 7 bodov pre kontakty. Pod 6 bodov už býva text ťažko čitateľný."
+    ],
+    [
+     "Ako zistím, či má logo dosť vysoké rozlíšenie?",
+     "Logo na šírku 3 cm by malo mať aspoň približne 350 pixelov. Náš editor vás upozorní, ak je rozlíšenie nízke."
+    ],
+    [
+     "Čo ak si chybu všimnem až po objednaní?",
+     "Napíšte nám čo najskôr. Kým sa vizitky netlačia, návrh opravíme."
+    ]
+   ]
+  },
+  "cz": {
+   "slug": "nejcastejsi-chyby-na-vizitkach",
+   "title": "10 nejčastějších chyb na vizitkách (a jak se jim vyhnout)",
+   "desc": "Moc malé písmo, text u okraje, rozmazané logo, překlepy v telefonu. Nejčastější chyby na vizitkách a jednoduché rady, jak se jim vyhnout.",
+   "h1": "Nejčastější chyby na vizitkách",
+   "lead": "Většina špatných vizitek není ošklivá. Jsou jen nečitelné, přeplněné nebo s chybou v čísle. Tyhle chyby vidíme nejčastěji.",
+   "sections": [
+    {
+     "h": "Chyby v textu",
+     "list": [
+      "Překlep v telefonu nebo e-mailu – nejdražší chyba, vizitky jsou k ničemu. Před tiskem si čísla přečtěte nahlas.",
+      "Moc malé písmo – pod 6–7 bodů je kontakt špatně čitelný, hlavně pro starší lidi.",
+      "Moc informací – pět telefonů, tři adresy a seznam služeb. Méně je víc.",
+      "Neaktuální údaje – starý web nebo zrušený e-mail."
+     ]
+    },
+    {
+     "h": "Chyby v grafice",
+     "list": [
+      "Text příliš blízko okraje – po ořezu může být na hraně. Držte ho aspoň 4 mm od okraje.",
+      "Rozmazané logo – logo stažené z webu má často nízké rozlišení. Na tisk je potřeba aspoň 300 dpi nebo vektor.",
+      "Slabý kontrast – světle šedý text na bílé nebo tmavě modrý na černé se na papíře ztratí.",
+      "Bez spadávky – bílý proužek na okraji, když pozadí nesahá 2 mm za hranu."
+     ],
+     "cards": [
+      "minimal",
+      "deco"
+     ]
+    },
+    {
+     "h": "Chyby ve výběru",
+     "list": [
+      "Tenký papír – vizitka působí lacině a ohne se v peněžence.",
+      "Design, který nesedí k oboru – advokát s komiksovým písmem nebo cukrárna v šedé."
+     ],
+     "cards": [
+      "vlnyluxe"
+     ],
+     "tip": "Před tiskem děláme automatickou kontrolu (velikost písma, okraje, rozlišení loga) a návrh zkontroluje i člověk. Pokud něco nesedí, ozveme se dřív, než se tiskne."
+    }
+   ],
+   "faq": [
+    [
+     "Jaké nejmenší písmo může být na vizitce?",
+     "Doporučujeme aspoň 7 bodů pro kontakty. Pod 6 bodů už bývá text špatně čitelný."
+    ],
+    [
+     "Jak zjistím, jestli má logo dost vysoké rozlišení?",
+     "Logo na šířku 3 cm by mělo mít aspoň přibližně 350 pixelů. Náš editor vás upozorní, pokud je rozlišení nízké."
+    ],
+    [
+     "Co když si chyby všimnu až po objednání?",
+     "Napište nám co nejdřív. Dokud se vizitky netisknou, návrh opravíme."
+    ]
+   ]
+  }
+ },
+ {
+  "key": "cena",
+  "tpls": [
+   "penzion",
+   "vila",
+   "glow"
+  ],
+  "obory": [
+   "makleri",
+   "kadernici",
+   "stavebne"
+  ],
+  "date": "2026-10-10",
+  "sk": {
+   "slug": "kolko-stoju-vizitky",
+   "title": "Koľko stoja vizitky a čo všetko ovplyvňuje cenu",
+   "desc": "Od čoho závisí cena vizitiek: počet kusov, papier, úprava povrchu, formát, rohy a dodanie. Prehľad s konkrétnymi cenami vrátane dopravy.",
+   "h1": "Koľko stoja vizitky",
+   "lead": "Cena vizitiek sa môže líšiť niekoľkonásobne. Rozhoduje počet kusov, papier, povrch a to, či platíte aj za návrh a dopravu. Ukážeme, čo cenu ovplyvňuje a koľko stoja vizitky u nás.",
+   "sections": [
+    {
+     "h": "Počet kusov",
+     "p": [
+      "Najviac cenu ovplyvňuje počet. Príprava tlače stojí rovnako pri 100 aj pri 1000 kusoch, preto cena za kus s množstvom rýchlo klesá."
+     ],
+     "list": [
+      "100 ks – od {od100} {sym}",
+      "250 ks – od {od250} {sym}",
+      "500 ks – od {od500} {sym}"
+     ],
+     "tip": "Ceny sú konečné vrátane obojstrannej tlače, návrhu, kontroly človekom, dopravy a digitálnej vizitky."
+    },
+    {
+     "h": "Papier a povrch",
+     "p": [
+      "Matný papier 350 g je základ. Laminácia, zamatový soft-touch alebo hrubý Triplex cenu zvýšia, ale vizitka pôsobí výrazne prémiovejšie."
+     ],
+     "cards": [
+      "vila",
+      "glow"
+     ]
+    },
+    {
+     "h": "Formát a rohy",
+     "p": [
+      "Najbežnejší formát 90 × 50 mm je najvýhodnejší. Európsky 85 × 55 mm má malý príplatok, zaoblené rohy vyžadujú ďalšie spracovanie."
+     ]
+    },
+    {
+     "h": "Na čo si dať pozor pri porovnávaní",
+     "list": [
+      "Je v cene doprava? Pri lacných ponukách často nie.",
+      "Je tlač obojstranná?",
+      "Platíte za návrh alebo kontrolu súboru?",
+      "Aká je hrúbka papiera? 250 g a 350 g je viditeľný rozdiel."
+     ],
+     "cards": [
+      "penzion"
+     ]
+    }
+   ],
+   "faq": [
+    [
+     "Koľko stojí 100 vizitiek?",
+     "U nás od {od100} {sym} vrátane obojstrannej tlače, návrhu a dopravy."
+    ],
+    [
+     "Prečo sa oplatí objednať viac kusov?",
+     "Cena za kus pri 500 kusoch je približne tretinová oproti 100 kusom."
+    ],
+    [
+     "Platí sa za návrh vizitky?",
+     "Nie, návrh s AI grafikom a v editore je zadarmo. Platíte len za tlač."
+    ]
+   ]
+  },
+  "cz": {
+   "slug": "kolik-stoji-vizitky",
+   "title": "Kolik stojí vizitky a co všechno ovlivňuje cenu",
+   "desc": "Na čem závisí cena vizitek: počet kusů, papír, úprava povrchu, formát, rohy a dodání. Přehled s konkrétními cenami včetně dopravy.",
+   "h1": "Kolik stojí vizitky",
+   "lead": "Cena vizitek se může lišit několikanásobně. Rozhoduje počet kusů, papír, povrch a to, jestli platíte i za návrh a dopravu. Ukážeme, co cenu ovlivňuje a kolik stojí vizitky u nás.",
+   "sections": [
+    {
+     "h": "Počet kusů",
+     "p": [
+      "Nejvíc cenu ovlivňuje počet. Příprava tisku stojí stejně u 100 i u 1000 kusů, proto cena za kus s množstvím rychle klesá."
+     ],
+     "list": [
+      "100 ks – od {od100} {sym}",
+      "250 ks – od {od250} {sym}",
+      "500 ks – od {od500} {sym}"
+     ],
+     "tip": "Ceny jsou konečné včetně oboustranného tisku, návrhu, kontroly člověkem, dopravy a digitální vizitky."
+    },
+    {
+     "h": "Papír a povrch",
+     "p": [
+      "Matný papír 350 g je základ. Laminace, sametový soft-touch nebo silný Triplex cenu zvýší, ale vizitka působí výrazně prémiověji."
+     ],
+     "cards": [
+      "vila",
+      "glow"
+     ]
+    },
+    {
+     "h": "Formát a rohy",
+     "p": [
+      "Nejběžnější formát 90 × 50 mm je nejvýhodnější. Evropský 85 × 55 mm má malý příplatek, zaoblené rohy vyžadují další zpracování."
+     ]
+    },
+    {
+     "h": "Na co si dát pozor při srovnávání",
+     "list": [
+      "Je v ceně doprava? U levných nabídek často ne.",
+      "Je tisk oboustranný?",
+      "Platíte za návrh nebo kontrolu souboru?",
+      "Jaká je gramáž papíru? 250 g a 350 g je viditelný rozdíl."
+     ],
+     "cards": [
+      "penzion"
+     ]
+    }
+   ],
+   "faq": [
+    [
+     "Kolik stojí 100 vizitek?",
+     "U nás od {od100} {sym} včetně oboustranného tisku, návrhu a dopravy."
+    ],
+    [
+     "Proč se vyplatí objednat víc kusů?",
+     "Cena za kus u 500 kusů je přibližně třetinová oproti 100 kusům."
+    ],
+    [
+     "Platí se za návrh vizitky?",
+     "Ne, návrh s AI grafikem a v editoru je zdarma. Platíte jen za tisk."
+    ]
+   ]
+  }
+ },
+ {
+  "key": "data",
+  "tpls": [
+   "vykres",
+   "hrastar",
+   "swiss"
+  ],
+  "obory": [
+   "architekti",
+   "foto",
+   "it"
+  ],
+  "date": "2026-10-10",
+  "sk": {
+   "slug": "tlacove-data-vizitky",
+   "title": "Tlačové dáta vizitky: spadávka, rozlíšenie a farby",
+   "desc": "Ako pripraviť tlačové dáta vizitky: rozmer so spadávkou, bezpečná zóna, rozlíšenie 300 dpi, CMYK, písma a export do PDF. Návod pre vlastný návrh.",
+   "h1": "Tlačové dáta vizitky",
+   "lead": "Máte vlastný návrh od grafika alebo z vlastného programu? Aby vizitky vyzerali presne ako na obrazovke, súbor musí spĺňať pár technických pravidiel.",
+   "sections": [
+    {
+     "h": "Rozmer so spadávkou",
+     "p": [
+      "Pri vizitke 90 × 50 mm pripravte súbor 94 × 54 mm. Pozadie a obrázky natiahnite až po okraj súboru, po orezaní tak nevznikne biely prúžok."
+     ]
+    },
+    {
+     "h": "Bezpečná zóna",
+     "p": [
+      "Texty a logá držte aspoň 4 mm od hrany hotovej vizitky. Pri orezaní je tolerancia približne 1 mm a text pri okraji pôsobí nedbalo."
+     ],
+     "cards": [
+      "vykres"
+     ]
+    },
+    {
+     "h": "Rozlíšenie a formát",
+     "list": [
+      "Obrázky aspoň 300 dpi vo finálnej veľkosti.",
+      "Ideálne vektorové PDF s vloženými písmami, prípadne PNG alebo JPG vo vysokom rozlíšení.",
+      "Každá strana ako samostatná strana PDF alebo samostatný súbor."
+     ]
+    },
+    {
+     "h": "Farby",
+     "p": [
+      "Tlačí sa v CMYK. Žiarivé RGB farby z obrazovky (napr. neónová zelená) môžu byť na papieri tlmenejšie. Čierny text odporúčame v čistej čiernej, nie zloženej zo všetkých farieb."
+     ],
+     "cards": [
+      "hrastar",
+      "swiss"
+     ],
+     "tip": "Vlastný návrh nahráte na stránke Vlastný návrh: automaticky skontrolujeme rozmer, spadávku aj rozlíšenie a pred tlačou ho pozrie aj človek."
+    }
+   ],
+   "faq": [
+    [
+     "Aký rozmer má mať súbor pre vizitku 90 × 50 mm?",
+     "94 × 54 mm, teda 2 mm spadávka z každej strany."
+    ],
+    [
+     "Môžem poslať návrh z Canvy?",
+     "Áno. Exportujte ho ako PDF pre tlač s orezovými značkami alebo spadávkou, prípadne PNG vo vysokom rozlíšení."
+    ],
+    [
+     "Čo ak súbor nemá spadávku?",
+     "Pri nahraní vás upozorníme. Ak to návrh dovoľuje, pozadie vieme rozšíriť, inak sa ozveme."
+    ]
+   ]
+  },
+  "cz": {
+   "slug": "tiskova-data-vizitky",
+   "title": "Tisková data vizitky: spadávka, rozlišení a barvy",
+   "desc": "Jak připravit tisková data vizitky: rozměr se spadávkou, bezpečná zóna, rozlišení 300 dpi, CMYK, písma a export do PDF. Návod pro vlastní návrh.",
+   "h1": "Tisková data vizitky",
+   "lead": "Máte vlastní návrh od grafika nebo z vlastního programu? Aby vizitky vypadaly přesně jako na obrazovce, soubor musí splňovat pár technických pravidel.",
+   "sections": [
+    {
+     "h": "Rozměr se spadávkou",
+     "p": [
+      "U vizitky 90 × 50 mm připravte soubor 94 × 54 mm. Pozadí a obrázky protáhněte až k okraji souboru, po ořezu tak nevznikne bílý proužek."
+     ]
+    },
+    {
+     "h": "Bezpečná zóna",
+     "p": [
+      "Texty a loga držte aspoň 4 mm od hrany hotové vizitky. Při ořezu je tolerance přibližně 1 mm a text u okraje působí nedbale."
+     ],
+     "cards": [
+      "vykres"
+     ]
+    },
+    {
+     "h": "Rozlišení a formát",
+     "list": [
+      "Obrázky aspoň 300 dpi ve finální velikosti.",
+      "Ideálně vektorové PDF s vloženými písmy, případně PNG nebo JPG ve vysokém rozlišení.",
+      "Každá strana jako samostatná strana PDF nebo samostatný soubor."
+     ]
+    },
+    {
+     "h": "Barvy",
+     "p": [
+      "Tiskne se v CMYK. Zářivé RGB barvy z obrazovky (např. neonová zelená) mohou být na papíře tlumenější. Černý text doporučujeme v čisté černé, ne složené ze všech barev."
+     ],
+     "cards": [
+      "hrastar",
+      "swiss"
+     ],
+     "tip": "Vlastní návrh nahrajete na stránce Vlastní návrh: automaticky zkontrolujeme rozměr, spadávku i rozlišení a před tiskem ho zkontroluje i člověk."
+    }
+   ],
+   "faq": [
+    [
+     "Jaký rozměr má mít soubor pro vizitku 90 × 50 mm?",
+     "94 × 54 mm, tedy 2 mm spadávka z každé strany."
+    ],
+    [
+     "Mohu poslat návrh z Canvy?",
+     "Ano. Exportujte ho jako PDF pro tisk se spadávkou, případně PNG ve vysokém rozlišení."
+    ],
+    [
+     "Co když soubor nemá spadávku?",
+     "Při nahrání vás upozorníme. Pokud to návrh dovolí, pozadí umíme rozšířit, jinak se ozveme."
+    ]
+   ]
+  }
+ }
+]

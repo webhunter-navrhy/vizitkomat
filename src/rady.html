@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ L('Rady a inšpirácia k vizitkám – rozmery, papier, QR kód, ceny', 'Rady a inspirace k vizitkám – rozměry, papír, QR kód, ceny') }}{% endblock %}
+{% block description %}{{ L('Praktické návody k vizitkám: aký rozmer zvoliť, čo na vizitku napísať, ktorý papier vybrať, ako na QR kód, tlačové dáta a koľko vizitky stoja.', 'Praktické návody k vizitkám: jaký rozměr zvolit, co na vizitku napsat, který papír vybrat, jak na QR kód, tisková data a kolik vizitky stojí.') }}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ A('assets/css/rady.css') }}">
+<script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'CollectionPage', 'name': L('Rady a inšpirácia', 'Rady a inspirace'), 'url': canonical,
+  'hasPart': clanky_t | map(attribute=lang) | map(attribute='title') | list} | tojson }}</script>
+<script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'BreadcrumbList', 'itemListElement': [
+  {'@type': 'ListItem', 'position': 1, 'name': 'Vizitkomat', 'item': site + ('' if lang == 'sk' else 'cz/')},
+  {'@type': 'ListItem', 'position': 2, 'name': L('Rady a inšpirácia', 'Rady a inspirace'), 'item': canonical}]} | tojson }}</script>
+{% endblock %}
+{% block main %}
+<section class="rd-hero" data-nav="cream">
+  <div class="wrap">
+    <p class="rd-kicker">{{ L('Rady a inšpirácia', 'Rady a inspirace') }}</p>
+    <h1 class="h-l rd-h1">{{ L('Všetko o vizitkách,', 'Všechno o vizitkách,') }} <span class="hl-c">{{ L('jednoducho.', 'jednoduše.') }}</span></h1>
+    <p class="lead rd-lead">{{ L('Krátke praktické návody, ktoré vám pomôžu navrhnúť vizitku, ktorá vyzerá dobre a funguje. Bez grafického žargónu.', 'Krátké praktické návody, které vám pomohou navrhnout vizitku, která vypadá dobře a funguje. Bez grafického žargonu.') }}</p>
+  </div>
+</section>
+<section class="rd-list" data-nav="cream">
+  <div class="wrap rd-grid">
+    {% for a in clanky_t %}{% set c = a[lang] %}
+    <a class="rd-card" href="{{ link('clanok-' ~ a.key) }}">
+      <span class="rd-card__img"><img alt="" src="{{ pre['tpl-' ~ a.tpls[0] ~ '-f'] }}" loading="{{ 'eager' if loop.index < 3 else 'lazy' }}" decoding="async" width="1000" height="556"></span>
+      <b>{{ c.title }}</b>
+      <span>{{ c.desc }}</span>
+      <i>{{ L('Čítať', 'Číst') }} →</i>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+<section class="rd-cta" data-nav="blue">
+  <div class="wrap rd-cta__in">
+    <h2 class="h-l">{{ L('Najrýchlejšia rada?', 'Nejrychlejší rada?') }} <span class="hl">{{ L('Vyskúšajte to.', 'Vyzkoušejte to.') }}</span></h2>
+    <p class="lead">{{ L('Napíšte, čím sa živíte, a AI grafik vám za pár sekúnd ukáže tri hotové vizitky s vaším menom. Zadarmo.', 'Napište, čím se živíte, a AI grafik vám za pár vteřin ukáže tři hotové vizitky s vaším jménem. Zdarma.') }}</p>
+    <a class="btn btn--y btn--lg" href="{{ link('tvorba') }}">{{ L('Navrhnúť vizitku', 'Navrhnout vizitku') }} <span class="ar">→</span></a>
+  </div>
+</section>
+{% endblock %}
