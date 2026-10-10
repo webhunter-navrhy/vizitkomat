@@ -20,6 +20,12 @@ export function printPrice(c, P = VK.prices) {
   if (c.express) p += P.express;
   return p;
 }
+// pôvodná (bežná) cena počas zavádzacej akcie, inak null
+export function wasPrice(c, P = VK.prices) {
+  if (!P.launch || !P.was || c.kind === 'digital') return null;
+  const w = printPrice(c, { ...P, ...P.was });
+  return w > printPrice(c, P) ? w : null;
+}
 export function itemPrice(c, P = VK.prices) {
   if (c.kind === 'digital') return P.digital ?? P.digital_year;
   return printPrice(c, P);

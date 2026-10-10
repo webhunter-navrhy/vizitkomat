@@ -12,7 +12,7 @@ import { PERSONAS, personaFields, TPL_PERSONA } from './personas.js';
 import { emblemFor } from './emblems.js';
 import { ranked, badge as tplBadge, BY_IND, TOP, A as TIER_A } from './featured.js';
 import { toast } from './site.js';
-import { money, printPrice, itemPrice, addWorkdays, fmtDay, debounce, session, qrSVG, deliveryDays } from '../util.js';
+import { money, printPrice, itemPrice, wasPrice, addWorkdays, fmtDay, debounce, session, qrSVG, deliveryDays } from '../util.js';
 
 const VK = window.VK;
 const $ = (s, el = document) => el.querySelector(s);
@@ -857,6 +857,7 @@ function paintOrder() {
   $('[data-express]').checked = !!c.express;
   const total = itemPrice(c, P);
   $('[data-sum]').textContent = money(total);
+  { const w = wasPrice(c, P); const el = $('[data-sum-was]'); if (el) { el.hidden = !w; el.innerHTML = w ? `<s>${money(w)}</s> ${tr('zavádzacia cena', 'zaváděcí cena')}` : ''; } }
   // rozpis ceny: všetko z cenníka, nič skryté
   const q = String(c.qty), L = [];
   if (dig) L.push([tr('Digitálna vizitka, jednorazovo', 'Digitální vizitka, jednorázově'), money(P.digital)]);

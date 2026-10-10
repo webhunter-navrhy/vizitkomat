@@ -320,3 +320,10 @@ body.menu-on { overflow: hidden; }
   .mcta small { font-size: .72rem; opacity: .9; font-weight: 600; }
   .resume-pill { bottom: 92px; }
 }
+/* zavádzacia cena */
+.launch { display: inline-flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin: 0 0 1rem; padding: .45rem .9rem .45rem .45rem; border-radius: 99px; background: #fff; box-shadow: 0 0 0 2px var(--ink); font-weight: 600; font-size: .92rem; color: var(--ink); }
+.launch b { padding: .25rem .7rem; border-radius: 99px; background: var(--coral); color: #fff; font-weight: 800; }
+.pcard__was { display: block; font-weight: 700; font-size: 1.05rem; opacity: .55; margin-bottom: -.2rem; }
+.pr__was { display: block; font-size: .78em; font-weight: 600; opacity: .5; }
+.sum__was { margin: .2rem 0 0; font-size: .95rem; color: var(--yellow); font-weight: 700; }
+.sum__was s { opacity: .75; color: #fff; font-weight: 600; margin-right: .3rem; }

@@ -8,6 +8,7 @@
 <section class="pr" data-nav="cream">
   <div class="wrap">
     <h1 class="h-l">{{ L('Čo vidíte,', 'Co vidíte,') }} <span class="hl-c">{{ L('to zaplatíte.', 'to zaplatíte.') }}</span></h1>
+    {% if prices.launch %}<p class="launch"><b>{{ L('Zavádzacia cena', 'Zaváděcí cena') }}</b> {{ L('pre prvých zákazníkov · všetky ceny sú teraz nižšie', 'pro první zákazníky · všechny ceny jsou teď nižší') }}</p>{% endif %}
     <p class="lead pr__lead">{{ L('Ceny sú konečné, nie sme platcami DPH. Zahŕňajú návrh s AI grafikom, obojstrannú tlač, kontrolu dát človekom a dopravu na Slovensko aj do Česka.', 'Ceny jsou konečné, nejsme plátci DPH. Zahrnují návrh s AI grafikem, oboustranný tisk, kontrolu dat člověkem a dopravu po Česku i na Slovensku.') }}</p>
     <div class="cfg" data-cfg>
       <div class="cfg__opts">
@@ -46,7 +47,7 @@
       <table>
         <thead><tr><th>{{ L('Papier', 'Papír') }} <small>{{ L('90 × 50 mm, obojstranne', '90 × 50 mm, oboustranně') }}</small></th>{% for q in prices.qty %}<th>{{ q }} {{ L('ks', 'ks') }}</th>{% endfor %}</tr></thead>
         <tbody>
-          <tr><th><b>{{ L('Matný 350 g', 'Matný 350 g') }}</b><small>{{ L('bez úpravy', 'bez úpravy') }}</small></th>{% for q in prices.qty %}<td><a href="{{ link('tvorba') }}?rezim=ai&papier=matny&povrch=none&ks={{ q }}" title="{{ L('Navrhnúť s touto cenou', 'Navrhnout s touto cenou') }}">{{ m(prices.papers.matny[q|string]) }}</a></td>{% endfor %}</tr>
+          <tr><th><b>{{ L('Matný 350 g', 'Matný 350 g') }}</b><small>{{ L('bez úpravy', 'bez úpravy') }}</small></th>{% for q in prices.qty %}<td><a href="{{ link('tvorba') }}?rezim=ai&papier=matny&povrch=none&ks={{ q }}" title="{{ L('Navrhnúť s touto cenou', 'Navrhnout s touto cenou') }}">{% if prices.launch %}<s class="pr__was">{{ m(prices.was.papers.matny[q|string]) }}</s>{% endif %}{{ m(prices.papers.matny[q|string]) }}</a></td>{% endfor %}</tr>
           <tr><th><b>{{ L('Matný + laminácia', 'Matný + laminace') }}</b><small>{{ L('matná alebo lesklá', 'matná nebo lesklá') }}</small></th>{% for q in prices.qty %}<td><a href="{{ link('tvorba') }}?rezim=ai&papier=matny&povrch=matna&ks={{ q }}" title="{{ L('Navrhnúť s touto cenou', 'Navrhnout s touto cenou') }}">{{ m(prices.papers.matny[q|string] + prices.finishes.matna[q|string]) }}</a></td>{% endfor %}</tr>
           <tr class="hi"><th><b>{{ L('Matný + soft-touch', 'Matný + soft-touch') }}</b><small>{{ L('zamatový povrch', 'sametový povrch') }}</small></th>{% for q in prices.qty %}<td><a href="{{ link('tvorba') }}?rezim=ai&papier=matny&povrch=soft&ks={{ q }}" title="{{ L('Navrhnúť s touto cenou', 'Navrhnout s touto cenou') }}">{{ m(prices.papers.matny[q|string] + prices.finishes.soft[q|string]) }}</a></td>{% endfor %}</tr>
           <tr><th><b>Triplex 720 g</b><small>{{ L('farebné jadro', 'barevné jádro') }}</small></th>{% for q in prices.qty %}<td><a href="{{ link('tvorba') }}?rezim=ai&papier=triplex&povrch=none&ks={{ q }}" title="{{ L('Navrhnúť s touto cenou', 'Navrhnout s touto cenou') }}">{{ m(prices.papers.triplex[q|string]) }}</a></td>{% endfor %}</tr>

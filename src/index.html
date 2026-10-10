@@ -212,6 +212,7 @@
 <!-- ===== CENA ===== -->
 <section class="price" data-nav="cream">
   <div class="wrap">
+    {% if prices.launch %}<p class="launch rv"><b>{{ L('Zavádzacia cena', 'Zaváděcí cena') }}</b> {{ L('pre prvých zákazníkov · ušetríte až', 'pro první zákazníky · ušetříte až') }} {% set ns = namespace(m=0) %}{% for q in prices.qty %}{% set d = (1 - prices.papers.matny[q|string] / prices.was.papers.matny[q|string]) * 100 %}{% if d > ns.m %}{% set ns.m = d %}{% endif %}{% endfor %}{{ ns.m | round | int }} %</p>{% endif %}
     <h2 class="h-l rv">{{ L('Jasná cena.', 'Jasná cena.') }} <span class="hl-c">{{ L('Doprava zadarmo.', 'Doprava zdarma.') }}</span></h2>
     <p class="lead rv price__lead">{{ L('Cena je konečná a je v nej všetko: návrh, kontrola, tlač, doprava aj digitálna vizitka. Platíte až po schválení návrhu.', 'Cena je konečná a je v ní všechno: návrh, kontrola, tisk, doprava i digitální vizitka. Platíte až po schválení návrhu.') }}</p>
     <div class="price__grid">
@@ -222,6 +223,7 @@
       <a class="pcard pcard--{{ col }} rv" href="{{ link('tvorba') }}?ks={{ q }}">
         <span class="pcard__tag">{{ tag }}</span>
         <span class="pcard__q">{{ q }} {{ L('ks', 'ks') }}</span>
+        {% if prices.launch %}<s class="pcard__was">{{ '{:,}'.format(prices.was.papers.matny[q|string]).replace(',', ' ') }} {{ prices.symbol }}</s>{% endif %}
         <b class="pcard__p">{{ '{:,}'.format(prices.papers.matny[q|string]).replace(',', ' ') }} {{ prices.symbol }}</b>
         <span class="pcard__per">{{ ('%.2f' % (prices.papers.matny[q|string] / q)) | replace('.', ',') }} {{ prices.symbol }} / {{ L('kus', 'kus') }}</span>
         <p class="pcard__who">{{ who }}</p>
