@@ -114,8 +114,12 @@ def main():
         return out
 
     import importlib.util
-    spec = importlib.util.spec_from_file_location('webp', ROOT / 'tools' / 'webp.py'); wp = importlib.util.module_from_spec(spec); spec.loader.exec_module(wp)
-    wp.convert()
+    # WebP sa generuje lokálne (Pillow); v CI sú súbory už v repozitári
+    try:
+        spec = importlib.util.spec_from_file_location('webp', ROOT / 'tools' / 'webp.py'); wp = importlib.util.module_from_spec(spec); spec.loader.exec_module(wp)
+        wp.convert()
+    except ImportError:
+        print('Pillow chýba, WebP preskakujem (použijú sa súbory z repozitára)')
     PRE_V = {}
     TPLN = template_names()
     TPL_COUNT = len(list((ROOT / 'assets/pre/sk').glob('tpl-*-f.jpg'))) or len(TPLN)
