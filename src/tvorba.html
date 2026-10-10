@@ -64,13 +64,17 @@
         </div>
         <p class="ai__intro" data-ai-intro></p>
         <form class="mine4" data-mine hidden autocomplete="on">
-          <b class="mine4__h">{{ L('Doplňte svoje údaje', 'Doplňte své údaje') }} <small>{{ L('a uvidíte ich na všetkých návrhoch', 'a uvidíte je na všech návrzích') }}</small></b>
+          <b class="mine4__h">{{ L('Vaše kontakty', 'Vaše kontakty') }} <small>{{ L('napíšte ich sem a uvidíte ich na všetkých návrhoch', 'napište je sem a uvidíte je na všech návrzích') }}</small></b>
           <label><span>{{ L('Meno', 'Jméno') }}</span><input data-m="name" autocomplete="name" maxlength="60"></label>
           <label><span>{{ L('Telefón', 'Telefon') }}</span><input data-m="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="{{ L('+421 …', '+420 …') }}"></label>
           <label><span>E-mail</span><input data-m="email" type="email" autocomplete="email" maxlength="70" placeholder="{{ L('vy@firma.sk', 'vy@firma.cz') }}"></label>
-          <label><span>Web</span><input data-m="web" autocomplete="url" maxlength="60" placeholder="{{ L('firma.sk', 'firma.cz') }}"></label>
+          <p class="mine4__note" data-mine-note>{{ L('Kým ich nevyplníte, na náhľadoch sú ukážkové kontakty. Na vizitku ich nedáme.', 'Dokud je nevyplníte, na náhledech jsou ukázkové kontakty. Na vizitku je nedáme.') }}</p>
         </form>
         <div class="mocks" data-ai-grid></div>
+        <div class="pickbar" data-pickbar hidden>
+          <span class="pickbar__t"><img alt="" data-pickbar-img><span><small>{{ L('Vybraný návrh', 'Vybraný návrh') }}</small><b data-pickbar-name></b></span></span>
+          <button class="btn btn--c" type="button" data-pickbar-go>{{ L('Pokračovať', 'Pokračovat') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
+        </div>
         <div class="ai__more" data-ai-more hidden>
           <span>{{ L('Nie celkom ono?', 'Není to úplně ono?') }}</span>
           <button data-r="{{ L('tmavšie', 'tmavší') }}">{{ L('Tmavšie', 'Tmavší') }}</button>
@@ -133,25 +137,36 @@
       <div class="edx-panel__head"><b data-panel-title></b><button type="button" class="edx-panel__x" data-panel-x aria-label="{{ L('Zavrieť panel', 'Zavřít panel') }}">×</button></div>
       <div class="ed-panels">
         <section class="pn" data-pp="udaje">
-          <div class="simple-intro"><h2>{{ L('Doplňte svoje údaje', 'Doplňte své údaje') }}</h2><p>{{ L('Vizitka sa mení naživo. Prázdne polia na vizitke nebudú.', 'Vizitka se mění živě. Prázdná pole na vizitce nebudou.') }}</p></div>
+          <div class="simple-intro"><h2>{{ L('Vaše údaje na vizitku', 'Vaše údaje na vizitku') }}</h2><p>{{ L('Čo sem napíšete, to bude vytlačené. Prázdne polia na vizitke nebudú.', 'Co sem napíšete, to bude vytištěné. Prázdná pole na vizitce nebudou.') }}</p></div>
           <p class="pn__tip">{{ L('Text môžete upraviť aj priamo vo vizitke: dvakrát naň kliknite.', 'Text můžete upravit i přímo ve vizitce: dvakrát na něj klikněte.') }}</p>
           <div class="fields">
-            {% for key, label, ac, type in [
-              ('name', L('Meno a priezvisko', 'Jméno a příjmení'), 'name', 'text'),
-              ('role', L('Pozícia / profesia', 'Pozice / profese'), 'organization-title', 'text'),
-              ('company', L('Firma', 'Firma'), 'organization', 'text'),
-              ('phone', L('Telefón', 'Telefon'), 'tel', 'tel'),
-              ('email', 'E-mail', 'email', 'email'),
-              ('web', 'Web', 'url', 'text'),
-              ('address', L('Adresa', 'Adresa'), 'street-address', 'text'),
-              ('tagline', L('Slogan', 'Slogan'), 'off', 'text'),
+            {% for key, label, ac, type, ph in [
+              ('name', L('Meno a priezvisko', 'Jméno a příjmení'), 'name', 'text', L('napr. Jana Malá', 'např. Jana Malá')),
+              ('role', L('Čím sa živíte', 'Čím se živíte'), 'organization-title', 'text', L('napr. kaderníčka', 'např. kadeřnice')),
+              ('phone', L('Telefón', 'Telefon'), 'tel', 'tel', L('+421 9xx xxx xxx', '+420 7xx xxx xxx')),
+              ('email', 'E-mail', 'email', 'email', L('vy@firma.sk', 'vy@firma.cz')),
             ] %}
-            <label class="fld"><span>{{ label }}</span><input type="{{ type }}" data-f="{{ key }}" autocomplete="{{ ac }}" maxlength="70"></label>
+            <label class="fld"><span>{{ label }}</span><input type="{{ type }}" data-f="{{ key }}" autocomplete="{{ ac }}" maxlength="70" placeholder="{{ ph }}"{% if type == 'tel' %} inputmode="tel"{% endif %}><em class="fld__err" data-err="{{ key }}" hidden></em></label>
             {% endfor %}
           </div>
+          <details class="fields-more" data-fields-more>
+            <summary>{{ L('Pridať firmu, web, adresu alebo slogan', 'Přidat firmu, web, adresu nebo slogan') }}</summary>
+            <div class="fields">
+              {% for key, label, ac, type, ph in [
+                ('company', L('Firma', 'Firma'), 'organization', 'text', L('napr. Salón Jana', 'např. Salon Jana')),
+                ('web', 'Web', 'url', 'text', L('napr. salonjana.sk', 'např. salonjana.cz')),
+                ('address', L('Adresa', 'Adresa'), 'street-address', 'text', L('napr. Hlavná 12, Trnava', 'např. Hlavní 12, Brno')),
+                ('tagline', L('Slogan', 'Slogan'), 'off', 'text', L('krátka veta o vás', 'krátká věta o vás')),
+              ] %}
+              <label class="fld"><span>{{ label }}</span><input type="{{ type }}" data-f="{{ key }}" autocomplete="{{ ac }}" maxlength="70" placeholder="{{ ph }}"></label>
+              {% endfor %}
+            </div>
+          </details>
           <div class="simple-extra">
-            <h3>{{ L('Farby', 'Barvy') }}</h3>
+            <div class="simple-logo"><img alt="" data-slogo-img hidden><button class="btn btn--w btn--sm" type="button" data-slogo>{{ L('+ Pridať logo', '+ Přidat logo') }}</button><small>{{ L('voliteľné, PNG alebo JPG', 'volitelné, PNG nebo JPG') }}</small></div>
+            <h3>{{ L('Farby', 'Barvy') }} <small>{{ L('ťuknite a vizitka sa prefarbí', 'ťukněte a vizitka se přebarví') }}</small></h3>
             <div class="pals pals--mini" data-pals-mini></div>
+            <p class="simple-safe">{{ L('Pred tlačou návrh ešte skontroluje človek. Platíte až potom.', 'Před tiskem návrh ještě zkontroluje člověk. Platíte až potom.') }}</p>
             <button class="simple-adv" type="button" data-adv-on><span>{{ L('Upraviť detailne', 'Upravit detailně') }}</span><small>{{ L('posúvať texty, meniť písmo, pridať logo či obrázok', 'posouvat texty, měnit písmo, přidat logo či obrázek') }}</small><b aria-hidden="true">→</b></button>
           </div>
           <details class="more more--dig" data-digital-fields>
@@ -363,12 +378,12 @@ So: po domluvě') }}"></textarea></label>
         <div data-print-opts>
           <h3>{{ L('Papier', 'Papír') }}</h3>
           <div class="papers" data-paper>
-            <button class="paper on" data-v="std"><i class="paper__sw"></i><b>{{ L('Štandard', 'Standard') }}</b><small>{{ L('matný 350 g', 'matný 350 g') }}</small><em data-pp-price="std"></em></button>
-            <button class="paper" data-v="soft"><span class="badge4">{{ L('Odporúčame', 'Doporučujeme') }}</span><i class="paper__sw paper__sw--soft"></i><b>{{ L('Prémium', 'Prémium') }}</b><small>{{ L('soft-touch, zamatový', 'soft-touch, sametový') }}</small><em data-pp-price="soft"></em></button>
-            <button class="paper" data-v="triplex"><i class="paper__sw paper__sw--tri"></i><b>{{ L('Luxus', 'Luxus') }}</b><small>{{ L('Triplex 720 g, hrubý', 'Triplex 720 g, silný') }}</small><em data-pp-price="triplex"></em></button>
+            <button class="paper on" data-v="std"><i class="paper__sw"></i><b>{{ L('Štandard', 'Standard') }}</b><small>{{ L('pevný matný papier 350 g', 'pevný matný papír 350 g') }}</small><em data-pp-price="std"></em></button>
+            <button class="paper" data-v="soft"><span class="badge4">{{ L('Odporúčame', 'Doporučujeme') }}</span><i class="paper__sw paper__sw--soft"></i><b>{{ L('Prémium', 'Prémium') }}</b><small>{{ L('zamatový na dotyk, nedrží odtlačky', 'sametový na dotek, nedrží otisky') }}</small><em data-pp-price="soft"></em></button>
+            <button class="paper" data-v="triplex"><i class="paper__sw paper__sw--tri"></i><b>{{ L('Luxus', 'Luxus') }}</b><small>{{ L('extra hrubý 720 g s farebnou hranou', 'extra silný 720 g s barevnou hranou') }}</small><em data-pp-price="triplex"></em></button>
           </div>
           <h3>{{ L('Počet kusov', 'Počet kusů') }}</h3>
-          <div class="qty" data-qty>{% for q in prices.qty %}<button{% if q == 250 %} class="on"{% endif %} data-v="{{ q }}">{% if q == 250 %}<span class="badge4">{{ L('Odporúčame', 'Doporučujeme') }}</span>{% endif %}<b>{{ q }}</b><small data-qp="{{ q }}"></small></button>{% endfor %}</div>
+          <div class="qty" data-qty>{% for q in prices.qty %}<button{% if q == 250 %} class="on"{% endif %} data-v="{{ q }}">{% if q == 250 %}<span class="badge4">{{ L('Odporúčame', 'Doporučujeme') }}</span>{% endif %}<b>{{ q }} <i>{{ L('ks', 'ks') }}</i></b><small data-qp="{{ q }}"></small><em data-qpp="{{ q }}"></em></button>{% endfor %}</div>
           <details class="more">
             <summary>{{ L('Ďalšie možnosti: formát, rohy, expres', 'Další možnosti: formát, rohy, expres') }}</summary>
             <div class="opt"><span>{{ L('Formát', 'Formát') }}</span><div class="seg seg--s" data-o="size"><button class="on" data-v="90x50">90×50</button><button data-v="85x55">85×55</button><button data-v="55x55">55×55</button></div></div>
@@ -391,19 +406,19 @@ So: po domluvě') }}"></textarea></label>
           <p class="sum__was" data-sum-was hidden></p>
           <p class="sum__m" data-sum-m></p>
           <p class="sum__d" data-sum-d></p>
-          <button class="btn btn--c btn--lg sum__cta" data-add-cart>{{ L('Objednať', 'Objednat') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
+          <button class="btn btn--c btn--lg sum__cta" data-add-cart>{{ L('Pridať do košíka', 'Přidat do košíku') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button>
+          <p class="sum__safe">{{ L('Teraz nič neplatíte. QR platbu pošleme až po kontrole návrhu.', 'Teď nic neplatíte. QR platbu pošleme až po kontrole návrhu.') }}</p>
           <button class="link sum__save" data-save-open>{{ L('Ešte nie? Pošlite si návrh e-mailom', 'Ještě ne? Pošlete si návrh e-mailem') }}</button>
           <ul class="sum__trust">
-            <li><b>{{ L('Platíte až po kontrole', 'Platíte až po kontrole') }}</b>{{ L('návrh pozrie človek', 'návrh zkontroluje člověk') }}</li>
-            <li><b>{{ L('QR platba', 'QR platba') }}</b>{{ L('bez karty a registrácie', 'bez karty a registrace') }}</li>
-            <li><b>{{ L('Chyba tlače?', 'Chyba tisku?') }}</b>{{ L('vytlačíme znova', 'vytiskneme znovu') }}</li>
+            <li>{{ L('Návrh skontroluje človek', 'Návrh zkontroluje člověk') }}</li>
+            <li>{{ L('Chyba tlače? Vytlačíme znova', 'Chyba tisku? Vytiskneme znovu') }}</li>
+            <li>{{ L('Cena je konečná, bez DPH navyše', 'Cena je konečná, bez DPH navíc') }}</li>
           </ul>
-          <p class="sum__vat">{{ L('Nie sme platcami DPH, cena je konečná. Doprava zadarmo.', 'Nejsme plátci DPH, cena je konečná. Doprava zdarma.') }}</p>
         </div>
       </div>
     </div>
   </section>
-  <div class="obar" data-obar hidden><div><b data-obar-p>—</b><small data-obar-m></small></div><button class="btn btn--c" type="button" data-obar-go>{{ L('Objednať', 'Objednat') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button></div>
+  <div class="obar" data-obar hidden><div><b data-obar-p>—</b><small data-obar-m></small></div><button class="btn btn--c" type="button" data-obar-go>{{ L('Do košíka', 'Do košíku') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></button></div>
 </div>
 <dialog class="dlg tpv" data-tpv aria-labelledby="tpv-h">
   <div class="dlg__in">

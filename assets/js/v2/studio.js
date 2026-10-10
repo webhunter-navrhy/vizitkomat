@@ -47,7 +47,7 @@ function go(step) {
   // čítačky obrazovky: presun na nadpis kroku
   requestAnimationFrame(() => { const h = $(`[data-pane="${step}"] h1, [data-pane="${step}"] [data-focus]`); if (h && step !== 'edit') h.focus({ preventScroll: true }); });
 }
-$$('[data-go]').forEach((li) => li.addEventListener('click', () => { const s = li.dataset.go; if (!st.reached.has(s)) return; if ((s === 'edit' || s === 'order') && !st.loaded) return; go(s); }));
+$$('[data-go]').forEach((li) => li.addEventListener('click', () => { const s = li.dataset.go; if (!st.reached.has(s)) return; if ((s === 'edit' || s === 'order') && !st.loaded) return; if (s === 'order' && st.step === 'edit') { $('[data-to-order]').click(); return; } go(s); }));
 
 /* =========================================================
    EDITOR
@@ -58,7 +58,7 @@ async function ensureEditor() {
   tools = initEdTools({ ed, stage: $('[data-stage]'), getStep: () => st.step, curPal, brandColors: () => st.logoColors, shrink, onStyleChange: () => { paintPals(); paintFonts(); } });
   panels = initEdPanels({ ed, tools, stage: $('[data-stage]'), getStep: () => st.step, curPal, openTab, paintSides, onStyleChange: () => { paintPals(); paintFonts(); } });
   if (/[?&]edtest\b/.test(location.search)) window.__vkEd = ed;
-  ed.on('fields', ({ k }) => { syncFields(); if (k === 'name' && !st.slugTouched) setSlug(slugify(ed.design.f.name)); });
+  ed.on('fields', ({ k }) => { if (k) st.touched.add(k); syncFields(); if (k === 'name' && !st.slugTouched) setSlug(slugify(ed.design.f.name)); });
   ed.on('restore', () => { syncFields(); paintSides(); });
   ed.on('side', paintSides);
   ed.on('history', ({ undo, redo }) => { $('[data-undo]').disabled = !undo; $('[data-redo]').disabled = !redo; });
@@ -167,6 +167,7 @@ async function runAI(prompt, previous) {
   $('[data-ai-me]').textContent = '„' + prompt + '“';
   $('[data-ai-grid]').innerHTML = ''; $('[data-ai-intro]').textContent = '';
   $('[data-ai-more]').hidden = true; $('[data-ask-re]').hidden = true;
+  st.sel = null; $('[data-pickbar]').hidden = true;
   $('[data-ai-load]').hidden = false;
   let i = 0; $('[data-ai-step]').textContent = STEPS[0]; paintLoadSteps(0);
   clearInterval(stepT); stepT = setInterval(() => { i = Math.min(i + 1, STEPS.length - 1); $('[data-ai-step]').textContent = STEPS[i]; paintLoadSteps(i); }, 1400);
@@ -183,6 +184,7 @@ async function runAI(prompt, previous) {
   paintMine();
   paintMocks();
   $('[data-ai-more]').hidden = false;
+  if (st.ai.length) selectPick('ai', 0, true);
   paintExtras();
 }
 // ďalšie hotové návrhy s údajmi zákazníka (najlepšie šablóny pre jeho odbor)
@@ -204,11 +206,15 @@ async function paintExtras() {
   }
 }
 const reExtras = debounce(paintExtras, 800);
-$('[data-extra-grid]').addEventListener('click', async (e) => {
-  const b = e.target.closest('[data-x]'); if (!b) return;
-  const id = b.dataset.x, f = { ...(st.ai[0]?.f || {}) };
+async function goExtra(id) {
+  const f = { ...(st.ai[0]?.f || {}) };
   VK.ev?.('tpl_click', true);
-  st.mode = 'tpl'; await loadDesign(newDesign({ tpl: id, ...templateDefaults(id), f })); st.reached.add('choose'); go('edit');
+  st.mode = 'ai'; await loadDesign(newDesign({ tpl: id, ...templateDefaults(id), f })); st.reached.add('choose'); go('edit');
+}
+$('[data-extra-grid]').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-x]'); if (!b) return;
+  const id = b.dataset.x;
+  if (e.target.closest('.extra__go') || (st.sel?.kind === 'x' && st.sel.key === id)) goExtra(id); else selectPick('x', id);
 });
 $('[data-start-tpl3]')?.addEventListener('click', () => showTemplates());
 // vlastné údaje priamo vo výbere návrhov (živo sa prepíšu do všetkých troch)
@@ -216,7 +222,8 @@ const MINE_K = ['name', 'phone', 'email', 'web'];
 function paintMine() {
   const box = $('[data-mine]'); box.hidden = !st.ai.length;
   const f = st.ai[0]?.f || {};
-  $$('[data-m]', box).forEach((i) => { const k = i.dataset.m; if (document.activeElement !== i) i.value = f[k] && f[k] !== DEFAULT_FIELDS[k] ? f[k] : ''; });
+  $$('[data-m]', box).forEach((i) => { const k = i.dataset.m; if (document.activeElement !== i) i.value = !unconfirmed(k, f[k]) ? (f[k] || '') : ''; });
+  const note = $('[data-mine-note]'); if (note) note.hidden = ['phone', 'email'].some((k) => st.touched.has(k) && f[k]);
 }
 const remock = debounce(() => { st.ai.forEach((_, i) => paintMockImgs(i)); reExtras(); }, 650);
 $('[data-mine]').addEventListener('input', (e) => {
@@ -229,7 +236,7 @@ $('[data-mine]').addEventListener('input', (e) => {
     // web podľa domény e-mailu (vymyslený web od AI nahradíme)
     if (k === 'email' && !st.touched.has('web') && v.includes('@')) { const dom = v.split('@')[1] || ''; d.f.web = dom.includes('.') && !FREE.test(dom) ? dom : ''; }
   });
-  if (k === 'email' && !st.touched.has('web')) $('[data-m="web"]').value = st.ai[0]?.f.web || '';
+  paintMine();
   remock();
 });
 $('[data-mine]').addEventListener('submit', (e) => e.preventDefault());
@@ -257,6 +264,7 @@ async function paintMockImgs(i) {
   el.classList.remove('is-busy');
   el.querySelector('.mock__scene').classList.add('is-photo');
   el.querySelector('.mock__front').src = m; el.querySelector('.mock__back').removeAttribute('src');
+  if (st.sel?.kind === 'ai' && st.sel.key === i) { const pi = $('[data-pickbar-img]'); pi.src = m; pi.hidden = false; }
 }
 function refreshMock(i, d) {
   const sd = st.ai[i]; if (!sd) return;
@@ -274,8 +282,26 @@ async function pickAI(i) {
 }
 $('[data-ai-grid]').addEventListener('click', (e) => {
   const z = e.target.closest('[data-mzoom]'); if (z) { openAiPv(+z.dataset.mzoom); return; }
-  const mock = e.target.closest('.mock'); if (mock) pickAI(+mock.dataset.i);
+  const pk = e.target.closest('[data-pick]'); if (pk) { pickAI(+pk.dataset.pick); return; }
+  const mock = e.target.closest('.mock'); if (!mock) return;
+  // prvé ťuknutie vyberie, druhé na už vybraný návrh pokračuje
+  if (st.sel?.kind === 'ai' && st.sel.key === +mock.dataset.i) pickAI(+mock.dataset.i); else selectPick('ai', +mock.dataset.i);
 });
+// vybraný návrh + lepiaca lišta „Pokračovať“
+function selectPick(kind, key, quiet) {
+  st.sel = { kind, key };
+  $$('.mock').forEach((m) => m.classList.toggle('is-sel', kind === 'ai' && +m.dataset.i === key));
+  $$('[data-x]').forEach((m) => m.classList.toggle('is-sel', kind === 'x' && m.dataset.x === key));
+  const bar = $('[data-pickbar]'); bar.hidden = false;
+  const img = kind === 'ai' ? $(`.mock[data-i="${key}"] .mock__front`) : $(`[data-x="${key}"] img`);
+  const pi = $('[data-pickbar-img]'); if (img?.src) { pi.src = img.src; pi.hidden = false; } else pi.hidden = true;
+  $('[data-pickbar-name]').textContent = kind === 'ai' ? dirLabel(st.ai[key]?.direction, key) : (TEMPLATES[key]?.name || '');
+  if (!quiet) { bar.classList.remove('is-pop'); void bar.offsetWidth; bar.classList.add('is-pop'); }
+}
+// lišta žije v <body> (predok s transformáciou by pokazil position: fixed)
+document.body.append($('[data-pickbar]'));
+document.addEventListener('vk:step', () => { const bar = $('[data-pickbar]'); bar.hidden = !(st.step === 'choose' && st.sel && !$('[data-ai-box]').hidden); });
+$('[data-pickbar-go]').addEventListener('click', () => { const s2 = st.sel; if (!s2) return; if (s2.kind === 'ai') pickAI(s2.key); else goExtra(s2.key); });
 $$('[data-ai-more] [data-r]').forEach((b) => b.addEventListener('click', () => {
   const d = st.ai[0];
   runAI(`${st.lastPrompt} – ${b.dataset.r}`, d ? { template: d.tpl, palette: d.pal } : undefined);
@@ -494,12 +520,43 @@ $$('[data-open]').forEach((b) => b.addEventListener('click', () => openTab(b.dat
 $('[data-img-pick]').addEventListener('click', () => $('[data-img-file]').click());
 $('[data-goto-dig]').addEventListener('click', () => { openTab('udaje'); const d = $('[data-digital-fields]'); if (d) { d.open = true; d.scrollIntoView({ block: 'start', behavior: 'smooth' }); } });
 $('[data-back-choose]').addEventListener('click', () => { if (st.ai.length) { st.mode = 'ai'; $('[data-ai-box]').hidden = false; $('[data-tpl-box]').hidden = true; go('choose'); } else showTemplates(); });
-$('[data-to-order]').addEventListener('click', () => go('order'));
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function fieldErr(k, msg) { const e = $(`[data-err="${k}"]`); if (!e) return; e.hidden = !msg; e.textContent = msg || ''; e.closest('.fld')?.classList.toggle('is-err', !!msg); }
+function checkDetails() {
+  const f = ed.design.f, ok = (k) => f[k] && !unconfirmed(k, f[k]);
+  let first = null; const bad = (k, m) => { fieldErr(k, m); first ||= k; };
+  ['name', 'role', 'phone', 'email'].forEach((k) => fieldErr(k, ''));
+  if (!ok('name')) bad('name', tr('Napíšte meno, ktoré má byť na vizitke.', 'Napište jméno, které má být na vizitce.'));
+  const ph = ok('phone') ? f.phone : '', em = ok('email') ? f.email : '';
+  if (ph && (ph.replace(/\D/g, '').length < 9)) bad('phone', tr('Telefón vyzerá neúplne.', 'Telefon vypadá neúplně.'));
+  if (em && !EMAIL_RE.test(em)) bad('email', tr('Skontrolujte e-mail, napr. jana@firma.sk.', 'Zkontrolujte e-mail, např. jana@firma.cz.'));
+  if (!ph && !em) { bad('phone', tr('Doplňte telefón alebo e-mail, aby vás zákazníci našli.', 'Doplňte telefon nebo e-mail, ať vás zákazníci najdou.')); }
+  if (first) { const i = $(`[data-f="${first}"]`); i?.scrollIntoView({ block: 'center', behavior: 'smooth' }); setTimeout(() => i?.focus({ preventScroll: true }), 250); return false; }
+  return true;
+}
+async function dropUnconfirmed() {
+  const f = ed.design.f, gone = Object.keys(f).filter((k) => unconfirmed(k, f[k]));
+  for (const k of gone) { f[k] = ''; await ed.setField(k, ''); }
+  if (gone.length) { syncFields(); toast(tr('Ukážkové údaje, ktoré ste nevyplnili, sme z vizitky odstránili.', 'Ukázkové údaje, které jste nevyplnili, jsme z vizitky odstranili.')); }
+}
+$('[data-to-order]').addEventListener('click', async () => {
+  if (simple && ed && st.loaded) { if (!checkDetails()) return; await dropUnconfirmed(); }
+  go('order');
+});
+// chybové hlásenie zmizne hneď, ako zákazník píše
+$$('[data-f]').forEach((i) => i.addEventListener('input', () => fieldErr(i.dataset.f, '')));
 
 function syncFields() {
   if (!ed || !st.loaded) return;
   const d = ed.design;
-  $$('[data-f]').forEach((i) => { if (document.activeElement !== i) i.value = d.f[i.dataset.f] || ''; });
+  $$('[data-f]').forEach((i) => {
+    const k = i.dataset.f, v = d.f[k] || '';
+    i.dataset.ph ||= i.placeholder;
+    if (document.activeElement === i) return;
+    const un = unconfirmed(k, v);
+    i.value = un ? '' : v;
+    i.placeholder = un ? tr('ukážka: ', 'ukázka: ') + v : i.dataset.ph;
+  });
   $('[data-slug]').value = d.slug || '';
   $$('[data-soc]').forEach((i) => { i.value = (d.socials || {})[i.dataset.soc] || ''; });
   $$('[data-dig]').forEach((i) => { i.value = (d.digital || {})[i.dataset.dig] || ''; });
@@ -509,6 +566,16 @@ function syncFields() {
 }
 // ukážkové údaje (zo šablóny) zvýraznime, nech ich zákazník prepíše
 const SAMPLE_RE = /(605|905) 123 456|@hruskastudio\.|hruskastudio\.|@(levandula|domovreality|bitlab|lipovafoto|prana|salonjana|zuzka|podpezinkom|nailsbynika|barberrybar|hankovapartneri|simkouctovnictvo)\./;
+// údaj je „nepotvrdený“, ak ho zákazník nenapísal ani nebol v jeho zadaní (vymyslený kontakt alebo ukážka šablóny)
+const CONTACT_K = ['phone', 'email', 'web'];
+const normT = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[\s.\-()/+]/g, '');
+function inPrompt(v, loose) { const p = normT(st.lastPrompt), n = normT(v); if (!(n && p && n.length > 2)) return false; return p.includes(n) || (loose && n.length > 4 && p.includes(n.slice(0, -2))); }
+function unconfirmed(k, v) {
+  if (!v || st.touched.has(k)) return false;
+  if (CONTACT_K.includes(k)) return !inPrompt(v) || SAMPLE_RE.test(v);
+  if (k === 'address') return !inPrompt(v, true) || v === DEFAULT_FIELDS.address;
+  return isSample(k, v);
+}
 function isSample(k, v) {
   if (!v) return false;
   if (DEFAULT_FIELDS[k] && v === DEFAULT_FIELDS[k]) return true;
@@ -521,7 +588,8 @@ function isSample(k, v) {
 function paintSamples() {
   if (!ed || !st.loaded) return;
   let n = 0;
-  $$('.fields [data-f]').forEach((i) => { const on = isSample(i.dataset.f, i.value); i.closest('.fld').classList.toggle('is-sample', on); n += on; });
+  $$('.fields [data-f]').forEach((i) => { const on = unconfirmed(i.dataset.f, ed.design.f[i.dataset.f]); i.closest('.fld').classList.toggle('is-sample', on); n += on; });
+  if ($$('[data-fields-more] .fld.is-sample').length === 0 && $$('[data-fields-more] [data-f]').some((i) => i.value)) $('[data-fields-more]').open = true;
   const tip = $('[data-pp="udaje"] .pn__tip');
   tip.classList.toggle('is-warn', n > 0);
   tip.textContent = n ? tr(`Zvýraznené polia sú ukážkové (${n}). Prepíšte ich na svoje, vizitka sa mení naživo.`, `Zvýrazněná pole jsou ukázková (${n}). Přepište je na svá, vizitka se mění živě.`) : tr('Text môžete upraviť aj priamo vo vizitke: kliknite naň a píšte.', 'Text můžete upravit i přímo ve vizitce: klikněte na něj a pište.');
@@ -611,7 +679,9 @@ async function logoFlow(file) {
   $('[data-logo-del]').hidden = false;
   toast(tr('Logo je vo vizitke a farby sme prispôsobili značke.', 'Logo je ve vizitce a barvy jsme přizpůsobili značce.'));
 }
-$('[data-drop-file]').addEventListener('change', (e) => { const f = e.target.files[0]; if (f) logoFlow(f); e.target.value = ''; });
+$('[data-drop-file]').addEventListener('change', (e) => { const f = e.target.files[0]; if (f) logoFlow(f).then(paintSimpleLogo); e.target.value = ''; });
+function paintSimpleLogo() { const im = $('[data-slogo-img]'), b = $('[data-slogo]'); if (!im || !b) return; const src = ed?.design.logo; im.hidden = !src; if (src) im.src = src; b.textContent = src ? tr('Zmeniť logo', 'Změnit logo') : tr('+ Pridať logo', '+ Přidat logo'); paintMiniPals(); }
+$('[data-slogo]')?.addEventListener('click', () => $('[data-drop-file]').click());
 ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('over'); }));
 ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
 drop.addEventListener('drop', (e) => { const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) logoFlow(f); });
@@ -849,7 +919,7 @@ function paintOrder() {
   $$('[data-paper] .paper').forEach((b) => b.classList.toggle('on', b.dataset.v === t));
   const stdP = printPrice(cfgFor('std', { ...c, finish: 'none' }), P);
   $$('[data-pp-price]').forEach((e) => { const k = e.dataset.ppPrice; e.textContent = k === 'std' ? money(stdP) : '+' + money(printPrice(cfgFor(k), P) - stdP); });
-  $$('[data-qp]').forEach((s) => { s.textContent = money(printPrice({ ...c, qty: +s.dataset.qp }, P)); });
+  $$('[data-qp]').forEach((s) => { const cq = { ...c, qty: +s.dataset.qp }, pr = printPrice(cq, P), w = wasPrice(cq, P); s.innerHTML = `${w ? `<s>${money(w)}</s> ` : ''}${money(pr)}`; const pp = $(`[data-qpp="${s.dataset.qp}"]`); if (pp) pp.textContent = `${money(pr / cq.qty, { decimals: 2 })} / ${tr('ks', 'ks')}`; });
   $$('[data-qty] button').forEach((b) => b.classList.toggle('on', +b.dataset.v === c.qty));
   $$('[data-o]').forEach((seg) => { const k = seg.dataset.o; const val = k === 'gloss' ? (c.finish === 'leskla' ? '1' : '0') : String(c[k]); $$('button', seg).forEach((b) => b.classList.toggle('on', b.dataset.v === val)); });
   $('[data-o="gloss"]').closest('.opt').style.display = t === 'std' ? '' : 'none';
@@ -874,7 +944,7 @@ function paintOrder() {
   }
   $('[data-sum-lines]').innerHTML = L.map(([a, b, cl]) => `<li${cl ? ` class="${cl}"` : ''}><span>${esc(a)}</span><b>${esc(b)}</b></li>`).join('');
   $('[data-obar-p]').textContent = money(total);
-  $('[data-obar-m]').textContent = dig ? tr('digitálna vizitka', 'digitální vizitka') : `${c.qty} ${tr('ks', 'ks')} · ${tr('doprava zadarmo', 'doprava zdarma')}`;
+  $('[data-obar-m]').textContent = dig ? tr('digitálna vizitka · platíte až po kontrole', 'digitální vizitka · platíte až po kontrole') : `${c.qty} ${tr('ks', 'ks')} · ${tr('platíte až po kontrole', 'platíte až po kontrole')}`;
   $('[data-sum-m]').textContent = dig ? tr('jednorazovo, bez predplatného', 'jednorázově, bez předplatného') : `${c.qty} ${tr('ks', 'ks')} · ${money(total / c.qty, { decimals: 2 })} / ${tr('ks', 'ks')}${c.kind === 'bundle' ? ' · ' + tr('+ digitálna zadarmo', '+ digitální zdarma') : ''}`;
   const now = new Date();
   $('[data-sum-d]').textContent = dig ? tr('Digitálnu vizitku zapneme hneď po zaplatení.', 'Digitální vizitku zapneme hned po zaplacení.') : `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(addWorkdays(now, (now.getHours() >= 14 ? 1 : 0) + deliveryDays(c.express)))}`;
@@ -895,12 +965,13 @@ $('[data-express]').addEventListener('change', (e) => { st.cfg.express = e.targe
 $('[data-back-edit]').addEventListener('click', () => go('edit'));
 // mobil: lišta s cenou a tlačidlom, kým nie je vidieť súhrn
 $('[data-obar-go]').addEventListener('click', () => $('[data-add-cart]').click());
-new IntersectionObserver((es) => { $('[data-obar]').classList.toggle('is-off', es[0].isIntersecting); }, { rootMargin: '0px 0px -40px 0px' }).observe($('.sum'));
+// mobil: lišta s cenou je jediné tlačidlo objednávky (v súhrne sa na mobile neopakuje)
 // náhľady nechceme ponúkať na stiahnutie (tlačové dáta dostane len naša tlačiareň)
 document.addEventListener('contextmenu', (e) => { if (e.target.closest('.st4, [data-save-dlg], .ed-canvas, canvas')) e.preventDefault(); });
 document.addEventListener('dragstart', (e) => { if (e.target.tagName === 'IMG' && e.target.closest('.st4')) e.preventDefault(); });
 $('[data-add-cart]').addEventListener('click', async (e) => {
   const b = e.currentTarget; b.disabled = true;
+  const og = $('[data-obar-go]'); if (og) { og.disabled = true; og.classList.add('is-busy'); }
   const d = ed.printable();
   const [front, back] = await Promise.all([snapshot(d, 'front', 640, 'image/jpeg'), snapshot(d, 'back', 640, 'image/jpeg')]);
   await store.cartAdd({ kind: st.cfg.kind, config: { ...st.cfg }, design: d, thumb: front, thumbBack: back, title: d.f.name || tr('Vizitka', 'Vizitka') });
@@ -975,6 +1046,7 @@ const persist = debounce(async () => {
   paintStart();
   if (draft && draft.f) {
     session('vk2-draft', null);
+    if (draft.prompt) st.lastPrompt = draft.prompt;
     if (meno) draft.f.name = meno;
     st.reached.add('choose');
     await loadDesign(newDesign(draft)); go('edit');

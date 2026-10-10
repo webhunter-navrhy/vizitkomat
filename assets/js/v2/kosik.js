@@ -35,17 +35,16 @@ let items = [];
 // výhodnejšia ponuka k položke: viac kusov alebo lepší papier
 function upsell(it) {
   const c = it.config; if (c.kind === 'digital') return '';
-  const now = itemPrice(c), out = [];
-  const nq = P.qty[P.qty.indexOf(c.qty) + 1];
+  const now = itemPrice(c), nq = P.qty[P.qty.indexOf(c.qty) + 1];
   if (nq) {
     const np = itemPrice({ ...c, qty: nq }), diff = np - now;
-    if (diff <= now * 0.5) out.push(`<button data-up="${it.id}" data-qty-to="${nq}"><b>${tr(`${nq} ks za +${money(diff)}`, `${nq} ks za +${money(diff)}`)}</b><small>${tr('cena za kus', 'cena za kus')} ${money(np / nq, { decimals: 2 })} ${tr('namiesto', 'místo')} ${money(now / c.qty, { decimals: 2 })}</small></button>`);
+    if (diff <= now * 0.5) return `<button class="it__up1" data-up="${it.id}" data-qty-to="${nq}"><b>+ ${tr(`${nq} ks za +${money(diff)}`, `${nq} ks za +${money(diff)}`)}</b> <span>${money(np / nq, { decimals: 2 })} / ${tr('ks namiesto', 'ks místo')} ${money(now / c.qty, { decimals: 2 })}</span></button>`;
   }
   if (c.paper === 'matny' && (c.finish || 'none') === 'none' && !it.design?.custom) {
     const sp = itemPrice({ ...c, finish: 'soft' });
-    out.push(`<button data-up="${it.id}" data-soft="1"><b>${tr('Zamatový soft-touch', 'Sametový soft-touch')} +${money(sp - now)}</b><small>${tr('zamatový na dotyk, nedrží odtlačky', 'sametový na dotek, nedrží otisky')}</small></button>`);
+    return `<button class="it__up1" data-up="${it.id}" data-soft="1"><b>+ ${tr('Zamatový soft-touch', 'Sametový soft-touch')} za +${money(sp - now)}</b> <span>${tr('nedrží odtlačky', 'nedrží otisky')}</span></button>`;
   }
-  return out.length ? `<div class="it__up">${out.join('')}</div>` : '';
+  return '';
 }
 // odpočet: do 14:00 v pracovný deň ideme o deň skôr
 function deadline() {
@@ -55,19 +54,20 @@ function deadline() {
   const h = Math.floor(left / 60), m = left % 60;
   return tr(`Objednajte do 14:00 (zostáva ${h ? h + ' h ' : ''}${m} min) a počítame s týmto termínom.`, `Objednejte do 14:00 (zbývá ${h ? h + ' h ' : ''}${m} min) a počítáme s tímto termínem.`);
 }
+let doneShown = false;
 async function paint() {
+  if (doneShown) { $('[data-empty]').hidden = true; return; }
   items = await store.cartItems();
   $('[data-empty]').hidden = !!items.length; $('[data-full]').hidden = !items.length;
   try { $('[data-mine-link]').hidden = !JSON.parse(localStorage.getItem('vk2-orders') || '[]').length; } catch (e) { /* nič */ }
   if (!items.length) return;
   VK.ev?.('cart_view');
-  $('[data-team-box]').hidden = !items.some((i) => !i.design?.custom && i.kind !== 'digital');
   $('[data-items]').innerHTML = items.map((it) => {
     const c = it.config;
     const q = c.kind === 'digital' ? '' : `<label class="it__q"><span class="sr">${tr('Počet kusov', 'Počet kusů')}</span><select data-qty="${it.id}">${P.qty.map((n) => `<option value="${n}"${n === c.qty ? ' selected' : ''}>${n} ${tr('ks', 'ks')}</option>`).join('')}</select></label>`;
     return `<li class="it"><div class="it__v">${it.thumb ? `<img src="${it.thumb}" alt="">` : ''}${it.thumbBack ? `<img src="${it.thumbBack}" alt="">` : ''}</div>
       <div class="it__b"><p class="it__k">${KIND[it.kind] || ''}</p><h3>${esc(it.title)}</h3><p class="it__s">${specs(c, it).map(esc).join(' · ')}</p>
-      <div class="it__a">${q}${it.design?.custom ? '' : `<button data-edit="${it.id}">${tr('Upraviť', 'Upravit')}</button><button data-team="${it.id}">+ ${tr('Kolega', 'Kolega')}</button>`}<button data-del="${it.id}">${tr('Odstrániť', 'Odstranit')}</button></div></div>
+      <div class="it__a">${q}${it.design?.custom ? '' : `<button data-edit="${it.id}">${tr('Upraviť', 'Upravit')}</button><button data-team="${it.id}">+ ${tr('Vizitka pre kolegu', 'Vizitka pro kolegu')}</button>`}<button data-del="${it.id}">${tr('Odstrániť', 'Odstranit')}</button></div></div>
       ${upsell(it)}
       <b class="it__p">${money(itemPrice(c))}</b></li>`;
   }).join('');
@@ -78,6 +78,7 @@ async function paint() {
   const dig = items.every((i) => i.kind === 'digital');
   $('[data-ship-fs]').hidden = dig;
   $$('[data-ship-fs] [required]').forEach((i) => { i.required = !dig; });
+  const sd = $('[data-steps-date]'); if (sd) sd.textContent = dig ? tr('Digitálnu vizitku zapneme hneď po zaplatení.', 'Digitální vizitku zapneme hned po zaplacení.') : `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(arrival(items))}`;
   $('[data-date]').innerHTML = dig ? tr('Digitálnu vizitku zapneme hneď po zaplatení.', 'Digitální vizitku zapneme hned po zaplacení.') : `${tr('Doručenie odhadom', 'Doručení odhadem')} ${fmtDay(arrival(items))}${deadline() ? `<small>${deadline()}</small>` : ''}`;
 }
 document.addEventListener('click', async (e) => {
@@ -147,6 +148,12 @@ $('[data-checkout]').addEventListener('focusout', (e) => { if (RULES[e.target.na
 $('[data-checkout]').addEventListener('input', (e) => { const fl = e.target.closest('.fl'); if (RULES[e.target.name] && (fl?.classList.contains('bad') || fl?.classList.contains('ok'))) check(e.target); });
 // mobilná lišta so sumou, keď súhrn nie je vidieť
 const bar = $('[data-bar]');
+$('[data-bar-go]')?.addEventListener('click', () => {
+  const f = $('[data-checkout]');
+  const bad = [...f.querySelectorAll('[required]')].find((i) => !i.closest('[hidden]') && i.type !== 'checkbox' && (!i.value.trim() || (RULES[i.name] && !check(i, true))));
+  if (bad) { bad.closest('fieldset')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); setTimeout(() => bad.focus({ preventScroll: true }), 350); return; }
+  $('.co__sum').scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
 new IntersectionObserver((es) => { bar.classList.toggle('on', !es[0].isIntersecting && !$('[data-full]').hidden); }, { rootMargin: '0px 0px -40px 0px' }).observe($('.co__sum'));
 
 (async function prefill() {
@@ -194,6 +201,7 @@ $('[data-checkout]').addEventListener('submit', async (e) => {
       return;
     }
   }
+  doneShown = true; $('[data-empty]').hidden = true;
   $('[data-full]').hidden = true; $('.cart__head').hidden = true; $('[data-done]').hidden = false; bar.classList.remove('on');
   $('[data-done-num]').textContent = tr('Objednávka ', 'Objednávka ') + order.number;
   $('[data-done-img]').src = items[0]?.thumb || '';

@@ -76,8 +76,17 @@ async function heroAI(prompt) {
   designs = r.designs;
   $('[data-ai-intro]').textContent = r.intro;
   const grid = $('[data-ai-grid]'); grid.innerHTML = '';
-  designs.forEach((d, idx) => { const b = document.createElement('button'); b.dataset.i = idx; b.innerHTML = `<img alt="">${d.artPending ? `<span class="pend">${tr('kreslím grafiku…', 'kreslím grafiku…')}</span>` : ''}`; grid.append(b); paintOne(idx); });
+  sel = 0;
+  designs.forEach((d, idx) => { const b = document.createElement('button'); b.dataset.i = idx; b.type = 'button'; b.setAttribute('aria-pressed', idx === 0); if (!idx) b.classList.add('on'); b.innerHTML = `<img alt="">${d.artPending ? `<span class="pend">${tr('kreslím grafiku…', 'kreslím grafiku…')}</span>` : ''}`; grid.append(b); paintOne(idx); });
   $('[data-ai-load]').hidden = true; $('[data-ai-res]').hidden = false;
+  document.body.classList.add('has-aires');
+  paintSel();
+}
+// výber návrhu ťuknutím; druhé ťuknutie na vybraný návrh ho rovno otvorí
+let sel = 0;
+function paintSel() {
+  $$('[data-ai-grid] [data-i]').forEach((b) => { const on = +b.dataset.i === sel; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  const n = $('[data-ai-sel]'); if (n) n.textContent = designs.length > 1 ? `${sel + 1}/${designs.length}` : '';
 }
 async function paintOne(i) {
   const b = $(`[data-ai-grid] [data-i="${i}"]`); if (!b) return;
@@ -86,8 +95,10 @@ async function paintOne(i) {
   b.querySelector('img').src = await snapshot(designs[i], 'front', 820, 'image/jpeg', 0.9);
 }
 function openDesign(i) { const d = designs[i]; if (!d) return; session('vk2-draft', { ...d, why: undefined }); location.href = VK.links.tvorba + '?rezim=ai'; }
-$('[data-ai-grid]').addEventListener('click', (e) => { const b = e.target.closest('[data-i]'); if (b) openDesign(+b.dataset.i); });
-$('[data-ai-open]').addEventListener('click', (e) => { if (designs.length) { e.preventDefault(); openDesign(0); } });
+$('[data-ai-grid]').addEventListener('click', (e) => { const b = e.target.closest('[data-i]'); if (!b) return; const i = +b.dataset.i; if (i === sel) { openDesign(i); return; } sel = i; paintSel(); });
+$('[data-ai-open]').addEventListener('click', (e) => { if (designs.length) { e.preventDefault(); openDesign(sel); } });
+// porovnanie: na mobile najprv len prvé riadky
+$('[data-cmp-more]')?.addEventListener('click', (e) => { e.currentTarget.closest('.cmp').classList.add('is-all'); e.currentTarget.remove(); });
 $('[data-aibox]').addEventListener('submit', (e) => { e.preventDefault(); const v = $('[data-ai-in]').value.trim(); if (v.length > 2) heroAI(v); else $('[data-ai-in]').focus(); });
 $$('[data-ai-chips] button').forEach((b) => b.addEventListener('click', () => { $('[data-ai-in]').value = b.dataset.p; heroAI(b.dataset.p); }));
 $('[data-aibox-final]').addEventListener('submit', (e) => { e.preventDefault(); VK.ev?.('ai_submit'); const v = $('[data-final-in]').value.trim(); location.href = VK.links.tvorba + '?rezim=ai' + (v ? '&prompt=' + encodeURIComponent(v) : ''); });

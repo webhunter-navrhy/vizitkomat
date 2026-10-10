@@ -134,6 +134,7 @@ export async function askAI(prompt, base = {}, { previous, onArt } = {}) {
           .finally(() => { d.artPending = false; d.why = describe(d); onArt && onArt(i, d); });
       }
     });
+    designs.forEach((d) => { d.prompt = prompt; });
     return { intro: introFrom(fields, A), fields, designs, remote: true };
   } catch (e) {
     return local(prompt, base, A, onArt);
@@ -222,5 +223,6 @@ function local(prompt, base, A, onArt) {
   const hit = PROMPT_ICONS.find(([w]) => p.includes(plain(w)));
   const em = emblemFor(hit ? hit[1] : (ICON_BY[A.industry] || ''), prompt + ' ' + (f.role || ''));
   designs.forEach((d) => { d.markPending = false; d.ai = { icon: hit ? hit[1] : (ICON_BY[A.industry] || '') }; if (em) d.emblem = em; d.why = describe(d); });
+  designs.forEach((d) => { d.prompt = prompt; });
   return { intro: introFrom(f, A), fields: f, designs, remote: false };
 }

@@ -702,3 +702,89 @@ html[lang="cs"] .fld.is-sample > span::after { content: 'ukázka'; }
 .more--kind { margin-top: 14px; }
 .more--kind .kinds { margin-top: 10px; }
 @media (max-width: 760px) { .st4__scenes { display: none; } .st4__views button[data-view="3d"] { display: none; } }
+
+/* ===================== objednávka – prehľadnejší krok (10/2026) ===================== */
+.qty b i { font-style: normal; font-size: .72rem; font-weight: 700; opacity: .7; }
+.qty small s { display: block; font-weight: 600; opacity: .55; font-size: .72rem; }
+.qty em { font-style: normal; font-size: .68rem; font-weight: 600; color: var(--ink-3); }
+.qty button.on em { color: rgba(255, 255, 255, .7); }
+.qty button { min-height: 72px; align-content: center; }
+.paper { min-height: 44px; }
+.sum__safe { margin: 10px 0 0; text-align: center; font-size: .84rem; font-weight: 600; color: rgba(255, 255, 255, .9); }
+.sum__trust { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; grid-template-columns: none; margin-top: 12px; }
+.sum__trust li { display: flex; align-items: center; gap: 6px; padding: 0; background: none; font-size: .78rem; font-weight: 600; color: rgba(255, 255, 255, .82); }
+.sum__trust li::before { content: '✓'; display: grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: rgba(255, 255, 255, .18); font-size: .62rem; }
+.obar .btn.is-busy { opacity: .7; pointer-events: none; }
+@media (max-width: 1060px) {
+  /* poradie na mobile: náhľad → (problém) → voľby → súhrn → kontrola */
+  .st4 { padding-top: 1rem; padding-bottom: calc(var(--sec) + 70px); }
+  .st4__grid { gap: 14px; }
+  .st4__vis { display: contents; }
+  .st4__views { order: 1; justify-self: start; }
+  .st4__stage { order: 2; aspect-ratio: 16 / 10; border-radius: 22px; }
+  .st4__scenes { order: 3; }
+  .pf.warn { order: 4; }
+  .st4__opts { order: 5; }
+  .pf.ok, .pf:not(.ok):not(.warn) { order: 6; }
+  .st4__vis > [data-back-edit] { order: 7; justify-self: start; }
+  .st4__opts > h2 { display: none; }
+  .st4__opts h3:first-of-type { margin-top: 4px; }
+}
+@media (max-width: 760px) {
+  .sum__cta, .sum__safe { display: none; }
+  .sum { margin-top: 16px; }
+  .qty { gap: 6px; }
+  .qty button { padding: 8px 2px; min-height: 68px; }
+  .qty b { font-size: 1rem; }
+  .obar { padding-left: 16px; }
+  .obar small { font-size: .7rem; }
+}
+
+/* ===== výber návrhu: vybraný stav + lepiaca lišta ===== */
+.mock { cursor: pointer; }
+.mock .mock__scene { outline: 0 solid transparent; transition: transform .35s var(--ease), box-shadow .3s; }
+.mock.is-sel .mock__scene { box-shadow: 0 0 0 4px var(--cobalt), 0 18px 30px -18px rgba(36, 64, 230, .6); }
+.mock.is-sel .mock__dir { background: var(--cobalt); }
+.mock.is-sel .mock__dir::before { content: '✓ '; }
+.extra__c.is-sel .extra__img { box-shadow: 0 0 0 4px var(--cobalt), 0 18px 30px -18px rgba(36, 64, 230, .6); }
+.extra__c.is-sel .extra__go { opacity: 1; transform: none; background: var(--cobalt); }
+.pickbar { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(640px, calc(100% - 20px)); z-index: 60; display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 0; padding: 10px 10px 10px 12px; border-radius: 20px; background: var(--ink); color: #fff; box-shadow: 0 20px 40px -18px rgba(15, 20, 64, .7); }
+.pickbar[hidden] { display: none; }
+.pickbar.is-pop { animation: pickPop .45s var(--pop); }
+@keyframes pickPop { 0% { transform: translate(-50%, 8px) scale(.98); } 100% { transform: translateX(-50%); } }
+.pickbar__t { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.pickbar__t img { width: 64px; height: 44px; object-fit: cover; border-radius: 8px; flex: none; background: rgba(255, 255, 255, .1); }
+.pickbar__t small { display: block; font-size: .72rem; color: rgba(255, 255, 255, .65); font-weight: 700; letter-spacing: .02em; }
+.pickbar__t b { display: block; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pickbar .btn { flex: none; min-height: 48px; }
+@media (max-width: 760px) {
+  .pickbar { bottom: calc(10px + env(safe-area-inset-bottom)); }
+}
+/* lišta kontaktov vo výbere: 3 polia + poznámka */
+.mine4 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.mine4__note { grid-column: 1 / -1; margin: 2px 0 0; font-size: .82rem; color: var(--ink-3); }
+.mine4__note[hidden] { display: none; }
+@media (max-width: 760px) { .mine4 { grid-template-columns: 1fr; } }
+
+/* ===== údaje: povinné hore, voliteľné v rozbalení ===== */
+.fields-more { margin-top: 12px; border-radius: 14px; background: #F4F5FB; }
+.fields-more > summary { list-style: none; cursor: pointer; padding: 13px 16px; font-weight: 800; font-size: .92rem; color: var(--cobalt); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.fields-more > summary::-webkit-details-marker { display: none; }
+.fields-more > summary::after { content: '+'; font-size: 1.2rem; line-height: 1; }
+.fields-more[open] > summary::after { content: '–'; }
+.fields-more > .fields { padding: 0 14px 14px; }
+.fld__err { display: block; margin-top: 4px; font-style: normal; font-size: .8rem; font-weight: 700; color: #C2372B; }
+.fld__err[hidden] { display: none; }
+.fld.is-err input { box-shadow: 0 0 0 2px #E0533F inset; background: #FFF4F2; }
+.fld input::placeholder { color: #9AA0BC; }
+.fld.is-sample input::placeholder { color: #B07A12; font-style: italic; }
+.simple-logo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 18px; }
+.simple-logo img { width: 44px; height: 44px; object-fit: contain; border-radius: 10px; background: #F4F5FB; padding: 4px; }
+.simple-logo small { color: var(--ink-3); font-size: .8rem; }
+.simple-extra h3 small { font-weight: 600; color: var(--ink-3); font-size: .78rem; margin-left: .3rem; }
+.simple-safe { display: flex; align-items: center; gap: 8px; margin: 16px 0 0; padding: 10px 12px; border-radius: 12px; background: #EAF7EF; color: #1E6B3E; font-size: .86rem; font-weight: 700; line-height: 1.35; }
+.simple-safe::before { content: '✓'; display: grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 50%; background: #2E9E5B; color: #fff; font-size: .78rem; }
+.edx:not(.is-simple) .simple-logo, .edx:not(.is-simple) .simple-safe { display: none; }
+@media (max-width: 760px) { .edx.is-simple .fld input { min-height: 48px; font-size: 16px; } }
+
+.wz[data-step="choose"] .st2 { padding-bottom: 110px; }

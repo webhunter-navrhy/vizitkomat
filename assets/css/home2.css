@@ -52,7 +52,7 @@
 .dk:focus-visible .dk__f { outline: 3px solid var(--yellow); outline-offset: 4px; }
 .demo__hint { margin: 0; font-size: .84rem; font-weight: 600; opacity: .72; text-align: center; }
 .demo__hint::before { content: '↖ '; color: var(--yellow); }
-.hero__vis.running .demo { opacity: .12; filter: blur(2px); transition: opacity .4s, filter .4s; pointer-events: none; }
+.hero__vis.running .demo { opacity: 0; filter: blur(2px); transition: opacity .4s, filter .4s; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .dk, .dk__b { transition: none; } .demo__caret { display: none; } }
 .hero__sticker { position: absolute; right: -1%; bottom: 9%; left: auto; top: auto; z-index: 6; animation: spinIn 1s var(--pop) .5s both; }
 @keyframes spinIn { from { transform: rotate(-60deg) scale(.3); opacity: 0; } }
@@ -555,3 +555,69 @@
 .demo__chat { min-height: calc(28px + 2 * 1.4em + 1.7rem + 6px); align-content: end; }
 .demo__msg { line-height: 1.4; }
 
+
+/* ===================== konverzie 10/2026 ===================== */
+.hero__price b { font-weight: 800; color: var(--yellow); }
+.hero__price s { opacity: .6; font-weight: 600; margin: 0 .15rem; }
+.hero__price em { font-style: normal; font-size: .72rem; font-weight: 800; padding: .14rem .5rem; border-radius: 99px; background: var(--coral); color: #fff; margin-left: .3rem; vertical-align: .08em; white-space: nowrap; }
+/* výber AI návrhu */
+.ai-run__grid button { outline: 0; box-shadow: 0 0 0 0 transparent; transition: transform .25s var(--pop), box-shadow .2s; }
+.ai-run__grid button.on { box-shadow: 0 0 0 3px var(--yellow), 0 14px 26px -12px rgba(5, 10, 60, .6); }
+.ai-run__grid button.on::after { content: '✓'; position: absolute; right: 8px; top: 8px; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--yellow); color: var(--ink); font-weight: 800; font-size: .85rem; }
+.ai-run__grid button:focus-visible { box-shadow: 0 0 0 3px #fff; }
+.ai-run__go { min-height: 52px; font-size: 1.02rem; }
+.ai-run__go small { font-family: var(--mono); font-size: .72rem; opacity: .7; font-weight: 500; }
+/* CTA na konci sekcií */
+.sec-cta { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.4rem; margin-top: clamp(1.6rem, 4vw, 2.6rem); }
+.sec-cta span { font-weight: 600; color: var(--ink-2); font-size: .95rem; }
+.sec-cta--dark span { color: rgba(255, 255, 255, .75); }
+.cmp__more { display: none; }
+
+@media (max-width: 1060px) {
+  /* prvá obrazovka na mobile: nadpis → vizitky → text → zadanie → cena */
+  .hero { padding-top: calc(var(--nav-h) + .9rem); padding-bottom: 2.4rem; }
+  .hero__grid { display: flex; flex-direction: column; gap: 0; }
+  .hero__copy { display: contents; }
+  .hero .kicker { display: none; }
+  .hero__h { order: 1; margin-top: 0; }
+  .hero__vis { order: 2; min-height: 0; height: min(58vw, 340px); margin: .6rem auto .2rem; max-width: 560px; }
+  .hero__lead { order: 3; margin-top: .6rem; }
+  .aibox { order: 4; margin-top: 1rem; }
+  .hero__trust { order: 5; margin-top: 1rem; }
+  .hero__chips { order: 6; flex-wrap: nowrap; overflow-x: auto; margin: 1rem -16px 0; padding: 0 16px 4px; scrollbar-width: none; }
+  .hero__chips::-webkit-scrollbar { display: none; }
+  .hero__chips button { flex: none; min-height: 40px; }
+  .hero__alt { order: 7; }
+  .demo { grid-template-rows: minmax(0, 1fr); }
+  .demo__chat, .demo__ai, .demo__hint { display: none; }
+  .hero__sticker { width: 66px; height: 66px; font-size: .64rem; right: 2%; bottom: 0; }
+  /* výsledky AI v hero: plná výška, lepiace tlačidlo */
+  .hero__vis.running { height: auto; min-height: 240px; }
+  .hero__vis.running .demo { display: none; }
+  .hero__vis.running .ai-run { position: relative; inset: auto; padding: .6rem 0 0; }
+  .ai-run__go { position: sticky; bottom: 14px; z-index: 80; width: 100%; justify-content: center; box-shadow: 0 0 0 3px var(--ink), 0 6px 0 var(--ink), 0 18px 30px -10px rgba(5, 10, 60, .55); }
+  body.has-aires .mcta { display: none !important; }
+  /* kompaktnejšie sekcie */
+  .story__steps li, .story__steps li:first-child { min-height: 38vh; }
+  .story__steps li:last-child { min-height: 40vh; padding-bottom: 2rem; }
+}
+@media (max-width: 760px) {
+  .hero__h { font-size: clamp(2.7rem, 12.4vw, 4.2rem); }
+  .hero__lead { font-size: 1rem; line-height: 1.45; }
+  .hero__trust { gap: .35rem; font-size: .88rem; }
+  .hero__alt { font-size: .88rem; }
+  .tpls__ind { flex-wrap: nowrap; overflow-x: auto; margin: 0 -16px; padding: 0 16px 6px; scrollbar-width: none; }
+  .tpls__ind::-webkit-scrollbar { display: none; }
+  .tpls__ind a { flex: none; }
+  .paper2__grid { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 82%; max-width: none; overflow-x: auto; scroll-snap-type: x mandatory; margin-left: -16px; margin-right: -16px; padding: 0 16px 10px; scrollbar-width: none; }
+  .paper2__grid::-webkit-scrollbar { display: none; }
+  .paper2__grid > * { scroll-snap-align: center; }
+  .pcard ul, .pcard__who { display: none; }
+  .pcard { padding: 1.4rem 1.4rem 1.3rem; }
+  .price__grid { gap: 22px; }
+  .cmp:not(.is-all) tbody tr:nth-child(n+4) { display: none; }
+  .cmp__more { display: block; margin: 14px auto 0; padding: .7rem 1.2rem; min-height: 44px; border-radius: 99px; font-weight: 800; color: #fff; background: rgba(255, 255, 255, .1); }
+  .dig__vis { min-height: 460px; }
+  .story__steps h3 { font-size: clamp(1.6rem, 6.6vw, 2.1rem); }
+}
+@media (max-width: 1060px) { .hero__grid { align-items: stretch; } .hero__grid > *, .aibox { width: 100%; max-width: 620px; align-self: center; } .hero__vis { width: 100%; } }

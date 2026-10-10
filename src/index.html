@@ -24,7 +24,7 @@
     <div class="hero__copy">
       <p class="kicker hl">{{ L('AI grafik · tlač · digitál', 'AI grafik · tisk · digitál') }}</p>
       <h1 class="h-xl hero__h">{{ L('Vizitka za', 'Vizitka za') }} <span class="hl">{{ L('2 minúty.', '2 minuty.') }}</span> {{ L('Bez grafika.', 'Bez grafika.') }}</h1>
-      <p class="lead hero__lead">{{ L('Napíšte jednou vetou, čím sa živíte. AI grafik navrhne tri originálne vizitky, doladíte ich ako v Canve a my ich vytlačíme na prémiový papier.', 'Napište jednou větou, čím se živíte. AI grafik navrhne tři originální vizitky, doladíte je jako v Canvě a my je vytiskneme na prémiový papír.') }}</p>
+      <p class="lead hero__lead">{{ L('Napíšte, čím sa živíte. AI grafik vám hneď navrhne tri vizitky, vy si vyberiete a my ich vytlačíme na prémiový papier a pošleme.', 'Napište, čím se živíte. AI grafik vám hned navrhne tři vizitky, vy si vyberete a my je vytiskneme na prémiový papír a pošleme.') }}</p>
       <form class="aibox" data-aibox>
         <label for="ai-in" class="sr">{{ L('Popis pre AI grafika', 'Popis pro AI grafika') }}</label>
         <input id="ai-in" data-ai-in aria-label="{{ L('Čím sa živíte?', 'Čím se živíte?') }}" maxlength="300" autocomplete="off" placeholder="{{ L('Napr. Jana Malá, kaderníčka v Trnave, jemne', 'Např. Jana Malá, kadeřnice v Brně, jemně') }}">
@@ -39,7 +39,7 @@
       </div>
       <p class="hero__alt">{{ L('Alebo', 'Nebo') }} <a href="{{ link('tvorba') }}?rezim=sablony">{{ L('si vyberte šablónu', 'si vyberte šablonu') }}</a> · <a href="{{ link('vlastny') }}">{{ L('nahrajte vlastný návrh', 'nahrajte vlastní návrh') }}</a></p>
       <ul class="hero__trust">
-        <li>{{ L('Od', 'Od') }} {{ prices.papers.matny['100'] }} {{ prices.symbol }} {{ L('vrátane dopravy', 'včetně dopravy') }}</li>
+        <li class="hero__price">{{ L('Od', 'Od') }} <b>{{ prices.papers.matny['100'] }} {{ prices.symbol }}</b>{% if prices.launch %} <s>{{ prices.was.papers.matny['100'] }} {{ prices.symbol }}</s>{% endif %} {{ L('vrátane dopravy', 'včetně dopravy') }}{% if prices.launch %} <em>{{ L('zavádzacia cena', 'zaváděcí cena') }}</em>{% endif %}</li>
         <li>{{ L('Platíte až po schválení', 'Platíte až po schválení') }}</li>
         <li>{{ L('Kontrolu robí človek', 'Kontrolu dělá člověk') }}</li>
       </ul>
@@ -76,8 +76,8 @@
         <div class="ai-run__res" data-ai-res hidden>
           <p data-ai-intro></p>
           <div class="ai-run__grid" data-ai-grid></div>
-          <a class="btn btn--y btn--sm" href="{{ link('tvorba') }}" data-ai-open>{{ L('Pokračovať s týmto návrhom', 'Pokračovat s tímto návrhem') }} <span class="ar">→</span></a>
-          <p class="ai-run__note">{{ L('Kliknite na návrh, ktorý sa vám páči. Údaje doplníte v editore, platíte až po kontrole.', 'Klikněte na návrh, který se vám líbí. Údaje doplníte v editoru, platíte až po kontrole.') }}</p>
+          <a class="btn btn--y ai-run__go" href="{{ link('tvorba') }}" data-ai-open>{{ L('Pokračovať s týmto návrhom', 'Pokračovat s tímto návrhem') }} <small data-ai-sel></small> <span class="ar">→</span></a>
+          <p class="ai-run__note">{{ L('Ťuknutím vyberte návrh. Údaje doplníte v ďalšom kroku, platíte až po kontrole.', 'Ťuknutím vyberte návrh. Údaje doplníte v dalším kroku, platíte až po kontrole.') }}</p>
         </div>
       </div>
       <span class="sticker hero__sticker">AI<br>{{ L('grafik', 'grafik') }}<br>24/7</span>
@@ -88,6 +88,22 @@
 <div class="band-clip" aria-hidden="true"><div class="band"><div class="band__in">
   {% for _ in range(2) %}<span>350 g {{ L('papier', 'papír') }}</span><span>AI grafik 24/7</span><span>{{ L('Doprava zadarmo', 'Doprava zdarma') }}</span><span>Soft-touch</span><span>{{ L('QR do telefónu', 'QR do telefonu') }}</span><span>{{ L('Editor ako Canva', 'Editor jako Canva') }}</span><span>{{ L('Platba po schválení', 'Platba po schválení') }}</span>{% endfor %}
 </div></div></div>
+
+<!-- ===== ŠABLÓNY ===== -->
+<section class="tpls" data-nav="coral">
+  <div class="wrap tpls__head">
+    <h2 class="h-l rv">{{ L(tpl_count ~ ' šablón.', tpl_count ~ ' šablon.') }} <span class="tpls__y">{{ L('Tisíce kombinácií.', 'Tisíce kombinací.') }}</span></h2>
+    <p class="lead rv">{{ L('Navrhnuté podľa najobľúbenejších vizitiek na Pintereste. Tu s ukážkovými firmami, v editore hneď s vaším menom.', 'Navržené podle nejoblíbenějších vizitek na Pinterestu. Tady s ukázkovými firmami, v editoru hned s vaším jménem.') }}</p>
+  </div>
+  <div class="tpls__rows" data-tpl-rows>
+    <div class="tpls__row"><div class="tpls__track" data-row="0"></div></div>
+    <div class="tpls__row tpls__row--rev"><div class="tpls__track" data-row="1"></div></div>
+  </div>
+  <div class="wrap tpls__foot">
+    <a class="btn btn--w btn--lg rv" href="{{ link('tvorba') }}?rezim=sablony">{{ L('Pozrieť všetky šablóny', 'Prohlédnout všechny šablony') }} <span class="ar">→</span></a>
+    <nav class="tpls__ind rv" aria-label="{{ L('Vizitky podľa odboru', 'Vizitky podle oboru') }}"><span>{{ L('Podľa odboru:', 'Podle oboru:') }}</span>{% for o in obory %}<a href="{{ link('obor-' ~ o.key) }}">{{ o[lang].name }}</a>{% endfor %}</nav>
+  </div>
+</section>
 
 <!-- ===== PRÍBEH: OD VETY K VIZITKE ===== -->
 <section class="story" id="ako-to-funguje" data-nav="cream">
@@ -128,84 +144,7 @@
           <p class="story__alt">{{ L('Máte vlastný návrh?', 'Máte vlastní návrh?') }} <a class="link" href="{{ link('vlastny') }}">{{ L('Nahrajte PDF alebo obrázok', 'Nahrajte PDF nebo obrázek') }} →</a></p></li>
       </ol>
     </div>
-  </div>
-</section>
-
-<!-- ===== AI UKÁŽKY ===== -->
-<section class="real" data-nav="ink">
-  <div class="wrap">
-    <div class="real__head">
-      <h2 class="h-l rv">{{ L('Skutočná AI.', 'Skutečná AI.') }} <span class="hl">{{ L('Nie šablóna s menom.', 'Ne šablona se jménem.') }}</span></h2>
-      <p class="lead rv">{{ L('AI grafik pochopí odbor aj štýl, vyberie rozloženie, farby a písmo, napíše slogan a keď treba, nakreslí vlastnú grafiku. Toto sú návrhy, ktoré pripravil z jednej vety.', 'AI grafik pochopí obor i styl, vybere rozložení, barvy a písmo, napíše slogan a když je potřeba, nakreslí vlastní grafiku. Tohle jsou návrhy, které připravil z jedné věty.') }}</p>
-    </div>
-    <div class="real__tabs" role="tablist" data-real-tabs></div>
-    <div class="real__stage">
-      <p class="real__prompt" data-real-prompt></p>
-      <div class="real__cards" data-real-cards></div>
-    </div>
-    <a class="btn btn--y btn--lg rv" href="{{ link('tvorba') }}?rezim=ai">{{ L('Vyskúšať AI grafika', 'Vyzkoušet AI grafika') }} <span class="ar">→</span></a>
-  </div>
-</section>
-
-<!-- ===== ŠABLÓNY ===== -->
-<section class="tpls" data-nav="coral">
-  <div class="wrap tpls__head">
-    <h2 class="h-l rv">{{ L(tpl_count ~ ' šablón.', tpl_count ~ ' šablon.') }} <span class="tpls__y">{{ L('Tisíce kombinácií.', 'Tisíce kombinací.') }}</span></h2>
-    <p class="lead rv">{{ L('Navrhnuté podľa najobľúbenejších vizitiek na Pintereste. Tu s ukážkovými firmami, v editore hneď s vaším menom.', 'Navržené podle nejoblíbenějších vizitek na Pinterestu. Tady s ukázkovými firmami, v editoru hned s vaším jménem.') }}</p>
-  </div>
-  <div class="tpls__rows" data-tpl-rows>
-    <div class="tpls__row"><div class="tpls__track" data-row="0"></div></div>
-    <div class="tpls__row tpls__row--rev"><div class="tpls__track" data-row="1"></div></div>
-  </div>
-  <div class="wrap tpls__foot">
-    <a class="btn btn--w btn--lg rv" href="{{ link('tvorba') }}?rezim=sablony">{{ L('Pozrieť všetky šablóny', 'Prohlédnout všechny šablony') }} <span class="ar">→</span></a>
-    <nav class="tpls__ind rv" aria-label="{{ L('Vizitky podľa odboru', 'Vizitky podle oboru') }}"><span>{{ L('Podľa odboru:', 'Podle oboru:') }}</span>{% for o in obory %}<a href="{{ link('obor-' ~ o.key) }}">{{ o[lang].name }}</a>{% endfor %}</nav>
-  </div>
-</section>
-
-<!-- ===== PAPIER ===== -->
-<section class="paper2" data-nav="cream">
-  <div class="wrap">
-    <div class="paper2__head">
-      <h2 class="h-l rv">{{ L('Papier,', 'Papír,') }} <span class="hl-b">{{ L('ktorý cítiť.', 'který je cítit.') }}</span></h2>
-      <p class="lead rv">{{ L('Vizitku si ľudia najprv ohmatajú, až potom prečítajú. Preto tlačíme na hrubý papier a obojstranne už v základnej cene.', 'Vizitku si lidé nejdřív ohmatají, až potom přečtou. Proto tiskneme na silný papír a oboustranně už v základní ceně.') }}</p>
-    </div>
-    <div class="paper2__grid">
-      {% for key, img, name, sub, desc, price in [
-        ('matny', 'tpl-etiketa-f', L('Matný 350 g', 'Matný 350 g'), L('v základnej cene', 'v základní ceně'), L('Pevný, jemne zrnitý papier bez lesku. Dobre sa naň píše perom a nezanecháva odtlačky.', 'Pevný, jemně zrnitý papír bez lesku. Dobře se na něj píše perem a nezanechává otisky.'), prices.papers.matny['250']),
-        ('soft', 'tpl-noirgold-f', L('Soft-touch', 'Soft-touch'), L('najobľúbenejší', 'nejoblíbenější'), L('Zamatová laminácia, ktorá je na dotyk ako broskyňa. Farby pôsobia hlbšie a vizitka vydrží viac.', 'Sametová laminace, která je na dotek jako broskev. Barvy působí hlouběji a vizitka vydrží víc.'), prices.papers.matny['250'] + prices.finishes.soft['250']),
-        ('triplex', 'tpl-kytice-f', 'Triplex 720 g', L('luxusný', 'luxusní'), L('Tri vrstvy papiera s farebným jadrom. Dvakrát hrubší ako bežná vizitka, na hrane vidno farebný prúžok.', 'Tři vrstvy papíru s barevným jádrem. Dvakrát silnější než běžná vizitka, na hraně je vidět barevný proužek.'), prices.papers.triplex['250'])] %}
-      <article class="sw sw--{{ key }} rv" data-tilt>
-        <div class="sw__stage" aria-hidden="true"><div class="sw__card"><img alt="" src="{{ pre[img] }}" loading="lazy" width="500" height="278"></div></div>
-        <div class="sw__txt">
-          <p class="sw__sub">{{ sub }}</p>
-          <h3>{{ name }}</h3>
-          <p>{{ desc }}</p>
-          <p class="sw__p">{{ '{:,}'.format(price).replace(',', ' ') }} {{ prices.symbol }} <small>/ 250 {{ L('ks', 'ks') }}</small></p>
-        </div>
-      </article>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
-<!-- ===== DIGITÁL ===== -->
-<section class="dig" data-nav="yellow">
-  <div class="wrap dig__grid">
-    <div class="dig__vis">
-      <div class="phone"><div class="phone__screen"><div class="phone__island"></div><div class="dcard-host" data-dig-phone></div></div></div>
-      <div class="dig__qr"><span data-dig-qr></span><p>{{ L('Naskenujte telefónom.', 'Naskenujte telefonem.') }}<br><small>{{ L('Je to skutočná digitálna vizitka.', 'Je to skutečná digitální vizitka.') }}</small></p></div>
-    </div>
-    <div class="dig__copy">
-      <h2 class="h-l rv">{{ L('A k tomu', 'A k tomu') }} <span class="hl-c">{{ L('aj v telefóne.', 'i v telefonu.') }}</span></h2>
-      <p class="lead rv">{{ L('Ku každej tlačenej vizitke dostanete digitálnu zadarmo, bez predplatného. Vlastná adresa, QR kód na zadnej strane a tlačidlo, ktoré vás uloží do kontaktov.', 'Ke každé tištěné vizitce dostanete digitální zdarma, bez předplatného. Vlastní adresa, QR kód na zadní straně a tlačítko, které vás uloží do kontaktů.') }}</p>
-      <ul class="dig__list rv">
-        <li><b>{{ L('Uložiť do kontaktov', 'Uložit do kontaktů') }}</b>{{ L('jedným ťuknutím na iPhone aj Androide', 'jedním ťuknutím na iPhonu i Androidu') }}</li>
-        <li><b>{{ L('Zmeny kedykoľvek', 'Změny kdykoli') }}</b>{{ L('nové číslo bez novej tlače', 'nové číslo bez nového tisku') }}</li>
-        <li><b>{{ L('Vaša vizitka aj v mobile', 'Vaše vizitka i v mobilu') }}</b>{{ L('ťuknutím sa otočí, farby a písmo ako na papieri', 'ťuknutím se otočí, barvy a písmo jako na papíře') }}</li>
-      </ul>
-      <a class="btn rv" href="{{ link('digitalna') }}">{{ L('Viac o digitálnej vizitke', 'Více o digitální vizitce') }} <span class="ar">→</span></a>
-    </div>
+    <div class="sec-cta rv"><a class="btn btn--c btn--lg" href="{{ link('tvorba') }}?rezim=ai">{{ L('Vyskúšať zadarmo', 'Vyzkoušet zdarma') }} <span class="ar" style="background:#fff;color:var(--coral)">→</span></a><span>{{ L('Návrh je zadarmo, platíte až po schválení.', 'Návrh je zdarma, platíte až po schválení.') }}</span></div>
   </div>
 </section>
 
@@ -239,6 +178,32 @@
   </div>
 </section>
 
+<!-- ===== PAPIER ===== -->
+<section class="paper2" data-nav="cream">
+  <div class="wrap">
+    <div class="paper2__head">
+      <h2 class="h-l rv">{{ L('Papier,', 'Papír,') }} <span class="hl-b">{{ L('ktorý cítiť.', 'který je cítit.') }}</span></h2>
+      <p class="lead rv">{{ L('Vizitku si ľudia najprv ohmatajú, až potom prečítajú. Preto tlačíme na hrubý papier a obojstranne už v základnej cene.', 'Vizitku si lidé nejdřív ohmatají, až potom přečtou. Proto tiskneme na silný papír a oboustranně už v základní ceně.') }}</p>
+    </div>
+    <div class="paper2__grid">
+      {% for key, img, name, sub, desc, price in [
+        ('matny', 'tpl-etiketa-f', L('Matný 350 g', 'Matný 350 g'), L('v základnej cene', 'v základní ceně'), L('Pevný, jemne zrnitý papier bez lesku. Dobre sa naň píše perom a nezanecháva odtlačky.', 'Pevný, jemně zrnitý papír bez lesku. Dobře se na něj píše perem a nezanechává otisky.'), prices.papers.matny['250']),
+        ('soft', 'tpl-noirgold-f', L('Soft-touch', 'Soft-touch'), L('najobľúbenejší', 'nejoblíbenější'), L('Zamatová laminácia, ktorá je na dotyk ako broskyňa. Farby pôsobia hlbšie a vizitka vydrží viac.', 'Sametová laminace, která je na dotek jako broskev. Barvy působí hlouběji a vizitka vydrží víc.'), prices.papers.matny['250'] + prices.finishes.soft['250']),
+        ('triplex', 'tpl-kytice-f', 'Triplex 720 g', L('luxusný', 'luxusní'), L('Tri vrstvy papiera s farebným jadrom. Dvakrát hrubší ako bežná vizitka, na hrane vidno farebný prúžok.', 'Tři vrstvy papíru s barevným jádrem. Dvakrát silnější než běžná vizitka, na hraně je vidět barevný proužek.'), prices.papers.triplex['250'])] %}
+      <article class="sw sw--{{ key }} rv" data-tilt>
+        <div class="sw__stage" aria-hidden="true"><div class="sw__card"><img alt="" src="{{ pre[img] }}" loading="lazy" width="500" height="278"></div></div>
+        <div class="sw__txt">
+          <p class="sw__sub">{{ sub }}</p>
+          <h3>{{ name }}</h3>
+          <p>{{ desc }}</p>
+          <p class="sw__p">{{ '{:,}'.format(price).replace(',', ' ') }} {{ prices.symbol }} <small>/ 250 {{ L('ks', 'ks') }}</small></p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
 <!-- ===== PREČO MY (tmavá) ===== -->
 <section class="why cmp" data-nav="ink">
   <div class="wrap">
@@ -250,11 +215,49 @@
       <thead><tr><th></th><th class="us"><span>vizitkomat</span></th><th>{{ L('Bežná online tlačiareň', 'Běžná online tiskárna') }}</th><th>{{ L('Grafik na zákazku', 'Grafik na zakázku') }}</th></tr></thead>
       <tbody><tr><th>{{ L('Návrh od grafika', 'Návrh od grafika') }}</th><td class="us">{{ L('AI grafik, zadarmo', 'AI grafik, zdarma') }}</td><td data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">{{ L('nie, vlastný súbor', 'ne, vlastní soubor') }}</td><td data-l="{{ L('Grafik', 'Grafik') }}">{{ L('áno, platí sa zvlášť', 'ano, platí se zvlášť') }}</td></tr><tr><th>{{ L('Hotové za', 'Hotovo za') }}</th><td class="us">{{ L('2 minúty', '2 minuty') }}</td><td data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">{{ L('podľa toho, kto navrhuje', 'podle toho, kdo navrhuje') }}</td><td data-l="{{ L('Grafik', 'Grafik') }}">{{ L('dni až týždne', 'dny až týdny') }}</td></tr><tr><th>{{ L('Kontrola dát človekom', 'Kontrola dat člověkem') }}</th><td class="us">{{ L('áno, vždy', 'ano, vždy') }}</td><td data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">{{ L('väčšinou automat', 'většinou automat') }}</td><td data-l="{{ L('Grafik', 'Grafik') }}">{{ L('áno', 'ano') }}</td></tr><tr><th>{{ L('Digitálna vizitka s QR', 'Digitální vizitka s QR') }}</th><td class="us">{{ L('k tlači zadarmo', 'k tisku zdarma') }}</td><td class="no" data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">✕</td><td class="no" data-l="{{ L('Grafik', 'Grafik') }}">✕</td></tr><tr><th>{{ L('Platba', 'Platba') }}</th><td class="us">{{ L('až po kontrole návrhu', 'až po kontrole návrhu') }}</td><td data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">{{ L('vopred kartou', 'předem kartou') }}</td><td data-l="{{ L('Grafik', 'Grafik') }}">{{ L('záloha vopred', 'záloha předem') }}</td></tr><tr><th>{{ L('Doprava', 'Doprava') }}</th><td class="us">{{ L('zadarmo', 'zdarma') }}</td><td data-l="{{ L('Bežná tlačiareň', 'Běžná tiskárna') }}">{{ L('často sa platí', 'často se platí') }}</td><td data-l="{{ L('Grafik', 'Grafik') }}">—</td></tr></tbody>
     </table></div>
+    <button class="cmp__more" type="button" data-cmp-more>{{ L('Zobraziť celé porovnanie', 'Zobrazit celé srovnání') }}</button>
     <div class="safe__promise">
       <div class="rv"><b>{{ L('Chyba tlače? Vytlačíme znova.', 'Chyba tisku? Vytiskneme znovu.') }}</b><p>{{ L('Zadarmo. Stačí poslať fotku e-mailom.', 'Zdarma. Stačí poslat fotku e-mailem.') }}</p></div>
       <div class="rv"><b>{{ L('Stav objednávky online', 'Stav objednávky online') }}</b><p>{{ L('Každý krok vidíte na vlastnej stránke objednávky.', 'Každý krok vidíte na vlastní stránce objednávky.') }}</p></div>
       <div class="rv"><b>{{ L('Skutočná firma', 'Skutečná firma') }}</b><p>webhunter s.r.o., IČO 29498511, {{ L('Praha', 'Praha') }}. {{ L('Faktúru dostanete e-mailom.', 'Fakturu dostanete e-mailem.') }}</p></div>
     </div>
+    <div class="sec-cta sec-cta--dark rv"><a class="btn btn--y btn--lg" href="{{ link('tvorba') }}?rezim=ai">{{ L('Navrhnúť vizitku zadarmo', 'Navrhnout vizitku zdarma') }} <span class="ar">→</span></a></div>
+  </div>
+</section>
+
+<!-- ===== DIGITÁL ===== -->
+<section class="dig" data-nav="yellow">
+  <div class="wrap dig__grid">
+    <div class="dig__vis">
+      <div class="phone"><div class="phone__screen"><div class="phone__island"></div><div class="dcard-host" data-dig-phone></div></div></div>
+      <div class="dig__qr"><span data-dig-qr></span><p>{{ L('Naskenujte telefónom.', 'Naskenujte telefonem.') }}<br><small>{{ L('Je to skutočná digitálna vizitka.', 'Je to skutečná digitální vizitka.') }}</small></p></div>
+    </div>
+    <div class="dig__copy">
+      <h2 class="h-l rv">{{ L('A k tomu', 'A k tomu') }} <span class="hl-c">{{ L('aj v telefóne.', 'i v telefonu.') }}</span></h2>
+      <p class="lead rv">{{ L('Ku každej tlačenej vizitke dostanete digitálnu zadarmo, bez predplatného. Vlastná adresa, QR kód na zadnej strane a tlačidlo, ktoré vás uloží do kontaktov.', 'Ke každé tištěné vizitce dostanete digitální zdarma, bez předplatného. Vlastní adresa, QR kód na zadní straně a tlačítko, které vás uloží do kontaktů.') }}</p>
+      <ul class="dig__list rv">
+        <li><b>{{ L('Uložiť do kontaktov', 'Uložit do kontaktů') }}</b>{{ L('jedným ťuknutím na iPhone aj Androide', 'jedním ťuknutím na iPhonu i Androidu') }}</li>
+        <li><b>{{ L('Zmeny kedykoľvek', 'Změny kdykoli') }}</b>{{ L('nové číslo bez novej tlače', 'nové číslo bez nového tisku') }}</li>
+        <li><b>{{ L('Vaša vizitka aj v mobile', 'Vaše vizitka i v mobilu') }}</b>{{ L('ťuknutím sa otočí, farby a písmo ako na papieri', 'ťuknutím se otočí, barvy a písmo jako na papíře') }}</li>
+      </ul>
+      <a class="btn rv" href="{{ link('digitalna') }}">{{ L('Viac o digitálnej vizitke', 'Více o digitální vizitce') }} <span class="ar">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AI UKÁŽKY ===== -->
+<section class="real" data-nav="ink">
+  <div class="wrap">
+    <div class="real__head">
+      <h2 class="h-l rv">{{ L('Skutočná AI.', 'Skutečná AI.') }} <span class="hl">{{ L('Nie šablóna s menom.', 'Ne šablona se jménem.') }}</span></h2>
+      <p class="lead rv">{{ L('AI grafik pochopí odbor aj štýl, vyberie rozloženie, farby a písmo, napíše slogan a keď treba, nakreslí vlastnú grafiku. Toto sú návrhy, ktoré pripravil z jednej vety.', 'AI grafik pochopí obor i styl, vybere rozložení, barvy a písmo, napíše slogan a když je potřeba, nakreslí vlastní grafiku. Tohle jsou návrhy, které připravil z jedné věty.') }}</p>
+    </div>
+    <div class="real__tabs" role="tablist" data-real-tabs></div>
+    <div class="real__stage">
+      <p class="real__prompt" data-real-prompt></p>
+      <div class="real__cards" data-real-cards></div>
+    </div>
+    <a class="btn btn--y btn--lg rv" href="{{ link('tvorba') }}?rezim=ai">{{ L('Vyskúšať AI grafika', 'Vyzkoušet AI grafika') }} <span class="ar">→</span></a>
   </div>
 </section>
 

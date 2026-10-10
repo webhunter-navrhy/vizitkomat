@@ -22,14 +22,7 @@
   <div class="cart__grid" data-full hidden>
     <section>
       <ul class="items" data-items></ul>
-      <div class="cart__more">
-        <a class="link" href="{{ link('tvorba') }}">{{ L('Pridať ďalšiu vizitku', 'Přidat další vizitku') }} +</a>
-      </div>
-      <div class="team" data-team-box hidden>
-        <div class="team__ic" aria-hidden="true"><i>JN</i><i>PK</i><i>+</i></div>
-        <div><b>{{ L('Vizitky pre celý tím', 'Vizitky pro celý tým') }}</b><span>{{ L('Rovnaký dizajn, iné meno a kontakty. Pridáte kolegu za pár sekúnd.', 'Stejný design, jiné jméno a kontakty. Přidáte kolegu za pár sekund.') }}</span></div>
-        <button class="btn btn--sm" data-team-open>{{ L('Pridať kolegu', 'Přidat kolegu') }} <span class="ar">+</span></button>
-      </div>
+      <p class="cart__more"><a class="link" href="{{ link('tvorba') }}">+ {{ L('Pridať ďalšiu vizitku', 'Přidat další vizitku') }}</a></p>
     </section>
 
     <form class="co" id="checkout" data-checkout novalidate>
@@ -52,24 +45,28 @@
       </fieldset>
       <fieldset data-ship-fs>
         <legend>{{ L('Doručenie', 'Doručení') }}</legend>
-        <div class="radios">
-          <label class="radio"><input type="radio" name="ship" value="courier" checked><span><b>{{ L('Kuriér na adresu', 'Kurýr na adresu') }}</b><small>{{ L('DPD až k vám, číslo zásielky pošleme e-mailom', 'DPD až k vám, číslo zásilky pošleme e-mailem') }}</small></span><em>{{ L('zadarmo', 'zdarma') }}</em></label>
-        </div>
-        <label class="fl"><span>{{ L('Ulica a číslo', 'Ulice a číslo') }}</span><input name="street" autocomplete="address-line1" required></label>
+        <input type="hidden" name="ship" value="courier">
+        <p class="co__shipinfo"><b>{{ L('Kuriér DPD až k vám, zadarmo', 'Kurýr DPD až k vám, zdarma') }}</b> {{ L('Číslo zásielky pošleme e-mailom.', 'Číslo zásilky pošleme e-mailem.') }}</p>
+        <label class="fl"><span>{{ L('Ulica a číslo', 'Ulice a číslo') }}</span><input name="street" autocomplete="shipping address-line1" required></label>
         <div class="row3 row3--a">
-          <label class="fl"><span>{{ L('Mesto', 'Město') }}</span><input name="city" autocomplete="address-level2" required></label>
-          <label class="fl"><span>PSČ</span><input name="zip" autocomplete="postal-code" inputmode="numeric" required></label>
-          <label class="fl"><span>{{ L('Krajina', 'Země') }}</span><select name="country" autocomplete="country">{% if lang == 'sk' %}<option value="SK">Slovensko</option><option value="CZ">Česko</option>{% else %}<option value="CZ">Česko</option><option value="SK">Slovensko</option>{% endif %}</select></label>
+          <label class="fl"><span>{{ L('Mesto', 'Město') }}</span><input name="city" autocomplete="shipping address-level2" required></label>
+          <label class="fl"><span>PSČ</span><input name="zip" autocomplete="shipping postal-code" inputmode="numeric" required></label>
+          <label class="fl"><span>{{ L('Krajina', 'Země') }}</span><select name="country" autocomplete="shipping country">{% if lang == 'sk' %}<option value="SK">Slovensko</option><option value="CZ">Česko</option>{% else %}<option value="CZ">Česko</option><option value="SK">Slovensko</option>{% endif %}</select></label>
         </div>
       </fieldset>
       <fieldset>
-        <legend>{{ L('Platba', 'Platba') }}</legend>
+        <legend>{{ L('Platba a čo bude ďalej', 'Platba a co bude dál') }}</legend>
         <input type="hidden" name="pay" value="transfer">
-        <div class="co__pay">
-          <b>{{ L('Platíte až po kontrole návrhu', 'Platíte až po kontrole návrhu') }}</b>
-          <span>{{ L('Návrh najprv skontroluje človek, potom vám pošleme e-mailom QR platbu. Nič neplatíte vopred a nič nezadávate.', 'Návrh nejdřív zkontroluje člověk, pak vám pošleme e-mailem QR platbu. Nic neplatíte předem a nic nezadáváte.') }}</span>
-        </div>
-        <label class="fl"><span>{{ L('Poznámka', 'Poznámka') }} <i>{{ L('nepovinné', 'nepovinné') }}</i></span><textarea name="note" rows="2"></textarea></label>
+        <ol class="co__steps">
+          <li><b>{{ L('Teraz objednáte, nič neplatíte', 'Teď objednáte, nic neplatíte') }}</b><span>{{ L('Potvrdenie príde hneď na e-mail.', 'Potvrzení přijde hned na e-mail.') }}</span></li>
+          <li><b>{{ L('Do 1 pracovného dňa návrh skontrolujeme', 'Do 1 pracovního dne návrh zkontrolujeme') }}</b><span>{{ L('Grafik pozrie texty, okraje aj rozlíšenie.', 'Grafik zkontroluje texty, okraje i rozlišení.') }}</span></li>
+          <li><b>{{ L('Pošleme QR platbu e-mailom', 'Pošleme QR platbu e-mailem') }}</b><span>{{ L('Naskenujete v banke. Bez karty, bez registrácie.', 'Naskenujete v bance. Bez karty, bez registrace.') }}</span></li>
+          <li><b>{{ L('Vytlačíme a pošleme kuriérom DPD', 'Vytiskneme a pošleme kurýrem DPD') }}</b><span data-steps-date></span></li>
+        </ol>
+        <details class="co__note-d">
+          <summary>{{ L('Pridať poznámku k objednávke', 'Přidat poznámku k objednávce') }}</summary>
+          <label class="fl"><span class="sr">{{ L('Poznámka', 'Poznámka') }}</span><textarea name="note" rows="2" placeholder="{{ L('Napr. termín, fakturačné údaje, iná adresa…', 'Např. termín, fakturační údaje, jiná adresa…') }}"></textarea></label>
+        </details>
       </fieldset>
       <aside class="co__sum" aria-label="{{ L('Súhrn objednávky', 'Souhrn objednávky') }}">
         <p class="co__sumh">{{ L('Súhrn objednávky', 'Souhrn objednávky') }}</p>
@@ -79,18 +76,13 @@
         <label class="chk chk--terms"><input type="checkbox" name="terms" required> <span>{{ L('Súhlasím s', 'Souhlasím s') }} <a href="{{ link('podmienky') }}" target="_blank">{{ L('obchodnými podmienkami', 'obchodními podmínkami') }}</a> {{ L('a beriem na vedomie', 'a beru na vědomí') }} <a href="{{ link('gdpr') }}" target="_blank">{{ L('spracovanie osobných údajov', 'zpracování osobních údajů') }}</a>. {{ L('Vizitky sa vyrábajú na mieru, po spustení výroby od zmluvy nie je možné odstúpiť.', 'Vizitky se vyrábějí na míru, po zahájení výroby nelze od smlouvy odstoupit.') }}</span></label>
         <p class="co__err" data-err hidden></p>
         <button class="btn btn--y btn--lg co__go" type="submit">{{ L('Objednať s povinnosťou platby', 'Objednat s povinností platby') }}</button>
-        <p class="co__note">{{ L('Platbu pošleme až po kontrole návrhu. Dovtedy môžete čokoľvek zmeniť.', 'Platbu pošleme až po kontrole návrhu. Do té doby můžete cokoli změnit.') }}</p>
-        <ul class="co__trust"><li>{{ L('Platíte až po kontrole návrhu', 'Platíte až po kontrole návrhu') }}</li><li>{{ L('Bez registrácie a bez karty', 'Bez registrace a bez karty') }}</li><li>{{ L('Doprava zadarmo do CZ aj SK', 'Doprava zdarma do CZ i SK') }}</li><li>{{ L('Chyba tlače? Vytlačíme znova zadarmo', 'Chyba tisku? Vytiskneme znovu zdarma') }}</li></ul>
+        <p class="co__note">{{ L('Teraz nič neplatíte. QR platbu pošleme až po kontrole návrhu.', 'Teď nic neplatíte. QR platbu pošleme až po kontrole návrhu.') }}</p>
+        <ul class="co__trust"><li>{{ L('Doprava DPD zadarmo do SK aj CZ', 'Doprava DPD zdarma do CZ i SK') }}</li><li>{{ L('Chyba tlače? Vytlačíme znova zadarmo', 'Chyba tisku? Vytiskneme znovu zdarma') }}</li></ul>
       </aside>
     </form>
-    <ol class="next3" aria-label="{{ L('Čo bude nasledovať', 'Co bude následovat') }}">
-        <li><b>{{ L('Kontrola človekom', 'Kontrola člověkem') }}</b><span>{{ L('Grafik skontroluje texty, okraje aj rozlíšenie. Ak niečo nesedí, ozve sa.', 'Grafik zkontroluje texty, okraje i rozlišení. Pokud něco nesedí, ozve se.') }}</span></li>
-        <li><b>{{ L('QR platba e-mailom', 'QR platba e-mailem') }}</b><span>{{ L('Platíte až po kontrole. Žiadne karty, žiadne zálohy.', 'Platíte až po kontrole. Žádné karty, žádné zálohy.') }}</span></li>
-        <li><b>{{ L('Tlač a doprava zadarmo', 'Tisk a doprava zdarma') }}</b><span>{{ L('Stav objednávky sledujete online, číslo zásielky dostanete e-mailom.', 'Stav objednávky sledujete online, číslo zásilky dostanete e-mailem.') }}</span></li>
-      </ol>
     <div class="co__bar" data-bar aria-hidden="true">
       <span><small>{{ L('Spolu', 'Celkem') }}</small><b data-bar-total>—</b></span>
-      <button class="btn btn--y" type="submit" form="checkout" tabindex="-1">{{ L('Objednať', 'Objednat') }} <span class="ar">→</span></button>
+      <button class="btn btn--y" type="button" data-bar-go tabindex="-1">{{ L('Dokončiť', 'Dokončit') }} <span class="ar">↓</span></button>
     </div>
   </div>
 

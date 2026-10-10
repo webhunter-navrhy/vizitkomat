@@ -582,3 +582,44 @@
   .own__backopt .seg { display: flex; width: 100%; }
   .own__backopt .seg button { flex: 1; white-space: normal; line-height: 1.15; padding-block: .45rem; }
 }
+
+/* ===================== košík – sústredená pokladňa (10/2026) ===================== */
+.cart__head { margin-bottom: clamp(1.4rem, 3vw, 2.2rem); }
+.items { gap: 10px; margin-bottom: .8rem; }
+.it { grid-template-columns: 150px 1fr auto; gap: .4rem 1.2rem; padding: 1rem 1.1rem; border-radius: 20px; }
+.it h3 { font-size: 1.25rem; margin-top: .15rem; }
+.it__k { font-size: .66rem; }
+.it__s { font-size: .84rem; margin-top: .2rem; }
+.it__a { margin-top: .6rem; gap: .3rem .9rem; font-size: .84rem; }
+.it__a button { min-height: 32px; }
+.it__p { font-size: 1.45rem; }
+.it__up1 { grid-area: up; justify-self: start; display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .5rem; padding: .55rem .85rem; border-radius: 12px; background: #FFF6E0; box-shadow: inset 0 0 0 1.5px #F5DC94; font-size: .84rem; text-align: left; min-height: 40px; transition: box-shadow .2s, transform .2s var(--ease); }
+.it__up1 b { font-weight: 800; }
+.it__up1 b::first-letter { color: var(--coral-2); }
+.it__up1 span { color: var(--ink-2); font-weight: 500; font-size: .78rem; }
+.it__up1:hover { box-shadow: inset 0 0 0 1.5px var(--yellow-2); transform: translateY(-1px); }
+.cart__more { margin: 0 0 1rem; font-size: .92rem; }
+.co__shipinfo { margin: 0; padding: .8rem 1rem; border-radius: 14px; background: #EEF8F2; font-size: .88rem; color: var(--ink-2); line-height: 1.45; }
+.co__shipinfo b { color: #1E7A45; }
+.co__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: cs; }
+.co__steps li { counter-increment: cs; position: relative; display: grid; gap: .1rem; padding: .55rem 0 .55rem 2.6rem; }
+.co__steps li::before { content: counter(cs); position: absolute; left: 0; top: .55rem; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: #EEF1FE; color: var(--cobalt); font-weight: 800; font-size: .82rem; box-shadow: inset 0 0 0 1.5px #CBD3FA; }
+.co__steps li:first-child::before { content: '✓'; background: var(--cobalt); color: #fff; box-shadow: none; }
+.co__steps li + li::after { content: ''; position: absolute; left: 13.5px; top: -.45rem; height: .9rem; border-left: 1.5px dashed #CBD3FA; }
+.co__steps b { font-size: .95rem; }
+.co__steps span { font-size: .84rem; color: var(--ink-2); font-weight: 500; }
+.co__note-d summary { cursor: pointer; font-weight: 700; font-size: .88rem; color: var(--ink-2); list-style: none; min-height: 32px; display: flex; align-items: center; }
+.co__note-d summary::-webkit-details-marker { display: none; }
+.co__note-d summary::before { content: '+'; display: grid; place-items: center; width: 22px; height: 22px; margin-right: .5rem; border-radius: 50%; background: #F3F4FB; font-weight: 800; }
+.co__note-d[open] summary::before { content: '−'; }
+.co__note-d .fl { margin-top: .5rem; }
+.co__note { margin-top: -.2rem; font-weight: 600; opacity: .9; }
+.co__trust { grid-template-columns: 1fr; }
+@media (max-width: 640px) {
+  .it { grid-template-columns: 96px 1fr; grid-template-areas: 'v b' 'p p' 'up up'; padding: .9rem; }
+  .it h3 { font-size: 1.1rem; }
+  .it__p { grid-area: p; justify-self: end; margin-top: -.2rem; font-size: 1.2rem; }
+  .it__a button, .it__q select { min-height: 40px; }
+  .co fieldset { padding: 1.15rem; }
+  .co legend { font-size: 1.25rem; }
+}
