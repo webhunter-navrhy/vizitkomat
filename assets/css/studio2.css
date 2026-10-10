@@ -681,3 +681,24 @@ html[lang="cs"] .fld.is-sample > span::after { content: 'ukázka'; }
 .simple1__alt { margin: .8rem 0 0; color: var(--ink-3); font-size: .95rem; }
 .simple1__alt .link { font-size: .95rem; }
 @media (max-width: 760px) { .ask--simple { grid-template-columns: 1fr; } .ask--simple .btn { justify-content: center; } }
+/* ďalšie hotové návrhy vo výbere */
+.extra { margin-top: 2.6rem; }
+.extra__h { font-size: 1.35rem; letter-spacing: -.02em; margin: 0 0 1rem; }
+.extra__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.extra__c { position: relative; display: block; padding: 0; border: 0; background: none; cursor: pointer; text-align: left; }
+.extra__img { display: block; aspect-ratio: 90 / 50; border-radius: 4px; overflow: hidden; background: linear-gradient(110deg, #ECEBF4 30%, #F6F5FB 50%, #ECEBF4 70%) 0 0 / 300% 100%; animation: shimmer 1.4s linear infinite; box-shadow: 0 1px 1px rgba(15, 20, 64, .2), 0 14px 26px -14px rgba(15, 20, 64, .45); transition: transform .35s var(--ease), box-shadow .35s; }
+.extra__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.extra__img img:not([src]) { visibility: hidden; }
+.extra__go { position: absolute; right: 10px; bottom: 10px; padding: .4rem .8rem; border-radius: 99px; background: var(--ink); color: #fff; font-weight: 800; font-size: .82rem; opacity: 0; transform: translateY(4px); transition: opacity .25s, transform .25s; }
+.extra__c:hover .extra__img, .extra__c:focus-visible .extra__img { transform: translateY(-4px); box-shadow: 0 1px 1px rgba(15, 20, 64, .2), 0 22px 34px -16px rgba(15, 20, 64, .5); }
+.extra__c:hover .extra__go, .extra__c:focus-visible .extra__go { opacity: 1; transform: none; }
+.extra__all { margin-top: 1.2rem; }
+@keyframes shimmer { to { background-position: -300% 0; } }
+@media (max-width: 760px) { .extra__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .extra__go { display: none; } }
+/* objednávka: kontrola len keď treba, menej voľby na mobile */
+.pf.ok ul { display: none; }
+.pf.ok { padding-bottom: 14px; }
+.pf.ok .pf__h b::before { content: '✓ '; color: #1F9D55; }
+.more--kind { margin-top: 14px; }
+.more--kind .kinds { margin-top: 10px; }
+@media (max-width: 760px) { .st4__scenes { display: none; } .st4__views button[data-view="3d"] { display: none; } }

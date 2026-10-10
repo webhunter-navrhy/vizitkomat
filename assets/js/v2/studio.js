@@ -10,7 +10,7 @@ import { analyzeLogo, fileToDataURL } from '../logo.js';
 import * as store from './store.js';
 import { PERSONAS, personaFields, TPL_PERSONA } from './personas.js';
 import { emblemFor } from './emblems.js';
-import { ranked, badge as tplBadge, BY_IND } from './featured.js';
+import { ranked, badge as tplBadge, BY_IND, TOP, A as TIER_A } from './featured.js';
 import { toast } from './site.js';
 import { money, printPrice, itemPrice, addWorkdays, fmtDay, debounce, session, qrSVG, deliveryDays } from '../util.js';
 
@@ -183,7 +183,34 @@ async function runAI(prompt, previous) {
   paintMine();
   paintMocks();
   $('[data-ai-more]').hidden = false;
+  paintExtras();
 }
+// ďalšie hotové návrhy s údajmi zákazníka (najlepšie šablóny pre jeho odbor)
+const ROLE_IND = [['beauty', /kader|nech|neht|kozmet|barber|salón|salon|vlas|líč|lič|make/i], ['gastro', /kavi|kavá|kav|reštaur|restaur|pek|cukr|vín|vin|piv|bistro|pizz|kuch|bar/i], ['reality', /real|makl|archit|stav|interi|develop/i], ['zdravie', /lekár|lékař|zub|fyzio|masá|masé|jóg|jog|psych|terap|veter|lekár|lékárn|lekárn/i], ['remeslo', /elektr|inštal|instal|stol|auto|záhrad|zahrad|malí|komin|krajč|uprat|úklid|murár|zedn/i], ['pravo', /advok|práv|účt|úč|daň|poist|financ|notár|notář/i], ['kreativ', /foto|graf|dizaj|design|program|softvér|market|hudb|dj|it\b|start/i]];
+function indFor(f) { const s = `${f?.role || ''} ${f?.company || ''} ${st.lastPrompt || ''}`; return ROLE_IND.find(([, re]) => re.test(s))?.[0] || ''; }
+const extraKey = () => JSON.stringify(st.ai[0]?.f || {});
+async function paintExtras() {
+  const box = $('[data-extra]'); if (!box || !st.ai.length) return;
+  const f = st.ai[0].f, ind = indFor(f), have = new Set(st.ai.map((d) => d.tpl));
+  const pool = [...(BY_IND[ind] || []), ...TOP, ...TIER_A].filter((id, i, a) => TEMPLATES[id] && !have.has(id) && a.indexOf(id) === i).slice(0, 6);
+  const grid = $('[data-extra-grid]'), key = extraKey();
+  grid.innerHTML = pool.map((id) => `<button class="extra__c" type="button" data-x="${id}"><span class="extra__img"><img alt="${TEMPLATES[id].name}"></span><span class="extra__go">${tr('Vybrať', 'Vybrat')} →</span></button>`).join('');
+  box.hidden = false;
+  for (const id of pool) {
+    const dd = newDesign({ tpl: id, ...templateDefaults(id), f: { ...f } });
+    const src = await thumb(dd, 'front', 640);
+    if (extraKey() !== key) return;
+    const im = $(`[data-x="${id}"] img`, grid); if (im) im.src = src;
+  }
+}
+const reExtras = debounce(paintExtras, 800);
+$('[data-extra-grid]').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-x]'); if (!b) return;
+  const id = b.dataset.x, f = { ...(st.ai[0]?.f || {}) };
+  VK.ev?.('tpl_click', true);
+  st.mode = 'tpl'; await loadDesign(newDesign({ tpl: id, ...templateDefaults(id), f })); st.reached.add('choose'); go('edit');
+});
+$('[data-start-tpl3]')?.addEventListener('click', () => showTemplates());
 // vlastné údaje priamo vo výbere návrhov (živo sa prepíšu do všetkých troch)
 const MINE_K = ['name', 'phone', 'email', 'web'];
 function paintMine() {
@@ -191,7 +218,7 @@ function paintMine() {
   const f = st.ai[0]?.f || {};
   $$('[data-m]', box).forEach((i) => { const k = i.dataset.m; if (document.activeElement !== i) i.value = f[k] && f[k] !== DEFAULT_FIELDS[k] ? f[k] : ''; });
 }
-const remock = debounce(() => st.ai.forEach((_, i) => paintMockImgs(i)), 650);
+const remock = debounce(() => { st.ai.forEach((_, i) => paintMockImgs(i)); reExtras(); }, 650);
 $('[data-mine]').addEventListener('input', (e) => {
   const i = e.target.closest('[data-m]'); if (!i) return;
   const k = i.dataset.m, v = i.value.trim();
@@ -793,7 +820,7 @@ function paintPreflight() {
   ok(tr('Spadávka 2 mm, PDF 600 dpi', 'Spadávka 2 mm, PDF 600 dpi'));
   const bad = L.filter((x) => !x.ok).length;
   $('[data-pf]').classList.toggle('ok', !bad); $('[data-pf]').classList.toggle('warn', !!bad);
-  $('[data-pf-sum]').textContent = bad ? tr(`${bad} na kontrolu`, `${bad} ke kontrole`) : tr('všetko v poriadku', 'vše v pořádku');
+  $('[data-pf-sum]').textContent = bad ? tr(`${bad} na kontrolu`, `${bad} ke kontrole`) : tr('pripravené na tlač', 'připraveno k tisku');
   $('[data-pf-list]').innerHTML = L.sort((a, b) => a.ok - b.ok).map((x) => `<li class="${x.ok ? 'ok' : 'warn'}"><i>${x.ok ? '✓' : '!'}</i><span>${esc(x.t)}</span>${x.fix ? `<button data-pf-fix="${x.fix}">${esc(x.label)}</button>` : ''}</li>`).join('');
 }
 $('[data-pf-list]').addEventListener('click', (e) => {

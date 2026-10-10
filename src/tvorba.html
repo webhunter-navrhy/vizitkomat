@@ -78,6 +78,11 @@
           <button data-r="{{ L('výraznejšie a farebnejšie', 'výraznější a barevnější') }}">{{ L('Výraznejšie', 'Výraznější') }}</button>
           <button data-r="{{ L('úplne iné návrhy', 'úplně jiné návrhy') }}">{{ L('Iné návrhy', 'Jiné návrhy') }}</button>
         </div>
+        <div class="extra" data-extra hidden>
+          <h3 class="extra__h">{{ L('Ďalšie hotové návrhy pre vás', 'Další hotové návrhy pro vás') }}</h3>
+          <div class="extra__grid" data-extra-grid></div>
+          <button class="link extra__all" type="button" data-start-tpl3>{{ L('Pozrieť všetkých ' ~ tpl_count ~ ' šablón', 'Prohlédnout všech ' ~ tpl_count ~ ' šablon') }} →</button>
+        </div>
         <form class="ask ask--re" data-ask-re hidden>
           <textarea data-ask-re-in aria-label="{{ L('Čím sa živíte?', 'Čím se živíte?') }}" rows="2" maxlength="400" placeholder="{{ L('Upravte zadanie, napr. pridajte meno, mesto alebo štýl…', 'Upravte zadání, např. přidejte jméno, město nebo styl…') }}"></textarea>
           <button class="btn btn--c btn--sm" type="submit">{{ L('Navrhni znova', 'Navrhni znovu') }}</button>
@@ -355,12 +360,6 @@ So: po domluvě') }}"></textarea></label>
       </div>
       <div class="st4__opts">
         <h2 class="h-m" tabindex="-1" data-focus>{{ L('Vyberte si', 'Vyberte si') }}</h2>
-        <h3>{{ L('Čo chcete', 'Co chcete') }}</h3>
-        <div class="kinds" data-kind>
-          <button class="kind on" data-v="bundle"><b>{{ L('Tlačené + digitálna', 'Tištěné + digitální') }}</b><small>{{ L('digitálna zadarmo', 'digitální zdarma') }}</small></button>
-          <button class="kind" data-v="print"><b>{{ L('Len tlačené', 'Jen tištěné') }}</b><small>{{ L('klasické vizitky', 'klasické vizitky') }}</small></button>
-          <button class="kind" data-v="digital"><b>{{ L('Len digitálna', 'Jen digitální') }}</b><small>{{ prices.digital }} {{ prices.symbol }} {{ L('jednorazovo', 'jednorázově') }}</small></button>
-        </div>
         <div data-print-opts>
           <h3>{{ L('Papier', 'Papír') }}</h3>
           <div class="papers" data-paper>
@@ -378,6 +377,14 @@ So: po domluvě') }}"></textarea></label>
             <label class="tog"><input type="checkbox" data-express> <span>{{ L('Expresná výroba', 'Expresní výroba') }} <small>+{{ prices.express }} {{ prices.symbol }} · {{ L('doručenie do ' ~ prices.days.express ~ ' prac. dní', 'doručení do ' ~ prices.days.express ~ ' prac. dnů') }}</small></span></label>
           </details>
         </div>
+        <details class="more more--kind">
+          <summary>{{ L('Chcete len digitálnu vizitku bez tlače?', 'Chcete jen digitální vizitku bez tisku?') }}</summary>
+        <div class="kinds" data-kind>
+          <button class="kind on" data-v="bundle"><b>{{ L('Tlačené + digitálna', 'Tištěné + digitální') }}</b><small>{{ L('digitálna zadarmo', 'digitální zdarma') }}</small></button>
+          <button class="kind" data-v="print"><b>{{ L('Len tlačené', 'Jen tištěné') }}</b><small>{{ L('klasické vizitky', 'klasické vizitky') }}</small></button>
+          <button class="kind" data-v="digital"><b>{{ L('Len digitálna', 'Jen digitální') }}</b><small>{{ prices.digital }} {{ prices.symbol }} {{ L('jednorazovo', 'jednorázově') }}</small></button>
+        </div>
+        </details>
         <div class="sum">
           <ul class="sum__lines" data-sum-lines></ul>
           <div class="sum__p"><span>{{ L('Spolu', 'Celkem') }}</span><b data-sum>—</b></div>
